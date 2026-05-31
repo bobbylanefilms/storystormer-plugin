@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "storystormer",
-      "source": ".",
+      "source": "./",
       "description": "Conversational story development workspace — brainstorm, canon, treatment, and chapter outline, for standalone novels or multi-book series. Drop into any folder, bring any state of materials, and Claude triages, structures, develops, and outlines the story alongside you.",
       "version": "0.4.0-poc",
       "author": {
