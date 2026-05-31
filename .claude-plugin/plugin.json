@@ -1,0 +1,21 @@
+{
+  "name": "storystormer",
+  "version": "0.4.0-poc",
+  "description": "Conversational story development workspace — brainstorm, canon, treatment, and chapter outline, for standalone novels or multi-book series. Drop into any folder, bring any state of materials, and Claude triages, structures, develops, and outlines the story alongside you. Shared characters and worldbuilding across all books in a series.",
+  "author": {
+    "name": "Robert Sawyer",
+    "email": "rsawyer@mcdonaldcarano.com"
+  },
+  "homepage": "https://github.com/bobbylanefilms/storystormer-plugin",
+  "keywords": [
+    "writing",
+    "fiction",
+    "novel",
+    "series",
+    "trilogy",
+    "brainstorm",
+    "outline",
+    "story-development",
+    "character-development"
+  ]
+}

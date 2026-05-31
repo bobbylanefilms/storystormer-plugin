@@ -1,0 +1,31 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "storystormer-marketplace",
+  "description": "Single-plugin marketplace for StoryStormer — install it in Claude Cowork (desktop) or Claude Code with one /plugin install.",
+  "owner": {
+    "name": "Robert Sawyer",
+    "email": "rsawyer@mcdonaldcarano.com"
+  },
+  "plugins": [
+    {
+      "name": "storystormer",
+      "source": ".",
+      "description": "Conversational story development workspace — brainstorm, canon, treatment, and chapter outline, for standalone novels or multi-book series. Drop into any folder, bring any state of materials, and Claude triages, structures, develops, and outlines the story alongside you.",
+      "version": "0.4.0-poc",
+      "author": {
+        "name": "Robert Sawyer",
+        "email": "rsawyer@mcdonaldcarano.com"
+      },
+      "category": "writing",
+      "keywords": [
+        "writing",
+        "fiction",
+        "novel",
+        "series",
+        "brainstorm",
+        "outline",
+        "story-development"
+      ]
+    }
+  ]
+}
