@@ -16,7 +16,7 @@ Always follow `references/plan-first.md` — propose what you intend to focus on
 ## What you produce
 
 - **`outline/structure.md`** — at version 1 for first-run, bumped on subsequent revisions. Contains the framework choice, the act structure table, POV strategy, pacing notes, the numbered Chapter Spine, and a list of open structural questions blocking specific spine slots. See `references/file-schemas.md` § `outline/structure.md` for the full schema.
-- **`outline/_index.md`** — stub version, regenerated from the Chapter Spine. Every spine slot appears as `*(not yet outlined)*` until `outline-chapters` runs.
+- **`outline/_index.md`** — the outline view (chapter × stage matrix), seeded from the Chapter Spine. Every chapter row appears with all stage cells (`Outline`, `Blueprint`, `Prose`, `Notes`) set to `—` until the downstream skills run. See `references/file-schemas.md` § `outline/_index.md`.
 - Updates to `decisions.md` — every structural commitment that wasn't already a logged decision gets captured (e.g., *"D-031: Save the Cat as the structural framework"*; *"D-032: 40-chapter target, three-act split 10/20/10"*).
 - Updates to `questions.md` — any structural gaps that surface during the conversation get logged as critical/important questions (e.g., *"Q-024: Does the midpoint shift fall in ch 18 or ch 20?"*).
 - Updates to `state.md` — `What Exists → Structure` line added, `stage` advanced to `outlining` (or `outline-drafted` if the spine covers all chapters with no critical gaps).
@@ -182,7 +182,7 @@ After the user approves the spine:
 
 - Snapshot any existing `outline/structure.md` to `.storystormer/history/<timestamp>-pre-outline/`.
 - Write `outline/structure.md` v1 (or bumped version) with all five sections per the schema.
-- Write `outline/_index.md` stub — every spine entry as `*(not yet outlined)*`, organized by act.
+- Write `outline/_index.md` — the chapter × stage matrix, organized by act, every chapter row with all stage cells `—` (no chapter content exists yet).
 - Mark consumed decisions with `Integrated into structure: yes (<date>)`. (Add this line to entries even if you didn't add it to the canonical schema — it's a parallel to `Integrated into treatment` and useful for traceability.)
 - Update `state.md`:
   - `What Exists → Structure` line added with version, frameworks, chapter count.

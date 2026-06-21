@@ -451,15 +451,27 @@ last_updated: 2026-05-10
 
 Body follows one of two formats — **Reference Note** (~200–300w) for real-world elements with story-specific modifications, or **Full Entry** (~300–1,000w depending on category) for invented elements. For section structures, length targets per category, category-specific guidance, and a worked example, see `references/canon-schemas.md` § Worldbuilding Entry Schemas. For the tier framework (Full Canon entry / Reference note / No entry needed) and character-vs-worldbuilding disambiguation, see `references/frameworks.md` § Worldbuilding.
 
-## Outline files
+## Chapter content — folders, the spine, and the outline view
 
-The outline layer sits between the treatment (scene-based, non-chaptered) and future prose generation (chapter-based). It has three components:
+Chapter content is organized **entity-first**: one folder per chapter (`chapters/chapter-NN/`) holds *every* artifact for that chapter — its outline, blueprint, prose, and refinement notes — as the chapter moves through the pipeline. The cross-chapter **spine** lives one level up, in `outline/`. This is the contract every chapter-stage skill (outlining now; blueprint, prose, and refinement when they land) reads and writes against.
 
-- **`outline/structure.md`** — the structural commitment: framework choice, act boundaries, the chapter spine (one line per chapter slot).
-- **`outline/chapter-NN.md`** — per-chapter outlines (~600–1,000w each). 40-chapter novel ⇒ 40 files.
-- **`outline/_index.md`** — the fast-scan index. Mirror of the chapter spine with status per chapter and pointers to the per-chapter files.
+Two layers:
 
-The two-file split (`structure.md` + per-chapter files) is deliberate. `structure.md` is the contract that the chapter outlines fulfill — a stable spine the user agrees to once, then the chapter files fill in against. Per-chapter files keep the natural unit of work (one chapter) addressable in isolation, both for revision and for downstream prose generation.
+- **Book-level spine** (`outline/`) — the macro plan, shared across all chapters:
+  - **`outline/structure.md`** — the structural commitment: framework choice, act boundaries, the chapter spine (one line per chapter slot).
+  - **`outline/_index.md`** — the **outline view**: a chapter × stage status matrix, one row per chapter, regenerated as chapters advance. This is the horizontal scan surface.
+- **Per-chapter content** (`chapters/chapter-NN/`) — the micro layer, one folder per chapter:
+  - **`ch<NN>-outline.md`** — the per-chapter beat sheet (~600–1,000w). Relocated here from the old `outline/chapter-NN.md`.
+  - **`ch<NN>-blueprint.md`**, **`ch<NN>-prose.md`**, **`ch<NN>-notes.md`** — pre-prose refinement, generated prose, and post-prose refinement. Written by future skills (see § `chapters/` folder).
+  - **`.history/`** — co-located snapshots of this chapter's artifacts.
+
+### Why entity-first, and the naming rule
+
+The macro/micro split is deliberate. `outline/structure.md` is the contract a chapter's `ch<NN>-outline.md` fulfills — a stable spine the user agrees to once, then each chapter folder fills in against it. Keeping a chapter's outline next to its blueprint, prose, and notes means the dominant downstream workloads (prose generation, refinement) gather one chapter's full context from a single folder, and adding a new stage is a new *file*, never a new parallel top-level tree.
+
+**Files inside a chapter folder are chapter-number-prefixed:** `ch<NN>-<stage>.md` — `ch` + the same zero-padded number as the folder + the stage. So `chapters/chapter-17/ch17-outline.md`, `chapters/chapter-08/ch08-prose.md`, `chapters/chapter-21/ch21-blueprint.md`. The prefix is what keeps files self-identifying when viewed flat or referenced via `@` in Claude Code — `outline.md` repeated across 40 folders is invisible; `ch17-outline.md` is not. The folder gives the hierarchy; the prefix gives flat-identifiability.
+
+The horizontal scan that *outlining* needs (read every chapter's outline at once, check continuity seams) is preserved through `outline/_index.md` and recursive globs (`chapters/*/ch*-outline.md`).
 
 ### `outline/structure.md` — structural commitment
 
@@ -497,7 +509,7 @@ Word counts are the per-act target from primer Section 3's Treatment Word Budget
 
 ## Chapter Spine
 
-A one-line concept for each chapter slot. This is the *contract* — when `outline-chapters` writes chapter-NN.md, it fulfills the concept on this line. Keep each entry to one sentence: what happens in this chapter, plus POV if multi-POV.
+A one-line concept for each chapter slot. This is the *contract* — when `outline-chapters` writes a chapter's `ch<NN>-outline.md`, it fulfills the concept on this line. Keep each entry to one sentence: what happens in this chapter, plus POV if multi-POV.
 
 1. **The Auditing Room** — Marlowe at the courthouse, late for her own swearing-in; intro to her competence signature and the Heights. POV: Marlowe.
 2. **The First Crack** — A receipt in the audit doesn't reconcile; Marlowe begins the pattern that defines her arc. POV: Marlowe.
@@ -514,9 +526,9 @@ A one-line concept for each chapter slot. This is the *contract* — when `outli
 
 The Chapter Spine is the load-bearing element. The pre-outline conversation produces it; chapter outlines hang off it.
 
-### `outline/chapter-NN.md` — per-chapter outline
+### `chapters/chapter-NN/ch<NN>-outline.md` — per-chapter outline
 
-Filename uses two-digit zero-padded chapter number (`chapter-01.md` through `chapter-99.md`; pad to three digits if the story exceeds 99 chapters). One file per chapter, ~600–1,000 words target.
+Lives in the chapter's folder, prefixed with the chapter number: `chapters/chapter-17/ch17-outline.md`. Folder and prefix both use the two-digit zero-padded chapter number (`chapter-01/ch01-outline.md` through `chapter-99/ch99-outline.md`; pad to three digits if the story exceeds 99 chapters). ~600–1,000 words target. (This is the relocation of the former `outline/chapter-NN.md` — the schema is unchanged; only the path moved, to sit next to the chapter's blueprint/prose/notes.)
 
 ```yaml
 ---
@@ -595,67 +607,87 @@ Per-chapter target is calibrated from primer Section 3's Treatment Word Budget t
 
 Don't pad to hit the target. A chapter that genuinely lands in 600w shouldn't be inflated to 1,000w.
 
-### `outline/_index.md` — fast-scan index
+### `outline/_index.md` — the outline view (chapter × stage matrix)
 
-Mirrors the Chapter Spine from `structure.md` with status per chapter. Re-generated after any `outline-chapters` run.
+The horizontal scan surface. Mirrors the Chapter Spine from `structure.md`, but tracks each chapter's status across **every stage** of the chapter pipeline — outline, blueprint, prose, refinement — in one row. This is the folder-world equivalent of the web app's outline view: physical storage is entity-first (one folder per chapter), but this index projects the type-first horizontal view so "which chapters have prose?" or "which are still un-blueprinted?" is one read. Re-generated whenever a chapter-stage skill runs.
 
 ```yaml
 ---
-version: 1
+version: 3
 last_updated: 2026-05-12
 structure_version: 1
 total_chapters: 40
 chapters_outlined: 12
+chapters_blueprinted: 0
+chapters_drafted: 0
 ---
 ```
 
 ```markdown
-# Outline Index
+# Outline View
 
-Generated from `outline/structure.md`. Each entry points to the per-chapter outline if it exists, or shows the spine concept if it doesn't.
+Generated from `outline/structure.md` and the chapter folders under `chapters/`. Each row shows a chapter's spine concept and its status at each pipeline stage. Status cells: `vN` (artifact exists, version N) · `—` (not started) · plus inline `[OPEN: Q-###]` / `[NEEDS DEVELOPMENT]` flags carried up from the artifact body.
 
 ## Act 1: Setup (chapters 1–10)
-- **Ch 01** · *The Auditing Room* — Marlowe at the courthouse, late for her own swearing-in. → [chapter-01.md](chapter-01.md) (v1)
-- **Ch 02** · *The First Crack* — A receipt that doesn't reconcile. → [chapter-02.md](chapter-02.md) (v1)
-- **Ch 03** · *The Body in the River* — Inciting incident: Walsh found dead. → [chapter-03.md](chapter-03.md) (v2, [OPEN: Q-014])
-- …
-- **Ch 10** · *Plot Point 1: She Commits* — [spine concept] *(not yet outlined)*
+
+| Ch | Title / Spine concept | Outline | Blueprint | Prose | Notes |
+|----|------------------------|---------|-----------|-------|-------|
+| 01 | *The Auditing Room* — late for her swearing-in | [v1](../chapters/chapter-01/ch01-outline.md) | — | — | — |
+| 02 | *The First Crack* — a receipt that doesn't reconcile | [v1](../chapters/chapter-02/ch02-outline.md) | — | — | — |
+| 03 | *The Body in the River* — inciting incident | [v2](../chapters/chapter-03/ch03-outline.md) `[OPEN: Q-014]` | — | — | — |
+| … |  |  |  |  |  |
+| 10 | *Plot Point 1: She Commits* | — | — | — | — |
 
 ## Act 2A: Fun and Games (chapters 11–22)
-- **Ch 11** · *Surveillance Begins* — → [chapter-11.md](chapter-11.md) (v1)
-- **Ch 12** · *The Compound* — → [chapter-12.md](chapter-12.md) (v1)
-- **Ch 13** · *[spine concept]* — *(not yet outlined)*
-- …
+
+| Ch | Title / Spine concept | Outline | Blueprint | Prose | Notes |
+|----|------------------------|---------|-----------|-------|-------|
+| 11 | *Surveillance Begins* | [v1](../chapters/chapter-11/ch11-outline.md) | — | — | — |
+| … |  |  |  |  |  |
 
 ## Act 2B: Bad Guys Close In (chapters 23–30)
-- …
+…
 
 ## Act 3: Resolution (chapters 31–40)
-- …
+…
 ```
 
-Each entry shows:
-- Chapter number and title (`title` from the per-chapter file's frontmatter, or the spine concept's bold phrase if the file doesn't exist yet).
-- A one-line summary (the spine concept).
-- A pointer to the per-chapter file *if it exists*, with version number.
-- Inline marker flags (`[OPEN: Q-###]` or `[NEEDS DEVELOPMENT]`) if the chapter file contains any unresolved markers.
-- `*(not yet outlined)*` italicized for spine slots without a per-chapter file.
+Each row shows:
+- Chapter number and title (`title` from the chapter's `ch<NN>-outline.md` frontmatter, or the spine concept's bold phrase if no outline exists yet).
+- A status cell per stage: a versioned link to the artifact if it exists (`[v2](../chapters/chapter-03/ch03-outline.md)`), or `—` if that stage hasn't started.
+- Inline marker flags (`[OPEN: Q-###]` or `[NEEDS DEVELOPMENT]`) in the relevant stage cell when that artifact carries unresolved markers.
 
-The index is regenerated on every `outline-chapters` run. It is not hand-edited.
+Links are relative from `outline/` into `chapters/` (`../chapters/chapter-NN/...`). The Blueprint, Prose, and Notes columns stay all-`—` until those skills land; they're in the matrix now so the view is stable as the pipeline fills out. The index is regenerated on every chapter-stage run. It is not hand-edited.
 
-## `chapters/` folder — prose chapters (reserved location)
+## `chapters/` folder — per-chapter content folders
 
-The `chapters/` folder stores **chapter prose files**. It is a reserved location — its full schema and the skills that write to it will land when prose-writing functionality is added in a later version (post-POC). For now, `chapters/` is only populated through `storystormer-init`'s intake when the user brings in pre-existing prose, and the files are stashed without further processing.
+The `chapters/` folder holds one **folder per chapter** (`chapters/chapter-NN/`), and each chapter folder holds *all* of that chapter's artifacts as it moves through the pipeline. This is the entity-first content layer that hangs off the `outline/` spine (see § Chapter content above).
 
 **Folder location:**
-- Standalone novel: `<root>/chapters/`
-- Series mode: `<root>/books/<slug>/chapters/`
+- Standalone novel: `<root>/chapters/chapter-NN/`
+- Series mode: `<root>/books/<slug>/chapters/chapter-NN/`
 
-**Naming convention** (matches outline files): `chapter-NN.md`, zero-padded to two digits, three digits if the story exceeds 99 chapters. Examples: `chapter-01.md`, `chapter-17.md`, `chapter-40.md`.
+**Chapter folder naming:** `chapter-NN`, zero-padded to two digits (three if the story exceeds 99 chapters). **Files inside** are chapter-number-prefixed: `ch<NN>-<stage>.md`.
 
-**File format**: Markdown. If the user brings in `.docx`, `.txt`, `.scrivx`, or other formats at intake, init may stash them as-is in `chapters/` with the original extension preserved, but flags them in the report — prose-writing skills (when added) will require markdown. The user can convert before then or do so at the point prose-writing functionality lands.
+```
+chapters/chapter-17/
+  ch17-outline.md      # beat sheet — written by outline-chapters (schema above)
+  ch17-blueprint.md    # pre-prose refinement layer ("Blueprint") — future skill
+  ch17-prose.md        # the chapter's prose — future skill (or scenes/ when split)
+  ch17-notes.md        # post-prose refinement / revision notes — future skill
+  scenes/              # OPTIONAL — only when the chapter is genuinely scene-split
+    ch17-scene-01.md
+    ch17-scene-02.md
+  .history/            # co-located snapshots of this chapter's artifacts
+```
 
-**Frontmatter** (minimal, since this is a reserved location):
+**Stages are filenames, not folders.** Adding a future pipeline stage means a new `ch<NN>-<stage>.md` file in each chapter folder — never a new parallel top-level tree. The stages, in pipeline order: `outline` → `blueprint` → `prose` → `notes`.
+
+### Prose (`ch<NN>-prose.md`) and scenes
+
+Prose is **one file per chapter by default** (`ch<NN>-prose.md`). Treatment scenes don't map 1:1 to chapters, so when a chapter is genuinely scene-split, the prose moves into a `scenes/` subfolder (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`) and `ch<NN>-prose.md` is omitted or becomes a stitched-together read. Default to the single file; reach for `scenes/` only when the chapter actually needs it.
+
+The full schemas for blueprint, prose, and notes — and the skills that write them — land when prose-writing functionality is added (post-POC). They are named here now so the folder contract is stable and future skills have a defined home. Prose-stage frontmatter will carry the version stamps that make staleness detection work (`outline_version`, `treatment_version`, `primer_version`, `status`, `word_count`):
 
 ```yaml
 ---
@@ -663,7 +695,7 @@ chapter: 17
 title: The Locket
 version: 1
 last_updated: 2026-05-12
-# When the prose-writing skill set lands, these become meaningful:
+# Populated by the prose-writing skill set:
 outline_version: 1
 treatment_version: 8
 primer_version: 4
@@ -672,18 +704,25 @@ word_count: 4127
 ---
 ```
 
-For intake-stashed prose, init populates only `chapter`, `title` (extracted from the file's H1 or filename if discoverable), `version: 1`, and `last_updated`. The remaining fields are populated by future prose-writing skills.
+### Per-chapter history (`.history/`)
 
-**Body**: The chapter's prose. No schema imposed at this layer — that's the prose-writing skills' job. Treat intake-stashed prose as raw user content, preserve it verbatim, do not rewrite or normalize.
+Chapter artifacts revise frequently and locally, so their snapshots are **co-located** in the chapter folder rather than in the central `.storystormer/history/`. Snapshots are flat, version+date-named files:
 
-**Init's responsibility ends at stashing.** Init does not:
-- Generate prose
-- Rewrite prose
-- Generate summaries of stashed prose
-- Cross-check stashed prose against the treatment or outline
-- Verify continuity with adjacent chapters
+```
+chapters/chapter-17/.history/
+  ch17-prose-v2-2026-06-21.md     # the draft at v2, archived when a rewrite produced v3
+  ch17-outline-v1-2026-06-18.md
+```
 
-All of that is downstream work for prose-writing skills. The intake job is purely "find the chapters the user already has, put them in the canonical location with canonical naming, and report what was stashed."
+Pattern: `ch<NN>-<stage>-v<version>-<YYYY-MM-DD>.md`. The `version` is the superseded draft's frontmatter version (each version is archived at most once, so it's always unique); the date is chronological context only. Flat files, **not** per-snapshot subfolders — chapter artifacts revise one at a time, so the central log's folder-grouping (which bundles the primer+treatment pair) would be empty ceremony here. The rule: *snapshot granularity matches what-changes-together.* See § `.storystormer/history/` for the book-level mechanism.
+
+### Intake-stashed prose (`storystormer-init`)
+
+The only chapter content created in the POC comes from `storystormer-init`'s intake, when the user brings in pre-existing prose. Init stashes each detected chapter as `chapters/chapter-NN/ch<NN>-prose.md` (markdown), or preserves the original extension (`ch<NN>-prose.docx`, etc.) when the source isn't markdown — flagged in the report, since prose-writing skills will require markdown.
+
+For intake-stashed prose, init populates only `chapter`, `title` (from the file's H1 or filename if discoverable), `version: 1`, and `last_updated`. The remaining frontmatter fields are populated by future prose-writing skills. **Body**: raw user content — preserve verbatim, do not rewrite or normalize.
+
+**Init's responsibility ends at stashing.** Init does not generate or rewrite prose, generate summaries, cross-check against the treatment or outline, or verify continuity. All of that is downstream prose-writing work. The intake job is purely "find the chapters the user already has, put them in the canonical chapter folder with canonical naming, and report what was stashed."
 
 ## `series.md` — series arc document (series mode only)
 
@@ -794,9 +833,9 @@ For series-mode projects, `config.json` carries the series fields:
 
 The `books` array preserves both slug (for filesystem paths) and human-readable title (for display). Adding a book is a config + folder operation; renaming a book updates only the title (slug stays stable to avoid breaking paths).
 
-## `.storystormer/history/`
+## `.storystormer/history/` — book-level history
 
-Before any rewrite of `primer.md`, `treatment.md`, `manifest.md`, or a character bio, snapshot the current versions into a timestamped folder:
+This is the **book-level** snapshot mechanism. Before any rewrite of `primer.md`, `treatment.md`, `manifest.md`, `outline/structure.md`, `series.md`, or a character bio, snapshot the current versions into a timestamped folder:
 
 ```
 .storystormer/history/
@@ -806,6 +845,8 @@ Before any rewrite of `primer.md`, `treatment.md`, `manifest.md`, or a character
     └── manifest.md
 ```
 
-The folder name encodes both the timestamp and the operation. Primer and treatment are snapshotted **as a pair** during treatment updates — the primer version that built a treatment is meaningless without the treatment it informed.
+The folder name encodes both the timestamp and the operation. It uses **per-snapshot folders** because a single operation often archives several files **as a set** — primer and treatment are snapshotted as a pair during treatment updates, since the primer version that built a treatment is meaningless without the treatment it informed.
+
+**Chapter-level artifacts use a different mechanism.** Per-chapter content (outline/blueprint/prose/notes) revises frequently and one file at a time, so its snapshots are co-located in the chapter folder as flat, version+date-named files (`chapters/chapter-NN/.history/ch<NN>-<stage>-v<version>-<date>.md`) — not here, and not in per-snapshot subfolders. See § `chapters/` folder → Per-chapter history. The split is by altitude: book-level docs (which change as a set) snapshot centrally in folders; chapter-level artifacts (which change individually) snapshot locally as flat files. Both key on the frontmatter `version` integer.
 
 Since we are git-agnostic, this is the only versioning. Don't auto-prune; let the user clean up history manually if they want to.

@@ -1,6 +1,6 @@
 ---
 name: outline-chapters
-description: Generate or revise per-chapter outlines against the chapter spine. Two modes — batch generation (typically one act at a time) when the user says "outline Act 1," "draft the outlines for chapters 1 through 10," "fill in the next act"; and single-chapter revision when the user says "expand chapter 17," "rewrite the midpoint outline," "tighten chapter 23," "this chapter's tension feels low." Reads `outline/structure.md` as the contract and produces `outline/chapter-NN.md` files following the schema. Refuses if no `outline/structure.md` exists — run `pre-outline-session` first.
+description: Generate or revise per-chapter outlines against the chapter spine. Two modes — batch generation (typically one act at a time) when the user says "outline Act 1," "draft the outlines for chapters 1 through 10," "fill in the next act"; and single-chapter revision when the user says "expand chapter 17," "rewrite the midpoint outline," "tighten chapter 23," "this chapter's tension feels low." Reads `outline/structure.md` as the contract and produces `chapters/chapter-NN/ch<NN>-outline.md` files following the schema. Refuses if no `outline/structure.md` exists — run `pre-outline-session` first.
 ---
 
 # StoryStormer · Outline Chapters
@@ -18,9 +18,9 @@ Always follow `references/plan-first.md` — propose what you'll outline, get co
 
 ## What you produce
 
-- **`outline/chapter-NN.md`** — one file per chapter per the schema in `references/file-schemas.md` § `outline/chapter-NN.md`. Two-digit zero-padded filenames. Each file ~600–1,000w (or whatever per-chapter density `structure.md` specifies).
-- **`outline/_index.md`** — regenerated to reflect the new state of chapter outlines. Every spine entry shows its current status (drafted with version, or `*(not yet outlined)*`).
-- Snapshots to `.storystormer/history/<timestamp>-outline-chapters/` for any chapter file being overwritten.
+- **`chapters/chapter-NN/ch<NN>-outline.md`** — one file per chapter, in that chapter's folder, per the schema in `references/file-schemas.md` § `chapters/chapter-NN/ch<NN>-outline.md`. Chapter-number-prefixed (`ch17-outline.md`), two/three-digit zero-padded. Each file ~600–1,000w (or whatever per-chapter density `structure.md` specifies).
+- **`outline/_index.md`** — the outline view (chapter × stage matrix), regenerated to reflect the new state. Each chapter row shows its outline-stage status (version link, or `—`) plus any inline markers.
+- Snapshots any overwritten chapter outline to that chapter's co-located `chapters/chapter-NN/.history/` as a flat `ch<NN>-outline-v<version>-<date>.md` file (the superseded version). New chapter outlines have nothing to snapshot.
 - Updates to `state.md`:
   - `What Exists → Chapter outlines` line updated (`12/40 drafted` etc.).
   - `Summary` refreshed.
@@ -67,7 +67,7 @@ For a batch (say, chapters 1–10):
 For revising chapter N:
 
 - `outline/structure.md` (full — to verify the spine still wants what this chapter does)
-- The existing `outline/chapter-NN.md` (full)
+- The existing `chapters/chapter-NN/ch<NN>-outline.md` (full)
 - The two chapters before and after (N-2, N-1, N+1, N+2) if they exist — for continuity
 - `primer.md` — Sections 3, 4, 5 (full)
 - The treatment passages corresponding to this chapter's spine slot (targeted read of the treatment section — grep-permitted *only because* the spine and existing chapter outline provide the grounding)
@@ -84,7 +84,7 @@ Single-chapter mode is lighter than batch mode but still substantive — quote f
 >
 > - **Read** (substantive mode): I'll full-read `structure.md`, `primer.md` (especially Sections 3, 4, 5), `treatment.md` (~6,800w), `manifest.md`, the 3 major-tier bios for POV / heavy characters in Act 1 (Marlowe, Voss, Park), and the 4 supporting bios for cast members in this act. Plus the 5 unresolved questions affecting ch 1–10.
 > - **Density target**: 1,000w per chapter outline (from primer Section 3's per-chapter density × 2). Act 1 outline batch total: ~10,000w across 10 files.
-> - **Generate**: 10 chapter outline files (`chapter-01.md` through `chapter-10.md`) following the schema. I'll batch them in two halves (ch 1–5 first for your review, then 6–10) so you don't have to react to 10 chapter outlines at once.
+> - **Generate**: 10 chapter outline files (`chapters/chapter-01/ch01-outline.md` through `chapter-10/ch10-outline.md`) following the schema. I'll batch them in two halves (ch 1–5 first for your review, then 6–10) so you don't have to react to 10 chapter outlines at once.
 > - **Preserve markers**: 2 spine slots carry `[OPEN: Q-014]` (ch 3 inciting mechanism); I'll propagate the marker into those chapter files rather than fabricate the mechanism.
 > - **Snapshot**: nothing to snapshot — these are new files.
 > - **Update**: `outline/_index.md` regenerated; `state.md` updated; chapters-outlined count bumped from 0 to 10.
@@ -95,9 +95,9 @@ Single-chapter mode is lighter than batch mode but still substantive — quote f
 
 > Plan for revising ch 17 — *The Locket*:
 >
-> - **Read** (lighter substantive mode): existing `chapter-17.md`, `chapter-15.md` + `chapter-16.md` + `chapter-18.md` + `chapter-19.md` for continuity, `structure.md`, treatment Act 2A section (the spine slot for ch 17 maps to the treatment's *### The Audit Box* scene), primer Sections 3 + 4 + 5, and bios for Marlowe + Voss.
+> - **Read** (lighter substantive mode): existing `ch17-outline.md`, plus `ch15-outline.md` + `ch16-outline.md` + `ch18-outline.md` + `ch19-outline.md` (in their chapter folders) for continuity, `structure.md`, treatment Act 2A section (the spine slot for ch 17 maps to the treatment's *### The Audit Box* scene), primer Sections 3 + 4 + 5, and bios for Marlowe + Voss.
 > - **Diagnose**: You said the tension in this chapter feels low. I'll read the existing outline and the adjacent chapters carefully, identify whether the issue is (a) under-specified scene beats, (b) a setup that doesn't pay off in this chapter, (c) Marlowe's interior arc not landing, or (d) a continuity issue with ch 16's setup. I'll propose what I'm seeing before rewriting.
-> - **Rewrite**: revised `chapter-17.md` v2, with the issue addressed. Snapshot of v1 to history.
+> - **Rewrite**: revised `ch17-outline.md` v2, with the issue addressed. Snapshot of v1 to `chapters/chapter-17/.history/`.
 > - **Update**: `outline/_index.md` shows v2 for ch 17; `state.md` Last Session updated.
 >
 > About 4–6 minutes. Sound good, or do you want to tell me first what you think is off?
@@ -116,7 +116,7 @@ If you find a chapter slot whose treatment source is thin or absent, surface it 
 
 ### 6. Generate each chapter outline
 
-For each chapter in the batch (or the single chapter being revised), write the file following the schema in `references/file-schemas.md` § `outline/chapter-NN.md`:
+For each chapter in the batch (or the single chapter being revised), write the file following the schema in `references/file-schemas.md` § `chapters/chapter-NN/ch<NN>-outline.md`:
 
 **Frontmatter** — all fields populated. `structure_version`, `treatment_version`, `primer_version` snapshot the versions this outline was built against; downstream tools can detect staleness.
 
@@ -187,9 +187,9 @@ If a check fails, surface it to the user before writing the batch. Don't fix it 
 
 After the user approves:
 
-- Snapshot any existing chapter outline files to `.storystormer/history/<timestamp>-outline-chapters/` *as a group* — the batch is one operation.
-- Write each `chapter-NN.md` per the schema.
-- Regenerate `outline/_index.md` — every spine slot reflects current state (drafted with version + title from frontmatter, or `*(not yet outlined)*`, plus any `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT]` markers visible in the chapter body).
+- Snapshot any existing chapter outline being overwritten to its own `chapters/chapter-NN/.history/` as a flat `ch<NN>-outline-v<version>-<date>.md` file (the superseded version). Each chapter snapshots into its own folder — there's no central group snapshot for chapter artifacts.
+- Write each `chapters/chapter-NN/ch<NN>-outline.md` per the schema.
+- Regenerate `outline/_index.md` — the chapter × stage matrix; every chapter row reflects current state (outline-stage version link + title from frontmatter, or `—`, plus any `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT]` markers in the cell).
 - Update `state.md`:
   - `What Exists → Chapter outlines` line bumped (`12/40 drafted, Structure v1`).
   - `Summary` refreshed.
@@ -232,7 +232,7 @@ This skill doesn't enforce prose-readiness — it just produces outlines. Pre-pr
 
 ## Series Mode
 
-If `state.md` shows `project_type: series`, read `references/series.md` first. Outline-chapters in series mode operates on the **focused book's** chapter outlines — reads `books/<current_focus>/outline/structure.md` and writes `books/<current_focus>/outline/chapter-NN.md`.
+If `state.md` shows `project_type: series`, read `references/series.md` first. Outline-chapters in series mode operates on the **focused book's** chapter outlines — reads `books/<current_focus>/outline/structure.md` and writes `books/<current_focus>/chapters/chapter-NN/ch<NN>-outline.md`.
 
 Two additions in series mode:
 
@@ -262,7 +262,7 @@ Single-chapter revision mode in series gains the same series-context read — wh
 ## References
 
 - `references/plan-first.md` — universal plan-first behavior
-- `references/file-schemas.md` — `outline/chapter-NN.md` schema, `outline/_index.md` schema, marker conventions
+- `references/file-schemas.md` — `chapters/chapter-NN/ch<NN>-outline.md` schema, `outline/_index.md` (outline view matrix), per-chapter `.history/`, marker conventions
 - `references/reading-discipline.md` — substantive mode rules, Zoom Selection
 - `references/series.md` — **read when `project_type: series`** (focused-book paths, cross-book chain rendering in chapter outlines)
 - `references/frameworks.md` — character + setup/payoff vocabulary used in outline content

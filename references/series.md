@@ -38,12 +38,15 @@ my-series/
 │   │   ├── state.md             # Per-book dashboard
 │   │   ├── primer.md            # Book 1's craft dossier
 │   │   ├── treatment.md         # Book 1's treatment
-│   │   ├── outline/
+│   │   ├── outline/            # Book-level spine
 │   │   │   ├── structure.md
-│   │   │   ├── _index.md
-│   │   │   └── chapter-NN.md
-│   │   └── chapters/            # Prose chapters (reserved; init stashes incoming prose here)
-│   │       └── chapter-01.md, chapter-02.md, …
+│   │   │   └── _index.md        # Outline view (chapter × stage matrix)
+│   │   └── chapters/            # Per-chapter content folders
+│   │       ├── chapter-01/
+│   │       │   ├── ch01-outline.md
+│   │       │   ├── ch01-prose.md   # (prose/blueprint/notes land post-POC)
+│   │       │   └── .history/
+│   │       └── chapter-02/ …
 │   ├── book-2/
 │   │   └── … (same shape)
 │   └── book-3/
@@ -72,9 +75,8 @@ A book inside `books/<slug>/` looks **identical** to a standalone-novel project 
 | `state.md` (per-book) | `books/<slug>/state.md` | Per-book dashboard. Tracks one book's stage, primer/treatment versions, outline status. |
 | `primer.md` | `books/<slug>/primer.md` | Per-book. Each book has its own thematic / structural commitment. |
 | `treatment.md` | `books/<slug>/treatment.md` | Per-book. Each book is its own story. |
-| `outline/structure.md` | `books/<slug>/outline/structure.md` | Per-book. Each book has its own chapter spine. |
-| `outline/chapter-NN.md` | `books/<slug>/outline/chapter-NN.md` | Per-book. |
-| `chapters/` (prose, reserved) | `books/<slug>/chapters/` | Per-book. Each book's prose lives in its own chapters folder; prose is intrinsically per-book. |
+| `outline/structure.md` + `outline/_index.md` | `books/<slug>/outline/` | Per-book. Each book has its own chapter spine and outline view. |
+| `chapters/chapter-NN/` (per-chapter content) | `books/<slug>/chapters/chapter-NN/` | Per-book. Each book's chapter folders (outline/blueprint/prose/notes) live under its own `chapters/`; chapter content is intrinsically per-book. |
 
 The principle: **shared at root, per-book in `books/<slug>/`**. If you're touching a story-specific artifact (one book's primer, treatment, outline), it lives in that book's folder. If you're touching a continuity artifact (a character, a location, a cross-book decision), it lives at root.
 
@@ -285,7 +287,7 @@ All v0.2 skills work in series mode with **only path-resolution changes**. The s
 - `character-bio` — reads from `characters/<slug>.md` at root (shared). Adds per-book sub-arc sections in series mode. Cross-references all books' treatments for the character's appearances.
 - `manifest-sync` — operates on the shared `manifest.md`. Reads all books' treatments to build the `Appears in:` field per entry.
 - `pre-outline-session` — operates on the focused book. Reads the focused book's primer/treatment plus `series.md` for cross-book setups that need spine slots.
-- `outline-chapters` — operates on the focused book. Reads `books/<focus>/outline/structure.md` and writes `books/<focus>/outline/chapter-NN.md`.
+- `outline-chapters` — operates on the focused book. Reads `books/<focus>/outline/structure.md` and writes `books/<focus>/chapters/chapter-NN/ch<NN>-outline.md`.
 - `decision-capture` — captures decisions to the shared `decisions.md` with a `scope` field. Asks the user about scope when ambiguous.
 
 In each case, the *what to read* and *what to write* sections of the skill body apply as written; the only change is that per-book paths get prefixed with `books/<current_focus>/`.

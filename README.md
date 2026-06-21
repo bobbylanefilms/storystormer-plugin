@@ -41,12 +41,15 @@ my-story/
 │   └── alice.md, bob.md, …      # per-character bios (tiered)
 ├── worldbuilding/
 │   ├── locations/, organizations/, objects/, …
-├── outline/
+├── outline/                     # book-level spine (the cross-chapter plan)
 │   ├── structure.md             # framework, act table, chapter spine (the contract)
-│   ├── _index.md                # fast-scan: status per chapter, links to chapter files
-│   └── chapter-01.md, chapter-02.md, …  # per-chapter outlines (~600–1,000w each)
-├── chapters/                    # prose chapters (reserved location; init stashes incoming prose)
-│   └── chapter-01.md, chapter-02.md, …
+│   └── _index.md                # outline view: chapter × stage status matrix
+├── chapters/                    # one folder per chapter, holding all its artifacts
+│   ├── chapter-01/
+│   │   ├── ch01-outline.md      # per-chapter beat sheet (~600–1,000w)
+│   │   ├── ch01-prose.md        # prose (and blueprint/notes) land post-POC
+│   │   └── .history/            # co-located version snapshots
+│   └── chapter-02/ …
 ├── research/
 │   └── 2026-05-11-genre-conventions.md
 └── .storystormer/
@@ -153,6 +156,12 @@ By design, the v0.3 POC stops at brainstorm + canon + treatment + outline (acros
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.5.0 added over v0.4.0
+
+- **Chapter content is now organized entity-first.** Each chapter gets its own folder (`chapters/chapter-NN/`) holding *all* of its artifacts — outline, and (post-POC) blueprint, prose, and refinement notes — with chapter-number-prefixed filenames (`ch17-outline.md`) so files stay identifiable when viewed flat or referenced via `@`. This replaces the split where outlines lived type-first in `outline/` and prose lived in a flat `chapters/`. Per-chapter outlines moved from `outline/chapter-NN.md` to `chapters/chapter-NN/ch<NN>-outline.md`; intake-stashed prose moved from `chapters/chapter-NN.md` to `chapters/chapter-NN/ch<NN>-prose.md`. Sets the contract for the upcoming blueprint → prose → refinement pipeline.
+- **`outline/` is now the book-level spine only** — `structure.md` plus `_index.md`, which became a **chapter × stage status matrix** (the "outline view"): one row per chapter, a column per pipeline stage. The horizontal scan outlining relies on is preserved here while content lives chapter-first.
+- **Per-chapter history is co-located.** Chapter artifacts snapshot to `chapters/chapter-NN/.history/` as flat version+date-named files (`ch17-outline-v1-2026-06-18.md`); the central `.storystormer/history/` keeps the book-level docs (primer/treatment/manifest/structure/series).
 
 ### What v0.4.0 added over v0.3.1
 

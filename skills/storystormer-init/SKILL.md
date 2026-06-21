@@ -24,8 +24,8 @@ When the user gives you the go-ahead, you create or update:
 - `manifest.md` — only if there's enough character/world content to seed it
 - `characters/_index.md` and per-character bios — only if the user has named characters
 - The `worldbuilding/` subfolders as appropriate
-- `outline/` and its files — **never at init.** The outline directory (`structure.md`, per-chapter files, `_index.md`) is created lazily by `pre-outline-session` and `outline-chapters` when the project is ready for outlining (typically `treatment-refined` or `canon-development` stage). If the user brings in pre-existing outline-shaped materials (chapter outlines, beat sheets, scene lists), note them in the intake survey but **do not migrate them into `outline/` here** — flag them and recommend `pre-outline-session` as the next step, which knows how to integrate them.
-- `chapters/` — **created at init only when prose chapters are detected in the user's intake materials.** Init stashes incoming prose into this folder with canonical naming (`chapter-NN.md`); see § Prose Chapter Stashing below. If no prose is brought in, leave `chapters/` absent — it appears later when prose-writing functionality is added (post-POC) or when a future intake brings prose.
+- `outline/` and its files — **never at init.** The outline directory (the book-level spine: `structure.md` + the `_index.md` outline view) is created lazily by `pre-outline-session`, and the per-chapter outlines (`chapters/chapter-NN/ch<NN>-outline.md`) by `outline-chapters`, when the project is ready for outlining (typically `treatment-refined` or `canon-development` stage). If the user brings in pre-existing outline-shaped materials (chapter outlines, beat sheets, scene lists), note them in the intake survey but **do not migrate them into `outline/` here** — flag them and recommend `pre-outline-session` as the next step, which knows how to integrate them.
+- `chapters/` — **created at init only when prose chapters are detected in the user's intake materials.** Init stashes incoming prose into per-chapter folders with canonical naming (`chapters/chapter-NN/ch<NN>-prose.md`); see § Prose Chapter Stashing below. If no prose is brought in, leave `chapters/` absent — it appears later when prose-writing functionality is added (post-POC) or when a future intake brings prose.
 
 Don't pre-create empty files. Only create files that have meaningful content. Empty placeholders create the illusion of progress that isn't there.
 
@@ -205,18 +205,18 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
    - **Which chapter number** it represents. If the filename is ambiguous, ask.
    - **Which version** if there are duplicates (`ch3.md` + `chapter3-rewrite.md`). Ask the user which is canonical; stash the canonical one, snapshot the superseded version to `.storystormer/history/<timestamp>-init/superseded-prose/`.
 
-3. **Normalize the filenames** to the plugin convention: `chapter-NN.md`, zero-padded to two digits. So `ch1.md` becomes `chapter-01.md`, `Chapter 17 - The Locket.md` becomes `chapter-17.md`. Tell the user about the renames in the report.
+3. **Normalize to the chapter-folder convention**: each chapter gets its own folder `chapters/chapter-NN/` (zero-padded to two digits), and the prose lands inside as `ch<NN>-prose.md`. So `ch1.md` becomes `chapters/chapter-01/ch01-prose.md`, `Chapter 17 - The Locket.md` becomes `chapters/chapter-17/ch17-prose.md`. Tell the user about the renames in the report.
 
 4. **Preserve the prose content verbatim**. Do not edit, normalize whitespace, fix typos, or restructure the prose. The intake-stashed file is the user's content, untouched. The only init-applied changes are:
    - Filename normalization.
    - Adding minimal YAML frontmatter (`chapter`, `title`, `version: 1`, `last_updated`) if the file doesn't already have frontmatter. Title is extracted from an H1 heading if present, or from the filename's slug portion if discoverable, or left as `TBD` if neither.
 
 5. **Handle non-markdown formats** (`.docx`, `.txt`, `.rtf`, `.scrivx`, `.fountain`):
-   - Stash as-is in `chapters/` with the original extension. Do NOT auto-convert.
-   - Flag in the report: *"`chapters/chapter-03.docx` was preserved in its original format. Prose-writing skills (when added) will require markdown — you can convert it now using a tool of your choice, or convert later when prose-writing functionality is built."*
+   - Stash as-is in the chapter folder with the original extension preserved on the prefixed name. Do NOT auto-convert.
+   - Flag in the report: *"`chapters/chapter-03/ch03-prose.docx` was preserved in its original format. Prose-writing skills (when added) will require markdown — you can convert it now using a tool of your choice, or convert later when prose-writing functionality is built."*
    - Don't block init on format issues; stash and move on.
 
-6. **Create the `chapters/` folder** (standalone: at workspace root; series: at `books/<current_focus>/chapters/`). If series intake is happening at the same time and prose belongs to specific books, sort the prose into each book's `chapters/` based on user confirmation. Ask if you're unsure which book a given chapter belongs to.
+6. **Create the chapter folders** — one `chapters/chapter-NN/` per detected chapter (standalone: under the workspace-root `chapters/`; series: under `books/<current_focus>/chapters/`). If series intake is happening at the same time and prose belongs to specific books, sort each chapter folder into the right book's `chapters/` based on user confirmation. Ask if you're unsure which book a given chapter belongs to.
 
 7. **Update `state.md → What Exists`** with a Prose chapters line:
 
@@ -234,10 +234,10 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
 
    | Original | Canonical | Notes |
    |---|---|---|
-   | ch1.md | chapters/chapter-01.md | Renamed for convention. |
-   | Chapter 3 - The Locket.docx | chapters/chapter-03.docx | Format preserved (not markdown); rename only. |
-   | chapter3-rewrite.md | chapters/chapter-03.md (canonical) | User confirmed this is the canonical v2; original `ch3.md` snapshotted to superseded-prose/. |
-   | ch6.md | chapters/chapter-06.md | Renamed. |
+   | ch1.md | chapters/chapter-01/ch01-prose.md | Renamed for convention. |
+   | Chapter 3 - The Locket.docx | chapters/chapter-03/ch03-prose.docx | Format preserved (not markdown); rename only. |
+   | chapter3-rewrite.md | chapters/chapter-03/ch03-prose.md (canonical) | User confirmed this is the canonical v2; original `ch3.md` snapshotted to superseded-prose/. |
+   | ch6.md | chapters/chapter-06/ch06-prose.md | Renamed. |
    ```
 
    This mapping is the audit trail — the user can always see what init did with their files.

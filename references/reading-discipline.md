@@ -28,7 +28,7 @@ The zoom levels, from highest (least detail, most compressed) to lowest (most de
 | Outline-scan | `outline/_index.md` | ~1,500w | You need status across all chapters at a glance. |
 | Narrative | `treatment.md` | 5,000–7,000w | You need the actual story prose, scene-level. |
 | Per-character | `characters/<slug>.md` | 350–1,900w | You need depth on one character. |
-| Per-chapter beat | `outline/chapter-NN.md` | ~1,000w | You need scene beats and character beats for one specific chapter. |
+| Per-chapter beat | `chapters/chapter-NN/ch<NN>-outline.md` | ~1,000w | You need scene beats and character beats for one specific chapter. |
 
 ### Picking the right zoom
 
@@ -51,9 +51,9 @@ The principle: **choose the highest zoom that answers your question, EXCEPT when
 
 ### When prose enters the picture (future)
 
-When the plugin adds prose generation in a later release, two new zoom levels will sit at the bottom of the table: `chapters/chapter-NN.md` (the chapter's actual prose, ~3,000–5,000w) and a derived `chapters/chapter-NN-summary.md` (~1,000w, written *after* prose lands to capture what the chapter actually does — distinct from the outline's *intent* version). The same Zoom Selection rule applies: load the chapter-summary when you need "what happened in chapter N for continuity," and the full prose only when you're revising chapter N itself.
+When the plugin adds prose generation in a later release, two new zoom levels will sit at the bottom of the table, both inside the chapter folder: `chapters/chapter-NN/ch<NN>-prose.md` (the chapter's actual prose, ~3,000–5,000w) and a derived `chapters/chapter-NN/ch<NN>-summary.md` (~1,000w, written *after* prose lands to capture what the chapter actually does — distinct from the outline's *intent* version). The same Zoom Selection rule applies: load the chapter-summary when you need "what happened in chapter N for continuity," and the full prose only when you're revising chapter N itself.
 
-**Until prose-writing functionality lands**, the `chapters/` folder exists only as an intake-stash location populated by `storystormer-init` when the user brings in pre-existing prose. Any skill that encounters `chapters/` files in v0.3 should treat them as **read-only reference material** — the prose-writing skills don't exist yet to coordinate writes against the outline/treatment/canon layers, so editing stashed prose risks creating inconsistencies that can't yet be detected automatically. If a skill needs to reference what the prose actually says (e.g., to verify a character's voice in the prose matches the bio's Voice Fingerprint), full-read the chapter's prose file; do not modify it.
+**Until prose-writing functionality lands**, the chapter folders hold only the outline stage (`ch<NN>-outline.md`) plus any prose `storystormer-init` stashed at intake (`ch<NN>-prose.md`). Any skill that encounters stashed prose in v0.x should treat it as **read-only reference material** — the prose-writing skills don't exist yet to coordinate writes against the outline/treatment/canon layers, so editing stashed prose risks creating inconsistencies that can't yet be detected automatically. If a skill needs to reference what the prose actually says (e.g., to verify a character's voice in the prose matches the bio's Voice Fingerprint), full-read the chapter's prose file; do not modify it.
 
 ## Substantive mode
 
