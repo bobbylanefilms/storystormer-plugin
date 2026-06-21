@@ -142,7 +142,7 @@ Cross-book switching is permitted mid-session if the conversation organically pi
 - Generate a primer or treatment. That's `treatment-update`.
 - Create a character bio. That's `character-bio`.
 - Refresh the manifest. That's `manifest-sync`.
-- Capture a decision in isolation. That's `decision-capture` (but you'll often call it inline as decisions surface).
+- Capture a decision in isolation. That's `decision-capture` (but you'll often call it inline as decisions surface). When a decision is a chapter-anchored reveal or state change (a character revealed as the antagonist in ch 35, an injury that persists, a building destroyed), it's also a **Revelation Log** candidate — propose adding the chapter-keyed line to the affected Canon entry (see `references/canon-schemas.md` § Revelation Log).
 - Regenerate `series.md` structurally. Patch sections inline when cross-book material accumulates; trigger a full `series.md` regeneration only when the series arc has structurally shifted (handle in a focused session, not folded into a per-book brainstorm).
 
 This skill is the *conversation* — the others are *artifacts produced from* the conversation.
@@ -156,5 +156,6 @@ This skill is the *conversation* — the others are *artifacts produced from* th
 - `references/alt-structure.md` — when the conventional structural frameworks don't fit
 - `references/genres.md` — surfacing genre material
 - `references/file-schemas.md` — decisions/questions formats (including Scope in series mode)
+- `references/canon-schemas.md` — § Revelation Log (chapter-anchored reveals/state-changes to propose onto Canon entries)
 - `references/reading-discipline.md` — full-read rules, Zoom Selection
 - `references/series.md` — **read when `project_type: series`** (multi-book workflow, scoping, focus)

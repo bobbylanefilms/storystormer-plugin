@@ -154,6 +154,18 @@ This is a lighter version of the character-bio Per-Book Sub-Arcs pattern — mos
 
 For elements that appear in only one book (a location only seen in book 1), the entry is still shared at root and the body notes its appearance scope inline. Don't fork into per-book worldbuilding files.
 
+## The Revelation Log
+
+The body of an entry is the element's *steady-state* portrait. But the story can change it at a specific chapter — a building bombed in ch 20, a device that gains a capability in ch 14, an organization exposed to the public in ch 31. Those chapter-anchored deltas live in an optional `## Revelation Log` at the very end of the entry, which the `blueprint` skill reads filtered to `chapter ≤ N` to render the element as it is *at* a given chapter. See `references/canon-schemas.md` § Revelation Log.
+
+This is **chapter**-granularity, and distinct from *Status Over the Series* above (book-granularity, series mode only). Use Status Over the Series for *"the Foundation is dissolved by book 2"*; use the Revelation Log for *"the east wing collapses in ch 20."*
+
+No capture workflow — just know the mechanism:
+
+- **Propose a line when a chapter-anchored change surfaces** while writing or discussing the element: `- **Ch 20** — East wing collapses in the bombing; sealed off and unusable for the rest of the story.`
+- **Honor a direct request** — you know the format and where it goes; create the `## Revelation Log` heading if it's the first one.
+- **Don't rewrite the base entry to match;** the log carries the chapter the change lands. Append only on the user's go-ahead.
+
 ## What this skill does not do
 
 - Character bios. Even sapient creatures portrayed as individual people with arcs are characters — use `character-bio`.

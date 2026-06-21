@@ -160,6 +160,10 @@ By design, the POC stops at brainstorm + canon + treatment + outline + **bluepri
 
 These may follow in later versions once the kernel proves out.
 
+### What v0.6.1 added over v0.6.0
+
+- **The canon and conversational skills now know the Revelation Log.** No formal capture process — `character-bio` and `worldbuilding-entry` (which own Canon files) and `brainstorm-session` / `decision-capture` (where reveals get settled) recognize a chapter-anchored state change or reveal when it surfaces and *propose* appending the chapter-keyed line, or act on a direct request. Appends only happen on your go-ahead; no skill edits Canon silently.
+
 ### What v0.6.0 added over v0.5.0
 
 - **The `blueprint` skill — pre-prose production briefs.** For any outlined chapter, Blueprint assembles a single self-contained document a prose agent can write from alone: every surfacing character tiered to the right resolution (POV → Major → Supporting → Minor → Referenced, with word ceilings), every worldbuilding element the chapter touches, scene-current state fused in, across eight sections (Scene Function, Characters, Setting, Conflict, Symbolism, Continuity, Worldbuilding, Other Notes). It's the folder-native port of the web app's Blueprint refinement pass — where the app runs a bounded agentic read-tool loop against a database, the skill runs that loop natively over the story folder, batch mode dispatching one Blueprint subagent per chapter in parallel. Lands in the slot the v0.5.0 architecture reserved: `chapters/chapter-NN/ch<NN>-blueprint.md`, pipeline stage `outline → blueprint → prose → notes`.

@@ -88,6 +88,7 @@ Trigger capture when:
 - **A relationship dynamic is established** — how two characters relate, what drives their interaction, where the tension is.
 - **A faction or alliance is defined** — membership, goals, internal tensions.
 - **The user says "let's move on" or transitions between topics** — capture everything from the just-completed topic before it fades.
+- **A chapter-anchored state change or reveal is settled** — *"Charlton is revealed as the architect in ch 35,"* *"Callie loses her left leg's mobility from ch 13 on."* Log the decision as normal — *and* propose adding a one-line **Revelation Log** entry to the affected character's or worldbuilding entry's Canon file, because the blueprint/prose stages read that log (filtered to `chapter ≤ N`) for scene-current state. Decisions are *why*; the Revelation Log is *when*. See `references/canon-schemas.md` § Revelation Log for the format. Append only on the user's go-ahead.
 
 When in doubt, capture. A decision logged and later superseded is cheap (supersession is a first-class operation — see Step 5 above); a decision lost is expensive.
 
@@ -136,4 +137,5 @@ For decisions that affect `series.md` itself (cross-book setup chains, continuit
 
 - `references/plan-first.md`
 - `references/file-schemas.md` — decisions.md schema (including Series-mode additions)
+- `references/canon-schemas.md` — § Revelation Log (a chapter-anchored reveal/state-change decision is also a Revelation Log candidate)
 - `references/series.md` — **read when `project_type: series`** (scope, affects books, per-book integration tracking)

@@ -158,12 +158,23 @@ Bio length scales modestly with series scope. A major bio that spans three books
 
 For characters appearing in only one book (e.g., an antagonist who dies in book 1), the bio is structured as a series-aware single-book bio: `Appears in: book 1` in Quick Reference, the Series Arc paragraph is shorter and contextualizes the character's role in the broader series even though their direct involvement is limited.
 
+## The Revelation Log
+
+The body of a bio is the character's *whole-arc* portrait. But the story changes them chapter to chapter — an injury, a death, an allegiance flip, a secret exposed to the reader. Those chapter-anchored deltas live in an optional `## Revelation Log` at the very end of the bio, which the `blueprint` (and later, prose) skill reads filtered to `chapter ≤ N` to render the character as they are *at* a given chapter — never writing toward a change that hasn't landed yet. See `references/canon-schemas.md` § Revelation Log for the format and rules.
+
+There's no capture workflow — just know the mechanism:
+
+- **Propose a line when one surfaces.** If a chapter-anchored state change or reveal comes up while you're writing or discussing this character — *"Callie is impaled in the left leg with shrapnel in ch 13; bandaged, limps for the rest of the story,"* *"Charlton is revealed as the plot's architect in ch 35"* — offer to append it. One chapter-keyed line: `- **Ch 13** — Takes shrapnel in the left leg; bandaged, walks with a limp for the rest of the story.`
+- **Honor a direct request.** When the user asks you to add a Revelation, you know the format and where it goes (end of the entry, chronological by chapter). Create the `## Revelation Log` heading if it's the first one.
+- **Don't rewrite the base bio to match.** The base entry stays the whole-arc portrait; the log carries the chapter the change lands. If a change is permanent enough that the base description is now wrong, you may update both — but the log line stays, because it is the timeline.
+- **Append only on the user's go-ahead.** Canon is the user's; propose, don't silently edit.
+
 ## What this skill does not do
 
 - Worldbuilding entries. Use `worldbuilding-entry` for locations, organizations, magic systems, technology, creatures, cultures, religions, and other non-character elements. **Disambiguation edge case**: if a sapient being functions as a worldbuilding element rather than as a character with an arc — a god, an AI system, a hive mind, a corporate egregore — use `worldbuilding-entry`, not `character-bio`. Reserve `character-bio` for entities the story portrays as individual people with inner lives.
 - Manifest updates beyond reflecting this character's tier. Use `manifest-sync` for a comprehensive refresh.
 - Treatment updates. If the bio surfaces facts that should be in the treatment, capture them as decisions and let `treatment-update` fold them in.
-- Fork a character into multiple files for different books. One character = one bio file, regardless of how dramatically they evolve. Per-Book Sub-Arcs handle within-bio evolution. The deeper "canon states" pattern (point-in-time snapshots per chapter) is out of POC scope.
+- Fork a character into multiple files for different books. One character = one bio file, regardless of how dramatically they evolve. Per-Book Sub-Arcs handle cross-book evolution; the **Revelation Log** (see above) handles chapter-level state changes crudely. Full point-in-time canon snapshots per chapter remain out of POC scope.
 
 ## References
 
