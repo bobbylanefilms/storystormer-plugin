@@ -228,7 +228,7 @@ A chapter outline is *prose-ready* when:
 - The setup/payoff entries cross-reference chains that exist in primer Section 5.
 - The POV matches the spine slot's POV.
 
-This skill doesn't enforce prose-readiness — it just produces outlines. Pre-prose readiness is what a future prose-generation skill would check. But the `[NEEDS DEVELOPMENT]` markers and the version stamps are what make that check possible. Don't skip them.
+This skill doesn't enforce prose-readiness — it just produces outlines. Pre-prose readiness is what the **`blueprint`** skill (the next stage) checks before building a chapter's production brief: a marker-free outline blueprints cleanly; an outline still carrying `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: …]` blueprints with the gap carried forward. The `[NEEDS DEVELOPMENT]` markers and the version stamps are what make that check possible. Don't skip them.
 
 ## Series Mode
 

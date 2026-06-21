@@ -9,7 +9,7 @@ This is a proof of concept that ports the **brainstorm → canon → treatment �
 
 ## What it gives you
 
-Eight skills that load via progressive disclosure when your intent matches:
+Ten skills that load via progressive disclosure when your intent matches:
 
 | Skill | Loads when you… |
 |---|---|
@@ -17,10 +17,12 @@ Eight skills that load via progressive disclosure when your intent matches:
 | `brainstorm-session` | want to talk through the story, develop characters/themes/structure, work open questions |
 | `decision-capture` | settle something the story now treats as true — captured to the decision log |
 | `character-bio` | create or expand a character bio (auto-tiered: major / supporting / minor) |
+| `worldbuilding-entry` | create or expand a worldbuilding entry — location, object, organization, magic system, etc. |
 | `treatment-update` | regenerate the primer and treatment after a stretch of brainstorming |
 | `manifest-sync` | refresh the inventory of characters and worldbuilding elements |
 | `pre-outline-session` | commit the story to a chapter structure — pick the framework, lock the act breaks, build the chapter spine |
 | `outline-chapters` | generate or revise per-chapter outlines against the spine — batch a whole act or rewrite one chapter |
+| `blueprint` | build the pre-prose production brief for a chapter — the self-contained context a prose agent writes from |
 
 Plus seven slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline`, and `/storystormer:switch` (series mode only).
 
@@ -47,7 +49,8 @@ my-story/
 ├── chapters/                    # one folder per chapter, holding all its artifacts
 │   ├── chapter-01/
 │   │   ├── ch01-outline.md      # per-chapter beat sheet (~600–1,000w)
-│   │   ├── ch01-prose.md        # prose (and blueprint/notes) land post-POC
+│   │   ├── ch01-blueprint.md    # pre-prose production brief (the `blueprint` skill)
+│   │   ├── ch01-prose.md        # prose (and refinement notes) land post-POC
 │   │   └── .history/            # co-located version snapshots
 │   └── chapter-02/ …
 ├── research/
@@ -148,14 +151,20 @@ You can interrupt at any step. The plan is always negotiable.
 
 ## What this POC does not do
 
-By design, the v0.3 POC stops at brainstorm + canon + treatment + outline (across single or multi-book projects). The following are **not** included:
+By design, the POC stops at brainstorm + canon + treatment + outline + **blueprint** (across single or multi-book projects). The following are **not** included:
 
-- Prose generation or refinement passes
+- Prose generation, or *post-prose* refinement passes (dialogue / editorial / de-AI / style polish). The **Blueprint** — the *pre-prose* production brief — is now in (v0.6.0); writing the prose from it is not.
 - Image generation
-- Canon states (point-in-time bio snapshots — across-book character evolution is handled lightly via per-book sub-arc sections)
+- Full canon states / point-in-time bio snapshots. A crude substitute now exists: the **Revelation Log**, a chapter-keyed append-list at the end of a Canon entry that the Blueprint filters to `chapter ≤ N` for scene-current state. Across-book character evolution is still handled lightly via per-book sub-arc sections.
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.6.0 added over v0.5.0
+
+- **The `blueprint` skill — pre-prose production briefs.** For any outlined chapter, Blueprint assembles a single self-contained document a prose agent can write from alone: every surfacing character tiered to the right resolution (POV → Major → Supporting → Minor → Referenced, with word ceilings), every worldbuilding element the chapter touches, scene-current state fused in, across eight sections (Scene Function, Characters, Setting, Conflict, Symbolism, Continuity, Worldbuilding, Other Notes). It's the folder-native port of the web app's Blueprint refinement pass — where the app runs a bounded agentic read-tool loop against a database, the skill runs that loop natively over the story folder, batch mode dispatching one Blueprint subagent per chapter in parallel. Lands in the slot the v0.5.0 architecture reserved: `chapters/chapter-NN/ch<NN>-blueprint.md`, pipeline stage `outline → blueprint → prose → notes`.
+- **The Revelation Log — crude scene-current canon state.** An optional, append-only `## Revelation Log` at the end of any Canon entry, chapter-keyed (`- **Ch 17** — Linda is killed; he turns reckless for the rest of the story.`). The base entry stays the whole-arc portrait; the log is the chapter-resolved delta. Consumers filter to `chapter ≤ N` and never write toward later entries — the folder-native equivalent of the app's "never return future revelations" rule. It is the single most important defense against the Blueprint writing toward a reveal that hasn't landed yet.
+- **The Blueprint column in `outline/_index.md` goes live.** Reserved as `—` since v0.5.0, it now fills with version links as chapters are blueprinted.
 
 ### What v0.5.0 added over v0.4.0
 

@@ -292,3 +292,41 @@ Marcus is the investigation's anchor — methodical where the protagonist is int
 **Failure Modes.** Floods badly in the autumn rains. Fires in the food courtyard are an ever-present danger. The hidden passage in Spice Lane partially collapsed in 1247.
 
 **Story Role.** Where the protagonist first encounters the smuggling network, negotiates her alliance with the spice guild, and where the climactic chase of Act II plays out across the rooftops.
+
+------
+
+## Revelation Log (chapter-keyed state changes)
+
+**Optional, append-only section at the very end of any Canon entry — character bio or worldbuilding entry.** It is the crude, folder-native substitute for a per-scene revelation engine.
+
+The body of a Canon entry describes the **whole-arc canonical truth** of the character or element — who they are across the entire story. But a character at chapter 6 is not the character at chapter 30: they may have been injured, lost someone, changed allegiance, or had a secret exposed to the reader. The Revelation Log captures those deltas, keyed to the chapter where each lands, so a downstream consumer can reconstruct **scene-current** state without re-deriving it from the whole treatment every time.
+
+### Format
+
+A single `## Revelation Log` heading at the very end of the entry (after Story Role / Story Function), followed by a chronological bullet list, one line per change:
+
+```markdown
+## Revelation Log
+
+State changes and reveals that modify this entry's base description, keyed to the chapter where each lands. The base entry above is the whole-arc canonical truth; this log is the chapter-resolved delta. Consumers include only entries with **chapter ≤ N** when building for chapter N, and never write toward a change that hasn't landed yet.
+
+- **Ch 12** — Takes shrapnel in the left arm; arm in a sling through ch 16, stiff and weak for the rest of the story.
+- **Ch 17** — His wife Linda is killed in the embassy bombing. Grief curdles into recklessness; he stops weighing risk the way he used to.
+- **Ch 24** — Reader learns he authorized the strike that killed Park's brother (dramatic-irony reveal — Park doesn't find out until ch 31).
+```
+
+### Rules
+
+- **Chronological by chapter.** Append new entries in chapter order. Each line begins `- **Ch NN** —` (or `- **Ch NN–MM** —` for a span).
+- **One delta per line.** State the change, and where useful its *persistence* ("through ch 16," "rest of the story") and any *dramatic-irony gap* (who in-story knows vs. when the reader knows).
+- **Captures any kind of scene-current shift:** physical (injury, exhaustion, a new scar), circumstantial (a death, a promotion, a move), relational (an alliance forms or breaks), or epistemic (a secret is revealed to the reader or to another character).
+- **The base entry is not edited to match.** When a change is permanent enough that the whole-arc description is now wrong (a character loses an arm in ch 12 and it's gone for the rest of the book), it is fine to also update the base entry — but the log line stays, because it carries the *chapter* the change lands. The log is the timeline; the base entry is the steady-state portrait.
+- **`chapter ≤ N` is the whole mechanism.** A consumer building an artifact for chapter N reads the log and includes only entries at or before N. Entries after N are **future state** the consumer must not write toward. This is the folder-native equivalent of the app's "load_canon_for_scene never returns future revelations" rule.
+
+### Distinct from `decisions.md`
+
+The decision log records *authoring* choices ("we decided Linda dies in Act 2"). The Revelation Log records *in-story chronology* of state ("as of ch 17, Linda is dead"). A single decision often produces one Revelation Log line in one or more entries. Decisions are why; the Revelation Log is when.
+
+### Who writes it
+
+Entries are appended as the story's chronology firms up — typically during `treatment-update`, `outline-chapters`, or `decision-capture` when a decision pins a state change to a chapter. The `blueprint` skill *consumes* the log; when it detects a state change in a prior chapter's outline or prose that the relevant Canon entry's log doesn't yet capture, it surfaces the gap and proposes the log line rather than silently editing Canon.

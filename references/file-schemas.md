@@ -436,6 +436,8 @@ Structure for major (abbreviated — full version in `references/frameworks.md`)
 
 Supporting and minor bios collapse sections proportionally — they preserve Voice Fingerprint and Lie/Ghost but condense everything else.
 
+A bio may also carry an optional **`## Revelation Log`** as its final section — a chapter-keyed, append-only list of state changes (injuries, deaths, allegiance shifts, reader-facing reveals) that make the character scene-current at a given chapter. See `references/canon-schemas.md` § Revelation Log. The `blueprint` skill reads it, filtered to `chapter ≤ N`, to fuse current state into a chapter's brief.
+
 ## Worldbuilding files (`worldbuilding/<category>/<slug>.md`)
 
 Categories follow the 14-category taxonomy in `references/frameworks.md` § Worldbuilding (Organization / Location / Geography / Object / Vehicle / Weapon / Technology / Magic / Creature / Culture / History / Religion / Languages / Lore). Use the plural directory form for each (`locations/`, `organizations/`, `magic-systems/`, etc.). The manifest tracks whatever exists.
@@ -450,6 +452,8 @@ last_updated: 2026-05-10
 ```
 
 Body follows one of two formats — **Reference Note** (~200–300w) for real-world elements with story-specific modifications, or **Full Entry** (~300–1,000w depending on category) for invented elements. For section structures, length targets per category, category-specific guidance, and a worked example, see `references/canon-schemas.md` § Worldbuilding Entry Schemas. For the tier framework (Full Canon entry / Reference note / No entry needed) and character-vs-worldbuilding disambiguation, see `references/frameworks.md` § Worldbuilding.
+
+Like character bios, a worldbuilding entry may carry an optional **`## Revelation Log`** as its final section — chapter-keyed state changes for the element (a location damaged in ch 20, a device that gains a new capability in ch 14). Same mechanism and rules as for characters; see `references/canon-schemas.md` § Revelation Log.
 
 ## Chapter content — folders, the spine, and the outline view
 
@@ -683,11 +687,69 @@ chapters/chapter-17/
 
 **Stages are filenames, not folders.** Adding a future pipeline stage means a new `ch<NN>-<stage>.md` file in each chapter folder — never a new parallel top-level tree. The stages, in pipeline order: `outline` → `blueprint` → `prose` → `notes`.
 
+### Blueprint (`ch<NN>-blueprint.md`) — the pre-prose production brief
+
+Lives in the chapter folder, chapter-number-prefixed: `chapters/chapter-17/ch17-blueprint.md`. A **Blueprint** is a single, self-contained context document handed to a prose-writing agent before it writes the chapter — *the prose agent should be able to write the chapter from the Blueprint alone.* It gathers every character and worldbuilding element that will *surface* in the chapter, at the right *resolution* for each (tiered POV → Major → Supporting → Minor → Referenced), with scene-current state fused in, and nothing dormant. Written by the `blueprint` skill. For the full content spec — the Scene-Surface Test, character tiering with word ceilings, worldbuilding selection, the eight required sections, and the quality checklist — see `references/blueprint-spec.md`. This section specifies only the *file shape*.
+
+```yaml
+---
+chapter: 17
+title: The Locket
+version: 1
+last_updated: 2026-05-12
+# Provenance — the versions this Blueprint was built against (staleness detection):
+outline_version: 1
+treatment_version: 8
+primer_version: 4
+manifest_version: 2
+pov: Marlowe
+scene_split: false   # true when the chapter is scene-split and the Blueprint carries per-scene sections
+---
+```
+
+Body — the eight Blueprint sections (full formats in `references/blueprint-spec.md`):
+
+```markdown
+# Chapter 17 Blueprint — The Locket
+
+**Chapter:** 17 — The Locket
+**Time:** [time of day / narrative date]
+**POV:** Marlowe (third-person limited, past tense)
+
+## 1. Scene Function
+[single line, 3–6 words, standard story-structure terminology]
+
+## 2. Characters
+[tiered — POV → Major → Supporting → Minor → Referenced; each at its tier's resolution, current state fused in]
+
+## 3. Setting
+[single sensory-rich paragraph, 75–100w]
+
+## 4. Main Source of Conflict
+[single paragraph, 100–125w — the tension specific to THIS chapter]
+
+## 5. Symbolism and Thematic Layer
+[single paragraph, 100–125w]
+
+## 6. Continuity Considerations
+[single paragraph, 150–250w — links to prior chapters, foreshadowing, must-stay-consistent, canon-vs-scene resolutions]
+
+## 7. Worldbuilding
+[bullet list — each element names its scene trigger + only the dimensions the chapter uses]
+
+## 8. Other Notes
+[bullet list, 75–100w — structure, transitions, unresolved threads, tonal target, POV reminders]
+```
+
+**Granularity is chapter-level.** One `ch<NN>-blueprint.md` per chapter. The Scene-Surface Test (does this detail surface *in this chapter*?) governs what's included. When a chapter is genuinely **scene-split** (multi-POV, or long enough to warrant `scenes/`), set `scene_split: true` and repeat the Characters / Setting / Conflict / Worldbuilding sections per scene under `## Scene 1 — …`, `## Scene 2 — …` headers — because tiering, POV, and current state can differ scene-to-scene. The Symbolism, Continuity, and Other Notes sections stay chapter-level. Default to the single chapter-level form; reach for the scene-split form only when the chapter actually needs it (matching the prose stage's single-file-vs-`scenes/` rule).
+
+**Scene-current state** comes from two sources, in this order: (1) the **Revelation Log** of each Canon entry, filtered to `chapter ≤ 17` (see `canon-schemas.md` § Revelation Log) — the crude, authoritative timeline of what's changed; and (2) reconstruction from the treatment's chronology and prior chapters' outlines/prose where the log is silent. A Blueprint for chapter 17 **never** writes toward a Revelation Log entry dated after chapter 17 — that's future state.
+
 ### Prose (`ch<NN>-prose.md`) and scenes
 
 Prose is **one file per chapter by default** (`ch<NN>-prose.md`). Treatment scenes don't map 1:1 to chapters, so when a chapter is genuinely scene-split, the prose moves into a `scenes/` subfolder (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`) and `ch<NN>-prose.md` is omitted or becomes a stitched-together read. Default to the single file; reach for `scenes/` only when the chapter actually needs it.
 
-The full schemas for blueprint, prose, and notes — and the skills that write them — land when prose-writing functionality is added (post-POC). They are named here now so the folder contract is stable and future skills have a defined home. Prose-stage frontmatter will carry the version stamps that make staleness detection work (`outline_version`, `treatment_version`, `primer_version`, `status`, `word_count`):
+The `blueprint` schema is defined above. The full schemas for prose and notes — and the skills that write them — land when prose-writing functionality is added (post-POC). They are named here now so the folder contract is stable and future skills have a defined home. Prose-stage frontmatter will carry the version stamps that make staleness detection work (`outline_version`, `blueprint_version`, `treatment_version`, `primer_version`, `status`, `word_count`):
 
 ```yaml
 ---
