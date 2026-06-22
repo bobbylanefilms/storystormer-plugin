@@ -152,7 +152,7 @@ Two additions in series mode:
 
 ## What this skill does not do
 
-- **Write prose.** Not in this POC's scope. The Blueprint is the brief; the prose skill (post-POC) consumes it.
+- **Write prose.** That's the `prose` skill — the Blueprint is the brief it consumes (the Blueprint stands in for raw bios + worldbuilding + primer on the prose skill's lean path).
 - **Author Canon.** It reads bios and worldbuilding; it does not create or rewrite them. Missing Canon → recommend `character-bio` / `worldbuilding-entry`. The one write-adjacent action is *proposing* Revelation Log lines, appended only on user approval.
 - **Edit the outline, treatment, primer, or structure.** If blueprinting reveals an outline gap, a treatment contradiction, or a missing setup/payoff chain, surface it and recommend the owning skill (`outline-chapters`, `treatment-update`, `pre-outline-session`) — don't fix it inline.
 - **Resolve open questions.** A chapter outline carrying `[OPEN: Q-###]` blueprints with the marker carried forward; resolving the question is `brainstorm-session` / `decision-capture` work.

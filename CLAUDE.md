@@ -29,7 +29,7 @@ Doc-only changes (README, this file, PLUGIN-GUIDE.md) do **not** need a version 
 
 ## Layout
 
-- `skills/<name>/SKILL.md` — 10 progressive-disclosure skills.
+- `skills/<name>/SKILL.md` — 11 progressive-disclosure skills.
 - `commands/<name>.md` — 7 `/storystormer:*` slash commands.
 - `references/*.md` — shared docs cited by skills (single-edit-propagates; don't inline-duplicate into skills).
 - Edit the plugin **here**; *run/test* it from a **story folder** (the skills act on the open folder, not this repo).

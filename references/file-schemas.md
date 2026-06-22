@@ -455,6 +455,21 @@ Body follows one of two formats — **Reference Note** (~200–300w) for real-wo
 
 Like character bios, a worldbuilding entry may carry an optional **`## Revelation Log`** as its final section — chapter-keyed state changes for the element (a location damaged in ch 20, a device that gains a new capability in ch 14). Same mechanism and rules as for characters; see `references/canon-schemas.md` § Revelation Log.
 
+## Voice assets (`voice/`)
+
+The `voice/` folder holds the two **project-owned voice inputs** the `prose` skill reads to condition output toward the author's voice (the third input, the operational prose prompt, is plugin-owned — `references/prose-spec.md`). Both are plain markdown, both optional, both user/author-authored. Created by the user (or scaffolded by the `prose` skill on request); never auto-generated from AI prose.
+
+```
+voice/
+  style-guide.md      # user-authored craft preferences — "how it should read"
+  writing-sample.md   # the author's own non-AI prose — "what the voice is, by example"
+```
+
+- **`voice/style-guide.md`** — a list of stylistic preferences: sentence construction, vocabulary/register, dialogue craft, interiority, atmosphere, and **anti-patterns** ("never write 'a breath he didn't know he was holding'"). No fixed schema — prose, bullets, whatever the author keeps. Different projects carry different guides. Optional; when absent, craft rules fall to the prose spec.
+- **`voice/writing-sample.md`** — a representative passage of the author's **own, non-AI** writing — the aspirational target voice. Plain prose (optionally a one-line note on what it exemplifies). **Strongly recommended**: it is the voice north-star and the *only* anchor on a POV character's debut chapter (where there is no prior POV prose). The author may keep more than one; `voice/samples/*.md` is a fine alternative when several are kept.
+
+These are **not** part of the spoiler firewall — they're craft inputs, not story chronology — so they load on every generation regardless of which chapter is being written. See `references/prose-spec.md` § The three-input voice model.
+
 ## Chapter content — folders, the spine, and the outline view
 
 Chapter content is organized **entity-first**: one folder per chapter (`chapters/chapter-NN/`) holds *every* artifact for that chapter — its outline, blueprint, prose, and refinement notes — as the chapter moves through the pipeline. The cross-chapter **spine** lives one level up, in `outline/`. This is the contract every chapter-stage skill (outlining now; blueprint, prose, and refinement when they land) reads and writes against.
@@ -749,7 +764,7 @@ Body — the eight Blueprint sections (full formats in `references/blueprint-spe
 
 Prose is **one file per chapter by default** (`ch<NN>-prose.md`). Treatment scenes don't map 1:1 to chapters, so when a chapter is genuinely scene-split, the prose moves into a `scenes/` subfolder (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`) and `ch<NN>-prose.md` is omitted or becomes a stitched-together read. Default to the single file; reach for `scenes/` only when the chapter actually needs it.
 
-The `blueprint` schema is defined above. The full schemas for prose and notes — and the skills that write them — land when prose-writing functionality is added (post-POC). They are named here now so the folder contract is stable and future skills have a defined home. Prose-stage frontmatter will carry the version stamps that make staleness detection work (`outline_version`, `blueprint_version`, `treatment_version`, `primer_version`, `status`, `word_count`):
+The `blueprint` schema is defined above; the `ch<NN>-prose.md` schema is defined here. The `notes` schema (post-prose refinement) lands when refinement-pass functionality is added (post-POC). Prose is written by the `prose` skill, which works from `references/prose-spec.md` (the assembly order, voice model, POV/tense rules, output rules, spoiler firewall).
 
 ```yaml
 ---
@@ -757,14 +772,30 @@ chapter: 17
 title: The Locket
 version: 1
 last_updated: 2026-05-12
-# Populated by the prose-writing skill set:
+pov: Marlowe
+# Provenance — the versions this prose was generated against (staleness detection):
 outline_version: 1
+blueprint_version: 1        # null on the fallback (no-Blueprint) path
 treatment_version: 8
 primer_version: 4
 status: drafted | revising | approved
 word_count: 4127
+synopsis: |
+  ~150–250w summary of THIS chapter, written as its author — causal events, the
+  reveals, who learned what, how the story's state changed by chapter's end. Names
+  characters, locations, events; not a teaser, not vibes. This is what later
+  chapters read as their story-so-far, so its accuracy compounds across the book.
 ---
 ```
+
+**Body: prose only.** No markdown headers, no frontmatter-style labels, no meta-commentary — just the chapter's fiction, paragraphs separated by single blank lines, scene breaks as a single blank line. (The `synopsis` lives in frontmatter precisely so the body stays pure prose.) See `references/prose-spec.md` § Output rules.
+
+- **`pov`** mirrors the chapter outline's `pov`. The `prose` skill uses it to find the POV-matched prior prose chapter (the voice anchor) and to assert the correct POV mode.
+- **`blueprint_version`** records which Blueprint this prose was built against, or `null` if generated on the fallback (no-Blueprint) path. A Blueprint regenerated past this value means the prose may be stale w.r.t. current canon.
+- **`synopsis`** is written at generation time and is the chapter's contribution to every later chapter's story-so-far. Regenerate it whenever the prose is rewritten (it must track the prose's actual events).
+- **`status`**: `drafted` (generated, unreviewed) → `revising` (surgical edits in progress) → `approved` (the user has signed off).
+
+**Scene-split prose.** When the Blueprint is `scene_split: true`, prose moves into `scenes/` (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`); each scene file carries the same frontmatter scoped to that scene (the chapter-level `synopsis` lives on a stitched `ch<NN>-prose.md` or the first scene — keep one synopsis per chapter for story-so-far). Default to the single `ch<NN>-prose.md`.
 
 ### Per-chapter history (`.history/`)
 
@@ -782,7 +813,7 @@ Pattern: `ch<NN>-<stage>-v<version>-<YYYY-MM-DD>.md`. The `version` is the super
 
 The only chapter content created in the POC comes from `storystormer-init`'s intake, when the user brings in pre-existing prose. Init stashes each detected chapter as `chapters/chapter-NN/ch<NN>-prose.md` (markdown), or preserves the original extension (`ch<NN>-prose.docx`, etc.) when the source isn't markdown — flagged in the report, since prose-writing skills will require markdown.
 
-For intake-stashed prose, init populates only `chapter`, `title` (from the file's H1 or filename if discoverable), `version: 1`, and `last_updated`. The remaining frontmatter fields are populated by future prose-writing skills. **Body**: raw user content — preserve verbatim, do not rewrite or normalize.
+For intake-stashed prose, init populates only `chapter`, `title` (from the file's H1 or filename if discoverable), `version: 1`, and `last_updated`. The remaining frontmatter fields (`pov`, version stamps, `status`, `synopsis`) are populated by the `prose` skill when it next touches the chapter — e.g. it can synopsize stashed prose into the `synopsis` field so the chapter joins the story-so-far. **Body**: raw user content — preserve verbatim, do not rewrite or normalize.
 
 **Init's responsibility ends at stashing.** Init does not generate or rewrite prose, generate summaries, cross-check against the treatment or outline, or verify continuity. All of that is downstream prose-writing work. The intake job is purely "find the chapters the user already has, put them in the canonical chapter folder with canonical naming, and report what was stashed."
 

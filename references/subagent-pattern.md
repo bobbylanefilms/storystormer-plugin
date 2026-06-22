@@ -16,7 +16,7 @@ This doctrine applies to any skill that would otherwise consume substantial main
 
 Other substantive-mode skills (`pre-outline-session`, `outline-chapters`, `worldbuilding-entry`, `brainstorm-session`) can adopt the pattern when their own context budgets become tight; the doctrine here is the template.
 
-## The two kinds of subagent work
+## The kinds of subagent work
 
 ### Read subagents
 
@@ -107,6 +107,64 @@ What NOT to do:
 ```
 
 Execution subagents run **in parallel** (dispatched in a single main-session message with multiple Agent tool calls). The main session aggregates the completion reports for the final user-facing report.
+
+### Generation subagents
+
+A generation subagent receives an assembly *recipe* (which files to read, in what order, with the behavioral rules) and produces a substantial creative artifact in a **clean context window** — then writes it to disk and returns a compact report. Used by the `prose` skill, where the clean window is not just context economy but a *correctness* requirement: the prose-context-assembly order (writing sample first → … → prior POV prose last) only honors the primacy/recency voice-conditioning when the assembly is read into a fresh window, not buried after a long main-session conversation.
+
+This kind differs from read and execution subagents in that it both reads heavily *and* generates a large output (a 3,000–5,000-word chapter), so the ordering of its own reads matters. The main session never holds the writing sample, the full prior prose chapter, or the generated output — only the recipe and the returned report.
+
+**Brief template** (the prose skill writes this when dispatching):
+
+```
+Task: generate prose for chapter <NN> in a clean window
+
+[BEHAVIORAL FRAME — assert before reading anything]
+- You are a prose-generation specialist. <POV mode rule> <tense directive>.
+- Output rules: prose only, no markdown/headers/meta-commentary; bracketed
+  outline direction is guidance, never echoed; complete self-contained chapter.
+- Spoiler firewall: read ONLY the files named below. Never read any chapter
+  numbered after <NN> — not its outline, prose, or synopsis. Do not foreshadow
+  a specific future event.
+
+[PROSE SPEC — the operational contract, input #3]
+<the full text of references/prose-spec.md, pasted by the main session — the
+subagent can't reach the plugin bundle, only the story folder. It is voice-neutral,
+so its position ahead of the sample doesn't compete for voice conditioning.>
+
+[PROJECT METADATA] <genre, logline, position in the book>
+
+Now read these story-folder files IN THIS ORDER (the order conditions voice —
+sample first for primacy, prior prose last for recency):
+  1. voice/writing-sample.md            (skip if absent)
+  2. voice/style-guide.md               (skip if absent)
+  3. <prior chapter synopses — read each prior chapter's ch<NN>-prose.md
+      `synopsis` frontmatter; fall back to its ch<NN>-outline.md Premise where
+      prose doesn't exist. Chapters < NN only.>
+  4. chapters/chapter-<NN>/ch<NN>-blueprint.md   (lean path)
+       — OR, if no Blueprint: POV-first character bios + worldbuilding the
+         chapter touches + primer.md  (fallback path)
+  5. chapters/chapter-<NN>/ch<NN>-outline.md     (the task)
+  6. <prior POV-matched prose chapter, full>     (the voice anchor — read LAST)
+
+Then: write the chapter's prose to chapters/chapter-<NN>/ch<NN>-prose.md with full
+frontmatter (pov, version stamps, status: drafted, word_count, and a ~150–250w
+synopsis) per the schema the prose spec references.
+
+What to return (NOT the prose itself — it's on disk):
+{
+  "chapter": <NN>,
+  "path": "chapters/chapter-<NN>/ch<NN>-prose.md",
+  "word_count": <integer>,
+  "synopsis": "<the ~150–250w synopsis you wrote>",
+  "path_used": "blueprint | fallback",
+  "prior_prose_anchor": "<chapter NN of the POV-matched prior prose, or 'none (POV debut)'>",
+  "voice_inputs": "<which of sample/style-guide were present>",
+  "continuity_flags": "<anything that didn't reconcile — a Blueprint that looked stale, a missing prior synopsis, a beat the outline left underspecified — OR null>"
+}
+```
+
+The main session reads the returned report (compact — no 5,000-word payload), wires `outline/_index.md` + `state.md`, surfaces continuity flags, and points the user at the file to review. For a **batch**, dispatch generation subagents **sequentially** (not parallel) when the chapters share a POV — each chapter's freshly written prose is the next same-POV chapter's voice anchor, so chapter N must finish before N+1 reads it. Independent POV threads in the same batch can run in parallel.
 
 ## When to dispatch vs. when to read directly
 

@@ -9,7 +9,7 @@ This is a proof of concept that ports the **brainstorm → canon → treatment �
 
 ## What it gives you
 
-Ten skills that load via progressive disclosure when your intent matches:
+Eleven skills that load via progressive disclosure when your intent matches:
 
 | Skill | Loads when you… |
 |---|---|
@@ -23,6 +23,7 @@ Ten skills that load via progressive disclosure when your intent matches:
 | `pre-outline-session` | commit the story to a chapter structure — pick the framework, lock the act breaks, build the chapter spine |
 | `outline-chapters` | generate or revise per-chapter outlines against the spine — batch a whole act or rewrite one chapter |
 | `blueprint` | build the pre-prose production brief for a chapter — the self-contained context a prose agent writes from |
+| `prose` | write or revise a chapter's actual prose — from its Blueprint, outline, your voice inputs, and the story so far |
 
 Plus seven slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline`, and `/storystormer:switch` (series mode only).
 
@@ -43,6 +44,9 @@ my-story/
 │   └── alice.md, bob.md, …      # per-character bios (tiered)
 ├── worldbuilding/
 │   ├── locations/, organizations/, objects/, …
+├── voice/                       # the author's voice inputs (read by the prose stage)
+│   ├── writing-sample.md        # the author's own non-AI prose — the voice north-star
+│   └── style-guide.md           # craft preferences + anti-patterns (optional)
 ├── outline/                     # book-level spine (the cross-chapter plan)
 │   ├── structure.md             # framework, act table, chapter spine (the contract)
 │   └── _index.md                # outline view: chapter × stage status matrix
@@ -50,7 +54,7 @@ my-story/
 │   ├── chapter-01/
 │   │   ├── ch01-outline.md      # per-chapter beat sheet (~600–1,000w)
 │   │   ├── ch01-blueprint.md    # pre-prose production brief (the `blueprint` skill)
-│   │   ├── ch01-prose.md        # prose (and refinement notes) land post-POC
+│   │   ├── ch01-prose.md        # the chapter's prose + a synopsis (the `prose` skill)
 │   │   └── .history/            # co-located version snapshots
 │   └── chapter-02/ …
 ├── research/
@@ -151,14 +155,22 @@ You can interrupt at any step. The plan is always negotiable.
 
 ## What this POC does not do
 
-By design, the POC stops at brainstorm + canon + treatment + outline + **blueprint** (across single or multi-book projects). The following are **not** included:
+By design, the POC stops at brainstorm + canon + treatment + outline + blueprint + **prose** (across single or multi-book projects). The following are **not** included:
 
-- Prose generation, or *post-prose* refinement passes (dialogue / editorial / de-AI / style polish). The **Blueprint** — the *pre-prose* production brief — is now in (v0.6.0); writing the prose from it is not.
+- *Post-prose* refinement passes (dialogue / editorial / de-AI / style polish) — the `notes` stage. Prose **generation and surgical revision** are now in (v0.7.0); the full refinement suite is not.
 - Image generation
 - Full canon states / point-in-time bio snapshots. A crude substitute now exists: the **Revelation Log**, a chapter-keyed append-list at the end of a Canon entry that the Blueprint filters to `chapter ≤ N` for scene-current state. Across-book character evolution is still handled lightly via per-book sub-arc sections.
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.7.0 added over v0.6.1
+
+- **The `prose` skill — chapter prose generation.** Writes (or surgically revises) a chapter's actual fiction. It assembles context in the voice-conditioning order from the architecture reference — writing sample first (primacy), prior POV-matched prose last (recency) — and generates in a **clean-window subagent** so that order actually holds (buried after a long conversation, it wouldn't). Headline rule, ported straight from the architecture doc: **when a chapter has a Blueprint, the Blueprint replaces raw bios + worldbuilding + primer** (lean path); without one, it falls back to raw canon. Writes `chapters/chapter-NN/ch<NN>-prose.md` (prose-only body + a ~150–250w synopsis in frontmatter). Lands the stage the architecture reserved: `outline → blueprint → prose → notes`.
+- **The three-input voice model.** Voice now comes from three sources split by ownership: the plugin-owned **prose spec** (`references/prose-spec.md`, voice-neutral "how to operate"), the user-owned **style guide** (`voice/style-guide.md`, "how it should read"), and the author-owned **writing sample** (`voice/writing-sample.md`, "what the voice is, by example"). A precedence rule keeps the sample (style authority) and the prior chapter (continuity authority) from competing.
+- **Story-so-far + the spoiler firewall.** Each chapter's prose carries a `synopsis`; later chapters read prior synopses (outline Premise as fallback) as chronological narrative memory. Nothing numbered after the chapter being written is ever read — no future outline, prose, or synopsis, and the treatment stays out of prose-time context entirely.
+- **POV-matched prior prose.** The voice anchor is the most recent *prior chapter with the same POV character* (not just the most recent any-POV chapter) — correct for multi-POV books; absent on a POV's debut, where the sample carries voice alone.
+- **A new subagent kind.** `references/subagent-pattern.md` gains *Generation subagents* — clean-window producers of large creative artifacts; batches run sequentially when same-POV (each chapter's prose anchors the next).
 
 ### What v0.6.1 added over v0.6.0
 
