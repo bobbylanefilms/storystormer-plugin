@@ -15,7 +15,8 @@ There is **no copy elsewhere**. The web-app repo (`bobbylanefilms/storystormer`)
 1. **Bump `version` in BOTH** `.claude-plugin/plugin.json` **and** the `marketplace.json` plugin entry (they must agree). **Cowork only pulls updates when `version` changes** — skip this and your change silently won't appear.
 2. **Run `claude plugin validate .`** — must pass before commit. (This is what catches schema breaks like an invalid `source`.)
 3. **Commit + push.**
-4. **Re-sync in Cowork** (update marketplace → update plugin → restart session).
+4. **Land it on `main`.** Cowork installs from the repo's **default branch (`main`)** — it does *not* see feature branches. If you developed on a branch, merge it to `main` and push `main` (a fast-forward when the branch is strictly ahead). **Skip this and Cowork stays on whatever `main` last had, no matter how many times you re-sync** — this is the most common "why is it still showing the old version" cause.
+5. **Re-sync in Cowork** (update marketplace → update plugin → restart session).
 
 Doc-only changes (README, this file, PLUGIN-GUIDE.md) do **not** need a version bump — they aren't shipped plugin components.
 
