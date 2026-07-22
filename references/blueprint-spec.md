@@ -15,7 +15,7 @@ The `blueprint` skill operates the workflow (when to run, how to gather context 
 
 ### The Blueprint Is the Sole Carrier
 
-At prose time, the Blueprint is the *only* channel through which Canon reaches the prose agent — the bios, worldbuilding entries, and primer it replaces are not in that context. **A detail you omit is a detail the prose agent invents or gets wrong.** When you are unsure whether something will surface, err toward carrying it: worldbuilding texture, primer framing, and psychological depth all raise the quality ceiling of the prose even when they don't appear on the page verbatim. **This is the most important rule of this spec.** (It is the inverse of the old compression-first "Scene-Surface Test" — inclusion is now generous; what you tier is *resolution*, not presence.)
+At prose time, the Blueprint is the *only* channel through which Canon reaches the prose agent — the bios, worldbuilding entries, and primer it replaces are not in that context. **A detail you omit is a detail the prose agent invents or gets wrong.** When you are unsure whether something will surface, err toward carrying it: worldbuilding texture, primer framing, and psychological depth all raise the quality ceiling of the prose even when they don't appear on the page verbatim. **This is the most important rule of this spec.** Inclusion is generous; what you tier is *resolution*, not presence.
 
 ### Prominence Sets Resolution
 
@@ -33,7 +33,7 @@ Canon entries were written to give the prose rich, specific detail — don't lau
 
 ### Integrate Current State — and never write toward future state
 
-The major failure mode of the old outline-plus-bio-dump pattern was drift between the two: the canonical bio said one thing, the chapter context said something subtly different, and the prose agent had to reconcile. You solve this at generation time, by fusing one clean, scene-current image per element.
+Fuse one clean, scene-current image per element at generation time — so the prose agent never has to reconcile a canonical bio that says one thing against a chapter context that says something subtly different. Drift between the two is a top failure mode; you foreclose it here.
 
 Scene-current state has a definite source order:
 
@@ -75,7 +75,7 @@ Then *characterize* them for this chapter:
 - **MBTI:** carry the full type/cognitive-style description, and **flag which functions or traits are activated** by this chapter's situation.
 - **CliftonStrengths:** carry all listed themes, and **mark which are present or activated** in this chapter's action.
 
-Depth scales by tier: POV and Major get the full framework block with scene-activation notes; Supporting gets a compact block (one line per framework, activation flagged); Minor and Referenced omit frameworks unless a specific moment needs one tell. **Never invent typology the Canon doesn't record** — if a bio has no frameworks, write the psychology from what Canon does say. (This replaces the old "omit MBTI/Enneagram unless actively used" guidance — the frameworks now ride the Blueprint by default, because the prose agent can't reach the bio to recover them.)
+Depth scales by tier: POV and Major get the full framework block with scene-activation notes; Supporting gets a compact block (one line per framework, activation flagged); Minor and Referenced omit frameworks unless a specific moment needs one tell. **Never invent typology the Canon doesn't record** — if a bio has no frameworks, write the psychology from what Canon does say. The frameworks ride the Blueprint by default, because the prose agent can't reach the bio to recover them.
 
 ### POV (up to 2,000 words)
 
