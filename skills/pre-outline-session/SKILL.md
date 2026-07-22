@@ -44,7 +44,7 @@ Surface those preconditions in your plan-first proposal, not as a refusal — *"
 
 Load:
 
-- `primer.md` (full — especially Section 3 Structural Framework and Section 5 Setup/Payoff Ledger)
+- `primer.md` (full — especially Section 3 Structural Framework and Section 2's Reveal Architecture)
 - `treatment.md` (full — every scene, every act header, every marker)
 - `manifest.md` (full)
 - All major-tier character bios (full — POV holders especially)
@@ -87,7 +87,7 @@ Once the user agrees, do the reads. Then in your first response after the readin
 - **The treatment's POV pattern** — single-POV, multi-POV, observer protagonist, ensemble. The bios tell you who has interiority developed.
 - **The primer's framework commitment** — exact phrasing from Section 3.
 - **Open structural questions** — anything flagged in `questions.md` that affects the spine.
-- **Setup/payoff chains** — the chains the spine has to preserve. If a setup is planted in Act 1 and paid off in Act 3, the chapter slots for both ends need to land.
+- **Load-bearing reveals** — from the primer's §2 Reveal Architecture: the reveals whose timing is structural, plus any ordinary setup/payoff chains the treatment carries. If a reveal is planted in Act 1 and lands in Act 3, the chapter slots for both ends need to fall in the right place.
 
 ### 5. The framework conversation
 

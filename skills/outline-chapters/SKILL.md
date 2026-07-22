@@ -108,7 +108,7 @@ Once the user agrees, do the reads. In your next response, quote verbatim from e
 
 - **Spine slot text** — the exact line from `structure.md`. This is the contract.
 - **Treatment source** — which treatment scene(s) map to this chapter slot. Quote the relevant treatment passage.
-- **Setup/payoff chains** — which planted chains pay off here (or get planted here for later payoff). Cross-reference primer Section 5.
+- **Setup/payoff chains** — which planted chains pay off here (or get planted here for later payoff). Trace load-bearing reveals to the primer's §2 Reveal Architecture; trace ordinary chains to the treatment.
 - **Character beats** — what each appearing character's arc does in this chapter. Anchor to the bio's Lie/Ghost where applicable.
 - **POV** — from the spine entry or the act's POV strategy.
 
@@ -124,9 +124,9 @@ For each chapter in the batch (or the single chapter being revised), write the f
 
 **Setting & Time** (1–3 sentences) — concrete, sensory anchors.
 
-**Scene Beats** (3–6 beats) — each beat names what happens and what shifts. A beat that doesn't shift something is filler. Pull dramatic beat-shape from primer Section 5's Setup/Payoff Ledger when this chapter participates in a chain.
+**Scene Beats** (3–6 beats) — each beat names what happens and what shifts. A beat that doesn't shift something is filler. When this chapter plants or pays a load-bearing reveal, pull its dramatic beat-shape from the primer's §2 Reveal Architecture; for ordinary chains, from the treatment passage.
 
-**Setups Planted** / **Payoffs Delivered** — cross-reference primer Section 5. Each entry maps to a tracked chain. If this chapter introduces a new chain, log a `[NEEDS DEVELOPMENT: add to primer ledger]` marker and surface it in the report so the next `treatment-update` can incorporate it.
+**Setups Planted** / **Payoffs Delivered** — the chapter-local record of what this chapter plants and pays. A load-bearing reveal traces to the primer's §2 Reveal Architecture; an ordinary chain traces to the treatment. If a setup here has no decided payoff anywhere, that's an open question — log a `[NEEDS DEVELOPMENT: …]` (or `[OPEN: Q-###]`) marker and surface it in the report so it can be routed to `questions.md`. Don't ask the primer to carry a running ledger.
 
 **Character Notes** — what *changes* for each character (status, knowledge, internal state, relational). Reference Lie/Ghost when the chapter touches them. Pull from the bios; don't invent character interiority that the bios don't support.
 
@@ -166,12 +166,12 @@ Outline content must trace to one of:
 2. **A treatment passage** — quote-able from `treatment.md`.
 3. **A logged decision** — referenced by `D-###`.
 4. **A character bio's content** — voice, Lie/Ghost, relationships.
-5. **A primer setup/payoff chain** — from Section 5.
+5. **A primer load-bearing reveal** — from §2 Reveal Architecture (or an ordinary chain traced to the treatment).
 6. **A `[NEEDS DEVELOPMENT: …]` marker** — honestly flagged.
 
 You do **not** invent new plot events, character actions, settings, or dramatic moments beyond these sources. If a chapter slot needs content that doesn't exist anywhere yet, mark `[NEEDS DEVELOPMENT: …]` — don't fill the gap with genre priors.
 
-The single biggest failure mode for chapter outlines is **AI-default scene mechanics** — a chase scene where the treatment doesn't call for one, a confrontation that the bios don't justify, a setup-payoff invented at outline time that fights primer Section 5. The discipline is: *outline = render the existing decisions at chapter resolution, not author new ones*.
+The single biggest failure mode for chapter outlines is **AI-default scene mechanics** — a chase scene where the treatment doesn't call for one, a confrontation that the bios don't justify, a setup-payoff invented at outline time that fights the primer's Reveal Architecture or the treatment's chains. The discipline is: *outline = render the existing decisions at chapter resolution, not author new ones*.
 
 ### 10. Cross-chapter checks (batch mode)
 
@@ -199,7 +199,7 @@ After the user approves:
 
 ### 12. Report
 
-> Outline-chapters batch complete. Wrote 10 chapter outline files (ch 01–10), ~9,800w total at ~980w average. Snapshot saved (only 2 files had prior versions). Index regenerated. 2 chapters carry `[OPEN: Q-014]` markers (the inciting incident mechanism). 1 chapter (ch 7) carries `[NEEDS DEVELOPMENT: the off-screen Park subplot beat — primer ledger doesn't yet have this chain]` — flagging for the next `treatment-update` to add to Section 5. Recommended next step: review Act 1, then `outline-chapters` for Act 2A (chapters 11–22). Or, if Q-014 is now blocking enough, resolve it in a brainstorm-session first.
+> Outline-chapters batch complete. Wrote 10 chapter outline files (ch 01–10), ~9,800w total at ~980w average. Snapshot saved (only 2 files had prior versions). Index regenerated. 2 chapters carry `[OPEN: Q-014]` markers (the inciting incident mechanism). 1 chapter (ch 7) carries `[NEEDS DEVELOPMENT: the off-screen Park subplot beat — no decided payoff yet]` — flagging for `questions.md` so a brainstorm-session can resolve it. Recommended next step: review Act 1, then `outline-chapters` for Act 2A (chapters 11–22). Or, if Q-014 is now blocking enough, resolve it in a brainstorm-session first.
 
 ## Working with revisions
 
@@ -225,7 +225,7 @@ A chapter outline is *prose-ready* when:
 
 - The body contains zero `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: …]` markers.
 - The frontmatter's `structure_version`, `treatment_version`, and `primer_version` all match the current versions of those files.
-- The setup/payoff entries cross-reference chains that exist in primer Section 5.
+- The setup/payoff entries trace to a load-bearing reveal in primer §2, an ordinary chain in the treatment, or a logged open question — no orphans.
 - The POV matches the spine slot's POV.
 
 This skill doesn't enforce prose-readiness — it just produces outlines. Pre-prose readiness is what the **`blueprint`** skill (the next stage) checks before building a chapter's production brief: a marker-free outline blueprints cleanly; an outline still carrying `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: …]` blueprints with the gap carried forward. The `[NEEDS DEVELOPMENT]` markers and the version stamps are what make that check possible. Don't skip them.

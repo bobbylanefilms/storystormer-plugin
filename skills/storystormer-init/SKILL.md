@@ -280,7 +280,7 @@ For first-time series intake (the user starts fresh), the flow is the same as st
 
 ## What this skill does not do
 
-- **Generate a primer at any maturity stage.** The primer is always built by `treatment-update`'s Phase 1, which has first-run mode for scaffolding the six standard sections from available materials. Init leaves `primer.md` absent. The typical next step after init is to invoke `treatment-update` — its first-run mode will scaffold the primer from the decisions you extracted plus any treatment-like documents the user brought in.
+- **Generate a primer at any maturity stage.** The primer is always built by `treatment-update`'s Phase 1, which has first-run mode for scaffolding the five standard sections from available materials. Init leaves `primer.md` absent. The typical next step after init is to invoke `treatment-update` — its first-run mode will scaffold the primer from the decisions you extracted plus any treatment-like documents the user brought in.
 - **Generate a treatment from scratch.** If the user brings in an existing treatment-like document, you can copy-and-clean-up to `treatment.md` with the user's explicit agreement. Otherwise, leave `treatment.md` absent — `treatment-update`'s Phase 2 first-run mode handles construction.
 - **Generate `series.md` content beyond a stub.** Just like primer, the real content of `series.md` is developed through brainstorming. At init, scaffold the sections with `[To be developed]` markers and the book list; don't invent series arc content.
 - Run any other heavy generation. This is a scaffolding and triage skill.

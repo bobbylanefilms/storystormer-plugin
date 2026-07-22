@@ -32,7 +32,7 @@ The Blueprint is the **pre-prose** stage of the chapter pipeline (`outline → b
 
 - **`chapters/chapter-NN/ch<NN>-outline.md` must exist** for every chapter in scope. If it doesn't, refuse that chapter and recommend `outline-chapters`. You cannot blueprint a chapter you haven't outlined — you'd be inventing the chapter and its brief in one pass.
 - **The outline should be marker-free.** A chapter outline carrying `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: …]` is not prose-ready (see `outline-chapters` § The pre-prose readiness check). You *can* blueprint it, but the Blueprint inherits the gap — surface the markers and let the user decide whether to resolve them first or blueprint around them with the gap carried forward.
-- **`primer.md` and `treatment.md` exist.** The Blueprint draws story-level orientation (moral argument, setup/payoff chains, voice rules) from the primer and chapter chronology from the treatment.
+- **`primer.md` and `treatment.md` exist.** The Blueprint draws story-level orientation (moral argument, reveal architecture, voice rules) from the primer and chapter chronology from the treatment.
 - **Canon exists for the chapter's on-page cast.** If the outline names a character or element with no `characters/<slug>.md` or `worldbuilding/<cat>/<slug>.md`, surface the gap and recommend `character-bio` / `worldbuilding-entry` — don't fabricate a tier entry from genre priors.
 
 ## What to do
@@ -50,8 +50,8 @@ For each chapter in scope, the **seed** is the judgment-free context (read direc
 - The chapter's `ch<NN>-outline.md` (full) — the contract this Blueprint fulfills.
 - `outline/structure.md` — the spine slot + POV strategy for the chapter, **plus the Chapter Spine** (the one-line-per-chapter arc so the Blueprint knows where this chapter sits without reading future chapters' plot).
 - **The POV-matched continuity anchor** — walk backward from chapter N to the most recent prior chapter (`< N`) with the **same `pov`**, and read its prose if written, else its `ch<NN>-outline.md`. That's the carried-forward state (clothing, injuries, emotional residue, open beats) for *this POV character*, which is what actually matters for continuity. Fall back to the immediately-preceding chapter of any POV if no same-POV prior chapter exists; a POV debut (or chapter 1) has no anchor and leans on the treatment slot + Revelation Log. (Glob `chapters/*/ch*-{prose,outline}.md`, read each's `pov` + `chapter` frontmatter, filter `< N`, prefer matching `pov`, pick the max chapter — the same walk-back the `prose` skill uses.)
-- **The primer, harvested generously** for §2 Story Context — genre + promises, premise/logline, moral argument & thematic throughline, tone/style (voice rules), and the character web — **plus the Setup/Payoff Ledger** (§5), which gives forward orientation (what this chapter must plant, and where it pays off) as a *structural index*, not spoiler-laden narrative.
-- `treatment.md` — **only the spine-slot passage(s) for this chapter** (its chronology and what's been revealed by now). Do **not** seed the full treatment: the Blueprint's knowledge horizon is this chapter, and forward orientation comes from the distilled artifacts above (Chapter Spine + Setup/Payoff Ledger), not from the raw future plot. See § The spoiler firewall in `references/blueprint-spec.md`.
+- **The primer, harvested generously** for §2 Story Context — genre + promises, premise/logline, moral argument & thematic throughline, tone/style (voice rules), and the character web — **plus §2's Reveal Architecture**, which gives forward orientation (which load-bearing reveal this chapter plants toward, and when it lands) as a *structural index*, not spoiler-laden narrative.
+- `treatment.md` — **only the spine-slot passage(s) for this chapter** (its chronology and what's been revealed by now). Do **not** seed the full treatment: the Blueprint's knowledge horizon is this chapter, and forward orientation comes from the distilled artifacts above (Chapter Spine + Reveal Architecture + the outline's Setups Planted), not from the raw future plot. See § The spoiler firewall in `references/blueprint-spec.md`.
 
 The seed tells you *what the chapter is* and *where it sits*. The rest — *what Canon this chapter needs* — you assemble yourself. Deciding that is the core of the job.
 
@@ -77,7 +77,7 @@ From the chapter outline, identify **every on-page character and every worldbuil
 
 > Plan for the ch 17 Blueprint — *The Locket*:
 >
-> - **Seed**: `ch17-outline.md`; ch 14 prose (Marlowe's most recent prior POV chapter — the continuity anchor); structure spine slot + Chapter Spine; primer harvested for Story Context (genre, premise, moral argument, voice, character web) + the Setup/Payoff Ledger; treatment's *Audit Box* spine-slot passage only.
+> - **Seed**: `ch17-outline.md`; ch 14 prose (Marlowe's most recent prior POV chapter — the continuity anchor); structure spine slot + Chapter Spine; primer harvested for Story Context (genre, premise, moral argument, voice, character web) + §2 Reveal Architecture; treatment's *Audit Box* spine-slot passage only.
 > - **Surfacing cast**: Marlowe (POV), Voss (Major), Park (Supporting), Doris (Minor) + 3 worldbuilding elements (the locket, Mara's Diner, Voss Industries). Full-read each bio + entry; carry all recorded personality frameworks; apply Revelation Logs ≤ ch 17 (Marlowe's ch 14 injury is still active).
 > - **Write**: `ch17-blueprint.md` v1; index Blueprint cell → v1; `state.md` updated.
 >
@@ -87,7 +87,7 @@ From the chapter outline, identify **every on-page character and every worldbuil
 
 For a **single chapter**, gather and write directly in the main session unless the Canon reads are large (then dispatch one subagent per `references/subagent-pattern.md` § When to dispatch). For a **batch**, dispatch **one Blueprint subagent per chapter, in parallel** — each is an execution subagent that also does substantive reads:
 
-- **Reads** (substantive mode, full reads, no grep): its chapter outline, the POV-matched continuity anchor (the most recent prior same-POV chapter's prose if written, else its outline), the harvested primer (for Story Context) + the Setup/Payoff Ledger, and the full Canon entry for each on-page character and element, plus each entry's `## Revelation Log`.
+- **Reads** (substantive mode, full reads, no grep): its chapter outline, the POV-matched continuity anchor (the most recent prior same-POV chapter's prose if written, else its outline), the harvested primer (for Story Context) + §2 Reveal Architecture, and the full Canon entry for each on-page character and element, plus each entry's `## Revelation Log`.
 - **Applies the Revelation Log filter**: includes only log entries dated `≤` this chapter; treats anything later as future state and does not write toward it.
 - **Carries all recorded personality frameworks** for POV/Major (characterized to the chapter), harvests the primer into Story Context, and tiers worldbuilding by prominence — per `references/blueprint-spec.md`.
 - **Writes** `chapters/chapter-NN/ch<NN>-blueprint.md` per `references/file-schemas.md` § Blueprint and `references/blueprint-spec.md`.

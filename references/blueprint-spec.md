@@ -49,7 +49,7 @@ Then:
 
 ### Knowledge horizon & the spoiler firewall
 
-The Blueprint's knowledge horizon is **this chapter**. The seed gives you forward *orientation* — the primer's Setup/Payoff Ledger, the structure spine, the chapter outline's Setups Planted — so you know what this chapter must plant and where it sits in the arc. Use that orientation to seed foreshadowing and anchor theme. But you are handed the treatment only as the **spine-slot passage for this chapter** (its chronology), *not* the whole plot — and even the forward-orientation artifacts are structural indexes, not future narrative. **Never leak a future event, reveal, or state into the Blueprint.** The firewall lives here: the Blueprint's output *is* the prose agent's context, so a spoiler that reaches the Blueprint reaches the prose. Seed the setup ("plant the locket's engraving as innocuous here") without narrating the payoff.
+The Blueprint's knowledge horizon is **this chapter**. The seed gives you forward *orientation* — the primer's §2 Reveal Architecture (the ~2–5 load-bearing reveals: what's hidden, when it lands), the structure spine, and the chapter outline's Setups Planted — so you know what this chapter must plant and where it sits in the arc. Use that orientation to seed foreshadowing and anchor theme. But you are handed the treatment only as the **spine-slot passage for this chapter** (its chronology), *not* the whole plot — and even the forward-orientation artifacts are structural indexes, not future narrative. **Never leak a future event, reveal, or state into the Blueprint.** The firewall lives here: the Blueprint's output *is* the prose agent's context, so a spoiler that reaches the Blueprint reaches the prose. Seed the setup ("plant the locket's engraving as innocuous here") without narrating the payoff.
 
 ### Tier, Don't Duplicate
 
@@ -188,7 +188,7 @@ Single paragraph, 100–125 words. Symbols, metaphors, archetypal elements this 
 Single paragraph, 150–250 words. Track connections to past and future:
 - **Links to previous chapters:** physical continuity (clothing, locations, objects), emotional threads, unresolved tensions. Reference prior chapters *by number*.
 - **New state established here:** where prior chapters left wardrobe or physical state unestablished and you made specific choices, name them as deliberate so future chapters inherit them.
-- **Foreshadowing:** setups being seeded (cross-reference the primer's Setup/Payoff Ledger and the chapter outline's Setups Planted). Seed the setup, never narrate the future payoff.
+- **Foreshadowing:** setups being seeded (cross-reference the primer's §2 Reveal Architecture and the chapter outline's Setups Planted). Seed the setup, never narrate the future payoff.
 - **Must remain consistent:** timeline, character knowledge, established facts, ongoing subplots.
 - **Canon-vs-scene resolutions:** if the canonical bio says X and a prior chapter or the Revelation Log established Y, state which the Blueprint adopts and why. Resolve here so the prose agent doesn't have to.
 
@@ -239,7 +239,7 @@ Before finalizing, verify:
 - [ ] Each worldbuilding element names the moment that uses it and is tiered by prominence; multi-scenario entries are distilled to this chapter's slice with their governing philosophy preserved.
 - [ ] Canon wording is carried verbatim wherever you weren't distilling or characterizing.
 - [ ] Current state is fused from the Revelation Log (≤ this chapter) and prior chapters; no information conflict remains between canonical bio and scene-state — conflicts are resolved in Continuity.
-- [ ] **No detail reflects a Revelation Log entry dated after this chapter, or any reveal/state-change that hasn't landed yet; nothing from the treatment's or the setup/payoff ledger's future leaked in.**
+- [ ] **No detail reflects a Revelation Log entry dated after this chapter, or any reveal/state-change that hasn't landed yet; nothing from the treatment's future or the Reveal Architecture's not-yet-landed reveals leaked in.**
 - [ ] Setting includes sensory details beyond the visual.
 - [ ] Conflict is specific to *this* chapter; symbolism anchors to the book's thematic throughline carried in Story Context.
 - [ ] Continuity references prior chapters by number.

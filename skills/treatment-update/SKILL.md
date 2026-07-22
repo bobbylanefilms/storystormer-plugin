@@ -1,6 +1,6 @@
 ---
 name: treatment-update
-description: Regenerate the story primer (six standard sections) and treatment from current decisions, character bios, and worldbuilding. Use when the user says "update the treatment," "refresh the primer," "rewrite the treatment with what we've decided," "let's see where we are," or after a stretch of brainstorming has accumulated unintegrated decisions. Runs as a two-phase pipeline (primer → treatment) in substantive mode to prevent confabulation.
+description: Regenerate the story primer (five standard sections) and treatment from current decisions, character bios, and worldbuilding. Use when the user says "update the treatment," "refresh the primer," "rewrite the treatment with what we've decided," "let's see where we are," or after a stretch of brainstorming has accumulated unintegrated decisions. Runs as a two-phase pipeline (primer → treatment) in substantive mode to prevent confabulation.
 ---
 
 # StoryStormer · Treatment Update
@@ -13,7 +13,7 @@ Always follow `references/plan-first.md` — propose the plan with file lists, c
 
 ## What you produce
 
-- **`primer.md`** — bumped to the next version. The story craft dossier with six standard sections: Story Identity / Premise & Moral Argument / Structural Framework (incl. Treatment Word Budget) / Tone, Style & Writing Rules / Setup/Payoff Ledger / Character Dynamics. Total ~4,500–5,500 words. See `references/file-schemas.md` § `primer.md`.
+- **`primer.md`** — bumped to the next version. The story craft dossier — **50,000-foot front-matter** — with five standard sections: Story Identity / Premise & Moral Argument (incl. Reveal Architecture) / Structural Framework (incl. Treatment Word Budget) / Tone, Style & Writing Rules / Character Dynamics. Total ~4,500 words (hard ceiling 5,000). See `references/file-schemas.md` § `primer.md`.
 - **`treatment.md`** — bumped to the next version. Full prose treatment written in propulsive treatment voice. `primer_version` set to the new primer's version. Length calibrated by the primer's Treatment Word Budget table. See `references/treatment-voice.md` and `references/file-schemas.md` § `treatment.md`.
 - **`.storystormer/history/<timestamp>-treatment-update/`** — snapshots of the *current* primer and treatment **as a pair**, before overwriting. They round-trip together; never snapshot one without the other.
 - Updated `decisions.md` — the decisions consumed by this update are marked `Integrated into treatment: yes (<date>)`.
@@ -42,7 +42,7 @@ The Story Primer is the story's intellectual foundation. Treat it carefully:
 
 When a pending decision contradicts the existing primer or the old treatment, **trust the decision**. The Story Primer phase runs before the Treatment phase, so contradictions between decisions and the old treatment will be resolved when Phase 2 rewrites the treatment. Don't flag those as problems in Phase 1 — they're pending, not broken.
 
-DO flag genuinely broken chains unrelated to pending decisions (pre-existing inconsistencies). DO flag setup/payoff chains in the old treatment that have no payoff written yet — those need tracking in primer Section 5.
+DO flag genuinely broken chains unrelated to pending decisions (pre-existing inconsistencies). DO flag setup/payoff chains in the old treatment that have no payoff written yet — if the chain is load-bearing, it belongs in primer §2's Reveal Architecture; if the payoff is genuinely undecided, log it as an open question in `questions.md`. Don't reintroduce a running ledger.
 
 ### Framework attribution preservation
 
@@ -54,7 +54,7 @@ If the existing primer cites a framework by name (Save the Cat, Truby's 22 Block
 
 Load:
 
-- `primer.md` (full — all six sections if it exists)
+- `primer.md` (full — all five sections if it exists)
 - `treatment.md` (full)
 - `manifest.md` (full)
 - All major-tier character bios (full)
@@ -70,7 +70,7 @@ This is the canonical heavy-context turn. **Operate in substantive mode** — li
 > Here's the plan for the treatment update:
 >
 > - **Read** (substantive mode): I'll full-read `primer.md`, `treatment.md` (~6,800w), `manifest.md`, the 4 major bios (~4,800w combined), the 7 unintegrated decisions in `decisions.md`, and the 6 open questions — then quote at least one passage from each in my next response to prove the absorption.
-> - **Phase 1 — Primer**: rewrite the six standard sections of `primer.md` to fold in the new decisions about Marlowe's father wound and the shift in the antagonist's motivation. Most sections preserved verbatim; the Premise & Moral Argument section and the Setup/Payoff Ledger get meaningful updates. Bump primer version 3 → 4.
+> - **Phase 1 — Primer**: revise the five standard sections of `primer.md` to fold in the new decisions about Marlowe's father wound and the shift in the antagonist's motivation. Most sections untouched; the Premise & Moral Argument section — including its Reveal Architecture (the father-wound reveal's timing) — gets meaningful updates. Bump primer version 3 → 4.
 > - **Phase 2 — Treatment**: regenerate `treatment.md` against the refreshed primer in treatment voice. I expect a meaningful rewrite of the Act 2 midpoint and a lighter pass on Acts 1 and 3. Bump treatment version 7 → 8.
 > - **Snapshot**: current primer.md + treatment.md → `.storystormer/history/2026-05-11T14-33-treatment-update/`.
 > - **Mark**: the 7 unintegrated decisions as `integrated: yes (2026-05-11)`.
@@ -96,29 +96,32 @@ Once the user gives the go-ahead, read every file in the list — Read tool, beg
 
 In your first response after the reading pass, quote at least one verbatim passage from each source file (primer, treatment, manifest, each major bio, decisions.md). This proves you absorbed the source. If you find yourself wanting to assert something the source doesn't directly state, surface it as a question instead. The treatment is the source of truth; genre priors are not.
 
-### 4. Phase 1 — Story Primer (six sections)
+### 4. Phase 1 — Story Primer (five sections)
 
-Rewrite `primer.md`. The Primer has **exactly six standard sections** (full section spec in `references/file-schemas.md` § `primer.md`):
+Rewrite `primer.md`. The Primer is **50,000-foot front-matter** with **exactly five standard sections** (full section spec in `references/file-schemas.md` § `primer.md`):
 
 1. **Story Identity** — logline, genre, comps, target length.
-2. **Premise & Moral Argument** — central dramatic question, what the story proves, character thematic positions.
+2. **Premise & Moral Argument** — central dramatic question, what the story proves, character thematic positions, and the **Reveal Architecture** subsection (the ~2–5 load-bearing reveals: *what's hidden · when revealed · why it matters*).
 3. **Structural Framework** — act structure, turning points, POV strategy, pacing, **Treatment Word Budget table**.
 4. **Tone, Style & Writing Rules** — narrative voice, register, dialogue conventions, anti-patterns.
-5. **Setup/Payoff Ledger** — planted setups and intended payoffs, foreshadowing threads.
-6. **Character Dynamics** — relationship map, factions, power dynamics, secrets (Truby's character web).
+5. **Character Dynamics** — relationship map, factions, power dynamics, secrets (Truby's character web).
 
-**Decision routing.** Each pending decision affects one or more primer sections. Use `decision_type` (or the decision content) as a hint:
+**Editing posture — conservative about *whether*, liberal *within*.** The primer is the story's intellectual foundation; it changes less often than the treatment. Two judgments pull in opposite directions on purpose: (1) **Conservative about whether to touch a section** — if it's well-developed and no decision affects it, leave it. Every substantive change traces to a pending decision; don't rewrite for variety or add comps/rules the author didn't brainstorm. (2) **Liberal within a section you are editing** — once a decision requires touching a section, preserve its *meaning*, not its exact words. Rewrite, condense, and reorganize freely to keep it tight and fold the decision in cleanly. There is no "reproduce verbatim" rule for the primer — a section you're already editing is the right place to trim accumulated bloat. (This is the opposite of the treatment's verbatim-preservation rule in Phase 2 — the treatment is authored prose; the primer is a reference doc.)
+
+**The razor — eject, don't absorb.** If the existing primer carries non-standard content — a "Setup/Payoff Ledger," a named worldbuilding apparatus, an "Open Questions" list, a beat sheet — decide first whether it belongs in the primer *at all*. Most such content has a home elsewhere: **drop it, don't fold it in.** Open questions → `questions.md`; project-specific plot machinery / invented systems → canon (`characters/`, `worldbuilding/`); beat sheets / scene-level narrative → `treatment.md`. Ejected content is preserved in `.storystormer/history/` — you're keeping the front-matter small, not destroying anything. Only genuinely 50,000-foot content with no other home gets absorbed into a standard section (load-bearing reveals → §2 Reveal Architecture; character thematic positions → §2; condensed tonal analysis → §4).
+
+**Decision routing.** Each pending decision affects one or more primer sections — or none. Use `decision_type` (or the decision content) as a hint:
 
 | Decision category | Primer section(s) |
 |---|---|
 | `theme` | Section 2 (Premise & Moral Argument) |
-| `structure` | Section 3 (Structural Framework) |
-| `plot` | Section 5 (Setup/Payoff Ledger) if it creates/modifies a chain; may also update Section 3 act breakdown |
-| `character` | Section 2 if it changes a thematic position; Section 5 if it creates a character-driven setup/payoff; Section 6 if it changes a relationship dynamic |
+| `structure` | Section 3 (Structural Framework) — update the act skeleton / turning points if they change |
+| `plot` | Usually **the treatment**, not the primer — plot events are narrative. Touch the primer only if the decision changes the act skeleton (Section 3) or lands/reframes a load-bearing reveal (Section 2, Reveal Architecture) |
+| `character` | Section 2 if it changes a thematic position or a load-bearing reveal; Section 5 if it changes a relationship, alliance, or power balance |
 | `voice` | Section 4 (Tone, Style & Writing Rules) |
-| `worldbuilding` | Rarely affects the primer directly — usually Manifest. May affect Section 3 if it changes structural elements. |
+| `worldbuilding` | Rarely affects the primer directly — usually Manifest / canon. May affect Section 3 if it changes structural elements. |
 
-Some decisions don't affect the primer at all. Purely narrative decisions (plot events, scenes, dialogue) belong in the treatment, not the primer.
+Most decisions don't affect the primer at all. Purely narrative decisions (plot events, scenes, dialogue) belong in the treatment, not the primer. A decision that surfaces an unresolved story problem is an **open question** (`questions.md`), not primer content.
 
 **Treatment Word Budget table.** When writing or updating Section 3, calculate the table from the project's target word count (in `state.md`):
 
@@ -132,12 +135,12 @@ For non-standard structures, distribute equally unless the author has specified 
 
 1. **Recency** — more recent decisions take precedence.
 2. **Thematic consistency** — prefer the resolution that serves the moral argument.
-3. **Setup/payoff preservation** — prefer the resolution that maintains existing chains.
+3. **Reveal preservation** — prefer the resolution that keeps the load-bearing reveal architecture intact.
 4. **Narrative coherence** — prefer what preserves more story options.
 
 Document any conflicts you resolved and your reasoning in the section where they land.
 
-**Section budget enforcement.** Targets (full table in `file-schemas.md`): Section 1 = 800–1,200w, Section 2 = 800–1,200w, Section 3 = 800–1,200w, Section 4 = 800–1,200w, Section 5 = 800–1,500w, Section 6 = 400–800w. Total ~4,500–5,500. If a section runs significantly over budget, condense before adding.
+**Section budget enforcement.** Targets (full table in `file-schemas.md`): Section 1 = 800–1,200w, Section 2 = 800–1,400w (incl. Reveal Architecture), Section 3 = 800–1,200w, Section 4 = 800–1,200w, Section 5 = 400–800w. Total ~4,500, hard ceiling 5,000. If the primer is at or over the ceiling, net condensation is part of this pass — every section you touch is an opportunity to trim.
 
 **Primer voice.** Structured, concise, reference-oriented. Declarative statements (*"The novel uses close third-person POV"*), present tense for specifications, specific concrete language. Avoid hedging unless genuinely uncertain. The Primer is a craft document, not a narrative.
 
@@ -186,7 +189,7 @@ For voice preservation when integrating new material into existing prose, see `r
   - **Setting change** → scenes using that setting may need updating.
   - **Character relationship change** → interactions between those characters may need adjustment.
   Be conservative — only update passages where the inconsistency is *material*, not tangential.
-- **Conflicting decisions** → same priority as Phase 1: Recency > Thematic consistency > Setup/payoff preservation > Narrative coherence.
+- **Conflicting decisions** → same priority as Phase 1: Recency > Thematic consistency > Reveal preservation > Narrative coherence.
 
 #### Treatment Word Budget calibration
 
@@ -241,7 +244,7 @@ After the user approves the new treatment:
 
 ### 7. Report
 
-> Treatment updated. Primer v4 (six sections, ~4,800w), treatment v8. Snapshot saved. 7 decisions marked integrated. Two open questions still flagged in the treatment (Q-019, Q-021), plus one `[NEEDS DEVELOPMENT]` marker on Elena's Act-3 infiltration mechanics. Recommended next step: resolve Q-019 (Marlowe's relationship to the antagonist) in a brainstorm session — it's the highest-priority unresolved one.
+> Treatment updated. Primer v4 (five sections, ~4,400w), treatment v8. Snapshot saved. 7 decisions marked integrated. Two open questions still flagged in the treatment (Q-019, Q-021), plus one `[NEEDS DEVELOPMENT]` marker on Elena's Act-3 infiltration mechanics. Recommended next step: resolve Q-019 (Marlowe's relationship to the antagonist) in a brainstorm session — it's the highest-priority unresolved one.
 
 #### Outline staleness flag
 
@@ -258,7 +261,7 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. T
 
 Three additions in series mode:
 
-1. **Also load `series.md`** during the pre-flight read. The series arc, cross-book setups, and continuity concerns inform the focused book's treatment refresh — especially the Setup/Payoff Ledger in primer Section 5, which must respect cross-book chains that span beyond this book.
+1. **Also load `series.md`** during the pre-flight read. The series arc, cross-book setups, and continuity concerns inform the focused book's treatment refresh — especially primer §2's Reveal Architecture, whose load-bearing reveals must respect cross-book chains (tracked in `series.md`) that span beyond this book.
 2. **Filter decisions by scope.** Only integrate decisions whose `Scope` is the focused book OR is `series` with the focused book in `Affects books`. Decisions scoped to other books are not consumed by this update — they stay pending for their book's treatment.
 3. **Surface series-level impact in the report.** When the treatment refresh affects cross-book chains (a setup that pays off in a later book, a character state that book N+1 starts from), call it out explicitly: *"This treatment change moves Maya's confrontation with Senator Vance from ch 35 to ch 38. Book 2's opening currently assumes Maya leaves Washington after ch 35 — recommend a brainstorm session on book 2's opening, or a series.md patch to update the Continuity Concerns section."*
 
@@ -302,7 +305,7 @@ Dispatch read subagents per `references/subagent-pattern.md` when:
 **Suggested subagent grouping for a heavy treatment-update:**
 
 1. **Bios subagent** — full-reads every major (and supporting, in series mode) bio in scope. Returns per-bio summary with quoted excerpts focused on Voice Fingerprint, Lie/Ghost, Thematic Posture, and the per-book sub-arcs (series mode).
-2. **Cross-book bios subagent** (series mode only) — reads each book's treatment to surface the focused-book character's actions across the series, for series-aware Setup/Payoff Ledger updates.
+2. **Cross-book bios subagent** (series mode only) — reads each book's treatment to surface the focused-book character's actions across the series, for series-aware Reveal Architecture updates and cross-book chain fidelity.
 3. **Decisions filter subagent** — full-reads `decisions.md`, returns just the unintegrated entries scoped to the focused book or series-with-this-book-affected, plus quoted excerpts and the categorical mapping to primer sections.
 
 The main session retains direct reads of `primer.md`, `treatment.md`, `manifest.md`, and `series.md`. These are *judgment-bearing* artifacts that the two-phase pipeline writes against — the main session must absorb them itself, not via summary, because both phases depend on their full texture.
@@ -323,7 +326,7 @@ For incremental treatment updates against a small project (1 protagonist bio, sh
 ## References
 
 - `references/plan-first.md` — universal plan-first behavior
-- `references/file-schemas.md` — `primer.md` (six sections, Treatment Word Budget), `treatment.md` (header conventions, markers, length), `series.md` schema, scope on decisions/questions
+- `references/file-schemas.md` — `primer.md` (five sections, Reveal Architecture, Treatment Word Budget), `treatment.md` (header conventions, markers, length), `series.md` schema, scope on decisions/questions
 - `references/reading-discipline.md` — full-read rules, substantive mode, Zoom Selection
 - `references/subagent-pattern.md` — **read when bios + treatment combined would consume substantial main context** (typically series mode or 3+ major bios)
 - `references/series.md` — **read when `project_type: series`** (focused-book path resolution, series.md impact, scope filtering)

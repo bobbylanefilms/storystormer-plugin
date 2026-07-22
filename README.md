@@ -95,7 +95,7 @@ my-series/
     └── config.json              # project_type: series, books: [...], current_focus: book-1
 ```
 
-The eight skills work the same way in series mode — they just resolve per-book file paths through `books/<current_focus>/` instead of the workspace root. Series mode adds:
+The eleven skills work the same way in series mode — they just resolve per-book file paths through `books/<current_focus>/` instead of the workspace root. Series mode adds:
 
 - **Shared character bios** with per-book sub-arcs (Maya grows across all three books; one bio captures the full arc).
 - **A `series.md` arc document** that tracks cross-book setups and payoffs (the locket planted in book 1 ch 2 pays off in book 3 ch 14).
@@ -132,7 +132,7 @@ No GitHub round-trip needed — add the marketplace straight from the local path
 /plugin install storystormer@storystormer-marketplace
 ```
 
-In both surfaces, plugin skills are namespaced (`/storystormer:init`, `/storystormer:status`, …) and the eight workflow skills load automatically via progressive disclosure when your intent matches their descriptions.
+In both surfaces, plugin skills are namespaced (`/storystormer:init`, `/storystormer:status`, …) and the eleven workflow skills load automatically via progressive disclosure when your intent matches their descriptions.
 
 ## Use it
 

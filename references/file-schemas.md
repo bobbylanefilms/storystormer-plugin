@@ -98,7 +98,7 @@ A political thriller trilogy. Book 1 is in late outlining (40/50 chapters drafte
 
 Per-book state.md files at `books/<slug>/state.md` carry the standalone-novel "What Exists" structure, scoped to that one book.
 
-## `primer.md` — story craft dossier (six sections)
+## `primer.md` — story craft dossier (five sections)
 
 ```yaml
 ---
@@ -108,9 +108,19 @@ built_from_decisions: [D-001, D-002, D-005, D-009, D-012, D-018]
 ---
 ```
 
-The Story Primer is a structured craft reference. It defines *how* the story is told — its identity, moral argument, structural framework, writing rules, setup/payoff chains, and character dynamics. Downstream agents (treatment writer, prose generators) read it for craft decisions, structural plans, and voice guidance.
+The Story Primer is **50,000-foot front-matter** — the smallest set of load-bearing decisions that define what the story *is*. It defines *how* the story is told: its identity, moral argument, load-bearing reveal architecture, structural framework, writing rules, and character dynamics. Downstream agents (treatment writer, prose generators) read it for craft decisions, structural plans, and voice guidance. It is a short reference document, not a treatment and not an encyclopedia.
 
-The Primer has **exactly six standard sections** — no more, no fewer. Every piece of primer content lives inside one of these sections. Total target length: **~4,500–5,500 words** across all six. The Primer is a reference document, not an essay; concise specific statements beat expansive analysis.
+The Primer has **exactly five standard sections** — no more, no fewer. Every piece of primer content lives inside one of these sections. Total target length: **~4,500 words** across all five, with a hard ceiling of **5,000**. The Primer is a reference document, not an essay; concise specific statements beat expansive analysis. Keeping it small and stable is a feature — every downstream consumer that loads it whole pays as little as possible.
+
+### The razor — content with another home is ejected, never absorbed
+
+The primer holds only material with **no other home** in the workspace. Content that belongs elsewhere is dropped from the primer, not folded into a section:
+
+- **Open questions** (unresolved story problems, "needs deciding" items) → `questions.md`, not the primer.
+- **Project-specific plot machinery** (named operations, invented technologies, faction charters, worldbuilding apparatus) → canon (`characters/`, `worldbuilding/`), not the primer.
+- **Scene-level detail** (beat sheets, choreography, what-happens-next narrative) → `treatment.md`, not the primer.
+
+Every primer rewrite is snapshotted in `.storystormer/history/`, so ejected content is never destroyed — it just stops riding along in the front-matter. Do not carry ejected content forward "just in case."
 
 ### Section 1 — Story Identity (800–1,200w)
 
@@ -118,11 +128,13 @@ Logline (1–3 sentences capturing the hook), primary genre and subgenre, 3–5 
 
 **Does NOT contain**: premise or moral argument (Section 2), character descriptions (Manifest), plot summary (treatment).
 
-### Section 2 — Premise & Moral Argument (800–1,200w)
+### Section 2 — Premise & Moral Argument (800–1,400w)
 
-The central dramatic question the story asks, the premise/moral argument (what the story proves through events), core conflict architecture (the levels of conflict operating simultaneously), character thematic positions (how each major character embodies a different answer to the central question), thematic parallels and structural echoes between characters.
+The central dramatic question the story asks, the premise/moral argument (what the story proves through events), core conflict architecture (the levels of conflict operating simultaneously), character thematic positions (how each major character embodies a different answer to the central question), thematic parallels and structural echoes between characters, and the load-bearing **Reveal Architecture** (subsection below).
 
-**Does NOT contain**: detailed character bios (Manifest), scene-by-scene narrative (treatment), writing technique specifications (Section 4).
+**Reveal Architecture (subsection).** The story's *load-bearing* reveals — the central mysteries, secrets, and revelations whose timing is structural, the ones that reframe the story when they land. For each, state three things tightly: **what is hidden**, **when it is revealed** (which act / turning point), and **why it matters** (what the revelation reframes or proves). This is deliberately **not** a ledger of every planted setup and payoff — capture only the handful of reveals the architecture depends on; a story usually has **two to five**. Ordinary foreshadowing, minor callbacks, and setup/payoff hygiene are the treatment's and the prose stage's job, not front-matter. If a reveal's payoff is genuinely undecided, that is an **open question** — route it to `questions.md`, do not park an unresolved item here.
+
+**Does NOT contain**: detailed character bios (Manifest), scene-by-scene narrative (treatment), writing technique specifications (Section 4), a running ledger of every setup and payoff (retired — capture only load-bearing reveals, above).
 
 ### Section 3 — Structural Framework (800–1,200w)
 
@@ -153,13 +165,7 @@ Overall narrative voice description, tonal register (e.g., *"dark procedural rea
 
 **Does NOT contain**: character personality descriptions (Manifest), character-specific humor examples at scene level (summarize the register, don't write example scenes), full dramatic-irony analysis (state the approach in 1–2 sentences).
 
-### Section 5 — Setup/Payoff Ledger (800–1,500w, scales with story complexity)
-
-Planted setups with their intended payoffs (organized by plant location), foreshadowing threads spanning multiple acts, mystery/revelation sequences (what's hidden, when it's revealed, what the revelation means), open questions about payoff timing or mechanism.
-
-This section scales with story complexity. A tightly plotted thriller may need the full 1,500w; a character-driven literary novel may need ~600w.
-
-### Section 6 — Character Dynamics (400–800w)
+### Section 5 — Character Dynamics (400–800w)
 
 Key relationship dynamics between major characters (alliances, conflicts, mentoring, mirroring), power dynamics (who has leverage over whom), faction/group structures and their internal fault lines, cross-faction tensions (character belongs to one group but loyal to another), secrets between characters that drive dramatic irony.
 
@@ -169,25 +175,24 @@ Use concise relationship descriptors — *"Marcus → Elena: professional rivalr
 
 ### Header conventions
 
-- `##` (H2) for each of the six standard sections: `## 1. Story Identity`, `## 2. Premise & Moral Argument`, etc.
-- `###` (H3) for subsections within a section: `### Logline`, `### Central Dramatic Question`, etc.
+- `##` (H2) for each of the five standard sections: `## 1. Story Identity`, `## 2. Premise & Moral Argument`, etc.
+- `###` (H3) for subsections within a section: `### Logline`, `### Central Dramatic Question`, `### Reveal Architecture`, etc.
 - H1 (`#`) is reserved for the document title only.
 
-Separate the six sections with `---` horizontal rules for visual clarity.
+Separate the five sections with `---` horizontal rules for visual clarity.
 
 ### Section budget summary
 
 | Section | Target Words |
 |---|---|
 | 1. Story Identity | 800–1,200 |
-| 2. Premise & Moral Argument | 800–1,200 |
+| 2. Premise & Moral Argument (incl. Reveal Architecture) | 800–1,400 |
 | 3. Structural Framework (incl. Treatment Word Budget table) | 800–1,200 |
 | 4. Tone, Style & Writing Rules | 800–1,200 |
-| 5. Setup/Payoff Ledger | 800–1,500 (scales with story complexity) |
-| 6. Character Dynamics | 400–800 |
-| **Total** | **~4,500–5,500** |
+| 5. Character Dynamics | 400–800 |
+| **Total** | **~4,500 (hard ceiling 5,000)** |
 
-If a section runs significantly over budget, condense before adding. Density matters more than coverage.
+If a section runs at or over budget, condensing is part of the pass — every section you touch is an opportunity to trim. Density matters more than coverage.
 
 ## `treatment.md` — full story treatment
 
@@ -606,7 +611,7 @@ A numbered sequence of dramatic beats within the chapter. Each beat is a 1–3 s
 
 - **Premise** (≤60w) — the chapter's reason to exist. If you can't write this in one or two sentences, the spine entry probably needs to be sharpened first.
 - **Scene Beats** (200–400w) — the chapter's spine. Each beat names what happens *and what shifts*. A beat that doesn't shift something (status, knowledge, relationship, location, internal state) is filler.
-- **Setups / Payoffs** — cross-reference primer Section 5 (Setup/Payoff Ledger). Each entry should map to a tracked chain in the ledger; if a chapter introduces a new chain, add it to the ledger during the next treatment-update.
+- **Setups / Payoffs** — the chapter-local record of what this chapter plants and pays off. A load-bearing reveal should trace to the primer's §2 Reveal Architecture; ordinary chains trace to the treatment. If a chapter's setup has no decided payoff anywhere, that's an open question — log it in `questions.md` rather than parking it here.
 - **Character Notes** (100–200w) — what *changes* for each character in this chapter. Not a status report ("Marlowe is angry"), a delta ("Marlowe stops trusting Park").
 - **Dialogue Anchors** (50–150w) — only the lines that *must* land. Don't draft full dialogue at the outline stage; that's prose work.
 - **Connections** (50–100w) — the chapter's seams. What's carried from the previous chapter; what's set up for the next. This is what makes the outline readable as a chain.
