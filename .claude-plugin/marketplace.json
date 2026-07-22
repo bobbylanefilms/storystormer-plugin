@@ -11,7 +11,7 @@
       "name": "storystormer",
       "source": "./",
       "description": "Conversational story development workspace — brainstorm, canon, treatment, chapter outline, pre-prose blueprint, and prose, for standalone novels or multi-book series. Drop into any folder, bring any state of materials, and Claude triages, structures, develops, outlines, and drafts the story alongside you.",
-      "version": "0.7.0-poc",
+      "version": "0.8.0-poc",
       "author": {
         "name": "Robert Sawyer",
         "email": "rsawyer@mcdonaldcarano.com"

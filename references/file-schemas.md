@@ -704,7 +704,7 @@ chapters/chapter-17/
 
 ### Blueprint (`ch<NN>-blueprint.md`) — the pre-prose production brief
 
-Lives in the chapter folder, chapter-number-prefixed: `chapters/chapter-17/ch17-blueprint.md`. A **Blueprint** is a single, self-contained context document handed to a prose-writing agent before it writes the chapter — *the prose agent should be able to write the chapter from the Blueprint alone.* It gathers every character and worldbuilding element that will *surface* in the chapter, at the right *resolution* for each (tiered POV → Major → Supporting → Minor → Referenced), with scene-current state fused in, and nothing dormant. Written by the `blueprint` skill. For the full content spec — the Scene-Surface Test, character tiering with word ceilings, worldbuilding selection, the eight required sections, and the quality checklist — see `references/blueprint-spec.md`. This section specifies only the *file shape*.
+Lives in the chapter folder, chapter-number-prefixed: `chapters/chapter-17/ch17-blueprint.md`. A **Blueprint** is a single, self-contained context document handed to a prose-writing agent before it writes the chapter — *the prose agent should be able to write the chapter from the Blueprint alone.* At prose time it **replaces the raw Canon layer entirely** (bios + worldbuilding + primer), so it is a **fidelity-preserving consolidation**: it carries every character and worldbuilding element that will *surface* in the chapter at the *resolution* its prominence earns (Foreground verbatim → Background summarized → Dormant omitted; characters tiered POV → Major → Supporting → Minor → Referenced), with scene-current state fused in and the primer's story-level frame harvested into a Story Context section. Written by the `blueprint` skill. For the full content spec — the Sole-Carrier / Prominence-Sets-Resolution philosophy, character tiering with word ceilings, personality frameworks, worldbuilding selection, the nine required sections, and the quality checklist — see `references/blueprint-spec.md`. This section specifies only the *file shape*.
 
 ```yaml
 ---
@@ -722,7 +722,7 @@ scene_split: false   # true when the chapter is scene-split and the Blueprint ca
 ---
 ```
 
-Body — the eight Blueprint sections (full formats in `references/blueprint-spec.md`):
+Body — the nine Blueprint sections (full formats in `references/blueprint-spec.md`):
 
 ```markdown
 # Chapter 17 Blueprint — The Locket
@@ -734,29 +734,32 @@ Body — the eight Blueprint sections (full formats in `references/blueprint-spe
 ## 1. Scene Function
 [single line, 3–6 words, standard story-structure terminology]
 
-## 2. Characters
-[tiered — POV → Major → Supporting → Minor → Referenced; each at its tier's resolution, current state fused in]
+## 2. Story Context
+[200–400w harvested from the primer — genre + promises, premise/logline, moral argument & thematic throughline, tone/style (voice rules), character web. The primer is NOT in the prose agent's context on the lean path; this section is its sole carrier.]
 
-## 3. Setting
-[single sensory-rich paragraph, 75–100w]
+## 3. Characters
+[tiered — POV → Major → Supporting → Minor → Referenced; each at its tier's resolution, current state fused in, all recorded personality frameworks carried with scene activations flagged]
 
-## 4. Main Source of Conflict
+## 4. Setting
+[single sensory-rich paragraph, 75–150w — the opening sensory frame; deep foreground-location detail lives in Worldbuilding]
+
+## 5. Main Source of Conflict
 [single paragraph, 100–125w — the tension specific to THIS chapter]
 
-## 5. Symbolism and Thematic Layer
-[single paragraph, 100–125w]
+## 6. Symbolism and Thematic Layer
+[single paragraph, 100–125w — anchored to the moral argument carried in Story Context]
 
-## 6. Continuity Considerations
-[single paragraph, 150–250w — links to prior chapters, foreshadowing, must-stay-consistent, canon-vs-scene resolutions]
+## 7. Continuity Considerations
+[single paragraph, 150–250w — links to prior chapters, new state established here, foreshadowing, must-stay-consistent, canon-vs-scene resolutions]
 
-## 7. Worldbuilding
-[bullet list — each element names its scene trigger + only the dimensions the chapter uses]
+## 8. Worldbuilding
+[bullet list — each element names its scene trigger + prominence-tiered detail (Foreground 150–400w / Background 40–100w / atmospheric 1–2 sentences), governing philosophy preserved]
 
-## 8. Other Notes
+## 9. Other Notes
 [bullet list, 75–100w — structure, transitions, unresolved threads, tonal target, POV reminders]
 ```
 
-**Granularity is chapter-level.** One `ch<NN>-blueprint.md` per chapter. The Scene-Surface Test (does this detail surface *in this chapter*?) governs what's included. When a chapter is genuinely **scene-split** (multi-POV, or long enough to warrant `scenes/`), set `scene_split: true` and repeat the Characters / Setting / Conflict / Worldbuilding sections per scene under `## Scene 1 — …`, `## Scene 2 — …` headers — because tiering, POV, and current state can differ scene-to-scene. The Symbolism, Continuity, and Other Notes sections stay chapter-level. Default to the single chapter-level form; reach for the scene-split form only when the chapter actually needs it (matching the prose stage's single-file-vs-`scenes/` rule).
+**Granularity is chapter-level.** One `ch<NN>-blueprint.md` per chapter. Prominence sets resolution (how prominent is this element *in this chapter*?) — inclusion is generous, resolution is tiered. When a chapter is genuinely **scene-split** (multi-POV, or long enough to warrant `scenes/`), set `scene_split: true` and repeat the Characters / Setting / Conflict / Worldbuilding sections per scene under `## Scene 1 — …`, `## Scene 2 — …` headers — because tiering, POV, and current state can differ scene-to-scene. The Story Context, Symbolism, Continuity, and Other Notes sections stay chapter-level. Default to the single chapter-level form; reach for the scene-split form only when the chapter actually needs it (matching the prose stage's single-file-vs-`scenes/` rule).
 
 **Scene-current state** comes from two sources, in this order: (1) the **Revelation Log** of each Canon entry, filtered to `chapter ≤ 17` (see `canon-schemas.md` § Revelation Log) — the crude, authoritative timeline of what's changed; and (2) reconstruction from the treatment's chronology and prior chapters' outlines/prose where the log is silent. A Blueprint for chapter 17 **never** writes toward a Revelation Log entry dated after chapter 17 — that's future state.
 

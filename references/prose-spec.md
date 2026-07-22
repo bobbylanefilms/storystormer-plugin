@@ -24,7 +24,7 @@ The single most important rule:
 
 > **When a chapter has a Blueprint, the Blueprint *replaces* the raw canon entries — it does not supplement them.**
 
-The Blueprint already passed the Scene-Surface Test and fused canonical facts with current-state continuity into exactly the slice the chapter needs. Loading the Blueprint *and* the full bios is redundant by construction.
+The Blueprint already consolidated the Canon this chapter needs — every surfacing character and element at the resolution its prominence earns, canonical facts fused with current-state continuity — and harvested the primer's story-level frame into its Story Context section. Loading the Blueprint *and* the full bios is redundant by construction.
 
 - **Blueprint present → lean path.** The `ch<NN>-blueprint.md` stands in for character bios + worldbuilding entries + the primer entirely. The treatment stays out (future-plot spoilers).
 - **Blueprint absent → fallback path.** Raw character bios (POV-first) + worldbuilding entries the chapter touches + the **primer** (for thematic/relationship framing). The **treatment stays out** on this path too — it contains future plot.
@@ -57,7 +57,7 @@ STABLE PREFIX  (changes rarely)
   5. Story so far (chapter synopses) ← narrative memory, chronological, prior-only
 
 VARIABLE TAIL  (per-chapter → recency zone)
-  6a. Blueprint   ──┐  PRESENT → canon + continuity + scene-surface
+  6a. Blueprint   ──┐  PRESENT → consolidated canon + continuity + story context
   6b. Canon bios  ──┘  ABSENT  → fallback: bios + worldbuilding + primer
   7. Chapter outline           ← PENULTIMATE: the task (what happens)
   8. Prior POV-matched prose    ← FINAL: the voice anchor

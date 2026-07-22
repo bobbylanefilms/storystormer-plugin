@@ -5,9 +5,9 @@ description: Generate or revise a chapter Blueprint — the self-contained, pros
 
 # StoryStormer · Blueprint
 
-You are building the **Blueprint** for one or more chapters — the production-ready brief a prose-writing agent will work from. The chapter outline (`ch<NN>-outline.md`) says *what happens* in the chapter; the Blueprint assembles *everything the prose agent needs to render it well* into a single self-contained document. The standard the Blueprint must meet: **the prose agent could write the chapter from the Blueprint alone**, without opening the bios, the treatment, or the manifest.
+You are building the **Blueprint** for one or more chapters — the production-ready brief a prose-writing agent will work from. The chapter outline (`ch<NN>-outline.md`) says *what happens* in the chapter; the Blueprint assembles *everything the prose agent needs to render it well* into a single self-contained document. At prose time the Blueprint **replaces the raw Canon layer entirely** — bios, worldbuilding, and the primer are all omitted on the prose skill's lean path — so it is a **fidelity-preserving consolidation, not a summary**: whatever it drops, the prose agent never sees. The standard it must meet: **the prose agent could write the chapter from the Blueprint alone**, without opening the bios, the primer, or the manifest.
 
-The full craft spec — the Scene-Surface Test, character tiering with word ceilings, worldbuilding selection, the eight required sections, the quality checklist — lives in **`references/blueprint-spec.md`**. Read it before generating. This skill operates the *workflow*; the spec defines *what good looks like*.
+The full craft spec — the Sole-Carrier rule, Prominence-Sets-Resolution tiering, personality frameworks, worldbuilding selection, the nine required sections, the quality checklist — lives in **`references/blueprint-spec.md`**. Read it before generating. This skill operates the *workflow*; the spec defines *what good looks like*.
 
 Two operating modes:
 
@@ -48,11 +48,12 @@ The Blueprint is the **pre-prose** stage of the chapter pipeline (`outline → b
 For each chapter in scope, the **seed** is the judgment-free context (read directly in the main session):
 
 - The chapter's `ch<NN>-outline.md` (full) — the contract this Blueprint fulfills.
-- `outline/structure.md` — the spine slot + POV strategy for the chapter.
-- The **immediately-preceding chapter's outline** (`ch<N-1>-outline.md`), or its prose if it exists — the continuity handoff (clothing, injuries, emotional residue, open beats carried forward).
-- `primer.md` Sections 2, 4, 5 (moral argument, voice rules, setup/payoff ledger) and `treatment.md` (the passage(s) for this chapter's spine slot — for chapter chronology and what's been revealed by now).
+- `outline/structure.md` — the spine slot + POV strategy for the chapter, **plus the Chapter Spine** (the one-line-per-chapter arc so the Blueprint knows where this chapter sits without reading future chapters' plot).
+- **The POV-matched continuity anchor** — walk backward from chapter N to the most recent prior chapter (`< N`) with the **same `pov`**, and read its prose if written, else its `ch<NN>-outline.md`. That's the carried-forward state (clothing, injuries, emotional residue, open beats) for *this POV character*, which is what actually matters for continuity. Fall back to the immediately-preceding chapter of any POV if no same-POV prior chapter exists; a POV debut (or chapter 1) has no anchor and leans on the treatment slot + Revelation Log. (Glob `chapters/*/ch*-{prose,outline}.md`, read each's `pov` + `chapter` frontmatter, filter `< N`, prefer matching `pov`, pick the max chapter — the same walk-back the `prose` skill uses.)
+- **The primer, harvested generously** for §2 Story Context — genre + promises, premise/logline, moral argument & thematic throughline, tone/style (voice rules), and the character web — **plus the Setup/Payoff Ledger** (§5), which gives forward orientation (what this chapter must plant, and where it pays off) as a *structural index*, not spoiler-laden narrative.
+- `treatment.md` — **only the spine-slot passage(s) for this chapter** (its chronology and what's been revealed by now). Do **not** seed the full treatment: the Blueprint's knowledge horizon is this chapter, and forward orientation comes from the distilled artifacts above (Chapter Spine + Setup/Payoff Ledger), not from the raw future plot. See § The spoiler firewall in `references/blueprint-spec.md`.
 
-The seed tells you *what the chapter is*. The rest — *what Canon this chapter needs* — you assemble yourself. Deciding that is the core of the job.
+The seed tells you *what the chapter is* and *where it sits*. The rest — *what Canon this chapter needs* — you assemble yourself. Deciding that is the core of the job.
 
 ### 3. Identify the surfacing cast and elements
 
@@ -76,8 +77,8 @@ From the chapter outline, identify **every on-page character and every worldbuil
 
 > Plan for the ch 17 Blueprint — *The Locket*:
 >
-> - **Seed**: `ch17-outline.md`, `ch16-outline.md` (continuity), structure spine slot, primer §2/§4/§5, treatment's *Audit Box* passage.
-> - **Surfacing cast**: Marlowe (POV), Voss (Major), Park (Supporting), Doris (Minor) + 3 worldbuilding elements (the locket, Mara's Diner, Voss Industries). Full-read each bio + entry; apply Revelation Logs ≤ ch 17 (Marlowe's ch 14 injury is still active).
+> - **Seed**: `ch17-outline.md`; ch 14 prose (Marlowe's most recent prior POV chapter — the continuity anchor); structure spine slot + Chapter Spine; primer harvested for Story Context (genre, premise, moral argument, voice, character web) + the Setup/Payoff Ledger; treatment's *Audit Box* spine-slot passage only.
+> - **Surfacing cast**: Marlowe (POV), Voss (Major), Park (Supporting), Doris (Minor) + 3 worldbuilding elements (the locket, Mara's Diner, Voss Industries). Full-read each bio + entry; carry all recorded personality frameworks; apply Revelation Logs ≤ ch 17 (Marlowe's ch 14 injury is still active).
 > - **Write**: `ch17-blueprint.md` v1; index Blueprint cell → v1; `state.md` updated.
 >
 > About 3–5 minutes. Sound right?
@@ -86,24 +87,27 @@ From the chapter outline, identify **every on-page character and every worldbuil
 
 For a **single chapter**, gather and write directly in the main session unless the Canon reads are large (then dispatch one subagent per `references/subagent-pattern.md` § When to dispatch). For a **batch**, dispatch **one Blueprint subagent per chapter, in parallel** — each is an execution subagent that also does substantive reads:
 
-- **Reads** (substantive mode, full reads, no grep): its chapter outline, the prior chapter's outline, and the full Canon entry for each on-page character and element, plus each entry's `## Revelation Log`.
+- **Reads** (substantive mode, full reads, no grep): its chapter outline, the POV-matched continuity anchor (the most recent prior same-POV chapter's prose if written, else its outline), the harvested primer (for Story Context) + the Setup/Payoff Ledger, and the full Canon entry for each on-page character and element, plus each entry's `## Revelation Log`.
 - **Applies the Revelation Log filter**: includes only log entries dated `≤` this chapter; treats anything later as future state and does not write toward it.
+- **Carries all recorded personality frameworks** for POV/Major (characterized to the chapter), harvests the primer into Story Context, and tiers worldbuilding by prominence — per `references/blueprint-spec.md`.
 - **Writes** `chapters/chapter-NN/ch<NN>-blueprint.md` per `references/file-schemas.md` § Blueprint and `references/blueprint-spec.md`.
 - **Returns** a structured summary: the surfacing cast and their assigned tiers, the worldbuilding elements, any Revelation Log gaps detected (state changes in prior chapters not yet logged in Canon), any Canon-vs-scene conflicts resolved, and any precondition gaps (missing bio, marker carried forward).
 
-The seed is passed in the brief so subagents don't re-derive it. Continuity is safe to parallelize because each chapter reads the *prior chapter's outline* (already on disk), never the prior chapter's not-yet-written Blueprint.
+The seed is passed in the brief so subagents don't re-derive it. Continuity is safe to parallelize because each chapter reads its POV-matched anchor from what's *already on disk* (a prior chapter's prose or outline), never a not-yet-written Blueprint.
 
 ### 6. The craft — follow `references/blueprint-spec.md`
 
 Generate each Blueprint to the spec. The load-bearing rules:
 
-- **The Scene-Surface Test** governs every sentence: will this detail surface in the prose of *this chapter*? If not, cut it.
+- **The Blueprint is the sole carrier.** It replaces bios + worldbuilding + primer at prose time — a detail you omit is one the prose agent invents or gets wrong. When unsure whether something will surface, **carry it**. Inclusion is generous; what you tier is *resolution*, not presence.
+- **Prominence sets resolution.** For each element ask *how prominent is this in THIS chapter?* — **Foreground** (preserve most detail, largely verbatim) → **Background** (summarize to the needed impression) → **Dormant** (omit). Carry Canon wording verbatim by default; paraphrase only to distill or characterize.
 - **Tier each character chapter-locally** (POV → Major → Supporting → Minor → Referenced), at the tier's resolution, sized to what surfaces — ceilings are ceilings, not targets. A character's Blueprint tier is *not* their manifest bio tier; the protagonist is POV in their chapters and Referenced (or absent) in others.
-- **Fuse scene-current state** from the Revelation Log (≤ this chapter) and prior-chapter continuity into one clean image per element.
-- **Emit only the worldbuilding dimensions the chapter touches**, each with its scene trigger.
-- **Eight sections**: Scene Function, Characters, Setting, Conflict, Symbolism, Continuity, Worldbuilding, Other Notes.
+- **Carry all recorded personality frameworks** (Enneagram / MBTI / CliftonStrengths) for POV and Major characters, characterized to this chapter (Enneagram integration/disintegration direction named, MBTI/Clifton activations flagged); compact for Supporting; omit for Minor/Referenced. Never invent typology the bio doesn't record.
+- **Fuse scene-current state** from the Revelation Log (≤ this chapter) and prior-chapter continuity into one clean image per element; apply the clothing continuity rule (established state preserved identically; unestablished state given concrete choices, noted in Continuity).
+- **Emit worldbuilding at prominence-tiered fidelity**, each element with its scene trigger and its governing logic preserved.
+- **Nine sections**: Scene Function, **Story Context** (primer harvest), Characters, Setting, Conflict, Symbolism, Continuity, Worldbuilding, Other Notes.
 
-For a **scene-split** chapter (multi-POV, or one with a `scenes/` subfolder), set `scene_split: true` and repeat Characters/Setting/Conflict/Worldbuilding per scene; keep Symbolism/Continuity/Other Notes chapter-level. Default to the single chapter-level form.
+For a **scene-split** chapter (multi-POV, or one with a `scenes/` subfolder), set `scene_split: true` and repeat Characters/Setting/Conflict/Worldbuilding per scene; keep Story Context/Symbolism/Continuity/Other Notes chapter-level. Default to the single chapter-level form.
 
 ### 7. Content discipline — never write past chapter N, never confabulate
 
@@ -159,7 +163,7 @@ Two additions in series mode:
 
 ## References
 
-- `references/blueprint-spec.md` — **the craft spec**: Scene-Surface Test, tiering with ceilings, worldbuilding selection, the 8 sections, quality checklist
+- `references/blueprint-spec.md` — **the craft spec**: Sole-Carrier / Prominence-Sets-Resolution philosophy, tiering with ceilings, personality frameworks, worldbuilding selection, the 9 sections, quality checklist
 - `references/file-schemas.md` — `ch<NN>-blueprint.md` file shape, `outline/_index.md` matrix, per-chapter `.history/`
 - `references/canon-schemas.md` — § Revelation Log (scene-current state mechanism), bio + worldbuilding content shape
 - `references/plan-first.md` — universal plan-first behavior
