@@ -26,8 +26,8 @@ The single most important rule:
 
 The Blueprint already consolidated the Canon this chapter needs — every surfacing character and element at the resolution its prominence earns, canonical facts fused with current-state continuity — and harvested the primer's story-level frame into its Story Context section. Loading the Blueprint *and* the full bios is redundant by construction.
 
-- **Blueprint present → lean path.** The `ch<NN>-blueprint.md` stands in for character bios + worldbuilding entries + the primer entirely. The treatment stays out (future-plot spoilers).
-- **Blueprint absent → fallback path.** Raw character bios (POV-first) + worldbuilding entries the chapter touches + the **primer** (for thematic/relationship framing). The **treatment stays out** on this path too — it contains future plot.
+- **Blueprint present → lean path.** The `ch<NN>-blueprint.md` stands in for character bios + worldbuilding entries + the primer + the manifest entirely. The treatment stays out (future-plot spoilers).
+- **Blueprint absent → fallback path.** Raw character bios (POV-first) + worldbuilding entries the chapter touches + the **primer** (for thematic/relationship framing) + the **manifest** (the cast + worldbuilding inventory, so the prose knows who and what exists beyond the entries loaded in full). The **treatment stays out** on this path too — it contains future plot.
 
 The Blueprint path is the intended one and produces tighter prose (higher signal-to-noise). The fallback exists so prose is still possible if a chapter wasn't blueprinted — but recommend blueprinting first.
 
@@ -41,8 +41,9 @@ Read the inputs in this order. The order matters for two reasons: **voice condit
 
 - **Agent identity** — a prose-generation specialist transforming an outline into polished, publishable fiction.
 - **POV type + tense** (resolved before assembly — see below), with the POV-specific rules.
+- **Target length** (below) — generate mode only.
 - **Output rules** (below).
-- **Continuation framing:** the prior prose is a *voice reference*, not text to continue mid-sentence. The output is a complete, self-contained chapter that begins where the outline says.
+- **Continuation framing:** the prior prose is a *voice reference*, not text to continue mid-sentence. The output is a complete, self-contained chapter that begins where the outline says. Don't repeat or summarize the prior prose's content — continue the story forward.
 - **Spoiler firewall** (below).
 - **Surgical-edit directives** — only in revise mode (below).
 
@@ -52,6 +53,7 @@ Read the inputs in this order. The order matters for two reasons: **voice condit
 STABLE PREFIX  (changes rarely)
   1. Writing sample            ← PRIMACY: the voice north star
   2. Style guide (optional)     ← author-specific craft rules
+  2b. Craft rulebook            ← default craft rules — ONLY when no style guide
   3. This prose spec            ← how to operate (the task contract)
   4. Project metadata + position ← genre, logline, where we are in the book
   5. Story so far (chapter synopses) ← narrative memory, chronological, prior-only
@@ -77,9 +79,12 @@ Voice comes from three project-owned inputs, split by ownership: **the app owns 
 |---|---|---|---|
 | **Prose spec** (this file) | plugin | `references/prose-spec.md` | *how to operate* (voice-neutral) |
 | **Style guide** | user (optional) | `voice/style-guide.md` | *how it should read* — craft rules, anti-patterns |
+| **Craft rulebook** | plugin (default) | `references/prose-craft.md` | *how it should read, by default* — stands in when no style guide exists |
 | **Writing sample** | author (strongly recommended) | `voice/writing-sample.md` | *what the voice is, by example* |
 
 None is sufficient alone: a **sample** shows what the voice sounds like but can't teach avoidance ("never write 'a breath he didn't know he was holding'") or frequency targets; a **style guide** states rules but can't convey rhythm; the **spec** keeps execution correct but is voice-neutral so it's shared across projects. Read together at the top, they reinforce.
+
+**The craft rulebook is the style guide's default stand-in, not its supplement.** When `voice/style-guide.md` is absent, include the full text of `references/prose-craft.md` in the style-guide slot so the prose still gets craft rules (sentence construction, sensory grounding, dialogue beats, AI anti-patterns, pacing). When an authored style guide exists, it supersedes the rulebook — never send both by default; include both only if the user explicitly asks.
 
 ### The precedence rule
 
@@ -87,7 +92,7 @@ The writing sample and the prior POV chapter are **not ruling on the same questi
 
 | Question | Authority |
 |---|---|
-| How should the voice sound? | **Writing sample** → then style guide → then this spec |
+| How should the voice sound? | **Writing sample** → then style guide (or the craft rulebook standing in for it) → then this spec |
 | What just happened / current state / momentum? | **Prior POV chapter prose** |
 | What happens in this chapter? | **Outline** (+ Blueprint) |
 
@@ -110,6 +115,16 @@ Resolve POV from the chapter outline's `pov` (and the project/structure POV stra
 - **Past** (most common) — "she walked, he said." Don't drift to present except in dialogue.
 - **Present** — "she walks, he says." Immediacy; don't drift to past except in marked flashback.
 - **Future** — "she will walk." Rare, prophetic; use deliberately.
+
+## Target length
+
+Resolve an approximate word-count target before assembly — the user's request first, else the chapter outline's density (its beat count and weight), else the project's chapter norm. Assert it in the behavioral frame:
+
+- Aim for approximately the target (±15%).
+- Let the outline's beats set the pacing — don't pad to reach the target, and don't rush the ending to stay under it.
+- If the beats complete naturally short of the target, deepen interiority, sensory grounding, and dialogue texture rather than inventing new plot.
+
+Surgical edits preserve the existing prose's length — no target in revise mode.
 
 ## Output rules
 

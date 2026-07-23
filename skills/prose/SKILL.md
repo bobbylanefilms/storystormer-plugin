@@ -30,7 +30,7 @@ The division of labor:
 ## Preconditions
 
 - **`chapters/chapter-NN/ch<NN>-outline.md` must exist** — it is the task. Refuse without it and recommend `outline-chapters`. If the outline carries unresolved `[OPEN: Q-###]` / `[NEEDS DEVELOPMENT]` markers, surface them: prose written over a gap inherits the gap. Recommend resolving first, or proceed with the gap flagged.
-- **A Blueprint is strongly recommended, not required.** With `ch<NN>-blueprint.md` → the **lean path** (the Blueprint replaces raw bios + worldbuilding + primer; tighter, higher-fidelity prose). Without → the **fallback path** (raw POV-first bios + worldbuilding the chapter touches + primer). On the fallback path, recommend running `blueprint` first; generate anyway if the user wants to.
+- **A Blueprint is strongly recommended, not required.** With `ch<NN>-blueprint.md` → the **lean path** (the Blueprint replaces raw bios + worldbuilding + primer + manifest; tighter, higher-fidelity prose). Without → the **fallback path** (raw POV-first bios + worldbuilding the chapter touches + primer + manifest). On the fallback path, recommend running `blueprint` first; generate anyway if the user wants to.
 - **A writing sample is strongly recommended.** `voice/writing-sample.md` is the voice north-star and the *only* anchor on a POV character's debut chapter (no prior POV prose exists yet). If absent, warn that voice will lean entirely on the prose spec + style guide (weakest on a debut), and offer to scaffold `voice/` and prompt the user for a sample before generating. Don't hard-block — but make the cost explicit.
 
 ## What to do
@@ -46,6 +46,7 @@ For each chapter in scope:
 
 - **POV + tense** — from the chapter outline's `pov` and the project/structure POV strategy (resolve tense from the project default if not chapter-specified). This drives the POV-mode rule the subagent asserts and the POV-matched prior-prose lookup.
 - **Path** — does `ch<NN>-blueprint.md` exist? Lean vs. fallback.
+- **Target length** — resolve a word-count target: the user's ask, else the chapter outline's density, else the project's chapter norm. It rides in the behavioral frame as the target-length directive (`prose-spec.md` § Target length; generate mode only — surgical edits keep the existing length).
 - **POV-matched prior prose** — walk backward to the most recent prior chapter (chapter < NN) with the **same `pov`** that has prose; that's the voice anchor. Fall back to the most recent any-POV prior prose if no same-POV chapter exists; if none at all (a POV debut, or chapter 1), there is no prior-prose anchor and the writing sample carries voice alone. (Glob `chapters/*/ch*-prose.md`, read each one's `pov` + `chapter` frontmatter, filter `< NN`, prefer matching `pov`, pick the max chapter.)
 
 ### 3. The spoiler firewall (hold this throughout)
@@ -81,8 +82,8 @@ The subagent gathers this in its window, but you specify the source in the recip
 
 On approval, build the brief per `references/subagent-pattern.md` § Generation subagents and dispatch:
 
-- **Behavioral frame** first: prose-specialist identity; the resolved **POV-mode rule** + **tense directive** (from `prose-spec.md` § POV rules / Tense); output rules; the spoiler firewall; continuation framing (prior prose is a voice reference, not text to continue).
-- **The full text of `references/prose-spec.md`** pasted as the operational contract (input #3) — the subagent can't reach the plugin bundle.
+- **Behavioral frame** first: prose-specialist identity; the resolved **POV-mode rule** + **tense directive** (from `prose-spec.md` § POV rules / Tense); the **target-length directive**; output rules; the spoiler firewall; continuation framing (prior prose is a voice reference, not text to continue or recap).
+- **The full text of `references/prose-spec.md`** pasted as the operational contract (input #3) — the subagent can't reach the plugin bundle. When `voice/style-guide.md` is absent, also paste the full text of **`references/prose-craft.md`** into the style-guide slot (the default craft rulebook; an authored style guide supersedes it — never both unless the user asks).
 - **Project metadata** — genre, logline, position in the book.
 - **The ordered read-recipe** — the story-folder files in spec order (sample → style guide → story-so-far synopses → Blueprint or canon-fallback → outline → POV-matched prior prose **last**), then the write target and the return schema.
 
@@ -113,7 +114,7 @@ The generation subagent operates in **substantive mode** — it full-reads every
 
 ## Voice assets
 
-`voice/writing-sample.md` (the author's own prose) and `voice/style-guide.md` (craft preferences) are the project-owned half of the voice model (`references/prose-spec.md` § The three-input voice model; schema in `references/file-schemas.md` § Voice assets). If they're absent when the user asks for prose, offer to scaffold them — especially the sample, since without it a POV debut chapter has no voice anchor at all. Keep scaffolding light: create the files, prompt the user to paste a representative passage and jot a few craft rules; don't author a style guide from genre priors.
+`voice/writing-sample.md` (the author's own prose) and `voice/style-guide.md` (craft preferences) are the project-owned half of the voice model (`references/prose-spec.md` § The three-input voice model; schema in `references/file-schemas.md` § Voice assets). When no style guide exists, the plugin's default craft rulebook (`references/prose-craft.md`) stands in for it in the brief — so prose without a style guide still gets craft rules and AI anti-patterns. If the voice assets are absent when the user asks for prose, offer to scaffold them — especially the sample, since without it a POV debut chapter has no voice anchor at all. Keep scaffolding light: create the files, prompt the user to paste a representative passage and jot a few craft rules; don't author a style guide from genre priors.
 
 ## Series Mode
 
@@ -128,7 +129,8 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. P
 
 ## References
 
-- `references/prose-spec.md` — **the operational contract**: assembly order, two paths, voice model + precedence, POV/tense rules, output rules, spoiler firewall, surgical-edit mode, the synopsis spec
+- `references/prose-spec.md` — **the operational contract**: assembly order, two paths, voice model + precedence, POV/tense rules, target length, output rules, spoiler firewall, surgical-edit mode, the synopsis spec
+- `references/prose-craft.md` — the **default craft rulebook** (sentence construction, sensory grounding, dialogue beats, AI anti-patterns, pacing) — pasted into the brief only when `voice/style-guide.md` is absent
 - `references/subagent-pattern.md` — **§ Generation subagents**: the clean-window dispatch recipe and the sequential-batch rule
 - `references/file-schemas.md` — `ch<NN>-prose.md` schema (frontmatter + synopsis + body rules), `voice/` assets, `outline/_index.md` matrix, per-chapter `.history/`
 - `references/plan-first.md` — universal plan-first behavior
