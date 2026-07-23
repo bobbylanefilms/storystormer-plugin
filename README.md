@@ -27,6 +27,14 @@ Eleven skills that load via progressive disclosure when your intent matches:
 
 Plus seven slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline`, and `/storystormer:switch` (series mode only).
 
+## How-to guides
+
+Step-by-step help for the bigger workflows lives in [`guides/`](guides/):
+
+- **[Writing Chapters — Blueprint, Prose & Kit Bash](guides/writing-chapters.md)** — from a chapter outline to finished prose: building the pre-prose Blueprint, generating and refining prose through chat, and Kit Bashing competing multi-model drafts into one chapter.
+
+More guides will follow for other parts of the pipeline.
+
 ## The shape of a project on disk
 
 A fully-developed project's folder looks like this (files appear as the corresponding skill runs — `outline/` doesn't exist until `pre-outline-session`, `characters/<slug>.md` files appear as you build bios, etc.):
