@@ -1,6 +1,6 @@
 ---
 name: prose
-description: Generate or revise a chapter's prose — the actual fiction, written from the chapter's Blueprint, outline, the author's voice inputs, and the story so far. Two modes — generate ("write chapter 17," "draft the prose for chapter 12," "write the next chapter," "write the next three chapters") and revise ("revise the chapter 8 prose," "this paragraph in ch 5 is flat," "tighten the dialogue in chapter 12's confrontation"). Assembles context in the voice-conditioning order (writing sample first, prior POV-matched prose last) and generates in a clean-window subagent, writing `chapters/chapter-NN/ch<NN>-prose.md`. Refuses if a chapter has no outline — run `outline-chapters` first; works best when the chapter has a Blueprint (run `blueprint` first), falling back to raw canon when it doesn't. This is the prose stage: `outline → blueprint → prose → notes`.
+description: Generate or revise a chapter's prose — the actual fiction, written from the chapter's Blueprint, outline, the author's voice inputs, and the story so far. Three modes — generate ("write chapter 17," "draft the prose for chapter 12," "write the next chapter," "write the next three chapters"), revise ("revise the chapter 8 prose," "this paragraph in ch 5 is flat," "tighten the dialogue in chapter 12's confrontation"), and Kit Bash ("kit bash chapter 17," "generate three drafts of ch 12," "build the generation packet," "consolidate the drafts") — competing multi-model drafts reviewed via in-file annotations, then consolidated. Assembles context in the voice-conditioning order (writing sample first, prior POV-matched prose last) and generates in a clean-window subagent, writing `chapters/chapter-NN/ch<NN>-prose.md`. Refuses if a chapter has no outline — run `outline-chapters` first; works best when the chapter has a Blueprint (run `blueprint` first), falling back to raw canon when it doesn't. This is the prose stage: `outline → blueprint → prose → notes`.
 ---
 
 # StoryStormer · Prose
@@ -39,6 +39,7 @@ The division of labor:
 
 - *"Write chapter 17," "draft the prose for ch 12," "write the next chapter," "write the next three chapters"* → **generate mode**.
 - *"Revise ch 8," "this paragraph in ch 5 is flat," "tighten the dialogue in ch 12's confrontation"* → **revise mode** (surgical edit).
+- *"Kit bash ch 17," "generate three drafts," "build the generation packet," "consolidate the drafts"* → **Kit Bash mode** (below). Also offer consolidation unprompted when `chapters/chapter-NN/kitbash/` holds annotated drafts and the user asks about that chapter's prose.
 
 ### 2. Resolve the chapter(s), POV/tense, and path
 
@@ -111,6 +112,18 @@ When the user wants targeted changes to existing prose:
 - The subagent rewrites `ch<NN>-prose.md` and updates the `synopsis` **only if** the edit changed the chapter's events.
 - If the user's complaint is vague (*"this feels flat"*), diagnose before editing — name what you think is off (dialogue carrying no subtext, beats rushed, interiority thin) and confirm before dispatching.
 
+## Kit Bash mode (multi-model drafts)
+
+The full contract lives in **`references/kitbash-spec.md`** — read it when this mode triggers. The shape:
+
+1. **Fan out.** Same resolution as generate mode (chapter, POV/tense, path, target, craft rulebook), then produce competing drafts in `chapters/chapter-NN/kitbash/ch<NN>-draft-<label>.md`:
+   - **Claude drafts** — normal generation subagents with model overrides (e.g. one Opus, one Sonnet), writing to draft files instead of the canonical prose file. Parallel — drafts for the same chapter are independent.
+   - **External drafts, tier 1 (Bash available)** — check for `codex` / `gemini` CLIs and drive each installed one non-interactively against the packet (spec § The two tiers). Missing CLI → that model falls back to tier 2; never block the fan-out.
+   - **External drafts, tier 2 (Cowork / no shell)** — a packet-builder subagent writes `kitbash/ch<NN>-packet.md` (the entire brief pre-assembled, spec § The generation packet); the user pastes it into any external model and saves the output back as a draft file.
+   - The plan proposal names the draft lineup and includes the one-line privacy heads-up: the packet carries the writing sample, canon, and story-so-far outside the Claude ecosystem when pasted externally.
+2. **Review & annotate.** The user reads the drafts side by side and marks them in-file: `**bold**` = love (must survive), `~~strikethrough~~` = hate (must not appear), `[kb: …]` = margin notes. Unambiguous because prose bodies carry no markdown of their own. Never use italics as annotation.
+3. **Consolidate.** Plan-first: scan drafts, report per-draft annotation counts, confirm the base (user's pick, else propose the most-loved). Dispatch a clean-window consolidation subagent — base draft last as spine + voice anchor, loved passages woven in from any draft, strikes and notes honored, conflicts flagged, annotations stripped — writing a normal `ch<NN>-prose.md` (plus `kitbash_base` / `kitbash_drafts` frontmatter). Wire index + state exactly as generate mode; further refinement is ordinary revise mode.
+
 ## Reading discipline
 
 The generation subagent operates in **substantive mode** — it full-reads every input (never grep the Blueprint, the outline, the prior prose, or canon on the fallback path; grep strips the causal/emotional framing and the prose confabulates the gaps). The clean window is what makes the voice order real. The main session reads only what it needs to build the brief and resolve the path — it does not pull the prior full prose chapter or the generated output into its own context. See `references/reading-discipline.md` and `references/subagent-pattern.md`.
@@ -137,6 +150,7 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. P
 - `references/prose-craft-{literary-thriller,cozy-mystery,fantasy,romance,literary-fiction}.md` — **genre craft rulebooks**; the genre-matched one replaces the default per `prose-spec.md` § Which rulebook
 - `references/subagent-pattern.md` — **§ Generation subagents**: the clean-window dispatch recipe and the sequential-batch rule
 - `references/file-schemas.md` — `ch<NN>-prose.md` schema (frontmatter + synopsis + body rules), `voice/` assets, `outline/_index.md` matrix, per-chapter `.history/`
+- `references/kitbash-spec.md` — **Kit Bash**: the two tiers, the generation packet, the annotation protocol, the consolidation contract
 - `references/plan-first.md` — universal plan-first behavior
 - `references/reading-discipline.md` — substantive mode; the no-grep rule
 - `references/series.md` — **read when `project_type: series`** (focused-book paths, shared canon + voice, in-book firewall)
