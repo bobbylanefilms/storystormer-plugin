@@ -5,6 +5,8 @@
 
 This guide walks you through turning a chapter outline into finished prose: building the **Blueprint** (the pre-prose brief), generating the **prose** itself, refining it through chat, and optionally **Kit Bashing** — generating competing drafts from multiple AI models and merging the best of each.
 
+Not there yet? Everything upstream of the chapter outline — workspace setup, brainstorming, canon, treatment, and the outline itself — is covered in **[Developing Your Story — From Idea to Outline](developing-your-story.md)**.
+
 Everything here works the same in **Claude Cowork** and **Claude Code**, except where marked. You never need to remember exact commands — the phrases shown are examples, and plain English variations work fine.
 
 ---
