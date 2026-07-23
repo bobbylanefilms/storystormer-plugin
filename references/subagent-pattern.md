@@ -121,6 +121,9 @@ Task: generate prose for chapter <NN> in a clean window
 
 [BEHAVIORAL FRAME — assert before reading anything]
 - You are a prose-generation specialist. <POV mode rule> <tense directive>.
+- Target length: aim for ~<N> words (±15%). Let the outline's beats set the
+  pacing — don't pad, don't rush the ending; if the beats finish short, deepen
+  interiority and sensory texture rather than inventing plot.
 - Output rules: prose only, no markdown/headers/meta-commentary; bracketed
   outline direction is guidance, never echoed; complete self-contained chapter.
 - Spoiler firewall: read ONLY the files named below. Never read any chapter
@@ -131,6 +134,12 @@ Task: generate prose for chapter <NN> in a clean window
 <the full text of references/prose-spec.md, pasted by the main session — the
 subagent can't reach the plugin bundle, only the story folder. It is voice-neutral,
 so its position ahead of the sample doesn't compete for voice conditioning.>
+
+[CRAFT RULEBOOK — only when voice/style-guide.md is absent]
+<the full text of the selected references/prose-craft*.md (default or the genre
+variant named in the plan), pasted by the main session. Rules text, not exemplar
+prose — like the spec, its pre-sample position doesn't compete for voice
+conditioning. Skip this block entirely when the author has a style guide.>
 
 [PROJECT METADATA] <genre, logline, position in the book>
 
@@ -163,6 +172,8 @@ What to return (NOT the prose itself — it's on disk):
   "continuity_flags": "<anything that didn't reconcile — a Blueprint that looked stale, a missing prior synopsis, a beat the outline left underspecified — OR null>"
 }
 ```
+
+**What "clean window" means precisely.** The subagent starts with no main-conversation history — the brainstorming chat, upstream skill texts, and everything else the main session has accumulated never reach it. It is *not* free of harness scaffolding: the platform's own system prompt and any `CLAUDE.md` / global-memory context ride along in every subagent, ahead of the brief. That scaffolding is operational instruction, not prose, so it doesn't compete with the writing sample for voice conditioning — the sample is still the first *prose* the window sees and the prior POV chapter the last, which is what the primacy/recency architecture needs. The behavioral frame's identity assertion re-anchors the subagent away from the harness's general-assistant framing. One practical consequence: if a story folder carries its own `CLAUDE.md`, keep writing instructions out of it — anything there reaches every generation subagent uninvited.
 
 The main session reads the returned report (compact — no 5,000-word payload), wires `outline/_index.md` + `state.md`, surfaces continuity flags, and points the user at the file to review. For a **batch**, dispatch generation subagents **sequentially** (not parallel) when the chapters share a POV — each chapter's freshly written prose is the next same-POV chapter's voice anchor, so chapter N must finish before N+1 reads it. Independent POV threads in the same batch can run in parallel.
 

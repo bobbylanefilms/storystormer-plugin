@@ -84,7 +84,9 @@ Voice comes from three project-owned inputs, split by ownership: **the app owns 
 
 None is sufficient alone: a **sample** shows what the voice sounds like but can't teach avoidance ("never write 'a breath he didn't know he was holding'") or frequency targets; a **style guide** states rules but can't convey rhythm; the **spec** keeps execution correct but is voice-neutral so it's shared across projects. Read together at the top, they reinforce.
 
-**The craft rulebook is the style guide's default stand-in, not its supplement.** When `voice/style-guide.md` is absent, include the full text of `references/prose-craft.md` in the style-guide slot so the prose still gets craft rules (sentence construction, sensory grounding, dialogue beats, AI anti-patterns, pacing). When an authored style guide exists, it supersedes the rulebook — never send both by default; include both only if the user explicitly asks.
+**The craft rulebook is the style guide's default stand-in, not its supplement.** When `voice/style-guide.md` is absent, include the full text of the selected craft rulebook in the style-guide slot so the prose still gets craft rules (sentence construction, sensory grounding, dialogue beats, AI anti-patterns, pacing). When an authored style guide exists, it supersedes the rulebook — never send both by default; include both only if the user explicitly asks.
+
+**Which rulebook:** the user's explicit pick wins (*"use the fantasy rulebook"*); otherwise match the project's genre (from `state.md` / the primer) to a genre variant — `prose-craft-literary-thriller.md`, `prose-craft-cozy-mystery.md`, `prose-craft-fantasy.md`, `prose-craft-romance.md`, `prose-craft-literary-fiction.md` — falling back to the default `prose-craft.md` when no variant clearly fits. This is a judgment match, not a lookup ("romantic suspense" might read thriller or romance depending on the book); name the pick in the plan proposal so the user can override before generation.
 
 ### The precedence rule
 

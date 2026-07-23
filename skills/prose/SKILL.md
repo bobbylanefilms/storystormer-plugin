@@ -47,6 +47,8 @@ For each chapter in scope:
 - **POV + tense** — from the chapter outline's `pov` and the project/structure POV strategy (resolve tense from the project default if not chapter-specified). This drives the POV-mode rule the subagent asserts and the POV-matched prior-prose lookup.
 - **Path** — does `ch<NN>-blueprint.md` exist? Lean vs. fallback.
 - **Target length** — resolve a word-count target: the user's ask, else the chapter outline's density, else the project's chapter norm. It rides in the behavioral frame as the target-length directive (`prose-spec.md` § Target length; generate mode only — surgical edits keep the existing length).
+- **Craft rulebook** (only when `voice/style-guide.md` is absent) — pick the variant matching the project's genre per `prose-spec.md` § Which rulebook (genre variants for literary thriller, cozy mystery, fantasy, romance, literary fiction; else the default `prose-craft.md`). Name the pick in the plan; the user's explicit choice always wins. An authored style guide supersedes the rulebook entirely.
+- **Model** — the generation subagent inherits the session's model unless the user names one; if they do, pass it on dispatch and note it in the plan.
 - **POV-matched prior prose** — walk backward to the most recent prior chapter (chapter < NN) with the **same `pov`** that has prose; that's the voice anchor. Fall back to the most recent any-POV prior prose if no same-POV chapter exists; if none at all (a POV debut, or chapter 1), there is no prior-prose anchor and the writing sample carries voice alone. (Glob `chapters/*/ch*-prose.md`, read each one's `pov` + `chapter` frontmatter, filter `< NN`, prefer matching `pov`, pick the max chapter.)
 
 ### 3. The spoiler firewall (hold this throughout)
@@ -83,7 +85,7 @@ The subagent gathers this in its window, but you specify the source in the recip
 On approval, build the brief per `references/subagent-pattern.md` § Generation subagents and dispatch:
 
 - **Behavioral frame** first: prose-specialist identity; the resolved **POV-mode rule** + **tense directive** (from `prose-spec.md` § POV rules / Tense); the **target-length directive**; output rules; the spoiler firewall; continuation framing (prior prose is a voice reference, not text to continue or recap).
-- **The full text of `references/prose-spec.md`** pasted as the operational contract (input #3) — the subagent can't reach the plugin bundle. When `voice/style-guide.md` is absent, also paste the full text of **`references/prose-craft.md`** into the style-guide slot (the default craft rulebook; an authored style guide supersedes it — never both unless the user asks).
+- **The full text of `references/prose-spec.md`** pasted as the operational contract (input #3) — the subagent can't reach the plugin bundle. When `voice/style-guide.md` is absent, also paste the full text of the **selected craft rulebook** (`references/prose-craft.md` or the genre variant named in the plan) into the style-guide slot (an authored style guide supersedes it — never both unless the user asks).
 - **Project metadata** — genre, logline, position in the book.
 - **The ordered read-recipe** — the story-folder files in spec order (sample → style guide → story-so-far synopses → Blueprint or canon-fallback → outline → POV-matched prior prose **last**), then the write target and the return schema.
 
@@ -131,6 +133,7 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. P
 
 - `references/prose-spec.md` — **the operational contract**: assembly order, two paths, voice model + precedence, POV/tense rules, target length, output rules, spoiler firewall, surgical-edit mode, the synopsis spec
 - `references/prose-craft.md` — the **default craft rulebook** (sentence construction, sensory grounding, dialogue beats, AI anti-patterns, pacing) — pasted into the brief only when `voice/style-guide.md` is absent
+- `references/prose-craft-{literary-thriller,cozy-mystery,fantasy,romance,literary-fiction}.md` — **genre craft rulebooks**; the genre-matched one replaces the default per `prose-spec.md` § Which rulebook
 - `references/subagent-pattern.md` — **§ Generation subagents**: the clean-window dispatch recipe and the sequential-batch rule
 - `references/file-schemas.md` — `ch<NN>-prose.md` schema (frontmatter + synopsis + body rules), `voice/` assets, `outline/_index.md` matrix, per-chapter `.history/`
 - `references/plan-first.md` — universal plan-first behavior

@@ -5,6 +5,8 @@
 
 This is the plugin-owned **default craft rulebook** — the "how it should read" layer of the voice model when the author hasn't written their own. It is included in the prose brief **only when `voice/style-guide.md` is absent**: an authored style guide supersedes it (never send both by default — include both only if the user explicitly asks). It ports the StoryStormer app's default prose prompt (`prose-default`, v1.0.0).
 
+Five genre variants sit alongside it — `prose-craft-literary-thriller.md`, `prose-craft-cozy-mystery.md`, `prose-craft-fantasy.md`, `prose-craft-romance.md`, `prose-craft-literary-fiction.md`. The prose skill picks the variant matching the project's genre and falls back to this default; the user can always name one explicitly.
+
 ---
 
 ## Sentence Construction
