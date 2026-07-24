@@ -31,6 +31,7 @@ Plus seven slash commands for direct control: `/storystormer:init`, `/storystorm
 
 Step-by-step help for the bigger workflows lives in [`guides/`](guides/):
 
+- **[Installing StoryStormer](guides/installing.md)** — adding the marketplace and installing the plugin in Claude Cowork or Claude Code, connecting a story folder, updating, and troubleshooting.
 - **[Developing Your Story — From Idea to Outline](guides/developing-your-story.md)** — the front half of the pipeline: setting up a workspace from any starting state, the brainstorm → decision → treatment-update development loop, building character and worldbuilding canon, and committing to a chapter structure.
 - **[Writing Chapters — Blueprint, Prose & Kit Bash](guides/writing-chapters.md)** — from a chapter outline to finished prose: building the pre-prose Blueprint, generating and refining prose through chat, and Kit Bashing competing multi-model drafts into one chapter.
 

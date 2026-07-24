@@ -5,7 +5,7 @@
 
 This guide walks you through the front half of the pipeline: setting up a workspace with **init**, developing the story through **brainstorming** (and the decision log it feeds), building **canon** (character bios and worldbuilding), keeping the **primer and treatment** current, and finally committing to a **chapter structure** ready for prose.
 
-Where this guide ends, **[Writing Chapters — Blueprint, Prose & Kit Bash](writing-chapters.md)** picks up.
+Where this guide ends, **[Writing Chapters — Blueprint, Prose & Kit Bash](writing-chapters.md)** picks up. (Haven't installed the plugin yet? Start with **[Installing StoryStormer](installing.md)**.)
 
 Everything works the same in **Claude Cowork** and **Claude Code**. You never need to remember exact commands — the phrases shown are examples, and plain English works fine.
 
