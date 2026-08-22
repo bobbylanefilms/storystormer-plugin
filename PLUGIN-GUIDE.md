@@ -17,7 +17,7 @@ This single repo is **both the plugin and a one-entry marketplace**, and it is t
 storystormer-plugin/                 (repo root = marketplace root = plugin root)
 ├── .claude-plugin/
 │   ├── plugin.json                  # the plugin manifest (name: storystormer)
-│   └── marketplace.json             # one-entry catalog (name: storystormer-marketplace)
+│   └── marketplace.json             # one-entry catalog (name: storystormer-plugin)
 │                                    #   the single plugin's "source" is "./"
 ├── skills/                          # 13 progressive-disclosure skills
 │   ├── storystormer-init/  brainstorm-session/  decision-capture/
@@ -37,7 +37,7 @@ Three names, three roles — don't confuse them:
 | Role | Name | Where it shows up |
 |---|---|---|
 | Repo (the distributable) | `storystormer-plugin` | `/plugin marketplace add bobbylanefilms/storystormer-plugin` |
-| Marketplace (the catalog) | `storystormer-marketplace` | `/plugin install storystormer@storystormer-marketplace` |
+| Marketplace (the catalog) | `storystormer-plugin` | `/plugin install storystormer@storystormer-plugin` |
 | Plugin (the installed thing) | `storystormer` | `/storystormer:init`, `/storystormer:status`, … |
 
 It runs on **both** surfaces from the same bundle — Cowork and Claude Code share the skill/command/sub-agent engine.
@@ -63,7 +63,7 @@ It runs on **both** surfaces from the same bundle — Cowork and Claude Code sha
 
 ### Cowork (desktop) — the writing surface
 1. **Customize → Plugins → Personal Plugins → Add Marketplace** → enter `bobbylanefilms/storystormer-plugin` → **Sync**.
-2. Install the plugin (`storystormer@storystormer-marketplace`).
+2. Install the plugin (`storystormer@storystormer-plugin`).
 3. **Settings → connect a folder** → point at your story directory.
 4. Talk to it, or run `/storystormer:init` in an empty/seed folder.
 
@@ -74,7 +74,7 @@ It runs on **both** surfaces from the same bundle — Cowork and Claude Code sha
 # …or from your local clone (reads your working copy — best for iteration):
 /plugin marketplace add ~/Git/storystormer-plugin
 
-/plugin install storystormer@storystormer-marketplace
+/plugin install storystormer@storystormer-plugin
 ```
 Then `cd` into a story folder to actually use the skills.
 
@@ -87,7 +87,7 @@ Two loops. Keep them separate — most iteration is the inner loop, and it needs
 ### Inner loop — iterate + test locally (fast, free)
 1. Open Claude Code in `~/Git/storystormer-plugin`. Edit skills/commands/references.
 2. **`claude plugin validate .`** — must pass before you trust anything.
-3. Pick up the edits in your local Claude Code install: `/plugin marketplace update storystormer-marketplace` (re-reads the local folder), then re-run the skill.
+3. Pick up the edits in your local Claude Code install: `/plugin marketplace update storystormer-plugin` (re-reads the local folder), then re-run the skill.
 4. Exercise it from a **story folder** (a throwaway test project, or `Twelve to Zero`). Repeat.
 
 No GitHub round-trip, no version bump — you're testing your working copy directly.
@@ -134,7 +134,7 @@ Bump both manifest copies together. Consider `git tag` (or `claude plugin tag`) 
 | **"Marketplace sync failed"** in Cowork | Repo is private, or `marketplace.json` is invalid | Make the repo public; run `claude plugin validate .`; confirm `source: "./"` |
 | Sync fails even though repo is public | Invalid manifest (`source`, missing required field, bad JSON) | `claude plugin validate .` — it names the offending field |
 | **My change didn't show up in Cowork** | `version` not bumped, or didn't re-sync/restart | Bump version in both files, push, re-sync the marketplace, restart the session |
-| Change didn't show up in **Claude Code** | Local install cached the old copy | `/plugin marketplace update storystormer-marketplace`, then re-run |
+| Change didn't show up in **Claude Code** | Local install cached the old copy | `/plugin marketplace update storystormer-plugin`, then re-run |
 | A skill can't find a `references/…` file | A `../` escape, or a reference left outside the bundle | Keep all cited files inside the repo; no `../` |
 | A command silently does nothing in Cowork | It depends on `Bash` | Rewrite with `Read`/`Write`/`Glob` |
 | Skills aren't auto-triggering | Skill `description` doesn't match the user's phrasing | Tune the description (it's the progressive-disclosure trigger) |

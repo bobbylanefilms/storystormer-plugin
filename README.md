@@ -128,7 +128,7 @@ Cowork installs plugins from a **git-hosted marketplace**, so push this folder t
 
 ```text
 /plugin marketplace add <your-github-user>/storystormer-plugin
-/plugin install storystormer@storystormer-marketplace
+/plugin install storystormer@storystormer-plugin
 ```
 
 Then give Cowork access to the folder your story lives in: open **Settings → connect a folder** (Cowork's "folder connection") and point it at your story directory. That's how the skills read and write your `.md` files — no filesystem MCP server required. The plugin's skills use the standard file tools, so they work the moment the folder is connected.
@@ -141,7 +141,7 @@ No GitHub round-trip needed — add the marketplace straight from the local path
 
 ```text
 /plugin marketplace add ./plan/_cowork/storystormer-plugin
-/plugin install storystormer@storystormer-marketplace
+/plugin install storystormer@storystormer-plugin
 ```
 
 In both surfaces, plugin skills are namespaced (`/storystormer:init`, `/storystormer:status`, …) and the eleven workflow skills load automatically via progressive disclosure when your intent matches their descriptions.

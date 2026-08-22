@@ -6,7 +6,7 @@ Operating contract for any Claude Code session working in this repo. Full playbo
 
 The **single source of truth** for the StoryStormer plugin — a conversational story-development workspace (brainstorm → canon → treatment → outline) that runs in **Claude Cowork (desktop)** and **Claude Code (CLI)** from the same bundle.
 
-This repo is simultaneously the **plugin** and a **one-entry marketplace**: `.claude-plugin/` holds both `plugin.json` (plugin `storystormer`) and `marketplace.json` (marketplace `storystormer-marketplace`, the single plugin's `source` is `"./"`). Install id: `storystormer@storystormer-marketplace`.
+This repo is simultaneously the **plugin** and a **one-entry marketplace**: `.claude-plugin/` holds both `plugin.json` (plugin `storystormer`) and `marketplace.json` (marketplace `storystormer-plugin`, the single plugin's `source` is `"./"`). Install id: `storystormer@storystormer-plugin`.
 
 There is **no copy elsewhere**. The web-app repo (`bobbylanefilms/storystormer`) keeps only design notes at `plan/_cowork/CW0–CW3`. Do not recreate a mirror.
 
@@ -41,5 +41,5 @@ Doc-only changes (README, this file, PLUGIN-GUIDE.md) do **not** need a version 
 ```bash
 claude plugin validate .                              # before every push
 claude plugin details storystormer                    # see what components load
-claude plugin marketplace update storystormer-marketplace   # re-read after a local edit (Claude Code)
+claude plugin marketplace update storystormer-plugin   # re-read after a local edit (Claude Code)
 ```

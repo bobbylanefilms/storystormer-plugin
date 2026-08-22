@@ -27,7 +27,7 @@ You only need one of them. Most authors want Cowork.
 
    and hit **Sync**. Cowork reads the repo's marketplace catalog from GitHub — no clone, no git setup on your end.
 
-2. **Install the plugin.** From the synced marketplace, install **`storystormer`** (its full id is `storystormer@storystormer-marketplace`).
+2. **Install the plugin.** From the synced marketplace, install **`storystormer`** (its full id is `storystormer@storystormer-plugin`).
 
 3. **Connect your story folder.** Open **Settings → connect a folder** and point it at the directory where your story lives (or an empty one where it will). This folder connection is how the skills read and write your files — there's nothing else to configure.
 
@@ -47,7 +47,7 @@ Then inside the session:
 
 ```text
 /plugin marketplace add bobbylanefilms/storystormer-plugin
-/plugin install storystormer@storystormer-marketplace
+/plugin install storystormer@storystormer-plugin
 ```
 
 Now `cd` into your **story folder** and start a session there — that's where the skills operate. The `/plugin` command (no arguments) opens a menu where you can inspect, disable, or uninstall it later.
@@ -71,7 +71,7 @@ New versions are published to the same marketplace, and an update only appears w
 **In Claude Code:**
 
 ```text
-/plugin marketplace update storystormer-marketplace
+/plugin marketplace update storystormer-plugin
 ```
 
 then start a new session.
