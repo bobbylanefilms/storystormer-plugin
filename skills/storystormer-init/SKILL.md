@@ -209,7 +209,7 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
 
 4. **Preserve the prose content verbatim**. Do not edit, normalize whitespace, fix typos, or restructure the prose. The intake-stashed file is the user's content, untouched. The only init-applied changes are:
    - Filename normalization.
-   - Adding minimal YAML frontmatter (`chapter`, `title`, `version: 1`, `last_updated`) if the file doesn't already have frontmatter. Title is extracted from an H1 heading if present, or from the filename's slug portion if discoverable, or left as `TBD` if neither.
+   - Adding minimal YAML frontmatter (`chapter`, `title`, `version: 1`, `last_updated`, `authorship: author-written`) if the file doesn't already have frontmatter. Title is extracted from an H1 heading if present, or from the filename's slug portion if discoverable, or left as `TBD` if neither.
 
 5. **Handle non-markdown formats** (`.docx`, `.txt`, `.rtf`, `.scrivx`, `.fountain`):
    - Stash as-is in the chapter folder with the original extension preserved on the prefixed name. Do NOT auto-convert.

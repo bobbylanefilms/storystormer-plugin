@@ -24,6 +24,7 @@ Eleven skills that load via progressive disclosure when your intent matches:
 | `outline-chapters` | generate or revise per-chapter outlines against the spine — batch a whole act or rewrite one chapter |
 | `blueprint` | build the pre-prose production brief for a chapter — the self-contained context a prose agent writes from |
 | `prose` | write or revise a chapter's actual prose — from its Blueprint, outline, your voice inputs, and the story so far |
+| `notes` | record what a chapter's prose actually committed — as-written synopsis, divergences, harvest, accidental canon, end-state — and propose canon updates |
 
 Plus seven slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline`, and `/storystormer:switch` (series mode only).
 
@@ -167,12 +168,18 @@ You can interrupt at any step. The plan is always negotiable.
 
 By design, the POC stops at brainstorm + canon + treatment + outline + blueprint + **prose** (across single or multi-book projects). The following are **not** included:
 
-- *Post-prose* refinement passes (dialogue / editorial / de-AI / style polish) — the `notes` stage. Prose **generation and surgical revision** are now in (v0.7.0); the full refinement suite is not.
+- *Post-prose* refinement passes (dialogue / editorial / de-AI / style polish). Prose **generation and surgical revision** are in (v0.7.0) and `notes` (v0.14.0) records what a chapter committed; the editorial suite and `canon-sync` (span-level reconciliation of prose facts back into canon) are not yet built.
 - Image generation
 - Full canon states / point-in-time bio snapshots. A crude substitute now exists: the **Revelation Log**, a chapter-keyed append-list at the end of a Canon entry that the Blueprint filters to `chapter ≤ N` for scene-current state. Across-book character evolution is still handled lightly via per-book sub-arc sections.
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.14.0 added over v0.13.0
+
+- **The `notes` skill.** The post-prose stage of `outline → blueprint → prose → notes`, and the first half of the pipeline's return path. For a chapter at `revising` or `approved`, writes `ch<NN>-notes.md`: the as-written synopsis, divergences from the outline (deliberate or drift), the **harvest** of concrete particulars the chapter committed, accidental canon the prose invented, and a structured **end-state block** the next chapter's Blueprint now reads instead of the prior prose. Proposes Revelation Log lines, promotions, manifest additions, and §2 chain closures; writes none without approval. Records, never evaluates.
+- **Setup/payoff chains, two tiers.** Tier 1 (load-bearing, long-range, not self-evident) lives in primer §2 with its plant chapter; `pre-outline-session` slots both ends and logs fixed chapters as decisions; `brainstorm-session` applies the admission criteria and never builds a ledger. Tier 2 is the harvest: derived, never curated, searched across `chapters/*/ch*-notes.md` when a later chapter needs a payoff. **The chain register is never passed to `prose`**; plants reach the prose agent only as the Blueprint's imperatives.
+- **`authorship` on prose.** `prose` writes `ai-generated`, intake-stashed prose is `author-written`, and author revision is detected the same way as for outlines. This is the field a future `canon-sync` reads to decide whether the manuscript or canon wins a contradiction. The prose behavioral frame now states that the outline is the task (dialogue preserved in substance, beats not reordered) and the Blueprint is the constraint set, and warns loudly when no Blueprint exists.
 
 ### What v0.13.0 added over v0.12.0
 

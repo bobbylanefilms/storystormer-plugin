@@ -615,6 +615,7 @@ total_chapters: 40
 chapters_outlined: 12
 chapters_blueprinted: 0
 chapters_drafted: 0
+chapters_noted: 0
 ---
 ```
 
@@ -652,7 +653,7 @@ Each row shows:
 - A status cell per stage: a versioned link to the artifact if it exists (`[v2](../chapters/chapter-03/ch03-outline.md)`), or `—` if that stage hasn't started.
 - Inline marker flags (`[OPEN: Q-###]` or `[NEEDS DEVELOPMENT]`) in the relevant stage cell when that artifact carries unresolved markers.
 
-Links are relative from `outline/` into `chapters/` (`../chapters/chapter-NN/...`). The Blueprint, Prose, and Notes columns stay all-`—` until those skills land; they're in the matrix now so the view is stable as the pipeline fills out. The index is regenerated on every chapter-stage run. It is not hand-edited.
+Links are relative from `outline/` into `chapters/` (`../chapters/chapter-NN/...`). Each column fills as its skill runs (`outline-chapters`, `blueprint`, `prose`, `notes`). The index is regenerated on every chapter-stage run. It is not hand-edited.
 
 ## `chapters/` folder — per-chapter content folders
 
@@ -669,7 +670,7 @@ chapters/chapter-17/
   ch17-outline.md      # the author's prose account of the chapter — outline-chapters
   ch17-blueprint.md    # the continuity brief ("Blueprint") — blueprint
   ch17-prose.md        # the chapter's prose — prose (or scenes/ when split)
-  ch17-notes.md        # what the prose actually committed — notes (post-POC)
+  ch17-notes.md        # what the prose actually committed — notes
   scenes/              # OPTIONAL — only when the chapter is genuinely scene-split
     ch17-scene-01.md
     ch17-scene-02.md
@@ -756,6 +757,7 @@ blueprint_version: 1        # null on the fallback (no-Blueprint) path
 treatment_version: 8
 primer_version: 4
 status: drafted | revising | approved
+authorship: ai-generated     # author-written | ai-generated | ai-generated-author-revised
 word_count: 4127
 synopsis: |
   ~150–250w summary of THIS chapter, written as its author — causal events, the
@@ -770,14 +772,15 @@ synopsis: |
 - **`pov`** mirrors the chapter outline's `pov`. The `prose` skill uses it to find the POV-matched prior prose chapter (the voice anchor) and to assert the correct POV mode.
 - **`blueprint_version`** records which Blueprint this prose was built against, or `null` if generated on the fallback (no-Blueprint) path. A Blueprint regenerated past this value means the prose may be stale w.r.t. current canon.
 - **`synopsis`** is written at generation time and is the chapter's contribution to every later chapter's story-so-far. Regenerate it whenever the prose is rewritten (it must track the prose's actual events).
-- **`status`**: `drafted` (generated, unreviewed) → `revising` (surgical edits in progress) → `approved` (the user has signed off).
+- **`status`**: `drafted` (generated, unreviewed) → `revising` (surgical edits in progress) → `approved` (the user has signed off). `notes` runs at `revising` or `approved`.
+- **`authorship`**: `ai-generated` on generation; `author-written` for intake-stashed prose; `ai-generated-author-revised` when the `prose` skill detects the body changed outside a skill run. `canon-sync` reads it to adjudicate contradictions: author-written or author-revised prose wins by default, unrevised AI prose yields to canon by default.
 - **Kit Bash provenance** (only on consolidated chapters): `kitbash_base: <draft label>` and `kitbash_drafts: [<labels>]` record which competing drafts produced this chapter. Draft files live in `chapters/chapter-NN/kitbash/` (`ch<NN>-draft-<label>.md`, plus the `ch<NN>-packet.md` generation packet) — see `references/kitbash-spec.md`.
 
 **Scene-split prose.** When the Blueprint is `scene_split: true`, prose moves into `scenes/` (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`); each scene file carries the same frontmatter scoped to that scene (the chapter-level `synopsis` lives on a stitched `ch<NN>-prose.md` or the first scene — keep one synopsis per chapter for story-so-far). Default to the single `ch<NN>-prose.md`.
 
 ### Notes (`ch<NN>-notes.md`) — what the prose actually committed
 
-Lives in the chapter folder: `chapters/chapter-17/ch17-notes.md`. Written by the `notes` skill (post-POC; the schema is registered now so `blueprint` can prefer the end-state block when one exists). Notes **records what the prose committed; it does not evaluate the prose.** Run at prose `status: revised` or `approved`, not `drafted`; if run early, the frontmatter says so.
+Lives in the chapter folder: `chapters/chapter-17/ch17-notes.md`. Written by the `notes` skill. Notes **records what the prose committed; it does not evaluate the prose.** Run at prose `status: revised` or `approved`, not `drafted`; if run early, the frontmatter says so.
 
 ```yaml
 ---
@@ -831,7 +834,7 @@ Pattern: `ch<NN>-<stage>-v<version>-<YYYY-MM-DD>.md`. The `version` is the super
 
 The only chapter content created in the POC comes from `storystormer-init`'s intake, when the user brings in pre-existing prose. Init stashes each detected chapter as `chapters/chapter-NN/ch<NN>-prose.md` (markdown), or preserves the original extension (`ch<NN>-prose.docx`, etc.) when the source isn't markdown — flagged in the report, since prose-writing skills will require markdown.
 
-For intake-stashed prose, init populates only `chapter`, `title` (from the file's H1 or filename if discoverable), `version: 1`, and `last_updated`. The remaining frontmatter fields (`pov`, version stamps, `status`, `synopsis`) are populated by the `prose` skill when it next touches the chapter — e.g. it can synopsize stashed prose into the `synopsis` field so the chapter joins the story-so-far. **Body**: raw user content — preserve verbatim, do not rewrite or normalize.
+For intake-stashed prose, init populates only `chapter`, `title` (from the file's H1 or filename if discoverable), `version: 1`, `last_updated`, and `authorship: author-written`. The remaining frontmatter fields (`pov`, version stamps, `status`, `synopsis`) are populated by the `prose` skill when it next touches the chapter — e.g. it can synopsize stashed prose into the `synopsis` field so the chapter joins the story-so-far. **Body**: raw user content — preserve verbatim, do not rewrite or normalize.
 
 **Init's responsibility ends at stashing.** Init does not generate or rewrite prose, generate summaries, cross-check against the treatment or outline, or verify continuity. All of that is downstream prose-writing work. The intake job is purely "find the chapters the user already has, put them in the canonical chapter folder with canonical naming, and report what was stashed."
 

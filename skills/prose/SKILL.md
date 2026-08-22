@@ -46,7 +46,8 @@ The division of labor:
 For each chapter in scope:
 
 - **POV + tense** — from the chapter outline's `pov` and the project/structure POV strategy (resolve tense from the project default if not chapter-specified). This drives the POV-mode rule the subagent asserts and the POV-matched prior-prose lookup.
-- **Path** — does `ch<NN>-blueprint.md` exist? Lean vs. fallback.
+- **Path** — does `ch<NN>-blueprint.md` exist? Lean vs. fallback. Under the artifact-boundaries model a missing Blueprint means the prose agent gets no canon at all on the lean path and raw canon with no backward-only filtering on the fallback; warn loudly and recommend `blueprint` first.
+- **The outline is the task.** Its body is the author's prose account; the prose expands it. Where the outline contains dialogue, it is the author's and is preserved in substance. Where it contains specific action beats, they are not reordered. The Blueprint is the constraint set, not a second outline. Say both in the behavioral frame.
 - **Target length** — resolve a word-count target: the user's ask, else the chapter outline's density, else the project's chapter norm. It rides in the behavioral frame as the target-length directive (`prose-spec.md` § Target length; generate mode only — surgical edits keep the existing length).
 - **Craft rulebook** (only when `voice/style-guide.md` is absent) — pick the variant matching the project's genre per `prose-spec.md` § Which rulebook (genre variants for literary thriller, cozy mystery, fantasy, romance, literary fiction; else the default `prose-craft.md`). Name the pick in the plan; the user's explicit choice always wins. An authored style guide supersedes the rulebook entirely.
 - **Model** — the generation subagent inherits the session's model unless the user names one; if they do, pass it on dispatch and note it in the plan.
@@ -54,7 +55,7 @@ For each chapter in scope:
 
 ### 3. The spoiler firewall (hold this throughout)
 
-Prose for chapter N must be built **only** from chapters before N. Never read — and never let the subagent read — a chapter numbered after N (no future outline, prose, or synopsis). **The treatment stays out** of prose-time context on both paths (it contains future plot). Story-so-far is prior chapter synopses only. This is non-negotiable; a single future leak spoils the book. See `references/prose-spec.md` § The spoiler firewall.
+Prose for chapter N must be built **only** from chapters before N. Never read — and never let the subagent read — a chapter numbered after N (no future outline, prose, or synopsis). **The treatment stays out** of prose-time context on both paths (it contains future plot). Story-so-far is prior chapter synopses only. **The chain register (primer §2 Reveal Architecture) is never passed to prose**: an agent that knows it is planting will telegraph, so plants reach the prose agent only as the Blueprint's imperative instructions. This is non-negotiable; a single future leak spoils the book. See `references/prose-spec.md` § The spoiler firewall.
 
 ### 4. Build the story-so-far
 
@@ -97,6 +98,7 @@ For a **sequential batch**, dispatch one subagent per chapter in order; chapter 
 From the subagent's returned report (compact — the prose is on disk, not in your context):
 
 - Regenerate `outline/_index.md` — Prose column updated; bump `chapters_drafted`.
+- When the chapter's `status` later reaches `revising` or `approved`, recommend `notes` so the chapter's end-state and harvest exist for the next chapter's Blueprint.
 - Update `state.md` (What Exists → Prose chapters; Summary; Last Session; What's Next).
 - Present: the synopsis the subagent wrote, the word count, which path it used, the prior-prose anchor it chose, and any continuity flags it raised. Point the user at `chapters/chapter-NN/ch<NN>-prose.md` to read — **the file is the review surface** (don't dump 4,000 words into the conversation).
 - **Surface the file for in-app reading** where the host can render it (Cowork's file preview; a send-file/render tool in Claude Code): present the prose file itself so the user reads the draft beside the chat — present the file, never paste its contents into the conversation. Chat feedback on the open draft (*"make the intro more atmospheric," "tighten the second scene"*) is **revise mode** (below): each note becomes a surgical edit against the same file, snapshotted to `.history/` first, so the reading pane always reflects the current draft and the loop can run as many rounds as the user wants.
@@ -108,6 +110,7 @@ From the subagent's returned report (compact — the prose is on disk, not in yo
 When the user wants targeted changes to existing prose:
 
 - Snapshot the current `ch<NN>-prose.md` to `.history/` first; bump `version`, set `status: revising`.
+- **Detect author revision first.** Compare the file's `word_count` and body against the last skill-written snapshot in `.history/`; if the body changed outside a skill run, set `authorship: ai-generated-author-revised` before editing. Never downgrade `author-written`. (Generate mode writes `authorship: ai-generated`; intake-stashed prose is `author-written`. `canon-sync` reads this field to decide whether the manuscript or canon wins a contradiction.)
 - Dispatch a subagent in **surgical-edit mode** (`prose-spec.md` § Surgical edit mode): the *current* chapter prose goes in the final position as both the text to edit and the voice anchor; the editorial notes follow it; prior-chapter prose is dropped. The instruction: change ONLY what the notes name, preserve everything else verbatim, minimize collateral changes, return the complete chapter.
 - The subagent rewrites `ch<NN>-prose.md` and updates the `synopsis` **only if** the edit changed the chapter's events.
 - If the user's complaint is vague (*"this feels flat"*), diagnose before editing — name what you think is off (dialogue carrying no subtext, beats rushed, interiority thin) and confirm before dispatching.

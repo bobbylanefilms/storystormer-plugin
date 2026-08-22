@@ -14,7 +14,7 @@ Everything here works the same in **Claude Cowork** and **Claude Code**, except 
 ## The pipeline at a glance
 
 ```
-outline  →  blueprint  →  prose  →  (refine through chat)
+outline  →  blueprint  →  prose  →  (refine through chat)  →  notes
                              │
                              └─ or: Kit Bash — multiple drafts → annotate → consolidate
 ```
@@ -25,6 +25,7 @@ outline  →  blueprint  →  prose  →  (refine through chat)
 | **Blueprint** (`blueprint`) | *What must not be gotten wrong* — who's on page and in what state, the chapter's shape, the plants, every canon fact it touches, nothing from later chapters | Strongly recommended |
 | **Prose** (`prose`) | Writes the actual chapter, in your voice | — |
 | **Kit Bash** (part of `prose`) | Same chapter, N competing drafts from different models, merged under your direction | Optional |
+| **Notes** (`notes`) | Records *what the prose actually committed* — the as-written synopsis, divergences from your outline, the harvest of particulars, accidental canon, and the end-state the next chapter inherits | Recommended once a chapter is revised or approved |
 
 ---
 
@@ -167,6 +168,20 @@ The result is a normal `ch<NN>-prose.md` — same as any generated chapter, with
 
 ---
 
+## Stage 3: Notes — recording what the chapter committed
+
+Once a chapter is past its first draft (status `revising` or `approved`), say **"take notes on chapter 17"** or **"notes for Act 1"**. The skill reads the prose against the outline and Blueprint and writes `ch17-notes.md` with five things: the **as-written synopsis** (what's on the page, as opposed to what the outline intended), **divergences** from the outline (each flagged deliberate or drift), the **harvest** (every concrete particular the chapter committed: the half-eaten apple, the matchbook's branding, the skate shoes; nouns, not themes), **accidental canon** (details the prose invented that no bio or worldbuilding entry holds), and an **end-state block** (hour, location, wardrobe, injuries, objects carried, emotional residue).
+
+Why it's worth the two minutes:
+
+- **The next Blueprint reads the end-state block** instead of 3,500 words of prior prose, and gets a more reliable answer.
+- **The harvest is how payoffs get found.** When a later chapter needs one, the skills search the harvest across every noted chapter before inventing something new. Most of the throwaway-detail-that-pays-off density in well-woven books is found this way, not planned.
+- **It catches canon drift early.** A colour the prose named, a route through the house, a walk-on's gesture: those are canon now because they're on the page. Notes surfaces them as proposals (append a Revelation Log line, promote to an entry, add to the manifest, close a chain that's been paid) and writes nothing to your canon without your OK.
+
+It records; it never evaluates. You will not get pacing opinions from it. Running it on a first draft is allowed but discouraged (the notes describe a chapter about to change); the file is stamped so a re-run is known to be owed.
+
+---
+
 ## Quick reference
 
 ### Phrases
@@ -180,6 +195,7 @@ The result is a normal `ch<NN>-prose.md` — same as any generated chapter, with
 | Multi-model drafts | "Kit bash chapter 17" |
 | Cowork external drafts | "Build the generation packet for ch 17" |
 | Merge annotated drafts | "Consolidate the drafts" |
+| Record what a chapter committed | "Take notes on chapter 17" · "notes for Act 1" |
 | Pick a craft rulebook | "Use the cozy mystery rulebook" |
 | Pick a model | "Write it with Opus" |
 
@@ -193,6 +209,7 @@ chapters/chapter-17/
   ch17-outline.md            ← required before anything below
   ch17-blueprint.md          ← the pre-prose brief
   ch17-prose.md              ← the chapter (synopsis + metadata in frontmatter)
+  ch17-notes.md              ← what the prose committed (run after revising/approving)
   .history/                  ← every superseded version, auto-snapshotted
   kitbash/
     ch17-packet.md           ← the portable generation packet (Kit Bash)

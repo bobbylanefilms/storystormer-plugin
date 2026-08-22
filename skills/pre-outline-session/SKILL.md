@@ -87,7 +87,7 @@ Once the user agrees, do the reads. Then in your first response after the readin
 - **The treatment's POV pattern** — single-POV, multi-POV, observer protagonist, ensemble. The bios tell you who has interiority developed.
 - **The primer's framework commitment** — exact phrasing from Section 3.
 - **Open structural questions** — anything flagged in `questions.md` that affects the spine.
-- **Load-bearing reveals** — from the primer's §2 Reveal Architecture: the reveals whose timing is structural, plus any ordinary setup/payoff chains the treatment carries. If a reveal is planted in Act 1 and lands in Act 3, the chapter slots for both ends need to fall in the right place.
+- **Load-bearing reveals** — from the primer's §2 Reveal Architecture, which is the book's **chain register**: each entry names what is hidden, where it plants, when it lands, and why it matters. Every registered chain needs a spine slot at both ends. When the spine fixes a plant or payoff chapter that §2 still carries as `TBD`, record it as a decision via `decision-capture` so the next `treatment-update` writes it into §2 and it survives primer regeneration. Ordinary setup/payoff chains the treatment carries are the treatment's business; they don't get a register row unless they pass §2's admission criteria (load-bearing, long-range, not self-evident).
 
 ### 5. The framework conversation
 

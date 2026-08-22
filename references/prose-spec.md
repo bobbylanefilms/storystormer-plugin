@@ -67,7 +67,7 @@ VARIABLE TAIL  (per-chapter → recency zone)
   + final trigger ("Write the prose for this chapter now.")
 ```
 
-**The Blueprint and the outline are a pair** in the task zone: the Blueprint answers *who / where / current-state / how it should feel*; the outline answers *what happens*. The outline gets the penultimate slot (structural recency); the prior prose gets the last slot (stylistic recency) — structural fidelity is easier for the model to honor than voice, so the strongest position is spent on voice.
+**The Blueprint and the outline are a pair** in the task zone: the outline is **the task** (the author's prose account; expand it into full narrative prose, preserving its dialogue in substance and its action beats in order); the Blueprint is **the constraint set** (who / where / current-state / what must not be gotten wrong). The outline gets the penultimate slot (structural recency); the prior prose gets the last slot (stylistic recency) — structural fidelity is easier for the model to honor than voice, so the strongest position is spent on voice.
 
 ---
 
@@ -143,6 +143,7 @@ The model must never know what it hasn't written.
 
 - **Read only prior chapters.** Story-so-far is prior chapter synopses *only*; prior prose is a *prior* chapter only. Never read a chapter numbered after the one being written — not its outline, not its prose, not its synopsis.
 - **The treatment stays out** of prose-time context on *both* paths — it contains future plot.
+- **The chain register never enters.** Primer §2's Reveal Architecture is planning-side; plants reach the prose only as the Blueprint's imperative instructions, with no rationale. An agent that knows it is planting will telegraph.
 - **Never write toward a not-yet-landed reveal.** The Blueprint already filtered canon to `chapter ≤ N` (via the Revelation Log); honor that. Don't foreshadow a specific future event the prose at this point couldn't know.
 
 ---
