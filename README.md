@@ -176,6 +176,10 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 
 These may follow in later versions once the kernel proves out.
 
+### What v0.16.0 added over v0.15.0
+
+- **`voice/` scaffolding at init.** Every init writes `voice/README.md` explaining the two author-owned voice inputs and the prose read order, places a writing sample or style guide found in intake (proposed, never silent), and reports in its own line when the folder is README-only. `state.md` gets a `Voice` line. No stub input files, deliberately: `blueprint` and `prose` key on those files' existence.
+
 ### What v0.15.0 added over v0.14.0
 
 - **The `canon-sync` skill.** The second half of the return path and the consumer `notes` was missing. Over a span of chapters it reads the notes files (never the prose, except to adjudicate a disputed passage), classifies what accumulated (accretion, contradiction, drift, promotion, obsolescence), and adjudicates contradictions **by authorship**: author-written or author-revised prose wins by default, unrevised AI prose yields to canon by default, and every ruling is surfaced and logged as a decision (`Source: canon-sync`). It snapshots the whole canon set before touching anything and produces **two outputs**, canon edits and a manuscript fix list, plus the list of Blueprints the canon changes invalidated, in a run record under `.storystormer/canon-sync/`. Drift is the reason it's a span pass: no single line is wrong, only the aggregate. Reconciles facts; never improves canon.

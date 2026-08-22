@@ -24,6 +24,7 @@ When the user gives you the go-ahead, you create or update:
 - `manifest.md` — only if there's enough character/world content to seed it
 - `characters/_index.md` and per-character bios — only if the user has named characters
 - The `worldbuilding/` subfolders as appropriate
+- **`voice/README.md`** — always, at every init. The `voice/` folder holds the two author-owned voice inputs the prose stage reads first (`writing-sample.md`, the author's own non-AI prose; `style-guide.md`, the author's craft rules), and a project can otherwise have no voice inputs and nothing warns about it. The README is the warning and the instructions; see § Voice scaffolding. **No stub `style-guide.md` or `writing-sample.md`**: downstream skills key on those files' *existence* (`blueprint` drops general craft when a style guide exists; `prose` skips the craft rulebook), so an empty stub would silently disable behaviour the author hasn't replaced. If intake materials include something that is clearly a style guide or a writing sample, place it (see § Voice scaffolding).
 - `outline/` and its files — **never at init.** The outline directory (the book-level spine: `structure.md` + the `_index.md` outline view) is created lazily by `pre-outline-session`, and the per-chapter outlines (`chapters/chapter-NN/ch<NN>-outline.md`) by `outline-chapters`, when the project is ready for outlining (typically `treatment-refined` or `canon-development` stage). If the user brings in pre-existing outline-shaped materials (chapter outlines, beat sheets, scene lists), note them in the intake survey but **do not migrate them into `outline/` here** — flag them and recommend `pre-outline-session` as the next step, which knows how to integrate them.
 - `chapters/` — **created at init only when prose chapters are detected in the user's intake materials.** Init stashes incoming prose into per-chapter folders with canonical naming (`chapters/chapter-NN/ch<NN>-prose.md`); see § Prose Chapter Stashing below. If no prose is brought in, leave `chapters/` absent — it appears later when prose-writing functionality is added (post-POC) or when a future intake brings prose.
 
@@ -136,6 +137,7 @@ Short summary:
 - What you created.
 - What you extracted (N decisions, M questions).
 - What you stashed — if prose chapters were detected and moved into `chapters/`, list the chapter numbers stashed and any rename/format flags (see § Prose Chapter Stashing).
+- **Voice inputs**: what `voice/` holds after init, and the explicit warning when it is README-only (see § Voice scaffolding).
 - What you deliberately did *not* create — always including `primer.md` (that's `treatment-update`'s job). Name the absent files and the skill that produces them.
 - The recommended next step. Typical recommendations by stage:
   - **`concept` / `brain-dump`**: `brainstorm-session` to work through the highest-priority question and accumulate more decisions before the first `treatment-update` run.
@@ -180,6 +182,25 @@ The fix is to **dispatch reads and executions to subagents**, keeping the main s
 The dispatch decision is conditional on intake complexity. Trivial folders (empty, single brain dump, fewer than 4 files) read and execute directly in the main session — subagent overhead exceeds benefit at that scale. The thresholds and decision rule are in `references/subagent-pattern.md` § When to dispatch vs. when to read directly.
 
 **Required behavior in subagent returns:** every read subagent's return must include 3–5 verbatim quoted excerpts per file. This is the same anti-confabulation defense as substantive mode applied to the subagent layer. Returns without quotes get rejected and re-dispatched. Silent acceptance of quote-free returns defeats the entire reading-discipline architecture.
+
+## Voice scaffolding
+
+Every init writes `voice/README.md` (if absent) with this content, adapted to the project's name:
+
+```markdown
+# Voice inputs
+
+The prose stage reads this folder **first**, before anything else, to write in your voice rather than the model's. Two files, both yours to write, both optional, both strongly recommended:
+
+- **`writing-sample.md`** — a representative passage of your own, non-AI prose. The voice north star. It is the *only* voice anchor on a POV character's first chapter, where there is no prior prose to match. One passage is enough; `samples/*.md` works if you keep several.
+- **`style-guide.md`** — your craft rules: sentence construction, register, dialogue habits, interiority, what you never write ("never 'a breath he didn't know he was holding'"). No fixed shape; bullets or prose. This is where **general** craft lives for the whole book. Chapter Blueprints carry only chapter-specific placements when this file exists; without it, every Blueprint has to transcribe craft rules as a per-chapter workaround, and the prose stage falls back to a generic genre rulebook.
+
+Read order at prose time: writing sample → style guide → story so far → Blueprint → outline → your prior chapter in the same POV. Neither file is ever generated from AI prose.
+```
+
+Then detect voice material in the intake. A file that reads as the author's own finished prose and is not a chapter of this story (a short story, an excerpt from another book, a passage explicitly labelled as a sample) is a candidate `voice/writing-sample.md`; a file of craft rules or stylistic preferences is a candidate `voice/style-guide.md`. Propose the placement in the plan; never place silently, and never promote a chapter of *this* story to the sample (that is prose, stashed under `chapters/`).
+
+**Report it.** If after init `voice/` holds only the README, the report says so in its own line: *No voice inputs yet. The prose stage will write in a generic register until `voice/writing-sample.md` exists; add one before the first chapter.* `state.md → What Exists` gets a `Voice` line (`README only` / `sample` / `sample + style guide`).
 
 ## Prose Chapter Stashing
 

@@ -52,6 +52,7 @@ Per-book `state.md` files omit `books` and `current_focus` (those live only on t
 - **Manifest** — v2 (2026-05-10), 4 characters, 2 locations, 1 organization
 - **Character bios** — Marlowe (major, ~1700w), Alice (supporting, ~700w), Bob (minor, ~350w)
 - **Worldbuilding** — Voss Industries (organization), the Heights (location)
+- **Voice** — sample + style guide (or `README only` — the prose stage has no voice anchor until a sample exists)
 - **Structure** — v1 (2026-05-12), based on Primer v3 + Treatment v7, 40 chapters planned, Save the Cat framework
 - **Chapter outlines** — 12/40 drafted (Act 1 complete, Act 2A through ch 12), based on Structure v1
 - **Prose chapters** — 6/40 written (ch 1–6), stashed in `chapters/` (prose-writing functionality pending)
@@ -462,10 +463,11 @@ Like character bios, a worldbuilding entry may carry an optional **`## Revelatio
 
 ## Voice assets (`voice/`)
 
-The `voice/` folder holds the two **project-owned voice inputs** the `prose` skill reads to condition output toward the author's voice (the third input, the operational prose prompt, is plugin-owned — `references/prose-spec.md`). Both are plain markdown, both optional, both user/author-authored. Created by the user (or scaffolded by the `prose` skill on request); never auto-generated from AI prose.
+The `voice/` folder holds the two **project-owned voice inputs** the `prose` skill reads to condition output toward the author's voice (the third input, the operational prose prompt, is plugin-owned — `references/prose-spec.md`). Both are plain markdown, both optional, both user/author-authored. The folder and its `README.md` are scaffolded by `storystormer-init` (the README explains both files and the read order; it is the warning that a project has no voice inputs yet). The two input files are created by the author, or placed by init when intake materials clearly contain them; never stubbed, because downstream skills key on their existence; never auto-generated from AI prose.
 
 ```
 voice/
+  README.md           # scaffolded at init — what the two files are and the read order
   style-guide.md      # user-authored craft preferences — "how it should read"
   writing-sample.md   # the author's own non-AI prose — "what the voice is, by example"
 ```

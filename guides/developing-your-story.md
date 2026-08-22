@@ -68,6 +68,10 @@ Run `/storystormer:init` (or just say **"set up StoryStormer here"**) in the fol
 - **A half-finished treatment, character sketches, a tangled mid-project mess** — init reads everything, tells you what it thinks each file is, asks about contradictions ("v1 says Alex, v2 says Marlowe — I'll treat v2 as canonical, confirm?"), and proposes a migration into the canonical structure. Your original files are snapshotted before anything moves.
 - **Existing prose chapters** — detected, confirmed with you, and stashed untouched into `chapters/` with canonical naming. Init never edits your prose.
 
+### Your voice folder
+
+Init also creates `voice/` with a README and nothing else. That folder is where the prose stage looks first, and it wants two files from you: **`writing-sample.md`**, a passage of your own prose (the voice north star, and the only voice anchor on a character's first chapter), and **`style-guide.md`**, your craft rules for the whole book. Init won't stub them; the Blueprint and prose skills change behavior based on whether those files exist, so an empty placeholder would quietly switch things off. If your intake folder already contains something that's obviously a sample or a style guide, init offers to place it. Until a sample exists, init's report and `state.md` will keep saying so. See the [Writing Chapters guide](writing-chapters.md) for what goes in each.
+
 ### What init deliberately does *not* create
 
 Init scaffolds; it doesn't generate. There's no primer and no new treatment after init — those are built by your first **treatment update**, from the decisions init extracted. (If you brought in an existing treatment-like document, init can copy it in with your OK — but it won't write one from scratch.) An empty file pretending to be progress helps no one, so files appear only when there's real content for them.
