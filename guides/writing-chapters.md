@@ -21,8 +21,8 @@ outline  →  blueprint  →  prose  →  (refine through chat)
 
 | Stage | What it does | Required? |
 |---|---|---|
-| **Outline** (`outline-chapters`) | Decides *what happens* in the chapter — beats, POV, setups | **Yes.** Prose refuses without it. |
-| **Blueprint** (`blueprint`) | Compiles *everything the prose writer needs* — who's on page, their current state, the setting, the stakes — into one brief | Strongly recommended |
+| **Outline** (`outline-chapters`) | *What happens* in the chapter — your prose account, in your voice | **Yes.** Prose refuses without it. |
+| **Blueprint** (`blueprint`) | *What must not be gotten wrong* — who's on page and in what state, the chapter's shape, the plants, every canon fact it touches, nothing from later chapters | Strongly recommended |
 | **Prose** (`prose`) | Writes the actual chapter, in your voice | — |
 | **Kit Bash** (part of `prose`) | Same chapter, N competing drafts from different models, merged under your direction | Optional |
 
@@ -45,7 +45,9 @@ If you ask for prose with no writing sample, the skill will warn you and offer t
 
 ### What it is and why you want it
 
-The outline says what happens; the Blueprint compiles everything else the prose writer needs to render it well: every character who appears (at the detail their role in *this* chapter earns), their **current state** as of this chapter (injuries, grief, what they know, what they're wearing), the setting, the conflict, the story-level frame. It's built from your canon — bios, worldbuilding, primer — filtered to *this chapter's knowledge horizon*, so nothing from later chapters can leak in.
+Three documents reach the prose writer, and each answers one question. Your **style guide** (`voice/style-guide.md`) answers *how do I write this book?* Your **outline** answers *what happens?* The **Blueprint** answers *what must I not get wrong?* It's built from your canon — bios, worldbuilding, primer — and carries every character who appears (at the detail their role in *this* chapter earns), their **current state** as of this chapter (injuries, grief, what they know, what they're wearing), the chapter's shape and pacing, the exchanges that must land, the setting, the conflict, the slice of the story's frame that bears on this chapter, and the things that must be planted, stated as plain instructions.
+
+Two rules make it trustworthy. **It never looks forward.** A Blueprint's knowledge horizon is its own chapter: it may state anything true as of the end of chapter N and nothing from chapter N+1 on. A plant is given to the prose writer as an exact instruction with no reason attached, because a writer who knows it is planting will telegraph. **It's written as one brief, not a pile of quotes.** Canon phrasing is carried where it's sharper than any paraphrase, but absorbed into a document that reads like a director's brief, with the specification lists (a character's complete vocabulary, a forbidden-words bar) kept exact. General craft rules stay in your style guide; the Blueprint carries only placements unique to this chapter. If you don't have a style guide yet, the Blueprint transcribes your craft rules and tells you it's doing so as a workaround.
 
 At prose time the Blueprint **replaces** the raw canon entirely. That's the point: instead of handing the prose writer eight full bios and hoping it picks the right details, it gets one tight brief where every line is relevant. Blueprinted chapters produce noticeably tighter, more continuity-accurate prose. You *can* skip it — prose falls back to reading raw bios and worldbuilding — but the skill will recommend blueprinting first.
 
@@ -63,6 +65,7 @@ You'll get a **plan first**: which chapters, which characters and elements surfa
 
 - **It needs a marker-free outline.** If the outline still carries an open question (`[OPEN: Q-014]`), the skill will ask whether to resolve it first or blueprint around the gap.
 - **Blueprints go stale.** Each one records the outline/treatment/primer versions it was built against. If you rewrite a bio or an outline afterward, rebuild that chapter's Blueprint before generating prose from it.
+- **It reads your outline for content, not scaffolding.** Dialogue in an author-written outline is marked as yours in the Blueprint's Dialogue Anchors so the prose writer preserves it in substance.
 - **It may propose Revelation Log lines.** If it notices a state change your canon doesn't record ("Marlowe's ch 9 limp isn't logged"), it proposes the log line and appends only with your OK.
 
 ---

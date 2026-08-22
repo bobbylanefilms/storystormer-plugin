@@ -62,7 +62,7 @@ my-story/
 │   └── _index.md                # outline view: chapter × stage status matrix
 ├── chapters/                    # one folder per chapter, holding all its artifacts
 │   ├── chapter-01/
-│   │   ├── ch01-outline.md      # per-chapter beat sheet (~600–1,000w)
+│   │   ├── ch01-outline.md      # the author's prose account of the chapter
 │   │   ├── ch01-blueprint.md    # pre-prose production brief (the `blueprint` skill)
 │   │   ├── ch01-prose.md        # the chapter's prose + a synopsis (the `prose` skill)
 │   │   └── .history/            # co-located version snapshots
@@ -174,11 +174,20 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 
 These may follow in later versions once the kernel proves out.
 
+### What v0.13.0 added over v0.12.0
+
+- **Artifact boundaries.** The four chapter artifacts are now split by *who reads them*: the style guide answers *how do I write this book?*, the outline answers *what happens?*, the Blueprint answers *what must I not get wrong?*, and notes (post-POC) will answer *what did the prose actually commit?* The outline sheds all its scaffolding (premise, beat index, setups/payoffs, character notes, dialogue anchors, connections, open threads) and becomes the author's prose account of the chapter and nothing else: frontmatter plus a flowing body. The Blueprint absorbs that scaffolding, derived from canon rather than transplanted, in three new sections (Chapter Shape, Dialogue Anchors, Chapter-Specific Craft), for twelve in all. Derived from a live run on *The Good Dog* ch 1 that surfaced ~85% duplication between the two files (`plan/storystormer-artifact-boundaries.md`).
+- **The backward-only rule.** A Blueprint's knowledge horizon is its own chapter: backward without limit, forward not at all. Plants are stated imperatively and never explained; framework arrows keep the behavioural signature and lose the plot trigger; worldbuilding loses chain-of-custody past the chapter; open questions ride as frontmatter ID pointers.
+- **Synthesis over citation.** Blueprints are written as one brief in their own voice. Canon phrasing is carried unquoted where it is sharper than paraphrase; no blockquotes or source attributions in the body; specification lists (word inventories, lexicon bars, locked term sets) stay exact.
+- **Authorship preservation.** Outlines carry `authorship: author-written | ai-generated | ai-generated-author-revised`. Author-written and author-revised outlines get **correction-only mode**: canon contradictions, POV breaches, stale scaffolding, surfaced sequencing errors, each triaged and shown with the smallest fix before anything changes; never rhythm, diction, or regeneration. Generated outlines read the author's 2–3 most recent outlines as **style samples** every run; no derived style file.
+- **The chain register.** Primer §2 Reveal Architecture gains a plant-chapter field and becomes the book's register of load-bearing chains (admission: load-bearing, long-range, not self-evident; chains close when paid). `outline-chapters`' batch check now reads it instead of the removed Setups section. The `ch<NN>-notes.md` schema is registered (end-state block, harvest, as-written synopsis) so `blueprint` and `prose` prefer it when it exists.
+- **Craft lives in the style guide.** Blueprints carry no general craft when `voice/style-guide.md` exists; without one they transcribe the project's rules and warn that it's a per-chapter workaround.
+
 ### What v0.7.0 added over v0.6.1
 
 - **The `prose` skill — chapter prose generation.** Writes (or surgically revises) a chapter's actual fiction. It assembles context in the voice-conditioning order from the architecture reference — writing sample first (primacy), prior POV-matched prose last (recency) — and generates in a **clean-window subagent** so that order actually holds (buried after a long conversation, it wouldn't). Headline rule, ported straight from the architecture doc: **when a chapter has a Blueprint, the Blueprint replaces raw bios + worldbuilding + primer** (lean path); without one, it falls back to raw canon. Writes `chapters/chapter-NN/ch<NN>-prose.md` (prose-only body + a ~150–250w synopsis in frontmatter). Lands the stage the architecture reserved: `outline → blueprint → prose → notes`.
 - **The three-input voice model.** Voice now comes from three sources split by ownership: the plugin-owned **prose spec** (`references/prose-spec.md`, voice-neutral "how to operate"), the user-owned **style guide** (`voice/style-guide.md`, "how it should read"), and the author-owned **writing sample** (`voice/writing-sample.md`, "what the voice is, by example"). A precedence rule keeps the sample (style authority) and the prior chapter (continuity authority) from competing.
-- **Story-so-far + the spoiler firewall.** Each chapter's prose carries a `synopsis`; later chapters read prior synopses (outline Premise as fallback) as chronological narrative memory. Nothing numbered after the chapter being written is ever read — no future outline, prose, or synopsis, and the treatment stays out of prose-time context entirely.
+- **Story-so-far + the spoiler firewall.** Each chapter's prose carries a `synopsis`; later chapters read prior synopses (Blueprint premise, then the spine line, as fallbacks) as chronological narrative memory. Nothing numbered after the chapter being written is ever read — no future outline, prose, or synopsis, and the treatment stays out of prose-time context entirely.
 - **POV-matched prior prose.** The voice anchor is the most recent *prior chapter with the same POV character* (not just the most recent any-POV chapter) — correct for multi-POV books; absent on a POV's debut, where the sample carries voice alone.
 - **A new subagent kind.** `references/subagent-pattern.md` gains *Generation subagents* — clean-window producers of large creative artifacts; batches run sequentially when same-POV (each chapter's prose anchors the next).
 

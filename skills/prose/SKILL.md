@@ -58,7 +58,7 @@ Prose for chapter N must be built **only** from chapters before N. Never read �
 
 ### 4. Build the story-so-far
 
-The subagent gathers this in its window, but you specify the source in the recipe: for each prior chapter (chronological, `< NN`), use its `ch<NN>-prose.md` `synopsis` frontmatter where prose exists; fall back to the chapter's `ch<NN>-outline.md` **Premise** where prose doesn't exist yet. This is chapter-granular narrative memory — gist, not scene-by-scene. (Hybrid: for a scene-split *current* chapter, prior scenes within it use finer continuity from the Blueprint.)
+The subagent gathers this in its window, but you specify the source in the recipe: for each prior chapter (chronological, `< NN`), prefer its `ch<NN>-notes.md` **As-Written Synopsis** where a notes file exists, else its `ch<NN>-prose.md` `synopsis` frontmatter where prose exists; where neither exists yet, fall back to the chapter's **Blueprint § 3 Chapter Shape premise**, else the chapter's **spine line** in `outline/structure.md`. (The outline no longer carries a Premise block; its body is the author's prose account and is too long to serve as a synopsis.) This is chapter-granular narrative memory — gist, not scene-by-scene. (Hybrid: for a scene-split *current* chapter, prior scenes within it use finer continuity from the Blueprint.)
 
 ### 5. Propose the plan
 
@@ -68,7 +68,7 @@ The subagent gathers this in its window, but you specify the source in the recip
 >
 > - **Path**: lean — `ch17-blueprint.md` exists, so the Blueprint stands in for bios + worldbuilding + primer.
 > - **Voice**: `voice/writing-sample.md` present (north-star); `voice/style-guide.md` present. Prior POV-matched prose: ch 14 (Marlowe's last POV chapter) — that's the voice + continuity anchor, read last.
-> - **Story-so-far**: synopses of ch 1–16 (prose synopsis where written, outline Premise for ch 13/15 which aren't drafted yet). Chapters 18+ firewalled.
+> - **Story-so-far**: synopses of ch 1–16 (prose synopsis where written, Blueprint premise for ch 13/15 which aren't drafted yet). Chapters 18+ firewalled.
 > - **Generate**: clean-window subagent assembles in voice order and writes `ch17-prose.md` (~target 4,000w from the outline's density) with a synopsis. I'll wire the index + state and point you at the file to read.
 >
 > About 3–6 minutes. Go?

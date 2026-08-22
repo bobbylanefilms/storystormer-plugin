@@ -101,7 +101,7 @@ In your first response after the reading pass, quote at least one verbatim passa
 Rewrite `primer.md`. The Primer is **50,000-foot front-matter** with **exactly five standard sections** (full section spec in `references/file-schemas.md` § `primer.md`):
 
 1. **Story Identity** — logline, genre, comps, target length.
-2. **Premise & Moral Argument** — central dramatic question, what the story proves, character thematic positions, and the **Reveal Architecture** subsection (the ~2–5 load-bearing reveals: *what's hidden · when revealed · why it matters*).
+2. **Premise & Moral Argument** — central dramatic question, what the story proves, character thematic positions, and the **Reveal Architecture** subsection (the ~2–5 load-bearing reveals: *what's hidden · where it plants · when revealed · why it matters*). Plant chapters come from decisions and the spine; preserve them across regeneration rather than re-inferring them.
 3. **Structural Framework** — act structure, turning points, POV strategy, pacing, **Treatment Word Budget table**.
 4. **Tone, Style & Writing Rules** — narrative voice, register, dialogue conventions, anti-patterns.
 5. **Character Dynamics** — relationship map, factions, power dynamics, secrets (Truby's character web).

@@ -1,271 +1,230 @@
 ---
 name: outline-chapters
-description: Generate or revise per-chapter outlines against the chapter spine. Two modes — batch generation (typically one act at a time) when the user says "outline Act 1," "draft the outlines for chapters 1 through 10," "fill in the next act"; and single-chapter revision when the user says "expand chapter 17," "rewrite the midpoint outline," "tighten chapter 23," "this chapter's tension feels low." Reads `outline/structure.md` as the contract and produces `chapters/chapter-NN/ch<NN>-outline.md` files following the schema. Refuses if no `outline/structure.md` exists — run `pre-outline-session` first.
+description: Generate, correct, or revise per-chapter outlines against the chapter spine. A chapter outline is the author's prose account of what happens in the chapter — frontmatter plus a flowing narrative body, nothing else — and it is the only artifact in the pipeline that carries the author's voice. Three modes — batch generation ("outline Act 1," "draft the outlines for chapters 1 through 10," "fill in the next act"); single-chapter revision of an AI-generated outline ("expand chapter 17," "tighten chapter 23," "this chapter's tension feels low"); and correction-only passes over author-written outlines ("check chapter 1 against canon," "audit my outline"), which may fix facts but never regenerate. Reads `outline/structure.md` as the contract and writes `chapters/chapter-NN/ch<NN>-outline.md`. Refuses if no `outline/structure.md` exists — run `pre-outline-session` first.
 ---
 
 # StoryStormer · Outline Chapters
 
-You are filling in (or revising) the per-chapter outlines that hang off the chapter spine. The spine in `outline/structure.md` says *what each chapter is*; this skill writes *what happens inside each chapter*.
+You are writing, correcting, or revising the per-chapter outlines that hang off the chapter spine. The spine in `outline/structure.md` says *what each chapter is*; a chapter outline says *what happens inside it*, written the way the author thinks.
 
-Two operating modes:
+The outline is one of four chapter artifacts, and the four are split by **who reads them**:
 
-- **Batch mode** — generate a range of chapter outlines, typically one act at a time. The natural cadence for a new project: outline Act 1, the user reviews, then Act 2A, etc. Batch sizes of 6–12 chapters are the sweet spot for human review.
-- **Single-chapter revision mode** — re-outline one specific chapter. The user reads chapter 17, the tension feels low, they say *"expand it."* You re-outline that one file using the adjacent chapters as continuity context.
+| Artifact | Answers | Read by |
+|---|---|---|
+| `voice/style-guide.md` | *How do I write this book?* | the prose agent |
+| **`ch<NN>-outline.md`** | ***What happens in this chapter?*** | the prose agent, and the `blueprint` stage |
+| `ch<NN>-blueprint.md` | *What must I not get wrong?* | the prose agent |
+| `ch<NN>-prose.md` | — | the author |
 
-The skill is intentionally lighter than the web app's `outline_generation` pipeline. There is no analysis → fix → reanalysis loop because **the user is the verification step** — they read each batch and push back when something's off. There is no cross-chapter analyst phase because the user is reviewing chapter-by-chapter. The skill's job is to draft clean, density-calibrated outlines fast, and to surface gaps clearly rather than paper over them.
+Two consequences govern everything this skill does. **The outline is the only artifact that carries the author's voice**, so protecting it is the point. And **the outline carries no scaffolding**: no premise block, no beat index, no setups-and-payoffs ledger, no character notes, no dialogue-anchor list, no craft rules, no open-threads section. All of that is derived from canon by the `blueprint` stage at better resolution than an outline could stage it, and anything the outline staged would only become a second source of truth that drifts.
 
-Always follow `references/plan-first.md` — propose what you'll outline, get confirmation, then execute.
+Always follow `references/plan-first.md` — propose what you'll do, get confirmation, then execute.
+
+## What an outline is
+
+**The author's prose account of what happens in the chapter, to be expanded into full narrative prose. Nothing else.**
+
+Typical density is **500–1,500 words per 3,000-word chapter**, but the real rule is *whatever the author writes*. It may include specific action beats, interiority, direction, and dialogue, up to and including every line of dialogue in the chapter. It is not written to a schema. The file shape is in `references/file-schemas.md` § `ch<NN>-outline.md`: frontmatter, an H1, and a body of flowing prose.
+
+What the outline is **not**: a beat sheet, a brief, or a place for craft rules. If you find yourself writing a heading inside the body, stop; that content belongs in the Blueprint or the style guide.
+
+### The `authorship` field
+
+Every outline's frontmatter carries `authorship`, and it changes how this skill behaves:
+
+- **`author-written`**: the author wrote it. **Correction-only mode.**
+- **`ai-generated`**: this skill wrote it. Freely regenerable.
+- **`ai-generated-author-revised`**: this skill wrote it and the author reworked it. **Correction-only mode**, identical to `author-written`.
+
+A new AI outline is written as `ai-generated`. Before touching any existing outline, **detect author revision**: compare the file's `word_count` and body against the most recent skill-written snapshot in `chapters/chapter-NN/.history/`. If the body has changed outside a skill run, set `authorship: ai-generated-author-revised` before doing anything else. **Never downgrade `author-written`**, whatever the history folder says.
 
 ## What you produce
 
-- **`chapters/chapter-NN/ch<NN>-outline.md`** — one file per chapter, in that chapter's folder, per the schema in `references/file-schemas.md` § `chapters/chapter-NN/ch<NN>-outline.md`. Chapter-number-prefixed (`ch17-outline.md`), two/three-digit zero-padded. Each file ~600–1,000w (or whatever per-chapter density `structure.md` specifies).
-- **`outline/_index.md`** — the outline view (chapter × stage matrix), regenerated to reflect the new state. Each chapter row shows its outline-stage status (version link, or `—`) plus any inline markers.
-- Snapshots any overwritten chapter outline to that chapter's co-located `chapters/chapter-NN/.history/` as a flat `ch<NN>-outline-v<version>-<date>.md` file (the superseded version). New chapter outlines have nothing to snapshot.
-- Updates to `state.md`:
-  - `What Exists → Chapter outlines` line updated (`12/40 drafted` etc.).
-  - `Summary` refreshed.
-  - `stage` advanced to `outline-drafted` only when all 40 chapters are outlined AND zero unresolved markers across the bodies. Otherwise `outlining`.
-  - `What's Next` updated.
+- **`chapters/chapter-NN/ch<NN>-outline.md`**: one file per chapter, in that chapter's folder, chapter-number-prefixed and zero-padded (`ch17-outline.md`).
+- **`outline/_index.md`**: the outline view (chapter × stage matrix), regenerated so each chapter's Outline column reflects the new state (version link, or `—`, plus any inline markers).
+- Snapshots of any overwritten outline to that chapter's `chapters/chapter-NN/.history/` as a flat `ch<NN>-outline-v<version>-<date>.md` file. New outlines have nothing to snapshot.
+- Updates to `state.md`: `What Exists → Chapter outlines` line (`12/40 drafted`), `Summary`, `Last Session`, `What's Next`; `stage` advances to `outline-drafted` only when every spine chapter is outlined and zero unresolved markers remain across the bodies, otherwise `outlining`.
 
 ## Preconditions
 
-- **`outline/structure.md` must exist.** If it doesn't, refuse the request and recommend `pre-outline-session` as the next step. Don't try to outline chapters without a spine — you'd be inventing the spine and the chapters in the same pass, which is the failure mode `pre-outline-session` is designed to prevent.
-- **The relevant Chapter Spine entries must exist.** If the user asks for "outline chapter 41" and the spine ends at chapter 40, surface the gap — either the spine needs to be extended (re-run `pre-outline-session`) or the user is asking for the wrong chapter number.
-- **Primer Section 3's Treatment Word Budget exists.** Per-chapter density calibration depends on it. If absent, recommend `treatment-update` first.
+- **`outline/structure.md` must exist.** If it doesn't, refuse and recommend `pre-outline-session`. Outlining without a spine means inventing the spine and the chapters in one pass, which is the failure mode `pre-outline-session` exists to prevent.
+- **The relevant Chapter Spine entries must exist.** "Outline chapter 41" against a 40-chapter spine is a gap to surface, not a chapter to invent.
 
 ## What to do
 
 ### 1. Determine the mode
 
-The user's request tells you which mode to run:
+- *"Outline Act 1"*, *"draft chapters 1–10"*, *"fill in the next act"* → **batch generation**.
+- *"Expand chapter 17"*, *"tighten chapter 23"*, *"this chapter's beats are off"* on an `ai-generated` outline → **single-chapter revision**.
+- Any request to change an outline whose `authorship` is `author-written` or `ai-generated-author-revised`, and any *"check chapter N against canon"*, *"audit my outline"* → **correction-only**.
+- Ambiguous *"work on the outline"* → propose batch generation for the next un-outlined act and confirm.
 
-- *"Outline Act 1"*, *"draft chapters 1–10"*, *"fill in the next act"*, *"start the outline"* → **batch mode**.
-- *"Expand chapter 17"*, *"rewrite the midpoint"*, *"tighten chapter 23"*, *"this chapter's beats are off"* → **single-chapter revision mode**.
-- Ambiguous *"work on the outline"* → propose batch mode for the next un-outlined act, and confirm with the user.
+Read the target file's `authorship` (after the revision-detection step above) *before* choosing between revision and correction-only. A user asking to "expand" an author-written outline gets the correction-only triage and an explanation of why the skill will not regenerate it.
 
-The modes have different reading patterns and propose-shapes; pick before reading.
+### 2. Read context
 
-### 2. Read context — batch mode
-
-For a batch (say, chapters 1–10):
+**Batch generation** (say, chapters 1–10), in substantive mode:
 
 - `outline/structure.md` (full)
-- `primer.md` (full — Sections 3, 4, 5 especially)
-- `treatment.md` (full — every scene; you'll map specific treatment passages onto specific chapter slots)
+- `primer.md` (full; §2 Reveal Architecture and §3 especially)
+- `treatment.md` (full; you will map specific treatment passages onto specific chapter slots)
 - `manifest.md` (full)
-- Major bios for any POV character appearing in the batch (full)
-- Supporting bios for major non-POV characters in the batch (full)
-- `decisions.md` — full read, focused on `plot`, `character`, `voice` decisions affecting the batch's chapter range
-- `questions.md` — open entries that map to spine slots in the batch range (`[OPEN: Q-###]` markers carry into chapter outlines)
-- `.storystormer/genre-reference.md` if it exists — obligatory scenes that should land in this batch's range
-- Existing chapter outlines for chapters *adjacent* to the batch (the chapter before and the chapter after — for continuity bridges)
+- Major bios for any POV character in the batch (full); supporting bios for major non-POV characters in the batch (full)
+- `decisions.md` (full; `plot`, `character`, `voice` decisions affecting the range)
+- `questions.md` (open entries mapping to spine slots in the range)
+- `.storystormer/genre-reference.md` if it exists (obligatory scenes that should land in this range)
+- Existing outlines adjacent to the batch (the chapter before and after) for continuity
+- **Style samples**: the 2–3 most recent outlines whose `authorship` is `author-written` or `ai-generated-author-revised`, preferring chapters near the target range. See § Style inheritance.
 
-**Operate in substantive mode** — list the files at the top of your next response, full-read each, and quote at least one passage from each. See `references/reading-discipline.md` § Substantive mode.
+**Single-chapter revision** (chapter N, `ai-generated`): `structure.md` (full), the existing outline (full), N-2 through N+2 if they exist, primer §2 and §3, the treatment passages for this spine slot (targeted read, permitted because the spine and the existing outline provide grounding), bios for the chapter's cast (full for major-tier, frontmatter + Quick Reference otherwise), `decisions.md` and `questions.md` entries affecting the chapter, and the style samples.
 
-### 3. Read context — single-chapter revision mode
+**Correction-only** (chapter N): the outline (full), every canon file it touches (full bios and worldbuilding entries for anyone and anything named or implied in the body), `decisions.md` (full), `questions.md`, and `structure.md`. This is a canon audit; it reads more canon than a generation pass does, because the job is to find where the text and canon disagree.
 
-For revising chapter N:
+List the files at the top of your next response, full-read each, and quote at least one passage from each. See `references/reading-discipline.md` § Substantive mode.
 
-- `outline/structure.md` (full — to verify the spine still wants what this chapter does)
-- The existing `chapters/chapter-NN/ch<NN>-outline.md` (full)
-- The two chapters before and after (N-2, N-1, N+1, N+2) if they exist — for continuity
-- `primer.md` — Sections 3, 4, 5 (full)
-- The treatment passages corresponding to this chapter's spine slot (targeted read of the treatment section — grep-permitted *only because* the spine and existing chapter outline provide the grounding)
-- Bios for characters appearing in this chapter (full for major-tier, frontmatter + Quick Reference for supporting/minor)
-- `decisions.md` and `questions.md` — entries affecting this chapter
+### 3. Propose the plan
 
-Single-chapter mode is lighter than batch mode but still substantive — quote from each file you used.
+**Batch generation example:**
 
-### 4. Propose the plan
-
-**Batch mode example:**
-
-> Here's the plan for outlining Act 1 (chapters 1–10):
+> Plan for outlining Act 1 (chapters 1–10):
 >
-> - **Read** (substantive mode): I'll full-read `structure.md`, `primer.md` (especially Sections 3, 4, 5), `treatment.md` (~6,800w), `manifest.md`, the 3 major-tier bios for POV / heavy characters in Act 1 (Marlowe, Voss, Park), and the 4 supporting bios for cast members in this act. Plus the 5 unresolved questions affecting ch 1–10.
-> - **Density target**: 1,000w per chapter outline (from primer Section 3's per-chapter density × 2). Act 1 outline batch total: ~10,000w across 10 files.
-> - **Generate**: 10 chapter outline files (`chapters/chapter-01/ch01-outline.md` through `chapter-10/ch10-outline.md`) following the schema. I'll batch them in two halves (ch 1–5 first for your review, then 6–10) so you don't have to react to 10 chapter outlines at once.
-> - **Preserve markers**: 2 spine slots carry `[OPEN: Q-014]` (ch 3 inciting mechanism); I'll propagate the marker into those chapter files rather than fabricate the mechanism.
-> - **Snapshot**: nothing to snapshot — these are new files.
-> - **Update**: `outline/_index.md` regenerated; `state.md` updated; chapters-outlined count bumped from 0 to 10.
->
-> About 8–12 minutes once we start. Sound right?
+> - **Read** (substantive mode): `structure.md`, `primer.md`, `treatment.md` (~6,800w), `manifest.md`, the 3 major-tier bios for POV / heavy characters in Act 1, the 4 supporting bios, and the 5 open questions touching ch 1–10.
+> - **Style samples**: none yet. This batch is **style-setting**; review ch 1 as a template, not just a chapter.
+> - **Generate**: 10 outline files, each a prose account of its chapter at roughly 600–1,200w. Shown in two halves (ch 1–5, then 6–10).
+> - **Markers**: 2 spine slots carry `[OPEN: Q-014]` (the ch 3 inciting mechanism); I'll carry the marker inline rather than invent the mechanism.
+> - **Chain check**: primer §2 registers 4 load-bearing chains; 2 plant in this range. I'll confirm each plant is present in its chapter's body.
+> - **Update**: `outline/_index.md` regenerated; `state.md` updated.
 
-**Single-chapter mode example:**
+**Correction-only example:**
 
-> Plan for revising ch 17 — *The Locket*:
->
-> - **Read** (lighter substantive mode): existing `ch17-outline.md`, plus `ch15-outline.md` + `ch16-outline.md` + `ch18-outline.md` + `ch19-outline.md` (in their chapter folders) for continuity, `structure.md`, treatment Act 2A section (the spine slot for ch 17 maps to the treatment's *### The Audit Box* scene), primer Sections 3 + 4 + 5, and bios for Marlowe + Voss.
-> - **Diagnose**: You said the tension in this chapter feels low. I'll read the existing outline and the adjacent chapters carefully, identify whether the issue is (a) under-specified scene beats, (b) a setup that doesn't pay off in this chapter, (c) Marlowe's interior arc not landing, or (d) a continuity issue with ch 16's setup. I'll propose what I'm seeing before rewriting.
-> - **Rewrite**: revised `ch17-outline.md` v2, with the issue addressed. Snapshot of v1 to `chapters/chapter-17/.history/`.
-> - **Update**: `outline/_index.md` shows v2 for ch 17; `state.md` Last Session updated.
->
-> About 4–6 minutes. Sound good, or do you want to tell me first what you think is off?
+> Chapter 1 is `author-written`, so this is a correction pass, not a rewrite. I'll audit it against every canon file it touches (Muppy, Pickle, Vinnie, Tommy, the burial site, the jacket, Golden Valley, the BLM land, the decision log), then show you a triage: canon contradictions, POV-capability breaches, stale scaffolding, and sequencing errors, each with the smallest fix quoted. I'll also list the prose-stage items I'm declining to touch. Nothing changes until you approve specific items.
 
-### 5. Read in substantive mode
+### 4. Generate (`ai-generated` mode)
 
-Once the user agrees, do the reads. In your next response, quote verbatim from each source. Identify per chapter slot in the batch (or for the single chapter being revised):
+For each chapter in the batch, write the prose account. Anchor it on:
 
-- **Spine slot text** — the exact line from `structure.md`. This is the contract.
-- **Treatment source** — which treatment scene(s) map to this chapter slot. Quote the relevant treatment passage.
-- **Setup/payoff chains** — which planted chains pay off here (or get planted here for later payoff). Trace load-bearing reveals to the primer's §2 Reveal Architecture; trace ordinary chains to the treatment.
-- **Character beats** — what each appearing character's arc does in this chapter. Anchor to the bio's Lie/Ghost where applicable.
-- **POV** — from the spine entry or the act's POV strategy.
+- **The spine slot**: the exact line from `structure.md`. This is the contract.
+- **The treatment source**: the treatment scene(s) that map to this slot.
+- **The chains**: which primer §2 Reveal Architecture entries plant or pay in this chapter. The plant must be *present in the body as an event*; it is never labeled as a plant, and the rationale for it never appears. The chain register is planning-side knowledge; the outline shows the event and the Blueprint later launders it into an imperative for the prose agent.
+- **The cast's arcs**: what each appearing character's arc does here, anchored to the bio's Lie / Ghost where the chapter touches them. Render that as what they *do and feel* in the narrative, not as a note about them.
+- **POV**: from the spine entry or the act's POV strategy.
 
-If you find a chapter slot whose treatment source is thin or absent, surface it before generating — don't paper over.
+Write in the house style the samples establish (§ Style inheritance). With no samples, write in **present tense, third person**, mostly indirect dialogue with occasional direct lines, one paragraph per movement, partly voiced toward the POV character, and flag the batch as style-setting.
 
-### 6. Generate each chapter outline
+Content must trace to the spine, a treatment passage, a logged decision, a bio, a primer §2 reveal, or an honest `[NEEDS DEVELOPMENT: …]` / `[OPEN: Q-###]` marker carried inline in the body. You do not invent plot events, character actions, settings, or dramatic moments beyond these sources. The biggest failure mode is AI-default scene mechanics: a chase the treatment never called for, a confrontation the bios don't justify, a setup invented at outline time that fights the primer's Reveal Architecture. *Outline = render the existing decisions at chapter resolution, not author new ones.*
 
-For each chapter in the batch (or the single chapter being revised), write the file following the schema in `references/file-schemas.md` § `chapters/chapter-NN/ch<NN>-outline.md`:
+If a chapter slot's treatment source is thin or absent, surface it before generating.
 
-**Frontmatter** — all fields populated. `structure_version`, `treatment_version`, `primer_version` snapshot the versions this outline was built against; downstream tools can detect staleness.
+### 5. Correct (`author-written` / `ai-generated-author-revised` mode)
 
-**Premise** (≤60w) — the chapter's dramatic beat. Resolve cleanly against the Spine slot.
+**The skill may not regenerate. It may only correct.**
 
-**Setting & Time** (1–3 sentences) — concrete, sensory anchors.
+**May change:**
+1. **Factual contradictions with canon**: a decision, bio, or worldbuilding entry says otherwise. Smallest possible edit: a word or phrase swap, not a rewritten sentence.
+2. **POV-capability breaches**: the narration asserts knowledge or perception the POV character cannot have. This is content, not style.
+3. **Stale frontmatter and scaffolding**: version stamps, superseded editorial notes, resolved markers, leftover schema sections from the old outline shape (which move to the Blueprint or the style guide, never get deleted silently; see § Migration).
+4. **Sequencing errors** where canon fixes an order the text gets wrong. This is the largest edit permitted and **must be surfaced explicitly before it is made**.
 
-**Scene Beats** (3–6 beats) — each beat names what happens and what shifts. A beat that doesn't shift something is filler. When this chapter plants or pays a load-bearing reveal, pull its dramatic beat-shape from the primer's §2 Reveal Architecture; for ordinary chains, from the treatment passage.
+**May not change:**
+- Sentence rhythm, diction, or register.
+- Prose-stage rendering choices: verbs of perception, grammatical mood, idiom, verdict words, dialogue phrasing. Those belong to the prose agent working from the style guide. Fixing them in an outline is regenerating it.
+- Anything the author has explicitly ruled on, even where canon disagrees. Log the disagreement instead.
 
-**Setups Planted** / **Payoffs Delivered** — the chapter-local record of what this chapter plants and pays. A load-bearing reveal traces to the primer's §2 Reveal Architecture; an ordinary chain traces to the treatment. If a setup here has no decided payoff anywhere, that's an open question — log a `[NEEDS DEVELOPMENT: …]` (or `[OPEN: Q-###]`) marker and surface it in the report so it can be routed to `questions.md`. Don't ask the primer to carry a running ledger.
+**Workflow, mandatory:**
+1. Audit the outline against current canon in substantive mode.
+2. **Triage into buckets** and present the full triage before editing anything: canon contradictions, POV breaches, prose-stage items (declined, listed anyway), additive gaps (things canon says should happen here that the text omits, offered, never inserted unasked), and canon-internal conflicts. Quote the smallest possible fix for each item.
+3. Apply only what is approved.
+4. Snapshot the prior version to `chapters/chapter-NN/.history/`.
+5. Report what was declined and why, not just what was changed.
 
-**Character Notes** — what *changes* for each character (status, knowledge, internal state, relational). Reference Lie/Ghost when the chapter touches them. Pull from the bios; don't invent character interiority that the bios don't support.
+**When canon disagrees with itself**, surface it, apply the more recent and more specific entry, mark it reversible in the report, and say plainly that a choice was made. Do not block the pass on a single unresolved word.
 
-**Dialogue Anchors** (1–3) — beat-level or line-level. Not full dialogue.
+### 6. Revise (`ai-generated` mode, single chapter)
 
-**Connections** — the seams to the previous and next chapter. For the first chapter of an act, the "From" connection is from the previous act's closing chapter. For the last chapter of an act, the "To" connection is the act break itself.
+The existing outline is the starting point, not a clean rewrite. If the user's complaint is vague (*"this feels low-energy"*), diagnose before rewriting: propose what you think is off (under-specified movement, a chain that doesn't land, interiority too thin, a continuity seam with the neighbor) and let the user confirm. Then write the targeted revision, snapshot the prior version, and show the diff.
 
-**Open Threads** — propagate `[OPEN: Q-###]` markers from the spine slot. Add `[NEEDS DEVELOPMENT: …]` markers for gaps in this chapter's content that aren't yet tracked questions. Never fabricate; an honest marker is better than a confabulated answer.
+When a structural change ripples (the midpoint moved from ch 18 to ch 20), re-outline the affected range as a batch so the cross-chapter checks run again.
 
-### 7. Density discipline
+### 7. Density
 
-Per-chapter target comes from primer Section 3: **outline density ≈ 2× treatment density.** A 120,000-word novel with 40 chapters has ~500w of treatment per chapter, so ~1,000w of outline per chapter.
+Whatever the author writes. 500–1,500 words per 3,000-word chapter is typical. For generated outlines, match the samples' density (words of outline per 1,000 words of target chapter); with no samples, aim for the middle of that band. **Never pad an outline to hit a target, and never pad an author-written outline at all.**
 
-Enforce it:
+### 8. Cross-chapter checks (batch mode)
 
-- A chapter that genuinely lands in 600w shouldn't be padded.
-- A chapter that's running 1,400w probably has invented content beyond the treatment + decisions; cut it.
-- A single batch that runs 30% over or under the act's treatment word budget × 2 is a signal something is off; surface it.
+Before finalizing a batch:
 
-Never pad to hit a word count. Density is a virtue.
+- **Continuity seams**: chapter N's closing state should be what chapter N+1 opens on. Mismatches mean a missed transition; flag and resolve.
+- **Chain check against primer §2**: for every registered load-bearing chain, the **plant chapter** and **payoff chapter** both exist in the spine; where both are outlined, the plant is actually present in the plant chapter's body. **Orphans surface as report items, not blocking errors.** An unplanted chain mid-draft is normal; an unplanted chain whose plant chapter is already written is not.
+- **POV consistency**: each chapter's POV matches the act's POV strategy in `structure.md`. Unexpected shifts should be the author's choice, noted in the spine slot, never introduced at outline time.
 
-### 8. Show the batch (or revision) to the user
+Surface failures to the user before writing. Don't fix them silently.
 
-For batch mode, show the chapter outlines in halves (ch 1–5, then ch 6–10 for a 10-chapter act). For each chapter, show the full file content. The user can:
+### 9. Show, write, wire, report
 
-- Approve the batch → write to disk and continue with the next half.
-- Request edits to specific chapters → fold in and re-show that chapter.
-- Request a global edit ("the dialogue anchors are too detailed across the batch") → adjust the pattern and re-show.
+Show batches in halves and let the user approve, request per-chapter edits, or request a global adjustment (then re-show). After approval: snapshot superseded versions, write the files with full frontmatter (`authorship` set; `structure_version`, `treatment_version`, `primer_version` stamped; `word_count` recorded), regenerate `outline/_index.md`, update `state.md`.
 
-For single-chapter revision, show the diff (or just the rewritten file) and let the user react.
+> Outline-chapters batch complete. Wrote 10 outlines (ch 01–10), ~9,100w total, all `ai-generated`, matched to the style of your ch 1 and ch 2 (`author-written`). ch 3 carries `[OPEN: Q-014]` inline (the inciting mechanism). Chain check: both §2 chains that plant in Act 1 are present (the locket, ch 2; the ledger page, ch 7). Index regenerated. Next: review Act 1, then Act 2A.
 
-### 9. Voice and content discipline
+## Style inheritance
 
-Outline content must trace to one of:
+A project will commonly have some chapters the author outlined by hand and later chapters generated. **Generated outlines must borrow the house style from the author's**, or the set becomes a patchwork and the seams show. Before generating in `ai-generated` mode, read the **2–3 most recent outlines whose `authorship` is `author-written` or `ai-generated-author-revised`**, preferring chapters near the target, and match them. Author-revised files are full-strength samples, arguably the best ones, since they show what the author corrected *toward*.
 
-1. **The spine slot text** — the contract.
-2. **A treatment passage** — quote-able from `treatment.md`.
-3. **A logged decision** — referenced by `D-###`.
-4. **A character bio's content** — voice, Lie/Ghost, relationships.
-5. **A primer load-bearing reveal** — from §2 Reveal Architecture (or an ordinary chain traced to the treatment).
-6. **A `[NEEDS DEVELOPMENT: …]` marker** — honestly flagged.
+What to match, concretely:
 
-You do **not** invent new plot events, character actions, settings, or dramatic moments beyond these sources. If a chapter slot needs content that doesn't exist anywhere yet, mark `[NEEDS DEVELOPMENT: …]` — don't fill the gap with genre priors.
+- **Density**: words of outline per 1,000 words of target chapter.
+- **Tense and person**: present-tense third person is common ("Muppy escapes," "she wants nothing to do with him"); a past-tense AI outline clashes on the first sentence.
+- **Dialogue treatment**: quoted in full, summarized indirectly, or mixed.
+- **Interiority depth**: how much inner state the outline fixes versus leaves to the prose stage.
+- **Narration versus direction**: events written as events ("she picks up the matchbook") or as bracketed instructions to the drafter ("[register the weight here]").
+- **Paragraph granularity**: one paragraph per beat, or long flowing movements.
+- **Voice leakage**: whether the outline already carries the book's POV voice or stays neutral.
+- **Authorial asides**: direct address, rhetorical questions, evaluative commentary ("And did she mention that this dog has incredibly bad breath?").
 
-The single biggest failure mode for chapter outlines is **AI-default scene mechanics** — a chase scene where the treatment doesn't call for one, a confrontation that the bios don't justify, a setup-payoff invented at outline time that fights the primer's Reveal Architecture or the treatment's chains. The discipline is: *outline = render the existing decisions at chapter resolution, not author new ones*.
+**Do not build a derived style file.** An `outline-style.md` describing observed conventions is a lossy copy of a ground truth that already exists, and it goes stale silently. Read the samples directly, every run.
 
-### 10. Cross-chapter checks (batch mode)
+**Match form, never inherit canon errors.** Outlines are exempt from prose craft rules, so an aside or a verdict word in a sample is house style and may be reproduced. A factual canon error in a sample is a defect awaiting a correction pass, not house style.
 
-Before finalizing a batch, run three quick checks:
+**Cold start.** With no sample, generate to the default and **flag the batch as style-setting** in the report. The first AI outline in a project silently becomes the pattern every later one inherits; the author should review it as a template.
 
-- **Continuity** — chapter N's "To" connection should match chapter N+1's "From" connection within the batch. Mismatches mean a missed setup or a transition that needs work; flag and resolve.
-- **Setup/payoff balance** — every "Setup Planted" in the batch should have a planned payoff slot in a future chapter (within or beyond the batch). Every "Payoff Delivered" should reference a prior setup. Orphan setups (no payoff slot identified) and orphan payoffs (no setup referenced) get flagged in the report.
-- **POV consistency** — each chapter's POV should match the act's POV strategy from `structure.md`. Unexpected POV shifts should be intentional (the user chose them in pre-outline) and noted in the spine slot, not introduced at outline time.
+Where outlines are partly voiced, a style-matched outline carries author voice into the prose agent's context as a second conditioning input after the style guide. That makes outline style fidelity load-bearing rather than cosmetic.
 
-If a check fails, surface it to the user before writing the batch. Don't fix it silently.
+## Migration of schema-form outlines
 
-### 11. Write the files
+Projects outlined under the older nine-section schema (Premise / Setting & Time / Scene Beats / Setups Planted / Payoffs Delivered / Character Notes / Dialogue Anchors / Connections / Open Threads) need a one-time pass per chapter, which this skill runs when it encounters one:
 
-After the user approves:
+1. Snapshot the outline to `.history/`.
+2. Reduce the body to the prose account. If the old file had no prose body (beats only), the beats *are* the content: expand them into a prose account in `ai-generated` mode, or, if the author wrote the beats, leave them and set `author-written` so the Blueprint stage reads them as content.
+3. Open Threads: confirm each `[OPEN: Q-###]` is registered in `questions.md`; leave the marker inline in the body only where it marks a real gap in the narrative.
+4. Set `authorship`. Default `ai-generated` if the history shows a skill wrote it; otherwise ask.
+5. Recommend rebuilding the chapter's Blueprint, since the Blueprint derives the removed scaffolding from canon rather than transplanting it.
 
-- Snapshot any existing chapter outline being overwritten to its own `chapters/chapter-NN/.history/` as a flat `ch<NN>-outline-v<version>-<date>.md` file (the superseded version). Each chapter snapshots into its own folder — there's no central group snapshot for chapter artifacts.
-- Write each `chapters/chapter-NN/ch<NN>-outline.md` per the schema.
-- Regenerate `outline/_index.md` — the chapter × stage matrix; every chapter row reflects current state (outline-stage version link + title from frontmatter, or `—`, plus any `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT]` markers in the cell).
-- Update `state.md`:
-  - `What Exists → Chapter outlines` line bumped (`12/40 drafted, Structure v1`).
-  - `Summary` refreshed.
-  - `Last Session` updated.
-  - `stage` advanced only if appropriate. `outline-drafted` requires all spine chapters outlined AND zero unresolved markers; otherwise stay at `outlining`.
-  - `What's Next` updated.
-
-### 12. Report
-
-> Outline-chapters batch complete. Wrote 10 chapter outline files (ch 01–10), ~9,800w total at ~980w average. Snapshot saved (only 2 files had prior versions). Index regenerated. 2 chapters carry `[OPEN: Q-014]` markers (the inciting incident mechanism). 1 chapter (ch 7) carries `[NEEDS DEVELOPMENT: the off-screen Park subplot beat — no decided payoff yet]` — flagging for `questions.md` so a brainstorm-session can resolve it. Recommended next step: review Act 1, then `outline-chapters` for Act 2A (chapters 11–22). Or, if Q-014 is now blocking enough, resolve it in a brainstorm-session first.
-
-## Working with revisions
-
-When `outline-chapters` runs in single-chapter revision mode, the existing outline is the starting point — not a clean rewrite. Preserve what's working:
-
-- Scene beats that are landing → reproduce verbatim.
-- Character notes that match the bios → preserve.
-- Dialogue anchors that the user has reacted positively to in past conversations → preserve.
-
-Identify what's wrong, write the targeted fix, and surface the diff. If the user's complaint is vague (*"this feels low-energy"*), diagnose before rewriting — propose what you think the issue is (under-specified beats, missing payoff, character interiority too thin, etc.) and let the user confirm before you act.
-
-Tier promotion is irrelevant here (chapters don't have tiers), but **batch re-outlining** is sometimes the right move when a structural change ripples — e.g., the midpoint moved from ch 18 to ch 20, which affects ch 17–22. In that case, re-outline the affected range as a batch, not chapter-by-chapter; the cross-chapter checks matter again.
-
-## Reading discipline
-
-Substantive mode is mandatory in batch mode. Single-chapter revision mode is *conditional* substantive mode — substantive for the chapter being revised and its neighbors, lighter (targeted reads) for the broader context. See `references/reading-discipline.md` § Substantive mode.
-
-The treatment is the primary source. Every plot beat in a chapter outline must trace to a treatment passage, a decision, or an explicit marker. If you find yourself reaching for genre priors instead of the source material, stop. Re-read the relevant treatment section. The source has the answer — or the source has a gap that needs a marker.
-
-## The pre-prose readiness check
-
-A chapter outline is *prose-ready* when:
-
-- The body contains zero `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: …]` markers.
-- The frontmatter's `structure_version`, `treatment_version`, and `primer_version` all match the current versions of those files.
-- The setup/payoff entries trace to a load-bearing reveal in primer §2, an ordinary chain in the treatment, or a logged open question — no orphans.
-- The POV matches the spine slot's POV.
-
-This skill doesn't enforce prose-readiness — it just produces outlines. Pre-prose readiness is what the **`blueprint`** skill (the next stage) checks before building a chapter's production brief: a marker-free outline blueprints cleanly; an outline still carrying `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: …]` blueprints with the gap carried forward. The `[NEEDS DEVELOPMENT]` markers and the version stamps are what make that check possible. Don't skip them.
+Craft Constraints that were general belong in `voice/style-guide.md`; chapter-specific placements belong in the Blueprint's Chapter-Specific Craft section. Surface both in the report rather than moving them silently.
 
 ## Series Mode
 
-If `state.md` shows `project_type: series`, read `references/series.md` first. Outline-chapters in series mode operates on the **focused book's** chapter outlines — reads `books/<current_focus>/outline/structure.md` and writes `books/<current_focus>/chapters/chapter-NN/ch<NN>-outline.md`.
+If `state.md` shows `project_type: series`, read `references/series.md` first. Operate on the **focused book's** chapters: read `books/<current_focus>/outline/structure.md`, write `books/<current_focus>/chapters/chapter-NN/ch<NN>-outline.md`.
 
-Two additions in series mode:
+Two additions:
 
-1. **Cross-book chain awareness.** When a chapter slot's spine entry references a cross-book setup or payoff (e.g., *"Ch 38 — Inauguration Day · protocol deviation planted (pays off book 3 ch 22)"*), the chapter outline MUST include the planted/paid content in its Setups Planted or Payoffs Delivered section, cross-referenced to the series chain. Failing to render the cross-book content at chapter resolution breaks the chain.
-2. **Light read of `series.md`** for cross-book context — specifically the Cross-Book Setups and Payoffs section and the Per-Book Synopses for the focused book and any book the cross-book chain reaches into. Don't full-read other books' treatments unless a specific chapter slot demands it for setup/payoff fidelity.
-
-When a chapter outline's chain involves another book that hasn't been drafted yet, capture the chain in the chapter file but flag explicitly:
-
-```markdown
-## Setups Planted
-- **Protocol deviation** — pays off in book 3 ch 22 (per series.md, D-024). *Book 3 not yet drafted; payoff content TBD.*
-```
-
-This makes the chain visible and traceable even when the receiving book hasn't been written.
-
-Single-chapter revision mode in series gains the same series-context read — when revising chapter 17 of book 1, also consult `series.md` if chapter 17 participates in any cross-book chain.
+1. **Cross-book chains.** When a spine entry references a cross-book setup or payoff (*"Ch 38 · protocol deviation planted (pays off book 3 ch 22)"*), the planted or paid event must be present in the outline body as narrative. The chain itself is registered in `series.md`; the outline shows the event, never the chain. If the receiving book is not yet drafted, note it in the report, not in the outline.
+2. **Light read of `series.md`** for the Cross-Book Setups and Payoffs section and the Per-Book Synopses relevant to the focused book. Don't full-read other books' treatments unless a specific slot demands it.
 
 ## What this skill does not do
 
-- Generate prose. Not in this POC's scope.
-- Refresh `outline/structure.md`. That's `pre-outline-session`. If outlining reveals a structural problem (e.g., the spine slot for ch 17 doesn't actually fit any treatment scene), surface it in the report and recommend `pre-outline-session` for a structural revision — don't unilaterally edit the spine.
-- Refresh the treatment. If a chapter outline reveals that the treatment is wrong (a character does something the bio contradicts, a setup doesn't exist where the primer says it does), capture the implication as a decision and recommend `treatment-update` as a follow-up.
-- Generate or refresh bios. If a chapter outline reveals a bio gap (a supporting character doing something major), surface it and recommend `character-bio`.
-- Sync the manifest. Same handoff — flag and recommend, don't do it inline.
-- Patch `series.md`. If a chapter outline reveals a cross-book chain that needs updating in series.md (a new payoff identified, a setup that should be repositioned), flag and recommend brainstorm-session.
+- Generate prose. That's `prose`.
+- Refresh `outline/structure.md`. That's `pre-outline-session`. If outlining reveals a structural problem, surface it and recommend a structural revision.
+- Refresh the treatment or the primer. If an outline reveals the treatment is wrong, capture the implication as a decision and recommend `treatment-update`.
+- Generate or refresh bios. Surface the gap and recommend `character-bio`.
+- Sync the manifest. Flag and recommend.
+- Build the Blueprint. Everything the old schema staged (premise, beat index, setups, character notes, dialogue anchors, connections) is now derived from canon by `blueprint`.
+- Regenerate an author's outline. Ever.
 
 ## References
 
-- `references/plan-first.md` — universal plan-first behavior
-- `references/file-schemas.md` — `chapters/chapter-NN/ch<NN>-outline.md` schema, `outline/_index.md` (outline view matrix), per-chapter `.history/`, marker conventions
-- `references/reading-discipline.md` — substantive mode rules, Zoom Selection
-- `references/series.md` — **read when `project_type: series`** (focused-book paths, cross-book chain rendering in chapter outlines)
-- `references/frameworks.md` — character + setup/payoff vocabulary used in outline content
-- `references/philosophy.md` — character pressure drives chapter beats
-- `references/treatment-voice.md` — voice register that the chapter outline anchors against (the outline isn't written in treatment voice, but its sources are)
-- `references/genres.md` — obligatory scenes that should land in specific chapter slots
+- `references/plan-first.md`: universal plan-first behavior
+- `references/file-schemas.md`: `ch<NN>-outline.md` shape (frontmatter + prose body), `outline/_index.md`, per-chapter `.history/`, marker conventions, primer §2 Reveal Architecture (the chain register, with plant chapters)
+- `references/reading-discipline.md`: substantive mode
+- `references/series.md`: read when `project_type: series`
+- `references/frameworks.md`: character vocabulary (Lie / Ghost) the outline renders as action
+- `references/philosophy.md`: character pressure drives chapter movement
+- `references/genres.md`: obligatory scenes that should land in specific slots

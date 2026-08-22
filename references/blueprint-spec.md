@@ -1,225 +1,211 @@
-<!-- ABOUTME: The craft spec for a chapter Blueprint — the pre-prose production brief -->
-<!-- ABOUTME: Fidelity-preservation philosophy, character tiering, personality frameworks, worldbuilding selection, the 9 required sections, quality checklist -->
+<!-- ABOUTME: The craft spec for a chapter Blueprint — the pre-prose continuity brief -->
+<!-- ABOUTME: Backward-only rule, synthesis-over-quotation, character tiering, frameworks, worldbuilding, the 12 required sections, quality checklist -->
 
 # Blueprint Spec
 
-A **Blueprint** is a single, self-contained context document handed to a prose-writing agent before it writes a chapter. At prose time it **replaces the raw Canon layer entirely** — character bios, worldbuilding entries, and the story primer are all omitted from the prose agent's context when a Blueprint exists (the prose skill's lean path). Whatever the Blueprint drops, the prose agent never sees.
+A **Blueprint** is a single, self-contained document handed to a prose-writing agent before it writes a chapter. It answers one question: ***what must I not get wrong?*** Everything the prose agent needs in order to render this chapter correctly and stay true to canon, **and nothing about any chapter after it.**
 
-That makes the Blueprint a **fidelity-preserving consolidation, not a summary, and not a second outline.** The outline says *what happens*; the Blueprint assembles *everything the prose agent needs to render it well* — every character and worldbuilding element that will **surface** in the chapter, each at the resolution its prominence earns, with current state (clothing, wounds, mental state, what's been revealed) fused in, and with the story-level frame (genre, premise, moral argument, tone) the primer would otherwise have provided. It routinely stands in for 20–30k tokens of scattered raw Canon; a finished Blueprint of **4–5k tokens (roughly 3,000–3,800 words) is money well spent for a busy chapter**, and a simple chapter can land shorter. Do not compress for its own sake. The goal is one cohesive, production-ready brief the prose agent can write from without reconstructing scattered sources — **with the Canon's richness intact wherever the chapter will use it.**
+It sits beside three other artifacts, split by who reads them. `voice/style-guide.md` answers *how do I write this book?* (whole novel, stable). The chapter outline answers *what happens?* (the author's prose account, the only artifact carrying the author's voice). The Blueprint answers *what must I not get wrong?* (one chapter, derived from canon, backward-looking only). The prose agent reads all three. **If a line in the Blueprint tells the prose agent what happens, it is in the wrong file. If it tells the prose agent how to write in general, it is in the wrong file.**
 
-The `blueprint` skill operates the workflow (when to run, how to gather context from the folder, propose/confirm/write). This file specifies the **content shape** of what it produces. For the file layout (frontmatter, scene-split form, history) see `references/file-schemas.md` § Blueprint.
+At prose time the Blueprint **replaces the raw Canon layer entirely**: bios, worldbuilding entries, and the primer are omitted from the prose agent's context when a Blueprint exists. Whatever the Blueprint drops, the prose agent never sees. That makes it a **fidelity-preserving consolidation, not a summary, and not a second outline.** It routinely stands in for 20–30k tokens of scattered canon; a finished Blueprint of roughly 4,000–8,000 words is money well spent for a heavy chapter, and a simple chapter lands shorter. Do not compress for its own sake, and do not pad.
+
+The `blueprint` skill operates the workflow (when to run, how to gather, propose/confirm/write). This file specifies the **content shape**. For the file layout (frontmatter, scene-split form, history) see `references/file-schemas.md` § Blueprint.
 
 ---
 
 ## Core Principles
 
+### The Backward-Only Rule
+
+> **A Blueprint's knowledge horizon is its own chapter. It may look backward without limit and forward not at all.**
+>
+> It may state anything true as of the end of chapter N. It may not name, describe, hint at, or explain any event, reveal, state change, character, or object condition belonging to chapter N+1 or later.
+
+This is the rule most likely to be got wrong, because **planting is inherently forward-facing.** The resolution:
+
+> **State the requirement imperatively. Never state the reason.**
+>
+> - ✅ "The jacket is thrown at the edge of the grave, shallow, under loose dirt. The edge and the shallowness are both load-bearing and must not soften into *buried*."
+> - ❌ "The jacket is surface-tossed at the edge so Muppy can recover it in chapter 3 — a jacket in the grave could not be reached without exhuming the body."
+>
+> - ✅ "The matchbook must **be** the object it is from the moment it is dropped, branding included, though she cannot read it and the prose must not read it for her."
+> - ❌ "The matchbook is from the Wagon Wheel, planted unspent against Q-020, which may give it a second life as real evidence."
+
+The prose agent gets a precise instruction and no future. *Load-bearing* and *must not soften* carry all the weight the rationale used to. An agent that knows it is planting will telegraph; an agent that has been told exactly what to render will render it.
+
+**Corollaries to enforce:**
+
+- **Personality frameworks.** Carry every recorded framework, but strip plot instances from the integration and disintegration arrows. Keep the behavioural signature (*under stress he corkscrews into paranoia*); cut the trigger (*once the site turns out to have been watched*). Then name which direction, if any, fires in *this* chapter, and say plainly when neither does.
+- **Revelation Logs.** The `chapter ≤ N` filter already exists. When an entry's *text* references a later chapter, carry the state and drop the reference.
+- **Reveal Architecture.** Consult primer §2 to know *what this chapter must plant*; nothing about where a reveal lands may reach the file. Convert every entry to an imperative plant instruction or drop it.
+- **Cast.** A character who does not appear and is not thought about in this chapter is not named, even inside canon wording you are carrying. Genericize it.
+- **Worldbuilding.** Carry the element's current state and governing logic; cut any chain-of-custody narrative that runs past this chapter.
+- **Open questions.** Carry as frontmatter ID pointers only (`open_questions_touching_this_chapter: [Q-011, Q-015]`). Marker prose goes in the body only when the question creates a gap the prose agent must actively write around. Otherwise `questions.md` is the register.
+
+A grep over a finished Blueprint for `ch \d`, `chapter \d`, `Act [23]`, `pays off`, `later`, `back half` catches most violations. It false-positives on present-tense world facts, so it flags for review rather than failing the build.
+
 ### The Blueprint Is the Sole Carrier
 
-At prose time, the Blueprint is the *only* channel through which Canon reaches the prose agent — the bios, worldbuilding entries, and primer it replaces are not in that context. **A detail you omit is a detail the prose agent invents or gets wrong.** When you are unsure whether something will surface, err toward carrying it: worldbuilding texture, primer framing, and psychological depth all raise the quality ceiling of the prose even when they don't appear on the page verbatim. **This is the most important rule of this spec.** Inclusion is generous; what you tier is *resolution*, not presence.
+At prose time the Blueprint is the *only* channel through which canon reaches the prose agent. **A detail you omit is a detail the prose agent invents or gets wrong.** When unsure whether something will surface, carry it: worldbuilding texture, psychological depth, and this chapter's slice of the story frame all raise the quality ceiling even when they never appear verbatim. Inclusion is generous; what you tier is *resolution*, not presence.
 
 ### Prominence Sets Resolution
 
-Inclusion is generous; *resolution* is what you tier. For every element, ask: *how prominent is this in THIS chapter?*
+For every element, ask *how prominent is this in THIS chapter?*
 
-- **Foreground** — the chapter's action touches it, characters interact with it, the chapter takes place inside it: preserve most of its Canon detail, largely verbatim.
-- **Background** — present, seen, or passed through, but not focal: summarize to the impression the prose needs.
-- **Dormant** — genuinely untouched by the chapter (a location nobody visits or mentions, a subplot nobody thinks about): omit.
+- **Foreground**: the action touches it, characters interact with it, the chapter happens inside it. Preserve most of its canon detail.
+- **Background**: present, seen, or passed through, but not focal. Summarize to the impression the prose needs.
+- **Dormant**: genuinely untouched. Omit.
 
-For large multi-scenario entries, distill to the slice this chapter uses — the spells cast rather than the full grimoire, the room the chapter occupies rather than the whole house — **but always preserve the entry's overall philosophy or governing logic**, whatever the tier. The prose agent needs the *why* of a magic system or technology even when only one feature of it appears.
+For large multi-scenario entries, distill to the slice this chapter uses (the spells cast rather than the grimoire, the room rather than the house), **but always preserve the entry's governing logic**, whatever the tier.
 
-### Carry Canon Verbatim Where You Can
+### Carry the Canon's Specificity, Not Its Citations
 
-Canon entries were written to give the prose rich, specific detail — don't launder that specificity through paraphrase. Carry wording over verbatim by default. Rewrite only when you are (a) **distilling** — summarizing an entry down to the resolution its prominence earns — or (b) **characterizing** — angling material to the chapter's specific focus (e.g. naming which Enneagram direction a character is living out under this chapter's pressure). Verbatim carry-over is not laziness; it is fidelity.
+The Blueprint is **one document written in its own voice**: a director's brief, synthesized for this chapter. It is not a dossier of quotations.
 
-### Integrate Current State — and never write toward future state
+Canon entries were written to give the prose rich, specific detail, and paraphrase launders that specificity: *a ruined left shoulder he protects without discussing* must not become *an old shoulder injury*. But quotation marks do not protect specificity; wording does. So:
 
-Fuse one clean, scene-current image per element at generation time — so the prose agent never has to reconcile a canonical bio that says one thing against a chapter context that says something subtly different. Drift between the two is a top failure mode; you foreclose it here.
+- **Where a canon phrase is sharper than any paraphrase, use the phrase, unquoted**, absorbed into the brief's own sentences. The prose agent treats every line as authoritative either way, and the author has the canon files for provenance.
+- **Never downgrade a specific into a generic.** Distill by dropping what the chapter doesn't use, never by blurring what it does.
+- **No blockquotes, no inline quotation marks around canon, no source attributions** (*per `vinnie.md`*) in the body. The one place provenance belongs is the Continuity section's canon-vs-scene resolutions, where the prose agent needs to know a choice was made.
+- **Specifications stay as lists.** A POV character's complete word inventory, a forbidden-lexicon bar, the four venery terms locked to this chapter in their required order: these are not prose and must transfer exactly. A list is the honest shape for them.
 
-Scene-current state has a definite source order:
+The test: read a section aloud. If it sounds like someone reading index cards, rewrite it until it sounds like a brief.
 
-1. **The Canon entry's Revelation Log, filtered to `chapter ≤ N`** (see `canon-schemas.md` § Revelation Log). This is the crude, authoritative timeline: a character injured in ch 12 is still favoring that arm in ch 17; a character whose spouse died in ch 14 carries that grief from ch 14 on. Include every log entry dated at or before this chapter.
-2. **Reconstruction from the treatment's chronology and prior chapters' outlines/prose** where the log is silent — clothing established last chapter, an emotional residue from the previous scene, an open beat carried forward.
+### Integrate Current State
 
-Then:
+Fuse one clean, scene-current image per element, so the prose agent never reconciles a bio that says one thing against a chapter that says something subtly different. Source order:
 
-- Merge bio-level description ("silver-white hair combed back") with scene-specific state ("tie loosened, reading glasses on the desk") into one clean image.
-- **Clothing, injuries, and accessories follow a hard continuity rule.** If prior chapters established a specific state (a named outfit, a bandaged hand, a watch on the wrong wrist), preserve it *identically* — do not restyle for variety. If no state has been established, **make specific, concrete choices now** (name the garments, the wear, the carried objects) and record them in Continuity as deliberate, so the prose agent has something definite to hold constant. **Never leave wardrobe or physical state vague** — vagueness at Blueprint time becomes inconsistency at prose time.
-- If the canonical bio and the scene-state conflict, resolve in favor of the scene and note the resolution in the Continuity section.
-- **Never reach past chapter N.** A Revelation Log entry dated after this chapter is *future state* — a reveal that hasn't landed, a death that hasn't happened. Writing toward it spoils the story and corrupts continuity. The base bio describes the character's *whole arc*; your job is the character *as of this chapter*, not as they end up. This is the whole point of the `chapter ≤ N` filter.
+1. **The canon entry's Revelation Log, filtered to `chapter ≤ N`** (see `canon-schemas.md` § Revelation Log).
+2. **The prior chapter's `ch<NN>-notes.md` end-state block**, when one exists: wardrobe, injuries, objects carried, location, emotional residue, the hour, as the chapter actually left them.
+3. **Reconstruction from prior chapters' prose or outlines** where the log and notes are silent.
 
-### Knowledge horizon & the spoiler firewall
+Then merge bio-level description with scene-specific state into one image. **Clothing, injuries, and accessories follow a hard continuity rule:** established state is preserved *identically*; unestablished state gets specific, concrete choices now, recorded in Continuity as deliberate. Never leave physical state vague; vagueness at Blueprint time becomes inconsistency at prose time. If the bio and the scene-state conflict, resolve in favor of the scene and note it in Continuity.
 
-The Blueprint's knowledge horizon is **this chapter**. The seed gives you forward *orientation* — the primer's §2 Reveal Architecture (the ~2–5 load-bearing reveals: what's hidden, when it lands), the structure spine, and the chapter outline's Setups Planted — so you know what this chapter must plant and where it sits in the arc. Use that orientation to seed foreshadowing and anchor theme. But you are handed the treatment only as the **spine-slot passage for this chapter** (its chronology), *not* the whole plot — and even the forward-orientation artifacts are structural indexes, not future narrative. **Never leak a future event, reveal, or state into the Blueprint.** The firewall lives here: the Blueprint's output *is* the prose agent's context, so a spoiler that reaches the Blueprint reaches the prose. Seed the setup ("plant the locket's engraving as innocuous here") without narrating the payoff.
+### Craft Lives in the Style Guide
+
+General craft (sensory rules, POV permissions, typography, tense, vision specs, voice laws) lives once, in `voice/style-guide.md`, for the whole book. The Blueprint carries **only what is unique to this chapter**: *these four terms attach to these referents in this order in this scene.*
+
+**Dependency:** if `voice/style-guide.md` exists, the Blueprint carries no general craft and says so at the top of § Chapter-Specific Craft. If it does not exist, the Blueprint must transcribe the project's craft rules into that section, **and the skill must warn the author that this is a per-chapter workaround** and recommend writing the style guide.
 
 ### Tier, Don't Duplicate
 
-If two or more characters serve a similar functional role in the chapter (two junior officers at the displays; three kitchen staff receiving a farewell), describe them together in one compact paragraph. Don't tier each separately when the prose agent only needs the collective impression.
+When several characters serve one functional role (three kitchen staff receiving a farewell), describe them together in one compact paragraph.
 
 ### Substance, Not Padding
 
-The generous budgets below are for *Canon fidelity*, not filler. Never pad with invented generalities, throat-clearing, or restatement to reach a length. Every sentence should carry either Canon detail, scene-current state, primer framing, or craft guidance the prose agent can use. A lean section that carries everything relevant beats a long one that buries it. Per-tier word counts are **ceilings, not targets** — if a POV character's surfacing content genuinely fits in 800 words, don't pad to 2,000.
+Every sentence carries canon detail, scene-current state, this chapter's story frame, or a chapter-specific instruction. Per-tier word counts are **ceilings, not targets**.
 
 ---
 
 ## Character Tiering
 
-For each character on-page or meaningfully referenced, assign a tier and generate their entry at that resolution. Order in the Blueprint: POV first, then Major, then Supporting, then Minor, then Referenced. A character's Blueprint tier is **chapter-local** — the story's protagonist is the POV tier in their own chapters but may be Referenced-not-present in a chapter they don't appear in. It is *not* the same as the character's bio tier (major/supporting/minor in the manifest).
+Tier each character **chapter-locally**: POV → Major → Supporting → Minor → Referenced. The story's protagonist is POV in their own chapters and Referenced, or absent, in others. The Blueprint tier is not the manifest bio tier.
 
-### Personality Frameworks — carry them all
+### Personality Frameworks
 
-Canon bios record personality frameworks in their Quick Reference and Psychology sections (see `canon-schemas.md`): **Enneagram** (type, wing, integration/disintegration lines), **MBTI** (4-letter type and cognitive style), **CliftonStrengths** (top 5 themes). When a character's bio carries these, the Blueprint carries **all of them** — even the parts this chapter won't strictly use. They are the prose agent's calibration instruments for voice, decision-making, and behavior under pressure; the agent has no other access to them.
-
-Then *characterize* them for this chapter:
-
-- **Enneagram:** state the type as Canon gives it, and identify **which direction the character is living out in THIS chapter** — integration (growth) or disintegration (stress) — and what that behavior concretely looks like here.
-- **MBTI:** carry the full type/cognitive-style description, and **flag which functions or traits are activated** by this chapter's situation.
-- **CliftonStrengths:** carry all listed themes, and **mark which are present or activated** in this chapter's action.
-
-Depth scales by tier: POV and Major get the full framework block with scene-activation notes; Supporting gets a compact block (one line per framework, activation flagged); Minor and Referenced omit frameworks unless a specific moment needs one tell. **Never invent typology the Canon doesn't record** — if a bio has no frameworks, write the psychology from what Canon does say. The frameworks ride the Blueprint by default, because the prose agent can't reach the bio to recover them.
+When a bio records **Enneagram** (type, wing, integration/disintegration lines), **MBTI**, or **CliftonStrengths**, the Blueprint carries **all of them** for POV and Major characters, compactly for Supporting, not at all for Minor and Referenced. Then characterize for this chapter: which Enneagram direction fires here (integration, disintegration, or neither, said plainly), which MBTI functions and Clifton themes are live. Per the backward-only rule, arrows carry the behavioural signature and not the plot trigger. **Never invent typology the bio doesn't record**, and say so when a framework is absent so the prose agent doesn't reach for one.
 
 ### POV (up to 2,000 words)
 
-The character whose interiority the chapter lives inside.
+- **Current Physical & State**: appearance fused with scene-start state under the continuity rule.
+- **Emotional State & Goal**: what they want in this chapter, what shifts, what they avoid.
+- **Voice Fingerprint** (chapter-distilled): register, rhythm, the slice of their reference well likely to surface, never-says, the character of the inner voice. Drop dimensions that won't surface.
+- **Personality Frameworks**: per above.
+- **Scene-Relevant Psychology**: the slice of arc, Lie, Ghost, fear, or drive that shapes this chapter's actions.
+- **Interiority**: how the inner voice differs from the outer; what is rationalized outward versus confessed inward; the ceiling of interpretation the narration may not exceed. The most important subsection for close-third chapters.
+- **Behavioral Tells**: gestures, tics, patterns, and which of them have a host in this chapter.
 
-**Include:**
-- **Current Physical & State** — clothing, grooming, posture, visible wear, scene-start injuries, fatigue, hunger, intoxication. Fuse canonical appearance with Revelation Log (≤ N) and prior-chapter state; apply the clothing continuity rule (preserve established state identically; make specific choices where nothing is established).
-- **Emotional State & Goal** — what they want in this chapter, what they feel, what's at stake, what they're avoiding.
-- **Voice Fingerprint (chapter-distilled)** — register and rhythm; the slice of their reference well likely to surface here; profanity profile; verbal tell under pressure; never-says; character of their inner voice. *Drop* fingerprint dimensions that won't audibly surface.
-- **Personality Frameworks** — per the rules above: all recorded frameworks, with this chapter's Enneagram direction named and MBTI/Clifton activations flagged.
-- **Scene-Relevant Psychology** — the specific aspects of their arc, The Lie, dominant fear, dominant drive, or cognitive-emotional posture that shape their actions and interiority *in this chapter*.
-- **Interiority Guidance** — how their inner voice differs from their outer one; what they rationalize outward vs. confess inward; the gap between presentation and private thought. The single most important subsection for intimate third-person-limited chapters.
-- **Behavioral Tells** — gestures, tics, speech patterns the prose agent should reach for.
+Drop biography not activated here, relationships with characters not present and not thought about, hobbies unconnected to the chapter.
 
-**Drop:** Biography not activated in this chapter; relationships with characters not present and not thought about; hobbies unconnected to the chapter.
+### Major (800–1,200 words)
 
-### Major Participant (800–1,200 words)
-
-Significant speaking presence and/or dramatic function — their choices affect the chapter's outcome.
-
-**Include:** Physical appearance + current state (clothing continuity rule applies); external voice pattern (register, cadence, profanity profile, one or two hallmark phrases); full **Personality Frameworks** block with scene-activation notes; chapter-specific emotional state & goal; behavioral tells; relationship to the POV as it bears on this chapter.
-
-**Drop:** Internal monologue (that's the POV's job); family and childhood history not activated here.
+Appearance and current state; external voice pattern (register, cadence, one or two hallmark patterns, never-says, the tell under pressure); full frameworks block characterized to the chapter; emotional state and goal; tells; relationship to the POV as it bears here; what they do in the chapter. No internal monologue.
 
 ### Supporting (400–800 words)
 
-Present and speaks, but not in the chapter's main dramatic engine — assists, delivers, reacts.
+Appearance and state; voice register; tells; mood and intent; compact frameworks line; one-sentence relationship to the POV if relevant.
 
-**Include:** Appearance + current state; voice register; behavioral tells; chapter-specific mood and intent; compact **Personality Frameworks** block (one line per recorded framework, activation flagged); one-sentence relationship to POV if relevant.
+### Minor (up to 200 words)
 
-**Drop:** Interiority, deep backstory, voice complexity beyond register and one hallmark pattern.
+What they look like, wear, how they move; voice register in a sentence; one tell if the moment needs it. No psychology, frameworks, or backstory.
 
-### Minor / Walk-through (up to 200 words)
+### Referenced (≤ 40 words)
 
-Brief on-page appearance, functional role.
-
-**Include:** What they look like, what they're wearing, how they move, voice register in one sentence, one behavioral or vocal tell if the moment needs it.
-
-**Drop:** Psychology, personality frameworks, backstory, relationships, interiority, Voice Fingerprints.
-
-### Referenced, Not Present (≤ 40 words)
-
-Discussed, thought about, or implied — never on-page.
-
-**Include:** Only if the POV's interiority addresses them or the dialogue references them in a way the prose agent must calibrate. One framing line: who they are to the POV and what charge their name carries.
-
-**Drop:** Everything else. Do not include characters merely named in passing without emotional weight.
+One framing line: who they are to the POV and what charge their name carries. Only if the POV's interiority or the dialogue reaches them. Characters merely named in passing without weight are omitted.
 
 ---
 
 ## Worldbuilding Selection
 
-Worldbuilding entries are the story's sources of truth for locations, objects, systems, and technology — written specifically to give the prose rich, concrete detail. The Blueprint is their only route to the prose agent, so carry them at **high fidelity, tiered by prominence**:
+Worldbuilding entries are the story's sources of truth for locations, objects, systems. Carry them at prominence-tiered fidelity:
 
-- **Foreground** (the action uses it, characters interact with it, the chapter happens inside it): preserve most of the entry's detail, largely verbatim — **150–400 words**, more if the element is central to the action.
-- **Background** (present or perceived but not focal): summarize to the sensory impression the prose needs — **40–100 words**.
-- **Atmospheric-only**: collapse to 1–2 sentences.
+- **Foreground**: 150–400 words, more if central to the action.
+- **Background**: 40–100 words.
+- **Atmospheric**: one or two sentences.
 
-For every element:
-
-- **Name the scene trigger** — the moment in the chapter where this element appears or is used.
-- **Distill multi-scenario entries to this chapter's slice** — the spells cast rather than the full metaphysics, the cockpit rather than every deck, the one room rather than the whole house — **but always preserve the system's overall philosophy or governing logic**, whatever the tier. The prose agent should understand *why* the magic or technology works the way it does, even when only one feature appears.
-- **Preserve identity markers via their carrier.** A signature object that doesn't *do* anything but rides with a character as identity goes in their physical line — not its own worldbuilding bullet.
-- **Apply the Revelation Log (≤ N) to elements too** — a location damaged in an earlier chapter, a device that gained a capability, shows its current state.
-- Omit only what is genuinely dormant — untouched, unmentioned, unthought-of in this chapter.
+For every element: **name the scene trigger** (the moment in the chapter where it appears); distill multi-scenario entries to this chapter's slice while preserving governing logic; fold identity objects into their carrier's physical line rather than giving them their own bullet; apply the Revelation Log (≤ N); carry current state and cut chain-of-custody that runs past this chapter. Note explicitly when a canon entry carries a detail this chapter must *not* use (a superseded line, a wrong plant for the region), so the prose agent doesn't rediscover it.
 
 ---
 
 ## Required Sections
 
-### Header Information
-- Chapter number and title
-- Time of day / narrative date
-- POV character (with narrative style: third-person limited, past tense, etc.)
+### Header
+
+Chapter number and title; time of day and narrative date; POV with narrative style; position in the book (what precedes it, or *nothing precedes this chapter*); and a one-line knowledge-horizon statement.
 
 ### 1. Scene Function
-Single line, 3–6 words, standard story-structure terminology. *Examples:* "Inciting Incident, Character Introduction" · "Midpoint Reversal, Alliance Formation" · "All Is Lost, Mentor Death."
+One line, 3–6 words, standard structure terminology.
 
-### 2. Story Context (harvested from the primer)
-200–400 words. The primer is **not** in the prose agent's context on the lean path — this section is its sole carrier. Harvest generously; carry over more than you might think necessary, because it informs the quality of the prose even when it never surfaces verbatim. Verbatim carry-over is welcome.
+### 2. Story Context
+The primer harvest, **filtered to what bears on this chapter.** Genre and register as they govern *this* chapter's tone; the premise and central question; the moral argument and thematic throughline, with how this chapter carries them; the slice of the character web among this chapter's cast; this chapter's tonal modulation. Book-level furniture (comparables, word targets, the full genre essay, the whole cast web) is cut unless it governs this chapter specifically. General tone and voice rules belong to the style guide. Expect 300–700 words; once a style guide exists and the cast web is small, this may compress to ~200.
 
-**Include:**
-- **Genre and its promises** — what kind of book this is and what the reader has been promised.
-- **Premise / logline** — the story in brief, as the primer frames it.
-- **Moral argument & thematic throughline** — the book's central question and what the story argues; anchor this chapter's thematic layer to it.
-- **Tone and style** — the register, texture, and stylistic identity the primer prescribes (the voice rules).
-- **Character web** — the primer's intended dynamics among the characters in this chapter's cast: the "space between" them that individual bios don't carry.
-- Any other primer material that bears on this chapter (stakes frame, world posture, structural intent).
+### 3. Chapter Shape
+The premise (one or two sentences, resolving against the spine slot). The **numbered beat sequence**: the dramatic spine the outline's prose carries in full, stated here as an index so the prose agent can pace the expansion. The outline remains the content; the beats never restate it. Structure and pacing (movements, the hinge); the **expansion target** relative to the outline's word count; opening and closing technique.
 
-**Omit:** primer material with no bearing on this chapter — but when in doubt, carry it.
+### 4. Characters
+Per the tiering model. Entry header `### **Name (Tier)**`; POV uses the subsections in bold italics. A character unnamed in the narration is marked so in the header (*unnamed in narration; he is the big one*).
 
-### 3. Characters
-Per the tiering model above. Order: POV → Major → Supporting → Minor → Referenced.
+### 5. Setting
+One paragraph, 75–200 words: the chapter's opening sensory frame. Specific space, hour, light, sound, smell, temperature. Deep foreground-location detail lives in Worldbuilding.
 
-**Entry format:**
-- Header: `**Character Name (Tier)**`
-- POV uses all subsections in bold italics: `***Current Physical & State***`, `***Emotional State & Goal***`, `***Voice Fingerprint***`, `***Personality Frameworks***`, `***Scene-Relevant Psychology***`, `***Interiority***`, `***Behavioral Tells***`.
-- Major drops *Interiority* (keeps the full frameworks block). Supporting collapses to Physical + Voice + Frameworks + Emotional + Tells. Minor is a short paragraph or two. Referenced is a single sentence.
+### 6. Main Source of Conflict
+One paragraph, 100–150 words. The tension specific to *this* chapter, how it escalates or turns, what is at stake by the last line.
 
-### 4. Setting
-Single paragraph, 75–150 words. Sensory-rich: location, time of day, lighting, colors, spatial layout, sounds, smells, temperature, weather, atmospheric tone, any vehicles or distinctive geography. Name the *specific* space — not "the office" but the cleared Resolute desk at 7:38 AM with winter light through bulletproof glass. Deep physical detail for foreground locations lives in Worldbuilding; this section is the chapter's opening sensory frame.
+### 7. Symbolism and Thematic Layer
+One paragraph, 100–150 words. Anchored to the throughline in §2; this chapter's theme is an instance of the book's. Name the central symbolic object and its resonance if there is one.
 
-### 5. Main Source of Conflict
-Single paragraph, 100–125 words. The central dramatic tension specific to *this* chapter — how it manifests, how it escalates or shifts, what's at stake. Not general story conflict.
+### 8. Continuity
+What precedes this chapter (by number) and what it inherits: wardrobe, injuries, objects, location, residue. **State established here**, deliberately, to be held constant. **Plant instructions**, imperative, without rationale, per the backward-only rule. **Canon-vs-scene resolutions** adopted, with which entry governed and why; this is the one place provenance belongs. Markers for any gap the prose agent must write around.
 
-### 6. Symbolism and Thematic Layer
-Single paragraph, 100–125 words. Symbols, metaphors, archetypal elements this chapter should carry. Anchor to the moral argument and thematic throughline carried in Story Context — this chapter's theme is an instance of the book's, not a fresh invention. If the chapter has a central symbolic object, name it and its resonance.
+### 9. Worldbuilding
+Bullet list, one element per bullet, tier and scene trigger named, prominence-tiered detail per the selection rules.
 
-### 7. Continuity Considerations
-Single paragraph, 150–250 words. Track connections to past and future:
-- **Links to previous chapters:** physical continuity (clothing, locations, objects), emotional threads, unresolved tensions. Reference prior chapters *by number*.
-- **New state established here:** where prior chapters left wardrobe or physical state unestablished and you made specific choices, name them as deliberate so future chapters inherit them.
-- **Foreshadowing:** setups being seeded (cross-reference the primer's §2 Reveal Architecture and the chapter outline's Setups Planted). Seed the setup, never narrate the future payoff.
-- **Must remain consistent:** timeline, character knowledge, established facts, ongoing subplots.
-- **Canon-vs-scene resolutions:** if the canonical bio says X and a prior chapter or the Revelation Log established Y, state which the Blueprint adopts and why. Resolve here so the prose agent doesn't have to.
+### 10. Dialogue Anchors
+The exchanges that must land, at beat level: who speaks, what the line must accomplish, register constraints from the speakers' fingerprints (*he never asks a question, so the objection lands as a statement*). Not drafted dialogue; where the outline already carries the author's dialogue, the anchor says that line is the author's and is preserved in substance.
 
-### 8. Worldbuilding
-Bullet list. For each element, the scene trigger + prominence-tiered detail per the Worldbuilding Selection rules. Foreground elements run 150–400 words; background 40–100; atmospheric 1–2 sentences. Omit dimensions the chapter doesn't touch; preserve each system's governing logic.
+### 11. Chapter-Specific Craft
+Only placements unique to this chapter: a locked term set and its order of introduction, a register the chapter may not use, a lexicon bar, a sequence that must carry no vocabulary lesson. Opens with a one-line pointer to the style guide for everything general. If there is no style guide, this section carries the transcribed craft rules and the skill has warned the author.
 
-### 9. Other Notes
-Bullet list, 75–100 words total:
-- **Scene Structure** — pacing, act breaks within the chapter.
-- **Transition Technique** — how the chapter begins and ends.
-- **Unresolved Threads** — cliffhangers, delayed resolutions, dangling tensions.
-- **Tonal Target** — the emotional register the prose should hit.
-- **POV-Specific Reminders** — anything to hold constant about the POV's voice or perspective.
+### 12. Other Notes
+Bullet list: what this chapter must not do (and it must never anticipate); what is unresolved at the last line; tonal target; POV reminders.
 
 ---
 
 ## Scene-split chapters
 
-When a chapter is genuinely scene-split (multi-POV, or long enough for a `scenes/` subfolder), the Characters / Setting / Conflict / Worldbuilding sections repeat **per scene** under `## Scene 1 — …`, `## Scene 2 — …` headers, because tiering, POV, and current state can differ scene-to-scene. The Story Context, Symbolism, Continuity, and Other Notes sections stay chapter-level. Default to the single chapter-level form; use the scene-split form only when the chapter actually needs it.
+When a chapter is genuinely scene-split (multi-POV, or long enough for `scenes/`), sections 4, 5, 6, and 9 repeat per scene under `## Scene 1 — …` headers. Sections 2, 3, 7, 8, 10, 11, 12 stay chapter-level. Default to the single chapter-level form.
 
 ---
 
 ## Writing Style
 
-**Tone:** Professional, concise, like a director's production brief. The prose agent reads this under cognitive load — clarity and specificity beat literary flourish.
+**Tone:** a director's production brief. Professional, specific, synthesized. The prose agent reads this under cognitive load; clarity beats flourish and flow beats citation.
 
-**Avoid:** Redundancy; overly literary language; padding or throat-clearing; paraphrase that launders Canon specificity; lists where paragraphs work better (exceptions: Worldbuilding, Other Notes, character subsections).
+**Avoid:** redundancy; blockquoted or quoted canon; source attributions in the body; author-facing commentary the prose agent cannot use; anything that tells the prose agent what happens (that is the outline's) or how to write in general (that is the style guide's); anything about a later chapter.
 
-**Include:** Specific, concrete details; Canon wording carried verbatim where fidelity allows; active verbs; vivid descriptors; clear connections between elements.
+**Include:** specific, concrete detail; canon wording absorbed where it is sharper than paraphrase; active verbs; imperatives for plants; plain statements of which framework direction fires and which does not.
 
-**Format:** `**Bold**` for section headers, character names, tier labels. `***Bold italics***` for character subsection labels. Bullets for Worldbuilding, Other Notes, and character subsections where appropriate. Paragraphs for Story Context, Setting, Conflict, Symbolism, Continuity.
+**Format:** `##` numbered section headers; `### **Name (Tier)**` character headers; `***bold italics***` for POV subsection labels; paragraphs for §§2, 3, 5–8; bullets for §§9, 10, 12 and for specification lists.
 
 ---
 
@@ -227,20 +213,17 @@ When a chapter is genuinely scene-split (multi-POV, or long enough for a `scenes
 
 Before finalizing, verify:
 
-- [ ] You read each on-page character's and worldbuilding element's Canon entry **in full** — never grepped it. (Grep returns keyword matches without the causal framing; the gaps get confabulated from genre priors.)
-- [ ] Every on-page character has an entry; no off-page character intrudes unless the POV's interiority addresses them.
-- [ ] Each character is tiered correctly; foreground detail is preserved at high fidelity, background summarized — and sized within the tier's ceiling, below it when detail doesn't earn its keep.
-- [ ] Every character whose Canon bio records personality frameworks carries **all** of them — Enneagram with this chapter's integration/disintegration direction named, MBTI and CliftonStrengths with scene activations flagged. No invented typology.
-- [ ] Clothing, injuries, and accessories: established state preserved identically; unestablished state given specific, concrete choices (and noted in Continuity as deliberate).
-- [ ] Story Context carries the primer's genre, premise, moral argument, tone/style, and character web — generously.
-- [ ] POV character retains chapter-distilled voice fingerprint + full frameworks + scene-relevant psychology + interiority guidance + current state.
-- [ ] Non-POV characters carry no interior-monologue content.
-- [ ] Minor / walk-through characters are described in short compact entries; referenced-but-absent get ≤ 1 framing line.
-- [ ] Each worldbuilding element names the moment that uses it and is tiered by prominence; multi-scenario entries are distilled to this chapter's slice with their governing philosophy preserved.
-- [ ] Canon wording is carried verbatim wherever you weren't distilling or characterizing.
-- [ ] Current state is fused from the Revelation Log (≤ this chapter) and prior chapters; no information conflict remains between canonical bio and scene-state — conflicts are resolved in Continuity.
-- [ ] **No detail reflects a Revelation Log entry dated after this chapter, or any reveal/state-change that hasn't landed yet; nothing from the treatment's future or the Reveal Architecture's not-yet-landed reveals leaked in.**
-- [ ] Setting includes sensory details beyond the visual.
-- [ ] Conflict is specific to *this* chapter; symbolism anchors to the book's thematic throughline carried in Story Context.
-- [ ] Continuity references prior chapters by number.
-- [ ] The prose agent could write the chapter from this Blueprint alone, without access to the full Canon or the primer.
+- [ ] Every on-page character's and worldbuilding element's canon entry was read **in full**, never grepped.
+- [ ] **No section names, describes, or hints at a chapter after this one.** No framework arrow carries a future trigger. No worldbuilding entry carries chain-of-custody past this chapter. Every plant is stated imperatively without its rationale. No Revelation Log entry dated after this chapter, and no reveal that hasn't landed, reached the file.
+- [ ] Nothing in the file tells the prose agent *what happens* beyond the Chapter Shape's beat index; the outline is the content.
+- [ ] No general craft is present when `voice/style-guide.md` exists; if it doesn't, the transcription is present and the author was warned.
+- [ ] The body contains no blockquotes, quoted canon, or source attributions outside Continuity's resolutions; specification lists (inventories, lexicon bars, locked term sets) are exact.
+- [ ] Every on-page character has an entry at the right tier, sized within its ceiling; no off-page character intrudes unless the POV's interiority reaches them; unnamed-in-narration characters are marked.
+- [ ] Every recorded framework is carried for POV and Major, characterized to this chapter, with the firing direction (or *neither*) stated; no invented typology.
+- [ ] Physical state: established state preserved identically; unestablished state given concrete choices and recorded in Continuity.
+- [ ] Story Context is filtered to this chapter; book-level furniture is cut.
+- [ ] Chapter Shape carries the premise, the beat index, pacing, expansion target, and opening/closing technique.
+- [ ] Each worldbuilding element names its trigger and tier; governing logic preserved; superseded or region-wrong details flagged as do-not-use.
+- [ ] Dialogue Anchors name the exchanges that must land with their register constraints; the author's dialogue in the outline is marked preserved.
+- [ ] Open questions are frontmatter ID pointers; marker prose appears in the body only where the prose agent must write around a gap.
+- [ ] The prose agent could write the chapter from the style guide, the outline, and this Blueprint alone.

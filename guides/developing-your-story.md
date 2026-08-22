@@ -37,7 +37,7 @@ init  →  ┌─ the development loop ─────────────�
 | **Worldbuilding entry** (`worldbuilding-entry`) | Locations, organizations, magic systems, objects… | As elements mature |
 | **Manifest sync** (`manifest-sync`) | Refreshes the one-line inventory of everything | After treatment changes add/rename elements |
 | **Pre-outline** (`pre-outline-session`) | Commits the story to a numbered chapter spine | Once the treatment is solid |
-| **Outline chapters** (`outline-chapters`) | Writes the per-chapter beat sheets against the spine | Act by act, after pre-outline |
+| **Outline chapters** (`outline-chapters`) | Writes or corrects the per-chapter prose accounts against the spine | Act by act, after pre-outline |
 
 Every skill follows the same rhythm: it reads what matters, **proposes a plan**, waits for your go, executes, and reports. Nothing is overwritten silently — superseded versions snapshot to history first.
 
@@ -166,13 +166,17 @@ If the treatment isn't ready — too many unresolved structural markers, no prim
 
 ### Outline chapters: filling in the spine
 
-Say **"outline Act 1"**. Chapter outlines generate in batches — an act at a time is the natural rhythm, shown in halves so you're never reacting to ten files at once. Each chapter gets a ~600–1,000-word beat sheet: premise, setting, 3–6 scene beats (each must *shift* something — a beat that changes nothing is filler), setups planted and payoffs delivered, what changes for each character, a few dialogue anchors, and the seams to the chapters on either side.
+Say **"outline Act 1"**. Chapter outlines generate in batches — an act at a time is the natural rhythm, shown in halves so you're never reacting to ten files at once.
 
-The discipline that keeps outlines trustworthy:
+A chapter outline is **your prose account of what happens in the chapter**, and nothing else: a flowing narrative, typically 500–1,500 words per 3,000-word chapter, that the prose stage later expands into the full chapter. It can carry as much or as little as you like — action beats, interiority, direction, every line of dialogue if you want to write them. It is written the way you think, not to a form. There is no premise block, no beat list, no setups-and-payoffs ledger, no character notes; all of that is derived from your canon by the Blueprint stage, at better resolution than an outline could stage it.
 
-- **Everything traces to a source** — the spine, the treatment, a logged decision, a bio. The classic failure mode of AI outlining is invented scene mechanics: a chase the treatment never called for, a confrontation the characters don't justify. Content with no source becomes a marker, not a guess.
-- **Batches get cross-checked** — chapter-to-chapter continuity seams, orphaned setups with no payoff slot, unplanned POV shifts. Problems surface to you rather than getting quietly patched.
-- **Revision is targeted.** Later, saying **"chapter 17's tension feels low"** re-outlines just that chapter, using its neighbors for continuity — and if your complaint is vague, it diagnoses first and confirms what's wrong before rewriting.
+The outline is the one artifact in the pipeline that carries *your* voice, and the skill is built to protect it:
+
+- **It knows whose outline it is.** Every outline carries an `authorship` field: `author-written`, `ai-generated`, or `ai-generated-author-revised`. If you wrote it, or reworked one the skill wrote, the skill goes into **correction-only mode**: it can fix a fact that contradicts your canon, a thing the POV character couldn't know, or a stale version stamp, and it shows you the full triage with the smallest fix for each item before touching anything. It will not rewrite your sentences, and it will not "improve" your rhythm. Say **"check chapter 1 against canon"** to run that pass on purpose.
+- **Generated outlines borrow your style.** Before writing a new one, the skill reads your two or three most recent hand-written or hand-revised outlines and matches them — tense, density, how much dialogue you quote, whether you narrate or direct, whether you let yourself editorialize. With no samples yet, it flags the first batch as **style-setting** so you review it as a template.
+- **Everything traces to a source.** The spine, the treatment, a logged decision, a bio. The classic failure of AI outlining is invented scene mechanics — a chase the treatment never called for. Content with no source becomes an inline marker, not a guess.
+- **Batches get cross-checked.** Chapter-to-chapter seams, unplanned POV shifts, and every load-bearing chain registered in the primer's Reveal Architecture — is its plant actually present in the chapter that's supposed to plant it? Problems surface to you rather than getting quietly patched.
+- **Revision is targeted.** On an AI-generated outline, saying **"chapter 17's tension feels low"** re-outlines just that chapter, using its neighbors for continuity — and if your complaint is vague, it diagnoses first and confirms what's wrong before rewriting.
 
 A chapter outline with zero unresolved markers is prose-ready — which is exactly where the [Writing Chapters guide](writing-chapters.md) begins.
 

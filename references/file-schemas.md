@@ -132,7 +132,7 @@ Logline (1–3 sentences capturing the hook), primary genre and subgenre, 3–5 
 
 The central dramatic question the story asks, the premise/moral argument (what the story proves through events), core conflict architecture (the levels of conflict operating simultaneously), character thematic positions (how each major character embodies a different answer to the central question), thematic parallels and structural echoes between characters, and the load-bearing **Reveal Architecture** (subsection below).
 
-**Reveal Architecture (subsection).** The story's *load-bearing* reveals — the central mysteries, secrets, and revelations whose timing is structural, the ones that reframe the story when they land. For each, state three things tightly: **what is hidden**, **when it is revealed** (which act / turning point), and **why it matters** (what the revelation reframes or proves). This is deliberately **not** a ledger of every planted setup and payoff — capture only the handful of reveals the architecture depends on; a story usually has **two to five**. Ordinary foreshadowing, minor callbacks, and setup/payoff hygiene are the treatment's and the prose stage's job, not front-matter. If a reveal's payoff is genuinely undecided, that is an **open question** — route it to `questions.md`, do not park an unresolved item here.
+**Reveal Architecture (subsection).** The story's *load-bearing* reveals — the central mysteries, secrets, and revelations whose timing is structural, the ones that reframe the story when they land. For each, state four things tightly: **what is hidden**, **where it plants** (the chapter, once a spine exists; `plant: TBD` before that), **when it is revealed** (which act / turning point, and the chapter once known), and **why it matters** (what the revelation reframes or proves). The plant chapter is what turns this subsection into the book's **chain register**: `outline-chapters` checks that every registered plant is present in its chapter's outline, and `blueprint` renders it as an imperative instruction. Admission requires all three of: **load-bearing** (the payoff fails without the setup), **long-range** (spans more than about two chapters), and **not self-evident** (would not be caught by reading adjacent chapters). A chain that has been planted *and* paid is **struck**, not archived; an unpaid chain at end of draft is a bug report, not a row. This is deliberately **not** a ledger of every planted setup and payoff — capture only the handful of reveals the architecture depends on; a story usually has **two to five**, and rarely more than fifteen. Ordinary foreshadowing and minor callbacks are the treatment's and the prose stage's job, and the per-chapter harvest in `ch<NN>-notes.md` is where found-not-foreseen payoffs get searched for. If a reveal's payoff is genuinely undecided, that is an **open question** — route it to `questions.md`, do not park an unresolved item here. Plant chapters should be sourced from decisions and the spine, not re-inferred on each `treatment-update`, so they survive primer regeneration.
 
 **Does NOT contain**: detailed character bios (Manifest), scene-by-scene narrative (treatment), writing technique specifications (Section 4), a running ledger of every setup and payoff (retired — capture only load-bearing reveals, above).
 
@@ -485,8 +485,8 @@ Two layers:
   - **`outline/structure.md`** — the structural commitment: framework choice, act boundaries, the chapter spine (one line per chapter slot).
   - **`outline/_index.md`** — the **outline view**: a chapter × stage status matrix, one row per chapter, regenerated as chapters advance. This is the horizontal scan surface.
 - **Per-chapter content** (`chapters/chapter-NN/`) — the micro layer, one folder per chapter:
-  - **`ch<NN>-outline.md`** — the per-chapter beat sheet (~600–1,000w). Relocated here from the old `outline/chapter-NN.md`.
-  - **`ch<NN>-blueprint.md`**, **`ch<NN>-prose.md`**, **`ch<NN>-notes.md`** — pre-prose refinement, generated prose, and post-prose refinement. Written by future skills (see § `chapters/` folder).
+  - **`ch<NN>-outline.md`** — the author's prose account of what happens in the chapter (typically 500–1,500w per 3,000-word chapter). Frontmatter plus a flowing body; no scaffolding.
+  - **`ch<NN>-blueprint.md`**, **`ch<NN>-prose.md`**, **`ch<NN>-notes.md`** — the continuity brief, the prose, and the post-prose record (see § `chapters/` folder).
   - **`.history/`** — co-located snapshots of this chapter's artifacts.
 
 ### Why entity-first, and the naming rule
@@ -552,7 +552,9 @@ The Chapter Spine is the load-bearing element. The pre-outline conversation prod
 
 ### `chapters/chapter-NN/ch<NN>-outline.md` — per-chapter outline
 
-Lives in the chapter's folder, prefixed with the chapter number: `chapters/chapter-17/ch17-outline.md`. Folder and prefix both use the two-digit zero-padded chapter number (`chapter-01/ch01-outline.md` through `chapter-99/ch99-outline.md`; pad to three digits if the story exceeds 99 chapters). ~600–1,000 words target. (This is the relocation of the former `outline/chapter-NN.md` — the schema is unchanged; only the path moved, to sit next to the chapter's blueprint/prose/notes.)
+Lives in the chapter's folder, prefixed with the chapter number: `chapters/chapter-17/ch17-outline.md`. Folder and prefix both use the two-digit zero-padded chapter number (pad to three digits past 99 chapters).
+
+**What it is:** the author's prose account of what happens in the chapter, to be expanded into full narrative prose. **Nothing else.** It is the only artifact in the pipeline that carries the author's voice, and it is read by the prose agent as *the task* and by the `blueprint` stage as *the content*. It may include specific action beats, interiority, direction, and dialogue, up to and including every line of dialogue in the chapter. It is written the way the author thinks, not to a schema.
 
 ```yaml
 ---
@@ -564,72 +566,41 @@ structure_version: 1
 treatment_version: 8
 primer_version: 4
 pov: Marlowe
+tense: past
 act: 2A
-target_words: 1000
+target_words: null
+authorship: ai-generated        # author-written | ai-generated | ai-generated-author-revised
+word_count: 1140
+source: treatment §Audit Box + D-031
+revision: >-
+  free-text note on what changed and why
 ---
 ```
 
 ```markdown
 # Chapter 17 — The Locket
 
-## Premise
-[1–2 sentences: the dramatic beat this chapter occupies in the story. *"Marlowe finds her father's locket in the audit box and recognizes the engraving from Voss's office; the case becomes personal."* This line should resolve cleanly against the Chapter Spine entry in `structure.md`.]
-
-## Setting & Time
-[1–3 sentences: where, when, who's physically present. Concrete and specific — sensory anchors help downstream prose.]
-
-## Scene Beats
-A numbered sequence of dramatic beats within the chapter. Each beat is a 1–3 sentence summary of what happens and what shifts. Aim for 3–6 beats per chapter.
-
-1. **[Beat name]** — [what happens; what changes].
-2. **[Beat name]** — …
-
-## Setups Planted
-- **[setup]** — pays off in ch [N] ([what payoff]).
-
-## Payoffs Delivered
-- **[payoff]** — paid setup from ch [N] ([what setup]).
-
-## Character Notes
-- **[Character name]**: [what their arc does in this chapter — internal state, key choice, relational shift]. Reference Lie/Ghost when the chapter touches them.
-- **[Next character if present]**: …
-
-## Dialogue Anchors
-[1–3 dialogue moments that must land. Beat-level or line-level — *"Marlowe to Voss: 'You knew his name.'"* — not a full draft of the conversation. These are the lines downstream prose generation should preserve in shape, not necessarily verbatim.]
-
-## Connections
-- **From ch [N-1]**: [the bridge from the previous chapter].
-- **To ch [N+1]**: [the bridge to the next chapter].
-
-## Open Threads
-[Markers for unresolved elements, using the same conventions as the treatment.]
-- [OPEN: Q-019] — [why this question affects this chapter].
-- [NEEDS DEVELOPMENT: …] — [what's missing].
+[the author's prose account, and nothing else]
 ```
 
-### Per-section guidance
+- **`authorship`** drives how `outline-chapters` treats the file. `author-written` and `ai-generated-author-revised` put the skill in **correction-only mode** (facts, POV breaches, stale scaffolding, surfaced sequencing errors; never rhythm, diction, or regeneration). `ai-generated` is freely regenerable. The skill sets `ai-generated-author-revised` when it detects the body changed outside a skill run (compare `word_count` and the body against the last skill-written snapshot in `.history/`) and never downgrades `author-written`.
+- **`word_count`** is the body's count, recorded on every write; it is the cheap half of author-revision detection.
+- **`source`** names what the outline was built from (a treatment scene, a decision, the author).
 
-- **Premise** (≤60w) — the chapter's reason to exist. If you can't write this in one or two sentences, the spine entry probably needs to be sharpened first.
-- **Scene Beats** (200–400w) — the chapter's spine. Each beat names what happens *and what shifts*. A beat that doesn't shift something (status, knowledge, relationship, location, internal state) is filler.
-- **Setups / Payoffs** — the chapter-local record of what this chapter plants and pays off. A load-bearing reveal should trace to the primer's §2 Reveal Architecture; ordinary chains trace to the treatment. If a chapter's setup has no decided payoff anywhere, that's an open question — log it in `questions.md` rather than parking it here.
-- **Character Notes** (100–200w) — what *changes* for each character in this chapter. Not a status report ("Marlowe is angry"), a delta ("Marlowe stops trusting Park").
-- **Dialogue Anchors** (50–150w) — only the lines that *must* land. Don't draft full dialogue at the outline stage; that's prose work.
-- **Connections** (50–100w) — the chapter's seams. What's carried from the previous chapter; what's set up for the next. This is what makes the outline readable as a chain.
+**What the outline does not carry**, because the Blueprint derives it from canon at better resolution: premise blocks, a beat index, setups and payoffs, character notes, dialogue-anchor lists, chapter connections, open-thread sections, craft rules. A heading inside the body is the tell that something is in the wrong file.
 
 ### Markers for unresolved elements
 
-Both marker types from the treatment apply at the chapter level:
+Both treatment marker types apply, carried **inline in the prose** where the gap actually is:
 
 - `[OPEN: Q-###]` — links to a tracked open question.
-- `[NEEDS DEVELOPMENT: …]` — for narrative gaps that don't yet have a tracked question.
+- `[NEEDS DEVELOPMENT: …]` — a narrative gap that doesn't yet have a tracked question.
 
-If a chapter contains either marker, the chapter is still *drafted* (the file exists), not *complete*. The pre-prose readiness check is: zero unresolved markers across the chapter's body.
+A chapter carrying either marker is *drafted* (the file exists), not *complete*. Pre-prose readiness is zero unresolved markers in the body.
 
 ### Length
 
-Per-chapter target is calibrated from primer Section 3's Treatment Word Budget table. Specifically: **per-chapter outline density ≈ 2× the per-chapter treatment density.** A 120,000-word novel with 40 chapters has ~500w of treatment per chapter, so ~1,000w of outline per chapter is right. For a 60,000-word novella with 20 chapters and ~500w of treatment per chapter, same target. For sparser projects (literary novel with long chapters at lower density), 600–800w is enough.
-
-Don't pad to hit the target. A chapter that genuinely lands in 600w shouldn't be inflated to 1,000w.
+Whatever the author writes. **500–1,500 words per 3,000-word chapter is typical.** Generated outlines match the density of the author's samples (see the skill's § Style inheritance); with no samples, the middle of that band. Never pad, and never pad an author-written outline at all.
 
 ### `outline/_index.md` — the outline view (chapter × stage matrix)
 
@@ -695,10 +666,10 @@ The `chapters/` folder holds one **folder per chapter** (`chapters/chapter-NN/`)
 
 ```
 chapters/chapter-17/
-  ch17-outline.md      # beat sheet — written by outline-chapters (schema above)
-  ch17-blueprint.md    # pre-prose refinement layer ("Blueprint") — future skill
-  ch17-prose.md        # the chapter's prose — future skill (or scenes/ when split)
-  ch17-notes.md        # post-prose refinement / revision notes — future skill
+  ch17-outline.md      # the author's prose account of the chapter — outline-chapters
+  ch17-blueprint.md    # the continuity brief ("Blueprint") — blueprint
+  ch17-prose.md        # the chapter's prose — prose (or scenes/ when split)
+  ch17-notes.md        # what the prose actually committed — notes (post-POC)
   scenes/              # OPTIONAL — only when the chapter is genuinely scene-split
     ch17-scene-01.md
     ch17-scene-02.md
@@ -707,9 +678,9 @@ chapters/chapter-17/
 
 **Stages are filenames, not folders.** Adding a future pipeline stage means a new `ch<NN>-<stage>.md` file in each chapter folder — never a new parallel top-level tree. The stages, in pipeline order: `outline` → `blueprint` → `prose` → `notes`.
 
-### Blueprint (`ch<NN>-blueprint.md`) — the pre-prose production brief
+### Blueprint (`ch<NN>-blueprint.md`) — the pre-prose continuity brief
 
-Lives in the chapter folder, chapter-number-prefixed: `chapters/chapter-17/ch17-blueprint.md`. A **Blueprint** is a single, self-contained context document handed to a prose-writing agent before it writes the chapter — *the prose agent should be able to write the chapter from the Blueprint alone.* At prose time it **replaces the raw Canon layer entirely** (bios + worldbuilding + primer), so it is a **fidelity-preserving consolidation**: it carries every character and worldbuilding element that will *surface* in the chapter at the *resolution* its prominence earns (Foreground verbatim → Background summarized → Dormant omitted; characters tiered POV → Major → Supporting → Minor → Referenced), with scene-current state fused in and the primer's story-level frame harvested into a Story Context section. Written by the `blueprint` skill. For the full content spec — the Sole-Carrier / Prominence-Sets-Resolution philosophy, character tiering with word ceilings, personality frameworks, worldbuilding selection, the nine required sections, and the quality checklist — see `references/blueprint-spec.md`. This section specifies only the *file shape*.
+Lives in the chapter folder, chapter-number-prefixed: `chapters/chapter-17/ch17-blueprint.md`. A **Blueprint** is the single, self-contained brief a prose-writing agent reads alongside the style guide and the outline. It answers *what must I not get wrong?* for one chapter: every character and worldbuilding element that surfaces, at the resolution its prominence earns (Foreground → Background → Dormant; POV → Major → Supporting → Minor → Referenced), with scene-current state fused in; the chapter's shape, conflict, and dialogue anchors; the plants stated as imperatives; and the slice of the story frame that bears on this chapter. **Its knowledge horizon is its own chapter: backward without limit, forward not at all.** At prose time it **replaces the raw Canon layer entirely** (bios + worldbuilding + primer). Written by the `blueprint` skill. For the content spec (the backward-only rule, synthesis over citation, tiering, frameworks, the twelve sections, the checklist) see `references/blueprint-spec.md`. This section specifies only the *file shape*.
 
 ```yaml
 ---
@@ -719,60 +690,58 @@ version: 1
 last_updated: 2026-05-12
 # Provenance — the versions this Blueprint was built against (staleness detection):
 outline_version: 1
+structure_version: 1
 treatment_version: 8
 primer_version: 4
 manifest_version: 2
 pov: Marlowe
-scene_split: false   # true when the chapter is scene-split and the Blueprint carries per-scene sections
+tense: past
+narrative_style: close third, past tense
+act: 2A
+scene_split: false        # true when the Blueprint carries per-scene sections
+outline_words: 1140
+expansion_target: ~2.5–3× the outline
+knowledge_horizon: chapter 17
+open_questions_touching_this_chapter: [Q-011, Q-015]
+depends_on: voice/style-guide.md   # or `none` — then § 11 carries transcribed craft and the author was warned
+revision: >-
+  free-text note on what changed and why
 ---
 ```
 
-Body — the nine Blueprint sections (full formats in `references/blueprint-spec.md`):
+Body — the twelve sections (full formats in `references/blueprint-spec.md`):
 
 ```markdown
-# Chapter 17 Blueprint — The Locket
+# Chapter 17 Blueprint — *The Locket*
 
-**Chapter:** 17 — The Locket
 **Time:** [time of day / narrative date]
-**POV:** Marlowe (third-person limited, past tense)
+**POV:** Marlowe — close third, past tense. [Sole POV; no scene split.]
+**Position:** [what precedes it and what it inherits, or *nothing precedes this chapter*]
+**Knowledge horizon:** This chapter. Nothing in this brief reaches past it, and the prose must not either.
 
 ## 1. Scene Function
-[single line, 3–6 words, standard story-structure terminology]
-
 ## 2. Story Context
-[200–400w harvested from the primer — genre + promises, premise/logline, moral argument & thematic throughline, tone/style (voice rules), character web. The primer is NOT in the prose agent's context on the lean path; this section is its sole carrier.]
-
-## 3. Characters
-[tiered — POV → Major → Supporting → Minor → Referenced; each at its tier's resolution, current state fused in, all recorded personality frameworks carried with scene activations flagged]
-
-## 4. Setting
-[single sensory-rich paragraph, 75–150w — the opening sensory frame; deep foreground-location detail lives in Worldbuilding]
-
-## 5. Main Source of Conflict
-[single paragraph, 100–125w — the tension specific to THIS chapter]
-
-## 6. Symbolism and Thematic Layer
-[single paragraph, 100–125w — anchored to the moral argument carried in Story Context]
-
-## 7. Continuity Considerations
-[single paragraph, 150–250w — links to prior chapters, new state established here, foreshadowing, must-stay-consistent, canon-vs-scene resolutions]
-
-## 8. Worldbuilding
-[bullet list — each element names its scene trigger + prominence-tiered detail (Foreground 150–400w / Background 40–100w / atmospheric 1–2 sentences), governing philosophy preserved]
-
-## 9. Other Notes
-[bullet list, 75–100w — structure, transitions, unresolved threads, tonal target, POV reminders]
+## 3. Chapter Shape
+## 4. Characters
+## 5. Setting
+## 6. Main Source of Conflict
+## 7. Symbolism and Thematic Layer
+## 8. Continuity
+## 9. Worldbuilding
+## 10. Dialogue Anchors
+## 11. Chapter-Specific Craft
+## 12. Other Notes
 ```
 
-**Granularity is chapter-level.** One `ch<NN>-blueprint.md` per chapter. Prominence sets resolution (how prominent is this element *in this chapter*?) — inclusion is generous, resolution is tiered. When a chapter is genuinely **scene-split** (multi-POV, or long enough to warrant `scenes/`), set `scene_split: true` and repeat the Characters / Setting / Conflict / Worldbuilding sections per scene under `## Scene 1 — …`, `## Scene 2 — …` headers — because tiering, POV, and current state can differ scene-to-scene. The Story Context, Symbolism, Continuity, and Other Notes sections stay chapter-level. Default to the single chapter-level form; reach for the scene-split form only when the chapter actually needs it (matching the prose stage's single-file-vs-`scenes/` rule).
+**Granularity is chapter-level.** When a chapter is genuinely **scene-split**, set `scene_split: true` and repeat Characters / Setting / Conflict / Worldbuilding per scene under `## Scene 1 — …` headers; the other sections stay chapter-level. Default to the single form.
 
-**Scene-current state** comes from two sources, in this order: (1) the **Revelation Log** of each Canon entry, filtered to `chapter ≤ 17` (see `canon-schemas.md` § Revelation Log) — the crude, authoritative timeline of what's changed; and (2) reconstruction from the treatment's chronology and prior chapters' outlines/prose where the log is silent. A Blueprint for chapter 17 **never** writes toward a Revelation Log entry dated after chapter 17 — that's future state.
+**Scene-current state** comes from, in order: (1) each canon entry's **Revelation Log** filtered to `chapter ≤ 17`; (2) the prior chapter's **`ch<NN>-notes.md` end-state block** when it exists; (3) reconstruction from prior chapters' prose or outlines. A Blueprint for chapter 17 **never** writes toward anything from chapter 18 on.
 
 ### Prose (`ch<NN>-prose.md`) and scenes
 
 Prose is **one file per chapter by default** (`ch<NN>-prose.md`). Treatment scenes don't map 1:1 to chapters, so when a chapter is genuinely scene-split, the prose moves into a `scenes/` subfolder (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`) and `ch<NN>-prose.md` is omitted or becomes a stitched-together read. Default to the single file; reach for `scenes/` only when the chapter actually needs it.
 
-The `blueprint` schema is defined above; the `ch<NN>-prose.md` schema is defined here. The `notes` schema (post-prose refinement) lands when refinement-pass functionality is added (post-POC). Prose is written by the `prose` skill, which works from `references/prose-spec.md` (the assembly order, voice model, POV/tense rules, output rules, spoiler firewall).
+The `blueprint` schema is defined above; the `ch<NN>-prose.md` schema is defined here; the `ch<NN>-notes.md` schema follows it. Prose is written by the `prose` skill, which works from `references/prose-spec.md` (the assembly order, voice model, POV/tense rules, output rules, spoiler firewall).
 
 ```yaml
 ---
@@ -805,6 +774,46 @@ synopsis: |
 - **Kit Bash provenance** (only on consolidated chapters): `kitbash_base: <draft label>` and `kitbash_drafts: [<labels>]` record which competing drafts produced this chapter. Draft files live in `chapters/chapter-NN/kitbash/` (`ch<NN>-draft-<label>.md`, plus the `ch<NN>-packet.md` generation packet) — see `references/kitbash-spec.md`.
 
 **Scene-split prose.** When the Blueprint is `scene_split: true`, prose moves into `scenes/` (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`); each scene file carries the same frontmatter scoped to that scene (the chapter-level `synopsis` lives on a stitched `ch<NN>-prose.md` or the first scene — keep one synopsis per chapter for story-so-far). Default to the single `ch<NN>-prose.md`.
+
+### Notes (`ch<NN>-notes.md`) — what the prose actually committed
+
+Lives in the chapter folder: `chapters/chapter-17/ch17-notes.md`. Written by the `notes` skill (post-POC; the schema is registered now so `blueprint` can prefer the end-state block when one exists). Notes **records what the prose committed; it does not evaluate the prose.** Run at prose `status: revised` or `approved`, not `drafted`; if run early, the frontmatter says so.
+
+```yaml
+---
+chapter: 17
+version: 1
+last_updated: 2026-06-21
+prose_version: 2
+prose_status_at_run: approved     # drafted | revising | approved — a run at `drafted` owes a re-run
+---
+```
+
+```markdown
+# Chapter 17 Notes
+
+## As-Written Synopsis
+[what is on the page, distinct from the outline's intent; downstream consumers prefer this over the prose frontmatter synopsis when it exists]
+
+## Divergences from the Outline
+- [each, flagged deliberate or drift]
+
+## Harvest
+[concrete particulars the chapter committed — named objects, throwaway facts, minor characters, specific places. Nouns, not themes. Searchable across chapters via `chapters/*/ch*-notes.md`.]
+
+## Accidental Canon
+[details invented in the prose that no canon file holds — proposed for promotion, never promoted silently]
+
+## End State
+- **Hour:** …
+- **Location:** …
+- **Wardrobe:** …
+- **Injuries:** …
+- **Objects carried:** …
+- **Emotional residue:** …
+```
+
+The **End State** block is what the next chapter's Blueprint reads for carried-forward state instead of re-reading 3,500 words of prior prose.
 
 ### Per-chapter history (`.history/`)
 
