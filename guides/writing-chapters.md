@@ -178,7 +178,13 @@ Why it's worth the two minutes:
 - **The harvest is how payoffs get found.** When a later chapter needs one, the skills search the harvest across every noted chapter before inventing something new. Most of the throwaway-detail-that-pays-off density in well-woven books is found this way, not planned.
 - **It catches canon drift early.** A colour the prose named, a route through the house, a walk-on's gesture: those are canon now because they're on the page. Notes surfaces them as proposals (append a Revelation Log line, promote to an entry, add to the manifest, close a chain that's been paid) and writes nothing to your canon without your OK.
 
-It records; it never evaluates. You will not get pacing opinions from it. Running it on a first draft is allowed but discouraged (the notes describe a chapter about to change); the file is stamped so a re-run is known to be owed.
+It records; it never evaluates. You will not get pacing opinions from it.
+
+### Canon-sync: letting the book update its own bible
+
+Notes proposes; `canon-sync` integrates. Once an act is noted, or before you blueprint the next one (the Blueprint skill will remind you), say **"sync canon for Act 1"**. It reads the notes files, not the prose, and sorts what has piled up into five kinds: details the prose added that canon lacks (absorbed), things the prose says that canon denies (ruled on), a character who has drifted from their bio across several chapters with no single wrong line (surfaced for you), a minor element that has grown into something needing its own entry (routed to the bio or worldbuilding skill), and canon the manuscript quietly abandoned (flagged for removal).
+
+Contradictions are ruled **by who wrote the page**: if you wrote or revised the prose, the manuscript wins by default and canon changes; if it's unrevised AI prose, canon wins by default and the passage goes on a fix list. You can overrule either way, and every ruling is logged as a decision so it is never re-litigated. The run snapshots your entire canon first, and it leaves you a record with two lists: passages to fix in the prose, and Blueprints to rebuild because the canon under them changed. Running it on a first draft is allowed but discouraged (the notes describe a chapter about to change); the file is stamped so a re-run is known to be owed.
 
 ---
 
@@ -196,6 +202,7 @@ It records; it never evaluates. You will not get pacing opinions from it. Runnin
 | Cowork external drafts | "Build the generation packet for ch 17" |
 | Merge annotated drafts | "Consolidate the drafts" |
 | Record what a chapter committed | "Take notes on chapter 17" · "notes for Act 1" |
+| Reconcile canon to the manuscript | "Sync canon for Act 1" · "catch canon up" |
 | Pick a craft rulebook | "Use the cozy mystery rulebook" |
 | Pick a model | "Write it with Opus" |
 

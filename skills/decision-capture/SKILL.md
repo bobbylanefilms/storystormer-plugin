@@ -28,7 +28,7 @@ Follow the schema in `references/file-schemas.md`. Fields:
 - **Summary** — one sentence. The decision in its most compressed form. *"Marlowe and Voss are estranged siblings, not strangers."*
 - **Details** — 1–3 paragraphs of context. The *why* and the *texture*. What this means for character, plot, theme. Anything a future read should know to apply this decision correctly.
 - **Affects** — what's downstream: characters, story locations, beats, themes. Don't try to be exhaustive — name the most directly impacted elements.
-- **Source** — one of: `intake` (extracted at init), `brainstorm` (surfaced in conversation), `treatment-update` (clarified during a treatment refresh), `user-declared` (the user stated it directly).
+- **Source** — one of: `intake` (extracted at init), `brainstorm` (surfaced in conversation), `treatment-update` (clarified during a treatment refresh), `canon-sync` (a ruling on a manuscript-versus-canon conflict; the Details name the notes line, the canon line, the prose authorship that set the default, and whether the author overrode it), `user-declared` (the user stated it directly).
 - **Integrated into treatment** — default `no`. (Becomes `yes (<date>)` after the next `treatment-update` that includes this decision.)
 
 ### 3. Show the user before writing

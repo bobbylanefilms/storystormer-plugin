@@ -306,7 +306,7 @@ Entries are never deleted, only superseded. Each decision has a stable ID (`D-00
 **Summary**: Marlowe's father was an accountant murdered when she was 14; this is her unresolved Ghost.
 **Details**: He had uncovered the early version of the Voss fraud and was killed for it. Marlowe was raised by her mother in the Heights, became a forensic accountant herself, and missed the same fraud years later when Voss had grown sophisticated enough to hide it. She doesn't yet know about her father's involvement at the start of the story.
 **Affects**: Marlowe (protagonist), Voss (antagonist), the locket, Act 2 reveal
-**Source**: brainstorm | intake | treatment-update | user-declared
+**Source**: brainstorm | intake | treatment-update | user-declared | canon-sync
 **Integrated into treatment**: no
 **Superseded by**: (only set if a later decision invalidates this one)
 ```
@@ -814,9 +814,22 @@ prose_status_at_run: approved     # drafted | revising | approved — a run at `
 - **Injuries:** …
 - **Objects carried:** …
 - **Emotional residue:** …
+
+## Proposals
+- [ ] **Revelation Log** · `characters/muppy.md` · Ch 1 — awn in the webbing of a forepaw, still in at chapter's end.
+- [ ] **Promote** · the Hartleys' mudroom → `worldbuilding-entry` (appears ch 1, 4, 6 with consistent detail, no entry).
+- [ ] **Manifest** · the rooster three properties over (minor element).
+- [ ] **Chain closure** · §2 jacket chain (plant ch 1, pay ch 3) — paid here as registered.
+- [x] **Revelation Log** · … — applied (D-041)
+- [x] **Promote** · … — routed (worldbuilding-entry)
+- [x] **Manifest** · … — declined (already covered by golden-valley.md)
 ```
 
-The **End State** block is what the next chapter's Blueprint reads for carried-forward state instead of re-reading 3,500 words of prior prose.
+The **End State** block is what the next chapter's Blueprint reads for carried-forward state instead of re-reading 3,500 words of prior prose. The **Proposals** section is the queue `canon-sync` consumes: `notes` writes each item unchecked; `canon-sync` checks it off with its outcome (`applied (D-###)`, `routed (<skill>)`, `declined (<reason>)`). The count of unchecked items across `chapters/*/ch*-notes.md` is the project's unintegrated-proposal count in `state.md`.
+
+### Canon-sync run records (`.storystormer/canon-sync/`)
+
+Each `canon-sync` run writes `.storystormer/canon-sync/<YYYY-MM-DD>-ch<NN>-<MM>.md`: findings by category (accretion, contradiction, drift, promotion, obsolescence) with outcomes and decision IDs; the **manuscript fix list** (chapter · passage · required change) for every contradiction canon won; the **invalidated Blueprints** list (chapter · entry that changed · stamp it was built against) for every contradiction the manuscript won; promotions routed; chain closures struck. The run's pre-edit canon snapshot lives in `.storystormer/history/<timestamp>-canon-sync/`. Run records are never deleted by the plugin.
 
 ### Per-chapter history (`.history/`)
 

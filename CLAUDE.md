@@ -30,7 +30,7 @@ Doc-only changes (README, this file, PLUGIN-GUIDE.md) do **not** need a version 
 
 ## Layout
 
-- `skills/<name>/SKILL.md` — 12 progressive-disclosure skills.
+- `skills/<name>/SKILL.md` — 13 progressive-disclosure skills.
 - `commands/<name>.md` — 7 `/storystormer:*` slash commands.
 - `references/*.md` — shared docs cited by skills (single-edit-propagates; don't inline-duplicate into skills).
 - `guides/*.md` — user-facing how-to guides (help docs for authors, not model-facing). Keep them synced when the skills they document change behavior.

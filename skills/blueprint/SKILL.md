@@ -33,6 +33,7 @@ Always follow `references/plan-first.md`: propose, confirm, execute.
 - **The outline should be marker-free.** One carrying `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: …]` can be blueprinted, but the Blueprint inherits the gap. Surface the markers and let the user decide.
 - **`primer.md` and `treatment.md` exist.** Story Context and the chain register come from the primer; chapter chronology from the treatment's spine-slot passage.
 - **Canon exists for the chapter's on-page cast.** If the outline names a character or element with no canon file, surface the gap and recommend `character-bio` / `worldbuilding-entry`. Never fabricate a tier entry.
+- **Canon-sync owed (batch mode).** Blueprinting a new act is the moment stale canon does damage. Before a batch, glob `chapters/*/ch*-notes.md` for chapters before the range and count unchecked items in § Proposals; if any exist, say so in the plan and recommend `canon-sync` first. Proceed only if the user says so, and note in the report that the Blueprints were built against unreconciled canon.
 - **Schema-form outlines.** If the outline still carries the older nine-section scaffolding (Premise, Scene Beats, Setups Planted, Character Notes, and so on), recommend the `outline-chapters` migration pass first. You can proceed, but read the outline for **content** only and derive the scaffolding from canon yourself; never transplant the outline's summary of canon into the Blueprint.
 
 ## What to do

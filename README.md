@@ -25,6 +25,7 @@ Eleven skills that load via progressive disclosure when your intent matches:
 | `blueprint` | build the pre-prose production brief for a chapter — the self-contained context a prose agent writes from |
 | `prose` | write or revise a chapter's actual prose — from its Blueprint, outline, your voice inputs, and the story so far |
 | `notes` | record what a chapter's prose actually committed — as-written synopsis, divergences, harvest, accidental canon, end-state — and propose canon updates |
+| `canon-sync` | reconcile a span of chapters' notes back into canon — absorb accretion, adjudicate contradictions by authorship, surface drift, produce a manuscript fix list and the Blueprints to rebuild |
 
 Plus seven slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline`, and `/storystormer:switch` (series mode only).
 
@@ -168,12 +169,18 @@ You can interrupt at any step. The plan is always negotiable.
 
 By design, the POC stops at brainstorm + canon + treatment + outline + blueprint + **prose** (across single or multi-book projects). The following are **not** included:
 
-- *Post-prose* refinement passes (dialogue / editorial / de-AI / style polish). Prose **generation and surgical revision** are in (v0.7.0) and `notes` (v0.14.0) records what a chapter committed; the editorial suite and `canon-sync` (span-level reconciliation of prose facts back into canon) are not yet built.
+- *Post-prose* refinement passes (dialogue / editorial / de-AI / style polish). Prose **generation and surgical revision** are in (v0.7.0) `notes` (v0.14.0) records what a chapter committed, and `canon-sync` (v0.15.0) reconciles it into canon; the editorial polish suite is not built.
 - Image generation
 - Full canon states / point-in-time bio snapshots. A crude substitute now exists: the **Revelation Log**, a chapter-keyed append-list at the end of a Canon entry that the Blueprint filters to `chapter ≤ N` for scene-current state. Across-book character evolution is still handled lightly via per-book sub-arc sections.
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.15.0 added over v0.14.0
+
+- **The `canon-sync` skill.** The second half of the return path and the consumer `notes` was missing. Over a span of chapters it reads the notes files (never the prose, except to adjudicate a disputed passage), classifies what accumulated (accretion, contradiction, drift, promotion, obsolescence), and adjudicates contradictions **by authorship**: author-written or author-revised prose wins by default, unrevised AI prose yields to canon by default, and every ruling is surfaced and logged as a decision (`Source: canon-sync`). It snapshots the whole canon set before touching anything and produces **two outputs**, canon edits and a manuscript fix list, plus the list of Blueprints the canon changes invalidated, in a run record under `.storystormer/canon-sync/`. Drift is the reason it's a span pass: no single line is wrong, only the aggregate. Reconciles facts; never improves canon.
+- **Notes carry a `## Proposals` queue.** Each proposal is an unchecked item `canon-sync` checks off with its outcome; the unchecked count across `chapters/*/ch*-notes.md` is the project's unintegrated-proposal count.
+- **`blueprint` batch mode gates on it.** Blueprinting a new act with pending proposals behind it is the moment stale canon does damage, so the plan says so and recommends `canon-sync` first.
 
 ### What v0.14.0 added over v0.13.0
 

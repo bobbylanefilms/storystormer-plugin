@@ -19,7 +19,7 @@ storystormer-plugin/                 (repo root = marketplace root = plugin root
 │   ├── plugin.json                  # the plugin manifest (name: storystormer)
 │   └── marketplace.json             # one-entry catalog (name: storystormer-marketplace)
 │                                    #   the single plugin's "source" is "./"
-├── skills/                          # 12 progressive-disclosure skills
+├── skills/                          # 13 progressive-disclosure skills
 │   ├── storystormer-init/  brainstorm-session/  decision-capture/
 │   ├── character-bio/  worldbuilding-entry/  treatment-update/
 │   ├── manifest-sync/  pre-outline-session/  outline-chapters/

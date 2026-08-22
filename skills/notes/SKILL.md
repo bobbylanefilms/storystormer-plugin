@@ -22,8 +22,8 @@ Four things, and capturing them is the whole job:
 
 ## What you produce
 
-- **`chapters/chapter-NN/ch<NN>-notes.md`** per the schema in `references/file-schemas.md` § Notes: As-Written Synopsis · Divergences from the Outline · Harvest · Accidental Canon · End State.
-- **Proposals, never writes**, in the report: Revelation Log lines for state changes the prose established; promotions of accidental canon into a bio or worldbuilding entry; manifest additions for new named elements; **closures of Tier 1 chains** in primer §2 whose payoff this chapter delivered. Same contract as `blueprint`: canon is the author's, and the skill appends only on approval. This is also how chains close; without it, closure is manual and will not happen.
+- **`chapters/chapter-NN/ch<NN>-notes.md`** per the schema in `references/file-schemas.md` § Notes: As-Written Synopsis · Divergences from the Outline · Harvest · Accidental Canon · End State · Proposals.
+- **Proposals, never writes**, written to the notes file's § Proposals as unchecked items and repeated in the report: Revelation Log lines for state changes the prose established; promotions of accidental canon into a bio or worldbuilding entry; manifest additions for new named elements; **closures of Tier 1 chains** in primer §2 whose payoff this chapter delivered. Same contract as `blueprint`: canon is the author's, and the skill appends only on approval. This is also how chains close; without it, closure is manual and will not happen.
 - **`outline/_index.md`** regenerated so the chapter's **Notes** column reflects the new state; bump `chapters_noted` in its frontmatter.
 - Snapshots of any overwritten notes file to `chapters/chapter-NN/.history/` as `ch<NN>-notes-v<version>-<date>.md`.
 - Updates to `state.md`: `What Exists → Notes` line, `Summary`, `Last Session`, `What's Next` (including the count of unintegrated proposals, which is what tells the author a `canon-sync` is owed).
@@ -62,17 +62,18 @@ This is roughly 12,000 words of input for a compact structured output, so **disp
 >
 > - **Read** per chapter: prose, outline, Blueprint, prior notes end-state, primer §2, manifest. One subagent per chapter, parallel.
 > - **Write** six `ch<NN>-notes.md` files.
-> - **Propose** (nothing written to canon): Revelation Log lines, accidental-canon promotions, manifest additions, and any §2 chain closures. I'll collect them in one list for your approval.
+> - **Propose** (nothing written to canon): Revelation Log lines, accidental-canon promotions, manifest additions, and any §2 chain closures, written to each file's § Proposals and summarized for you. `canon-sync` applies them per span.
 > - **Update** the index Notes column and `state.md`.
 
 ### 4. Extract
 
-Each subagent writes the five sections. The discipline per section:
+Each subagent writes the six sections. The discipline per section:
 
 - **As-Written Synopsis** (~150–250w): what is on the page, as its author, causal and specific: who did what, what was revealed, how the story's state changed by the last line. Not a teaser, not the outline's intent restated. Downstream consumers (`blueprint`, `prose`, `canon-sync`, `brainstorm-session`) prefer this over the prose frontmatter synopsis when it exists.
 - **Divergences from the Outline**: each place the page departs from the outline, one line each, flagged **deliberate** (the author wrote or revised it, or the change is clearly a choice) or **drift** (the model wandered). When in doubt, flag drift and say so; the author rules.
 - **Harvest**: concrete particulars the chapter committed. **Nouns, not themes.** The half-eaten apple, the matchbook branding, the rooster three properties over, the skate shoes on the dig site. One line each, enough context to find it again. This is searched across `chapters/*/ch*-notes.md` by later stages; write for that reader.
 - **Accidental Canon**: details the prose invented that no canon file holds. The mudroom floor's material, a walk-on's name, a route through the house. Each with where in canon it would belong if promoted.
+- **Proposals**: one unchecked item per proposal, typed (Revelation Log · Promote · Manifest · Chain closure), specific enough for `canon-sync` to act on without re-reading the prose. `canon-sync` checks them off with their outcome; `notes` never touches a checked item on re-run.
 - **End State**: the structured block: hour, location, wardrobe, injuries, objects carried, emotional residue, plus anything else the next chapter inherits (a character's last known position, an open beat). This is what the next Blueprint reads instead of 3,500 words of prose; be exact.
 
 Then the subagent checks the Blueprint's plants and established state against the page and reports what did and did not land, and checks primer §2 for a chain this chapter was to plant or pay.
@@ -88,9 +89,9 @@ Show the notes file (or the batch in chunks). After approval: snapshot, write, r
 > - **Chain closure**: §2's jacket chain (plant ch 1, pay ch 3) paid in ch 3 as registered. Strike it?
 > - **Did not land**: the Blueprint for ch 4 required Pickle's household trace; the prose has no scent-as-event for it. Flagged for the author, not fixed.
 >
-> 5 unintegrated proposals now outstanding; a `canon-sync` pass is owed before blueprinting Act 2.
+> 5 unintegrated proposals now outstanding (in each file's § Proposals); a `canon-sync` pass is owed before blueprinting Act 2.
 
-Proposals the user approves are applied by the owning mechanism: Revelation Log lines appended directly (as `blueprint` does); promotions routed to `character-bio` / `worldbuilding-entry`; manifest additions to `manifest-sync`; chain closures as a logged decision via `decision-capture` so the strike survives primer regeneration.
+Proposals are not applied here; they wait in § Proposals for `canon-sync`, which reads notes per span, classifies what has accumulated, adjudicates contradictions by authorship, and applies on approval. (If the user wants a single obvious Revelation Log line appended immediately, do it, mark the item `applied`, and say so.) The owning mechanisms are: Revelation Log lines appended directly (as `blueprint` does); promotions routed to `character-bio` / `worldbuilding-entry`; manifest additions to `manifest-sync`; chain closures as a logged decision via `decision-capture` so the strike survives primer regeneration.
 
 ## Series Mode
 
