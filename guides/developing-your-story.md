@@ -57,7 +57,7 @@ Plus **`state.md`**, the living dashboard — what exists, what stage you're at,
 
 All of it is plain markdown. You can open and hand-edit any file at any time — the agent reads your edits like anything else. The formats match the StoryStormer web app's (the same decision types, question categories, manifest layout, and outline fields), so a project can move between the two.
 
-Decisions carry one of five types (plot, character, worldbuilding, structure, theme) and questions one of seven categories (Story Structure, Character, Plot, Worldbuilding, Theme, Setting, Pacing). Your book's **target word count** lives in `.storystormer/config.json` and `state.md`; every word budget (the treatment's length, each act's share of the book) is computed from it, 25/50/25 across three acts unless you say otherwise.
+Decisions carry one of five types (plot, character, worldbuilding, structure, theme) and questions one of seven categories (Story Structure, Character, Plot, Worldbuilding, Theme, Setting, Pacing). Your book's **target word count** lives in `.storystormer/config.json` (mirrored in `state.md`; in a series, each book can have its own); every word budget (the treatment's length, each act's share of the book) is computed from it, 25/50/25 across three acts unless you say otherwise.
 
 ---
 

@@ -104,7 +104,7 @@ When the prior chapter's prose diverges *stylistically* from the sample, **the s
 
 ## POV rules
 
-Resolve POV from the chapter outline's `pov` (the character) and the POV type: the prose file's `pov_type` when it is set, else the structure document's **POV Mode** / **Narrative Person** header and the POV strategy in its Structure Notes, else the project default. Assert the matching rule in the behavioral frame, and record the resolved type and tense on the prose file as `pov_type` and `tense` (the app's enum values, given with each rule below).
+Resolve POV from the chapter outline's `pov` (the character) and the POV type: the prose file's `pov_type` when it is set (for tense, the prose file's `tense`, else a legacy `tense:` key on a 0.16.x chapter outline), else the structure document's **POV Mode** / **Narrative Person** header and the POV strategy in its Structure Notes, else the project default. Assert the matching rule in the behavioral frame, and record the resolved type and tense on the prose file as `pov_type` and `tense` (the app's enum values, given with each rule below).
 
 - **Third-person limited** (`3rd_limited`) — access ONLY the POV character's interior (thoughts, feelings, sensory perception). All others are external observation only — body language, dialogue, action. Never reveal a non-POV character's interior. The narrative lens is filtered through the POV character's vocabulary and worldview. Psychic distance tightens during high emotion, widens slightly in action.
 - **Third-person objective (camera eye)** (`3rd_objective`) — NO interior access for anyone. Only what a camera captures. Emotion is conveyed entirely through external signal. Don't editorialize.

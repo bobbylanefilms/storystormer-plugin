@@ -28,7 +28,7 @@ Two formats, decided at Step 2:
 - `primer.md` — full read. Is it central to the premise / setting / mechanism?
 - `manifest.md` — what type is this element logged under? Is it already logged, or new?
 - `decisions.md` — grep-permitted, but read the relevant decisions in full. Anything about the element's rules, history, or function?
-- Existing entry at `worldbuilding/<type-slug>/<slug>.md` if there is one (expansion / refresh case).
+- Existing entry for this element if there is one (expansion / refresh case): search every folder under `worldbuilding/`, old plural forms like `magic-systems/` included, not just `worldbuilding/<type-slug>/`. An entry found in an old folder moves to the new one on this write; the rule is in `references/file-schemas.md` § Worldbuilding files (Entries in an old folder).
 - Adjacent entries in the same category — for consistency. If you're writing a new organization, scan the other organizations for tone, structure, and naming conventions.
 
 **Operate in substantive mode** for this read — list the files you plan to consult at the top of your next response, full-read each with the Read tool (beginning to end, no grep), and quote at least one passage from each in your output. See `references/reading-discipline.md` § Substantive mode.
@@ -113,7 +113,7 @@ If the user wants edits, apply them. Don't argue.
 Once approved:
 
 - Snapshot any existing entry to `.storystormer/history/<timestamp>-worldbuilding-entry/<slug>.md`.
-- Write the new entry to `worldbuilding/<type-slug>/<slug>.md`.
+- Write the new entry to `worldbuilding/<type-slug>/<slug>.md`. If it was found in an old folder, this write is the move: snapshot, write to the new folder, remove the old file, and name both paths in the report.
 - Update `manifest.md` if the entry is newly added, its description needs to change, or its status should now read `Canon Asset Created`.
 - Update `state.md → What Exists` to reflect the new/updated entry.
 

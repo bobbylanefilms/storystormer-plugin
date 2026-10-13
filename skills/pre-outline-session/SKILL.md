@@ -50,7 +50,7 @@ Load:
 - All major-tier character bios (full — POV holders especially)
 - `decisions.md` — full read, focused on structural decisions (type `structure` or `plot`)
 - `questions.md` — open structural questions (category `Story Structure`, `Plot`, or `Pacing`)
-- `state.md` (full), and `target_word_count` from `.storystormer/config.json` (mirrored in `state.md`; unset means the project type's default)
+- `state.md` (full), and `target_word_count` from `.storystormer/config.json` (the owner; `state.md` mirrors it, so repair the mirror if they differ; in a series, the focused book's target; unset means the project type's default)
 - `.storystormer/genre-reference.md` if it exists — genre obligatory scenes affect spine shape
 - Existing `outline/structure.md` if revising
 
@@ -150,7 +150,7 @@ Each spine entry is a block in the app's pre-outline format: the heading, three 
 Marlowe finds her father's locket in the audit box and recognizes the engraving from Voss's office. … (Payoff ← Ch 2)
 ```
 
-`Status` is `new` for every chapter on a first write. On a revision, chapters that already have an outline or prose are `existing (outlined)` or `existing (drafted)` with a one- or two-sentence entry drawn from what's written, and `re-outline` marks only the chapters the author asks to have redone (see `references/file-schemas.md` § `outline/structure.md`).
+`Status` comes from what's on disk, on the first write as on every revision: a chapter with a prose file is `existing (drafted)`, one with only an outline file is `existing (outlined)` (both with a one- or two-sentence entry drawn from what's written), a chapter with neither is `new`, and `re-outline` marks only the chapters the author asks to have redone. Check `chapters/` before writing; the rule and why the app depends on it are in `references/file-schemas.md` § `outline/structure.md`. (Intake can stash prose before any structure exists, so a first write often has `existing (drafted)` chapters.)
 
 Build the spine by walking through the treatment chronologically and mapping its scenes onto chapter slots:
 

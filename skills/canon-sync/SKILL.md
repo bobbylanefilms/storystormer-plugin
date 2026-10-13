@@ -26,7 +26,7 @@ Event-driven, never calendar-driven:
 
 ## Preconditions
 
-- **Notes exist for the span.** Canon-sync reads `ch<NN>-notes.md`, not prose. Chapters in the span with no notes file, or with notes stale against their prose (`prose_draft` behind the prose's `version`), are listed in the plan; recommend `notes` for them first, or proceed on the noted subset and say which chapters were skipped.
+- **Notes exist for the span.** Canon-sync reads `ch<NN>-notes.md`, not prose. Chapters in the span with no notes file, or with notes stale against their prose (`prose_version` behind the prose's `version`, or an app-provided `status: stale`; see `references/file-schemas.md` § Notes), are listed in the plan; recommend `notes` for them first, or proceed on the noted subset and say which chapters were skipped.
 - **Canon exists.** `characters/`, `worldbuilding/`, `manifest.md`. A project with prose but no canon has nothing to reconcile into; recommend `character-bio` / `worldbuilding-entry` for the cast the harvest reveals.
 
 ## What you produce

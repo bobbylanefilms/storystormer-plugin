@@ -86,7 +86,7 @@ For a **single chapter**, gather and write in the main session unless the canon 
 
 - **Reads** (substantive mode, full reads, no grep): the outline, the carried-state source, the filtered primer harvest and §2, the style guide's existence, and the full canon entry for each surfacing character and element, including each `## Revelation Log`.
 - **Applies the Revelation Log filter** to `chapter ≤ N`, and strips later-chapter references from the text of entries it carries.
-- **Writes** `ch<NN>-blueprint.md` to the spec: the header block (`**Chapter:**`, `**Time:**`, `**POV:**`, `**Position:**`, `**Knowledge horizon:**`), then the twelve sections, synthesized, backward-only.
+- **Writes** `ch<NN>-blueprint.md` to the spec: the header block (`blueprint-spec.md` § Header), then the twelve sections, synthesized, backward-only.
 - **Runs the backward-only scan** over its own output before returning (the grep in the spec's Core Principles), and fixes what it finds.
 - **Returns** a structured summary: cast and tiers, elements, Revelation Log gaps detected, canon-vs-scene conflicts resolved, precondition gaps, and the backward-only scan's remaining flags for the main session to review.
 

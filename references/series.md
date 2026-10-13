@@ -52,7 +52,7 @@ my-series/
 │   └── book-3/
 │       └── … (same shape)
 └── .storystormer/
-    ├── config.json              # project_type: series, books: [...], current_focus: book-2
+    ├── config.json              # project_type: series, target_word_count, books: [...] (each may carry its own target), current_focus: book-2
     ├── genre-reference.md
     └── history/
 ```
@@ -90,6 +90,8 @@ The **current focus** is recorded in two places (kept in sync):
 - `.storystormer/config.json`: `"current_focus": "book-2"`
 
 Use `state.md` as the source of truth; `config.json` is the convenience mirror.
+
+**Word targets are per book.** `config.json` owns the targets: the root `target_word_count` is the default, and a `books` entry may carry its own `target_word_count` (the app stores a target per novel). Budgets always use the focused book's effective target, and switching focus never rewrites the root value. See `references/file-schemas.md` § `.storystormer/config.json` (the series example) and § Target word count and the derived budgets.
 
 In series mode, when a skill instruction says *"read `primer.md`"*, the actual path is `books/<current_focus>/primer.md`. When it says *"read `treatment.md`"*, the actual path is `books/<current_focus>/treatment.md`. Same for every per-book artifact.
 
@@ -289,7 +291,7 @@ The switch is a small operation — two file edits and a state report. Don't cer
 
 **Per-book state.md** (at `books/<slug>/state.md`):
 
-- Mirrors a standalone novel's state.md — `stage`, `What Exists` for *this book's* artifacts, `What's Next` for *this book's* work.
+- Mirrors a standalone novel's state.md — `stage`, `target_word_count` (this book's effective target, mirrored from `config.json`), `What Exists` for *this book's* artifacts, `What's Next` for *this book's* work.
 - `parent_series: <series-title>` field in frontmatter, pointing back to the root.
 
 A skill working on book 2 reads `books/book-2/state.md` for its primary state, and may also read `<root>/state.md` for series context. Updates to per-book state.md don't automatically update series-level state.md — the series-level dashboard is refreshed periodically (e.g., by `brainstorm-session`'s closing protocol) rather than on every per-book write.

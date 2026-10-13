@@ -176,6 +176,10 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 
 These may follow in later versions once the kernel proves out.
 
+### What v0.17.1 added over v0.17.0
+
+- **Review follow-ups to the app-format alignment.** Notes keep a plugin-only `prose_version` freshness stamp beside the app's display-only `prose_draft` (0.16.x notes still read); one quoting rule for every frontmatter value; per-book `target_word_count` in a series, with `config.json` as the owner; the chapter count for budgets comes from `structure.md`'s `**Chapter Count:**` line; a chapter that already has prose is `existing (drafted)` on the first structure write; worldbuilding entries in old folders (`magic-systems/`) are found and moved instead of duplicated; prose story-so-far reads an outline's `## Synopsis` before the spine; legacy outline `tense` is honored.
+
 ### What v0.17.0 added over v0.16.1
 
 - **File formats match the StoryStormer web app's**, so a project can move between the two without translation (groundwork for the app's storage backend). Decisions use the app's five types (`plot`, `character`, `worldbuilding`, `structure`, `theme`; the retired `setting`, `mechanics`, `voice`, `genre` map onto them) and questions its seven Title Case categories, a required 3–7 word `Title`, and a `Source`. Bios carry `type:` (a People type: Protagonist, Antagonist, Major, Supporting, Minor by default) instead of `tier:`, with `references/canon-schemas.md` as the one body contract. Worldbuilding folders and `category:` use the app's fourteen type names (`locations/`, `magic/`; `category: Locations`). Bios and entries may carry up to three `tags`.

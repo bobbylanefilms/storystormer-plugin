@@ -60,7 +60,7 @@ Load:
 - All major-tier character bios (full)
 - `decisions.md` — full read, but focus on entries where `Integrated into treatment: no`
 - `questions.md` — open entries (so unresolved questions can be marked `[OPEN: Q-###]`)
-- `state.md` (full), and `target_word_count` from `.storystormer/config.json` (mirrored in `state.md`; unset means the project type's default)
+- `state.md` (full), and `target_word_count` from `.storystormer/config.json` (the owner; `state.md` mirrors it, so repair the mirror if they differ; in a series, the focused book's target; unset means the project type's default)
 - `.storystormer/genre-reference.md` if it exists
 
 This is the canonical heavy-context turn. **Operate in substantive mode** — list the files at the top of your next response, full-read each one with the Read tool from beginning to end, and quote at least one passage from each in your output. See `references/reading-discipline.md` § Substantive mode.

@@ -16,7 +16,7 @@ Always follow `references/plan-first.md` — load context, propose a plan in pla
 When the user gives you the go-ahead, you create or update:
 
 - `state.md` — living dashboard (see `references/file-schemas.md`)
-- `.storystormer/config.json` — project metadata, including `project_type` and `target_word_count` (both mirrored into `state.md`)
+- `.storystormer/config.json` — project metadata, including `project_type` and `target_word_count` (config owns the target; `state.md` mirrors it)
 - `.storystormer/` — supporting subfolder structure
 - `decisions.md` and `questions.md` — seeded from any materials you found
 - `treatment.md` — only when the user brings in an existing treatment-like document and explicitly agrees to a copy-and-clean-up step. **Never generate a new treatment at init.**
@@ -74,7 +74,7 @@ Before doing anything else, ask 2–4 questions to fill in what the materials do
 
 - **Working title** — confirm or ask.
 - **Project type** — novel / novella / short story / screenplay / **series**, written as `novel`, `novella`, `short_story`, `screenplay`, `series` (series triggers the multi-book folder structure in `references/series.md`).
-- **Target length** — the book's target word count (per book, for a series). If the author has no number, use the type's default from `references/file-schemas.md` § Target word count and the derived budgets (120,000 for a novel) and say so; it becomes `target_word_count`, which every word budget is computed from.
+- **Target length** — the book's target word count (for a series, a default for every book plus any book that differs, each written to its `books` entry). If the author has no number, use the type's default from `references/file-schemas.md` § Target word count and the derived budgets (120,000 for a novel) and say so; it becomes `target_word_count`, which every word budget is computed from.
 - **Genre** — confirm or ask. If hybrid, capture both.
 - **The user's intent for this session** — *"what would you like to focus on first?"* lets them redirect from your default plan.
 
@@ -117,7 +117,7 @@ Tell the user what you're going to do based on the stage and what you found. Exa
 For non-trivial migrations (more than a handful of files to move, write, or stamp), **dispatch execution subagents in parallel** per the doctrine in `references/subagent-pattern.md`. One subagent per category, all dispatched in a single message so they run concurrently:
 
 - **Bios migration subagent** — reads each bio in the intake scope, normalizes to the canonical character bio schema (`references/file-schemas.md` § Character bio files), writes to `characters/<slug>.md`, stamps frontmatter (name, `type` from the project's People types, version: 1, last_updated; an old `tier:` becomes the matching `type`). Returns completion log per file.
-- **Worldbuilding migration subagent** — assigns each file a worldbuilding type (the fourteen defaults in `references/frameworks.md` § Worldbuilding), writes to `worldbuilding/<type-slug>/<slug>.md` (the type's kebab-case slug: `locations/`, `magic/`), stamps frontmatter (`category` = the type name verbatim). Returns completion log per file.
+- **Worldbuilding migration subagent** — assigns each file a worldbuilding type (the fourteen defaults in `references/frameworks.md` § Worldbuilding), writes to `worldbuilding/<type-slug>/<slug>.md` (the type's kebab-case slug: `locations/`, `magic/`), stamps frontmatter (`category` = the type name verbatim). When the workspace already has a `worldbuilding/` folder (re-running init on an existing project), it applies the old-folder rule in `references/file-schemas.md` § Worldbuilding files: it finds existing entries under any folder, old plural forms included, and proposes moving them to the new folders rather than writing duplicates. Returns completion log per file.
 - **Decisions extraction subagent** — reads brain dumps and legacy decision-style files, produces *proposals* for `decisions.md` entries (D-### IDs, summaries, details, source, scope in series mode). The subagent **does not write** — it returns proposed entries; the main session reviews them and decides what gets written. This is judgment work that stays in main.
 - **Questions extraction subagent** — same pattern as decisions: returns proposed Q-### entries (each with a 3–7 word title, one of the seven categories, `Source: ingestion`); main session reviews before writing to `questions.md`.
 - **History snapshot subagent** — copies superseded folders to `.storystormer/history/<timestamp>-init/`, writes the `intake-original-names.md` mapping table. Returns the snapshot inventory.

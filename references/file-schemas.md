@@ -9,6 +9,17 @@ This document is the canonical spec. If a skill wants a field that isn't here, a
 
 **The formats match the StoryStormer web app's.** Enum values, frontmatter keys, and section headings below are the app's own, so a project can move between the plugin and the app without translation. Where a key is plugin-only (version stamps, provenance), the app ignores it. When this file and the app disagree, the app's format wins and this file is the one to fix.
 
+## Frontmatter values (every file)
+
+One quoting rule for every YAML frontmatter value the plugin writes: outlines, notes, prose, bios, worldbuilding entries, and the rest. A single-line value is written bare unless a YAML reader would misread it, in which case it is wrapped in double quotes, with `"` written `\"` and `\` written `\\`. Quote a value when it:
+
+- contains `:` or `#` anywhere;
+- starts or ends with a quote (`"` or `'`) or a space;
+- starts with a YAML-special character: `-`, `?`, `[`, `]`, `{`, `}`, `*`, `&`, `!`, `|`, `>`, `%`, `@`, or a backtick;
+- or would read as something other than text: `null`, `~`, `true`, `false`, `yes`, `no`, `on`, `off` (any case), or a number (`1984`, `3.5`, `1e3`, `0x1F`, `.inf`).
+
+So *Ten: Countdown* is `title: "Ten: Countdown"`, *The Answer #7* is `title: "The Answer #7"`, and *1984* is `title: "1984"`. Values that are meant as numbers (`chapter: 17`, `version: 2`, `word_count: 1140`) and lists (`tags: [the bureau]`) are written as such. Read a double-quoted value by undoing exactly those two escapes. The app writes and reads its chapter notes with this rule and parses outline frontmatter the same way.
+
 ## `state.md` — living project dashboard
 
 The agent's record of what the project is, where it stands, and what to work on next. Updated after every significant action. The user can read this any time to see the current state, and can hand-edit `Next Recommended Action` if they want to redirect.
@@ -321,7 +332,7 @@ Public-facing tech firm with a private fraud operation run from its compliance o
 
 The status replaces the old file pointers and "(no bio yet)" notes: "Canon Asset Created" says the file exists, anything lower says it doesn't.
 
-**Sections.** Characters are grouped under `### Major Characters`, `### Supporting Characters`, `### Minor Characters` (the manifest's own roles, not the bios' `type`). Worldbuilding is grouped under `### <Type>` using the app's worldbuilding type names, the fourteen defaults in `references/frameworks.md` § Worldbuilding (Organizations · Locations · Geography · Objects · Vehicles · Weapons · Technology · Magic · Creatures · Culture · History · Religion · Languages · Lore); no categories outside the project's list. Omit any section with no entries, and omit `## Open Questions` when nothing is unresolved.
+**Sections.** Characters are grouped under `### Major Characters`, `### Supporting Characters`, `### Minor Characters` (the manifest's own roles, not the bios' `type`). Worldbuilding is grouped under `### <Type>` using the project's worldbuilding types, spelled as in the entries' `category`; the app's defaults are the fourteen in `references/frameworks.md` § Worldbuilding (Organizations · Locations · Geography · Objects · Vehicles · Weapons · Technology · Magic · Creatures · Culture · History · Religion · Languages · Lore), and a project's custom types are allowed. No sections outside the project's list. Omit any section with no entries, and omit `## Open Questions` when nothing is unresolved.
 
 **Open Questions** are decisions the author hasn't made that block downstream canon or outline work (including uncertain merges and role reclassifications): flagged as a blockquote under the affected entry and collected in the numbered `## Open Questions` list. They are not brainstorming prompts.
 
@@ -452,6 +463,7 @@ treatment_version: 7
 - **`name`** is the character's display name. The app calls this field `title`; the value is the same.
 - **`type`** is one of the project's **People types**. The app's default list is `Protagonist`, `Antagonist`, `Major`, `Supporting`, `Minor`; a project may rename or extend it (the app's settings can swap in other lists), so use the project's list when it has one. It replaces the retired `tier:` key; read an old `tier: major | supporting | minor` as `type: Major | Supporting | Minor`.
 - **`tags`** is optional; see § Tags on canon entries.
+- Values are quoted per § Frontmatter values.
 
 **The body contract lives in one place:** `references/canon-schemas.md` § Character Bio Schemas, sections 0–7 (Quick Reference, Essential Identity, Physical Presence, Voice & Mannerisms, Psychology & Personality, Background & Family, Social Context & Lifestyle, Story Role & Relationships), with the per-section budgets, the Supporting and Minor variants, writing rules, and a worked example. For the framework vocabulary (McKee, Truby, Egri, Weiland, Voice Fingerprint, Thematic Posture) see `references/frameworks.md`.
 
@@ -465,6 +477,7 @@ Each entry has a **worldbuilding type** from the project's list. The app's fourt
 
 - **Folder:** the kebab-case slug of the type name: `locations/`, `organizations/`, `magic/`, `languages/`, and for a custom type such as "Star Systems", `star-systems/`. Never an invented plural (`magic-systems/`, `cultures/`).
 - **`category`:** the type name verbatim, as the app spells it (`Locations`, not `location`). The app stores the type in a field of the same name.
+- **Entries in an old folder.** Workspaces from 0.16.x and earlier may hold entries under folder names the rule no longer produces (`magic-systems/`, `cultures/`, singular `location/`). Before creating an entry, look for it by slug and `name` under **every** folder in `worldbuilding/`, not just the one the rule points at, so an old entry is never duplicated. An entry found in an old folder stays readable where it is; on its next write, move it to the rule's folder (snapshot first), set `category` to the type name, and say so in the report. Remove an old folder only once it is empty.
 
 ```yaml
 ---
@@ -476,7 +489,7 @@ last_updated: 2026-05-10
 ---
 ```
 
-`name` is the app's `title`, as for bios. `tags` is optional; see § Tags on canon entries.
+`name` is the app's `title`, as for bios. `tags` is optional; see § Tags on canon entries. Values are quoted per § Frontmatter values.
 
 Body follows one of two formats — **Reference Note** (~200–300w) for real-world elements with story-specific modifications, or **Full Entry** (~300–1,000w depending on type) for invented elements. For section structures, length targets per type, type-specific guidance, and a worked example, see `references/canon-schemas.md` § Worldbuilding Entry Schemas. For the tier framework (Full Canon entry / Reference note / No entry needed) and character-vs-worldbuilding disambiguation, see `references/frameworks.md` § Worldbuilding.
 
@@ -488,6 +501,7 @@ Bios and worldbuilding entries may carry an optional `tags:` list in their front
 
 - **Lowercase, with spaces** (`the bureau`, not `The_Bureau` or `the-bureau`). A short all-caps word of two to four letters keeps its capitals (`POV character`, `FBI informant`).
 - **Reuse the project's tags first.** Before inventing one, scan the tags already on bios and entries and take the existing spelling.
+- **At most 40 characters** per tag; the app drops a longer one rather than truncating it.
 - **At most three per entry**, and only tags that **group more than one entry**: an affiliation (`the bureau`), a story role or archetype (`mentor`), an era (`before the war`), a story status (`dead by act 2`).
 - **Never** the entry's own type (`Protagonist`, `Locations`), a name, a relationship (`Marlowe's sister`), or provenance (`ai generated`, `from intake`).
 
@@ -607,8 +621,8 @@ Marlowe arrives late to her own swearing-in at the county courthouse, and the re
 
 **The chapter blocks are the chapter spine** (skills call each block a *spine slot*). One block per chapter number, ascending, no gaps, each with exactly these lines, in this order:
 
-- **`### Chapter N: Title`** — this exact heading form. The title is a creative mnemonic (*The Locket*, not *Midpoint*).
-- **`**Status:**`** — exactly one of `new`, `existing (outlined)`, `existing (drafted)`, `re-outline`. It records each chapter's state when this document was written: `new` for every chapter on first write; on a revision, `existing (outlined)` for a chapter with an outline file, `existing (drafted)` for one with prose, and `re-outline` only for a chapter the author asked to have re-outlined. `pre-outline-session` sets it on every write; no other skill edits it.
+- **`### Chapter N: Title`** — this exact heading form, with `N` a whole number from 1 to 1000 (the app's bound). The title is a creative mnemonic (*The Locket*, not *Midpoint*).
+- **`**Status:**`** — exactly one of `new`, `existing (outlined)`, `existing (drafted)`, `re-outline`. It records each chapter's state when this document was written, on the first write and on every revision alike: `existing (drafted)` for a chapter that already has a prose file, `existing (outlined)` for one with an outline file but no prose, `new` only for a chapter with neither, and `re-outline` only for a chapter the author asked to have re-outlined. This matters to the app: its outline planner skips a `new` block whose chapter already has prose, and derives an outline from prose only for an `existing (drafted)` block. `pre-outline-session` sets it on every write; no other skill edits it.
 - **`**POV:**`** — the POV character's name.
 - **`**Act:**`** — the act **number**, optionally followed by a dash and the act's title: `2 — Fun and Games`, or just `2`. The app reads the number and title from this (it also accepts `Act II: Fun and Games` and `Act Two`, which is how the app writes it). Never `2A` or `2B`: those read as a title with no act number.
 - **The entry** — a new or re-outline chapter gets 60–100 words: two to four sentences on what happens and what changes, with optional tags such as `(Foreshadow → Ch 30)`, `(Payoff ← Ch 2)`, `(Hook)`, `(Theme)`, and any `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: …]` marker the slot carries. An existing chapter gets one or two sentences drawn from what is already written.
@@ -651,7 +665,7 @@ primer_version: 4
 [150–250 words, generated outlines only: see below]
 ```
 
-**The first five keys are the app's outline contract**, in its order: `chapter` (a whole number), `title`, `pov` (the POV character's name, blank for a book without one), `act` (same form as the structure document's `**Act:**` line: `2 — Fun and Games`, or `2`; never `2A`), and `summary` (one or two sentences: the chapter's core event and turning point). All five are present on every write; `chapter`, `title`, and `summary` must have values. A value containing `: ` or starting with a quote or YAML-special character is wrapped in double quotes; the app strips them on read.
+**The first five keys are the app's outline contract**, in its order: `chapter` (a whole number), `title`, `pov` (the POV character's name, blank for a book without one), `act` (same form as the structure document's `**Act:**` line: `2 — Fun and Games`, or `2`; never `2A`), and `summary` (one or two sentences: the chapter's core event and turning point). All five are present on every write; `chapter`, `title`, and `summary` must have values, and `chapter` is a whole number from 1 to 1000 (the app's outline parser rejects anything outside that range). Values are quoted per § Frontmatter values.
 
 The rest are plugin keys the app ignores:
 
@@ -666,7 +680,9 @@ POV type and tense are not outline keys; they live on the prose (`pov_type`, `te
 
 **Body.** The author's prose account, with no H1 (the title lives in the frontmatter, and the app's outline has none; an H1 already in an author's file is left alone). Present tense is the recommended register for generated outlines, not a rule: an author-written outline in past tense stays in past tense and is never rewritten for tense. The app refuses an outline body under 150 words, so a stub outline is not ready to move to the app.
 
-**`## Synopsis`** is the one heading an outline may carry, and only at the very end. Generated outlines end with it (the app's chapter writer produces the same shape): 150–250 words on the chapter's causal events, reveals, who learns what, and how the story's state has changed by the chapter's end, written as a record for later chapters, not a teaser. It replaces repeating that material in `summary`, which stays one or two sentences. The app splits it off into the chapter's synopsis. An author-written outline gets a synopsis section only if the author asks for one.
+**`## Synopsis`** is the one heading an outline may carry, and only at the very end. Generated outlines end with it (the app's chapter writer produces the same shape): 150–250 words on the chapter's causal events, reveals, who learns what, and how the story's state has changed by the chapter's end, written as a record for later chapters, not a teaser. It replaces repeating that material in `summary`, which stays one or two sentences. An author-written outline gets a synopsis section only if the author asks for one.
+
+The section is the **writer shape**, not how the app stores it. The app keeps the synopsis separately, on the chapter (`chapters.synopsis`): on write it strips the trailing `## Synopsis` from the outline body and saves the text there, and when it hands the outline back as a file it renders the section at the end again. The plugin's file keeps the section either way; nothing about the format changes.
 
 **What the outline does not carry**, because the Blueprint derives it from canon at better resolution: premise blocks, a beat index, setups and payoffs, character notes, dialogue-anchor lists, chapter connections, open-thread sections, craft rules. Any heading in the body other than the closing `## Synopsis` is the tell that something is in the wrong file.
 
@@ -793,11 +809,7 @@ Body — the twelve sections (full formats in `references/blueprint-spec.md`):
 ```markdown
 # Chapter 17 Blueprint — *The Locket*
 
-**Chapter:** 17, The Locket
-**Time:** [time of day], [narrative date]
-**POV:** Marlowe Reyes, close third, past tense
-**Position:** [what precedes it, by chapter number, or *nothing precedes this chapter*]
-**Knowledge horizon:** The end of chapter 17, and nothing after it.
+[the header block: the five bold-labeled lines in `references/blueprint-spec.md` § Header]
 
 ## 1. Scene Function
 ## 2. Story Context
@@ -848,6 +860,8 @@ synopsis: |
 ---
 ```
 
+Values (the `title`, a `pov` name) are quoted per § Frontmatter values; the multi-line `synopsis` stays a `|` block.
+
 **Body: prose only.** No markdown headers, no frontmatter-style labels, no meta-commentary — just the chapter's fiction, paragraphs separated by single blank lines, scene breaks as a single blank line. (The `synopsis` lives in frontmatter precisely so the body stays pure prose.) See `references/prose-spec.md` § Output rules.
 
 - **`pov`** mirrors the chapter outline's `pov`: a character's name. The `prose` skill uses it to find the POV-matched prior prose chapter (the voice anchor).
@@ -870,19 +884,25 @@ Lives in the chapter folder: `chapters/chapter-17/ch17-notes.md`. Written by the
 ---
 chapter: 17
 title: The Locket
-prose_draft: v2
+prose_draft: Chapter 17 prose v2
 prose_status: revised
+prose_version: 2
 version: 1
 last_updated: 2026-06-21
 ---
 ```
 
 - **`chapter`**, **`title`**: the chapter's number and title.
-- **`prose_draft`**: the prose draft the notes were read from. The plugin writes the prose file's version (`v2`); the app writes the draft's title or number. A notes file whose `prose_draft` is older than the prose's current `version` is stale.
+- **`prose_draft`**: a **display label** for the prose draft the notes were read from (the app writes the draft's title, such as `Chapter 17 — Draft 2`; the plugin writes `Chapter 17 prose v2`). It is for reading, never for comparison.
 - **`prose_status`**: the app's two-value stage, `drafted` or `revised`. Write `revised` when the prose's `status` is `revised`, otherwise `drafted` (a `revising` chapter is still a draft to the app). Notes taken on a `drafted` chapter owe a re-run once it is revised.
+- **`prose_version`** (plugin key, the app ignores it): the prose file's `version` the notes were taken from. **This is the freshness check:** notes are current when `prose_version` equals the prose file's `version`, stale when it is lower.
 - **`version`**, **`last_updated`**: plugin keys the app ignores.
 
-**Quoting.** A frontmatter value is wrapped in double quotes, with `"` written `\"` and `\` written `\\`, when it contains `:` or `#`, starts or ends with a quote or a space, starts with a YAML-special character (`-`, `?`, `[`, `]`, `{`, `}`, `*`, `&`, `!`, `|`, `>`, `%`, `@`, a backtick), or would otherwise read as a non-string scalar (`null`, `~`, `true`, `false`, `yes`, `no`, `on`, `off`, or a number). So a chapter titled *Ten: Countdown* is `title: "Ten: Countdown"`, and one titled *1984* is `title: "1984"`. The app writes and reads the same rule.
+**Notes written by 0.16.x** carry only `prose_version` and `prose_status_at_run` (`drafted | revising | approved`). Read them the same way: `prose_version` is the freshness stamp, and `prose_status_at_run` maps to `prose_status` (`approved` → `revised`, `drafted` and `revising` → `drafted`). Add `title`, `prose_draft` and `prose_status` on the next write.
+
+**When the project is connected to the app** (AP3), the server marks each notes record `status: current | stale` itself against the chapter's canonical draft; when that field is present, trust it over the local `prose_version` comparison.
+
+**Quoting** follows § Frontmatter values (the app's notes writer is where that rule comes from).
 
 The body is exactly these six sections, in this order. A section with nothing to record reads `None.`, so all six headings are always present; **As-Written Synopsis** and **End State** always have content. No H1.
 
@@ -1030,10 +1050,10 @@ For light updates (a new cross-book chain identified, a continuity concern logge
 }
 ```
 
-Mirrors a subset of `state.md` frontmatter, in JSON for any tooling that wants to read it programmatically. Treat `state.md` as the source of truth; `config.json` is a convenience mirror, and the two must agree.
+Mirrors a subset of `state.md` frontmatter, in JSON for any tooling that wants to read it programmatically. For most fields `state.md` is the source of truth and `config.json` a convenience mirror; **`target_word_count` is the exception: `config.json` owns it** and `state.md` mirrors it. The two must agree, and any skill that reads the target and finds them different repairs the mirror from its owner and says so.
 
 - **`project_type`**: `novel`, `novella`, `short_story`, `screenplay`, or `series` (the app's values; an older `short-story` reads as `short_story`).
-- **`target_word_count`**: the book's target length in words (per book, in a series). Set at init from the author's answer, or from the type's default below; change it whenever the author does. Every word budget in the workspace is computed from it.
+- **`target_word_count`**: the book's target length in words. Set at init from the author's answer, or from the type's default below; change it (here first, then the `state.md` mirror) whenever the author does. Every word budget in the workspace is computed from it. In a series the root value is the default for every book, and a book may carry its own (see the series example below).
 
 ### Target word count and the derived budgets
 
@@ -1049,9 +1069,9 @@ The one place the plugin's word budgets come from, matching the app's treatment 
 
 - **Act budgets (the book):** a three-act structure splits the target **25 / 50 / 25**. Any other act count splits it evenly, unless primer §3's Structural Framework states weighted proportions, which then govern. For 120,000 words in three acts: 30,000 / 60,000 / 30,000.
 - **Treatment budget:** `target_word_count / 6` in total (20,000 for 120,000), split across acts in the same proportions. Each act's treatment stays within ±15% of its share.
-- **Per-chapter treatment density:** `treatment budget / chapter count`, where the chapter count is `target_chapter_count` from `outline/structure.md` once it exists, else the type's default (500 words for a 40-chapter, 120,000-word novel). It is a calibration signal for sizing treatment scenes, not a chapter assignment.
+- **Per-chapter treatment density:** `treatment budget / chapter count` (500 words for a 40-chapter, 120,000-word novel). The chapter count is read, in order, from `outline/structure.md`'s `**Chapter Count:**` header line (the app writes it; its leading number is the count), then the plugin's `target_chapter_count` frontmatter key, then the project type's default above. When the count is zero or unknown (a screenplay with no chapter count), density is `n/a`, as the app shows it; never divide by a missing count. It is a calibration signal for sizing treatment scenes, not a chapter assignment.
 
-These numbers are computed whenever a skill needs them and never stored as a table in the primer.
+These numbers are computed whenever a skill needs them and never stored as a table in the primer. In a series they use the **focused book's** target (`current_focus`): that book's own `target_word_count` when its `books` entry carries one, else the root value.
 
 For series-mode projects, `config.json` carries the series fields:
 
@@ -1065,15 +1085,15 @@ For series-mode projects, `config.json` carries the series fields:
   "created": "2026-05-24",
   "surfacing_mode": "active",
   "books": [
-    { "slug": "book-1", "title": "Inauguration Day" },
+    { "slug": "book-1", "title": "Inauguration Day", "target_word_count": 120000 },
     { "slug": "book-2", "title": "The Aftermath" },
-    { "slug": "book-3", "title": "Reckoning" }
+    { "slug": "book-3", "title": "Reckoning", "target_word_count": 95000 }
   ],
   "current_focus": "book-1"
 }
 ```
 
-The `books` array preserves both slug (for filesystem paths) and human-readable title (for display). Adding a book is a config + folder operation; renaming a book updates only the title (slug stays stable to avoid breaking paths).
+The `books` array preserves both slug (for filesystem paths) and human-readable title (for display). Each entry may carry its own **`target_word_count`** (the app stores the target per novel); an entry without one uses the root `target_word_count` (110,000 for book 2 above). Switching `current_focus` changes which book's target the budgets use and never rewrites the root value. A book's per-book `state.md` mirrors that book's effective target. Adding a book is a config + folder operation; renaming a book updates only the title (slug stays stable to avoid breaking paths).
 
 ## `.storystormer/history/` — book-level history
 

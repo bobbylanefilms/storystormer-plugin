@@ -30,7 +30,7 @@ That's the texture. Lean. Scannable. Each entry is what a casting director would
 ### 1. Read context
 
 - `treatment.md` — full read. Every character, location, organization, object the treatment names should appear in the manifest.
-- `primer.md` — full read. May surface themes-level elements that need a "Cultures" or "Concepts" section.
+- `primer.md` — full read. May surface world-level elements (a culture, a body of lore) that belong under one of the project's worldbuilding types: the types its entries already use, with the app's fourteen defaults in `references/frameworks.md` § Worldbuilding as the starting list. Never invent a manifest section outside that list.
 - Existing `manifest.md` — full read. So you can diff.
 - All character bios (`characters/*.md`) — at minimum read the YAML frontmatter and Quick Reference. Tells you the canonical `type`, full name, and that a canon asset exists for each.
 - Worldbuilding files (`worldbuilding/**/*.md`) — frontmatter + first paragraph. Tells you what each element is in a sentence, and its type (`category`).

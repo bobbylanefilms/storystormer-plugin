@@ -22,7 +22,7 @@ Four things, and capturing them is the whole job:
 
 ## What you produce
 
-- **`chapters/chapter-NN/ch<NN>-notes.md`** per the schema in `references/file-schemas.md` § Notes, which is the app's chapter notes document: frontmatter `chapter`, `title`, `prose_draft`, `prose_status` (values quoted by the rule there), then exactly six sections with these headings, in this order: `## As-Written Synopsis`, `## Divergences from the Outline`, `## Harvest`, `## Accidental Canon`, `## End State`, `## Proposals`. The app's notes job writes the same document and its canon-sync finds each section by its exact heading, so never rename, reorder, or add one; an empty section reads `None.`.
+- **`chapters/chapter-NN/ch<NN>-notes.md`** per `references/file-schemas.md` § Notes, which is the app's chapter notes document: its frontmatter keys (the app's four plus the plugin's `prose_version` freshness stamp), its six section headings in their fixed order, and its empty-section convention all live there. The app's notes job writes the same document and both sides' canon-sync find sections by exact heading, so never rename, reorder, or add one.
 - **Proposals, never writes**, written to the notes file's § Proposals as unchecked items and repeated in the report: Revelation Log lines for state changes the prose established; promotions of accidental canon into a bio or worldbuilding entry; manifest additions for new named elements; **closures of Tier 1 chains** in primer §2 whose payoff this chapter delivered. Same contract as `blueprint`: canon is the author's, and the skill appends only on approval. This is also how chains close; without it, closure is manual and will not happen.
 - **`outline/_index.md`** regenerated so the chapter's **Notes** column reflects the new state; bump `chapters_noted` in its frontmatter.
 - Snapshots of any overwritten notes file to `chapters/chapter-NN/.history/` as `ch<NN>-notes-v<version>-<date>.md`.
@@ -33,7 +33,7 @@ Four things, and capturing them is the whole job:
 - **`ch<NN>-prose.md` must exist.** Otherwise refuse and recommend `prose`.
 - **Gate on prose `status`, not on prose existing.** Notes taken from a first draft describe a chapter about to be rewritten, and every revision pass would invalidate them. Run at `revising` or `revised`. If the user asks for notes on a `drafted` chapter, say so, run if they insist, and say in the report that a re-run is owed once the chapter is revised. (`prose_status` records the app's two stages: `revised` for revised prose, `drafted` otherwise.)
 - **The outline and Blueprint should exist.** Notes diffs intent (outline) against page (prose) and checks plants (Blueprint) against what landed. Missing either, run with what exists and say which section is thinner for it.
-- **Staleness.** If the notes file's `prose_draft` is older than the prose's current `version`, the notes are stale; offer to re-run before anything downstream reads them.
+- **Staleness.** Compare the notes file's `prose_version` with the prose file's `version` (the rule, including how 0.16.x notes read and when an app-provided `status` wins, is in `references/file-schemas.md` § Notes). If it is lower, the notes are stale; offer to re-run before anything downstream reads them.
 
 ## What to do
 
@@ -67,7 +67,7 @@ This is roughly 12,000 words of input for a compact structured output, so **disp
 
 ### 4. Extract
 
-Each subagent writes the six sections, under the exact headings above. The discipline per section:
+Each subagent writes the six sections under the exact headings in `references/file-schemas.md` § Notes, stamping `prose_version` with the prose file's `version`. The discipline per section:
 
 - **As-Written Synopsis** (~150–250w): what is on the page, as its author, causal and specific: who did what, what was revealed, how the story's state changed by the last line. Not a teaser, not the outline's intent restated. Downstream consumers (`blueprint`, `prose`, `canon-sync`, `brainstorm-session`) prefer this over the prose frontmatter synopsis when it exists.
 - **Divergences from the Outline**: each place the page departs from the outline, one line each, flagged **deliberate** (the author wrote or revised it, or the change is clearly a choice) or **drift** (the model wandered). When in doubt, flag drift and say so; the author rules.
