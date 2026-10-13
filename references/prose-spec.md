@@ -104,19 +104,19 @@ When the prior chapter's prose diverges *stylistically* from the sample, **the s
 
 ## POV rules
 
-Resolve POV from the chapter outline's `pov` (and the project/structure POV strategy) before assembling. Assert the matching rule in the behavioral frame.
+Resolve POV from the chapter outline's `pov` (the character) and the POV type: the prose file's `pov_type` when it is set, else the structure document's **POV Mode** / **Narrative Person** header and the POV strategy in its Structure Notes, else the project default. Assert the matching rule in the behavioral frame, and record the resolved type and tense on the prose file as `pov_type` and `tense` (the app's enum values, given with each rule below).
 
-- **Third-person limited** — access ONLY the POV character's interior (thoughts, feelings, sensory perception). All others are external observation only — body language, dialogue, action. Never reveal a non-POV character's interior. The narrative lens is filtered through the POV character's vocabulary and worldview. Psychic distance tightens during high emotion, widens slightly in action.
-- **Third-person objective (camera eye)** — NO interior access for anyone. Only what a camera captures. Emotion is conveyed entirely through external signal. Don't editorialize.
-- **Third-person omniscient** — multiple characters' interiors accessible, but deployed strategically; no head-hopping within a paragraph — transition at natural beats. The narrator may know what characters don't (dramatic irony).
-- **First person** — "I" throughout; voice reflects the character's personality, education, speech patterns. They report only what they perceive; other characters' motives are inferred and can be wrong.
-- **Second person** — "you" as protagonist; immediacy and complicity; stay consistent, don't slip person.
+- **Third-person limited** (`3rd_limited`) — access ONLY the POV character's interior (thoughts, feelings, sensory perception). All others are external observation only — body language, dialogue, action. Never reveal a non-POV character's interior. The narrative lens is filtered through the POV character's vocabulary and worldview. Psychic distance tightens during high emotion, widens slightly in action.
+- **Third-person objective (camera eye)** (`3rd_objective`) — NO interior access for anyone. Only what a camera captures. Emotion is conveyed entirely through external signal. Don't editorialize.
+- **Third-person omniscient** (`3rd_omniscient`) — multiple characters' interiors accessible, but deployed strategically; no head-hopping within a paragraph — transition at natural beats. The narrator may know what characters don't (dramatic irony).
+- **First person** (`1st_person`) — "I" throughout; voice reflects the character's personality, education, speech patterns. They report only what they perceive; other characters' motives are inferred and can be wrong.
+- **Second person** (`2nd_person`) — "you" as protagonist; immediacy and complicity; stay consistent, don't slip person.
 
 ## Tense
 
-- **Past** (most common) — "she walked, he said." Don't drift to present except in dialogue.
-- **Present** — "she walks, he says." Immediacy; don't drift to past except in marked flashback.
-- **Future** — "she will walk." Rare, prophetic; use deliberately.
+- **Past** (`past`, most common) — "she walked, he said." Don't drift to present except in dialogue.
+- **Present** (`present`) — "she walks, he says." Immediacy; don't drift to past except in marked flashback.
+- **Future** (`future`) — "she will walk." Rare, prophetic; use deliberately.
 
 ## Target length
 

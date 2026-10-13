@@ -196,25 +196,25 @@ Real-world elements with story-specific significance or alterations. A real city
 ### No entry needed — well-known real-world elements
 Elements the model already knows from training data. *New York City. A Glock 19. The Catholic Church. An iPhone.* Naming them in the primer or manifest is sufficient.
 
-### Element categories
-Worldbuilding elements fall into one of these categories. The category determines which sections the entry needs (see `references/canon-schemas.md` § Worldbuilding Entry Schemas for the section structures, length targets, and category-specific guidance):
+### Worldbuilding types
+Every worldbuilding element has a type. These are the StoryStormer app's **fourteen default worldbuilding types**, spelled as the app spells them; a project can rename or extend its list, so treat these as defaults, not a closed set. The type is the entry's frontmatter `category`, verbatim, and its folder is the type's kebab-case slug (`worldbuilding/locations/`, `worldbuilding/magic/`); see `references/file-schemas.md` § Worldbuilding files. The type determines which sections the entry needs (see `references/canon-schemas.md` § Worldbuilding Entry Schemas for the section structures, length targets, and type-specific guidance):
 
-- **Organization** — political parties, military units, corporations, secret societies, religious orders, guilds, movements.
-- **Location** — a specific physical place (city, building, room, landmark, planet, realm).
+- **Organizations** — political parties, military units, corporations, secret societies, religious orders, guilds, movements.
+- **Locations** — a specific physical place (city, building, room, landmark, planet, realm).
 - **Geography** — broader physical world: regions, climate, terrain, ecology, continents, biomes.
-- **Object** — an item, artifact, or physical thing with story significance.
-- **Vehicle** — transportation: car, spaceship, horse, airship.
-- **Weapon** — combat implement and its capabilities.
+- **Objects** — an item, artifact, or physical thing with story significance.
+- **Vehicles** — transportation: car, spaceship, horse, airship.
+- **Weapons** — combat implement and its capabilities.
 - **Technology** — scientific or technical system, device, or infrastructure.
 - **Magic** — supernatural power system: rules, costs, mechanics.
-- **Creature** — non-human entity: animal, monster, alien, spirit, sapient or not.
+- **Creatures** — non-human entity: animal, monster, alien, spirit, sapient or not.
 - **Culture** — customs, traditions, social hierarchies, etiquette, taboos, rituals, daily life.
 - **History** — past events, timelines, eras, figures that shape the current world.
 - **Religion** — belief system as lived practice: doctrine, deities, rituals, devotion gradient.
 - **Languages** — speech, register, dialect, untranslatable concepts, invented tongues.
-- **Lore** — general mythology, backstory, or knowledge that doesn't fit the other categories.
+- **Lore** — general mythology, backstory, or knowledge that doesn't fit the other types.
 
-**Character vs worldbuilding disambiguation**: if a sapient being functions as a worldbuilding element rather than as a character with an arc — a god, an AI system, a hive mind, a corporate egregore that has no individual interiority the story dramatizes — default to a Worldbuilding entry (usually under Creature or Organization). Reserve the Character bio schemas for entities the story portrays as individual people with inner lives.
+**Character vs worldbuilding disambiguation**: if a sapient being functions as a worldbuilding element rather than as a character with an arc — a god, an AI system, a hive mind, a corporate egregore that has no individual interiority the story dramatizes — default to a Worldbuilding entry (usually under Creatures or Organizations). Reserve the Character bio schemas for entities the story portrays as individual people with inner lives.
 
 ### Probing for rules during brainstorming
 When a fictional element has rules — a magic system, a technology, a social structure — probe for the rules *during* brainstorming. Those rules become Consistency Constraints in the Canon entry, and they're far easier to establish during the creative phase than to retrofit later. Probe: *"What can the Shimmer do? What can't it do? What does it cost? Who knows about it?"* Vagueness now becomes contradiction later.

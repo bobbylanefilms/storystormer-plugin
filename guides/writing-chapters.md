@@ -25,7 +25,7 @@ outline  →  blueprint  →  prose  →  (refine through chat)  →  notes
 | **Blueprint** (`blueprint`) | *What must not be gotten wrong* — who's on page and in what state, the chapter's shape, the plants, every canon fact it touches, nothing from later chapters | Strongly recommended |
 | **Prose** (`prose`) | Writes the actual chapter, in your voice | — |
 | **Kit Bash** (part of `prose`) | Same chapter, N competing drafts from different models, merged under your direction | Optional |
-| **Notes** (`notes`) | Records *what the prose actually committed* — the as-written synopsis, divergences from your outline, the harvest of particulars, accidental canon, and the end-state the next chapter inherits | Recommended once a chapter is revised or approved |
+| **Notes** (`notes`) | Records *what the prose actually committed* — the as-written synopsis, divergences from your outline, the harvest of particulars, accidental canon, and the end-state the next chapter inherits | Recommended once a chapter is being revised or is revised |
 
 ---
 
@@ -84,7 +84,7 @@ Say any of:
 
 The skill resolves everything it can and shows you the plan for approval:
 
-- **Chapter, POV, and tense** — from the outline and your project defaults.
+- **Chapter, POV, and tense** — the POV character from the outline; the POV type (close third, first person, …) and tense from the structure's POV settings or your project defaults. Both are recorded on the prose file.
 - **Path** — *lean* (Blueprint exists) or *fallback* (raw canon; it'll suggest blueprinting first).
 - **Voice inputs** — writing sample? style guide, or which craft rulebook it picked?
 - **Voice anchor** — the most recent earlier chapter with the same POV, whose prose anchors voice and momentum.
@@ -108,7 +108,7 @@ With the draft open, just talk about it:
 - *"Tighten the rooftop confrontation — Voss should never raise his voice."*
 - *"The second scene drags; cut it by a third."*
 
-Each note runs a **surgical edit**: the current version is snapshotted to `.history/` first, then only what you named changes — everything else is preserved verbatim. Loop as many rounds as you like. If your note is vague ("this feels flat"), the skill will diagnose first — naming what it thinks is off — and confirm before editing.
+Each note runs a **surgical edit**: the current version is snapshotted to `.history/` first, then only what you named changes — everything else is preserved verbatim. Loop as many rounds as you like. The chapter's status moves `drafted` → `revising` while you work; say **"chapter 17 is done"** when you're happy and it becomes `revised`. If your note is vague ("this feels flat"), the skill will diagnose first — naming what it thinks is off — and confirm before editing.
 
 ### The spoiler firewall (why it won't read your treatment)
 
@@ -170,7 +170,7 @@ The result is a normal `ch<NN>-prose.md` — same as any generated chapter, with
 
 ## Stage 3: Notes — recording what the chapter committed
 
-Once a chapter is past its first draft (status `revising` or `approved`), say **"take notes on chapter 17"** or **"notes for Act 1"**. The skill reads the prose against the outline and Blueprint and writes `ch17-notes.md` with five things: the **as-written synopsis** (what's on the page, as opposed to what the outline intended), **divergences** from the outline (each flagged deliberate or drift), the **harvest** (every concrete particular the chapter committed: the half-eaten apple, the matchbook's branding, the skate shoes; nouns, not themes), **accidental canon** (details the prose invented that no bio or worldbuilding entry holds), and an **end-state block** (hour, location, wardrobe, injuries, objects carried, emotional residue).
+Once a chapter is past its first draft (status `revising` or `revised`), say **"take notes on chapter 17"** or **"notes for Act 1"**. The skill reads the prose against the outline and Blueprint and writes `ch17-notes.md` (the same document, section for section, the web app's chapter notes job writes) with five things: the **as-written synopsis** (what's on the page, as opposed to what the outline intended), **divergences** from the outline (each flagged deliberate or drift), the **harvest** (every concrete particular the chapter committed: the half-eaten apple, the matchbook's branding, the skate shoes; nouns, not themes), **accidental canon** (details the prose invented that no bio or worldbuilding entry holds), and an **end-state block** (hour, location, wardrobe, injuries, objects carried, emotional residue).
 
 Why it's worth the two minutes:
 
@@ -216,7 +216,7 @@ chapters/chapter-17/
   ch17-outline.md            ← required before anything below
   ch17-blueprint.md          ← the pre-prose brief
   ch17-prose.md              ← the chapter (synopsis + metadata in frontmatter)
-  ch17-notes.md              ← what the prose committed (run after revising/approving)
+  ch17-notes.md              ← what the prose committed (run while revising, or once revised)
   .history/                  ← every superseded version, auto-snapshotted
   kitbash/
     ch17-packet.md           ← the portable generation packet (Kit Bash)

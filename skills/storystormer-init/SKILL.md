@@ -16,11 +16,11 @@ Always follow `references/plan-first.md` — load context, propose a plan in pla
 When the user gives you the go-ahead, you create or update:
 
 - `state.md` — living dashboard (see `references/file-schemas.md`)
-- `.storystormer/config.json` — project metadata
+- `.storystormer/config.json` — project metadata, including `project_type` and `target_word_count` (both mirrored into `state.md`)
 - `.storystormer/` — supporting subfolder structure
 - `decisions.md` and `questions.md` — seeded from any materials you found
 - `treatment.md` — only when the user brings in an existing treatment-like document and explicitly agrees to a copy-and-clean-up step. **Never generate a new treatment at init.**
-- `primer.md` — **never at init.** The primer is a six-section structured craft dossier (~4,500–5,500w) that's always built by `treatment-update`'s Phase 1 (first-run mode handles construction from intake materials). Init leaves `primer.md` absent so the first `treatment-update` run populates it.
+- `primer.md` — **never at init.** The primer is a five-section structured craft dossier (~4,500w, hard ceiling 5,000) that's always built by `treatment-update`'s Phase 1 (first-run mode handles construction from intake materials). Init leaves `primer.md` absent so the first `treatment-update` run populates it.
 - `manifest.md` — only if there's enough character/world content to seed it
 - `characters/_index.md` and per-character bios — only if the user has named characters
 - The `worldbuilding/` subfolders as appropriate
@@ -73,7 +73,8 @@ Set `initial_maturity` to the same value as `stage` **except for the two outline
 Before doing anything else, ask 2–4 questions to fill in what the materials don't tell you:
 
 - **Working title** — confirm or ask.
-- **Project type** — novel / novella / short story / screenplay / **series** (affects target lengths in `references/file-schemas.md`, and series triggers the multi-book folder structure in `references/series.md`).
+- **Project type** — novel / novella / short story / screenplay / **series**, written as `novel`, `novella`, `short_story`, `screenplay`, `series` (series triggers the multi-book folder structure in `references/series.md`).
+- **Target length** — the book's target word count (per book, for a series). If the author has no number, use the type's default from `references/file-schemas.md` § Target word count and the derived budgets (120,000 for a novel) and say so; it becomes `target_word_count`, which every word budget is computed from.
 - **Genre** — confirm or ask. If hybrid, capture both.
 - **The user's intent for this session** — *"what would you like to focus on first?"* lets them redirect from your default plan.
 
@@ -115,10 +116,10 @@ Tell the user what you're going to do based on the stage and what you found. Exa
 
 For non-trivial migrations (more than a handful of files to move, write, or stamp), **dispatch execution subagents in parallel** per the doctrine in `references/subagent-pattern.md`. One subagent per category, all dispatched in a single message so they run concurrently:
 
-- **Bios migration subagent** — reads each bio in the intake scope, normalizes to the canonical character bio schema (`references/file-schemas.md` § Character bio files), writes to `characters/<slug>.md`, stamps frontmatter (name, tier, version: 1, last_updated). Returns completion log per file.
-- **Worldbuilding migration subagent** — categorizes each file per the 14-category taxonomy in `references/frameworks.md` § Worldbuilding, writes to `worldbuilding/<category>/<slug>.md`, stamps frontmatter. Returns completion log per file.
+- **Bios migration subagent** — reads each bio in the intake scope, normalizes to the canonical character bio schema (`references/file-schemas.md` § Character bio files), writes to `characters/<slug>.md`, stamps frontmatter (name, `type` from the project's People types, version: 1, last_updated; an old `tier:` becomes the matching `type`). Returns completion log per file.
+- **Worldbuilding migration subagent** — assigns each file a worldbuilding type (the fourteen defaults in `references/frameworks.md` § Worldbuilding), writes to `worldbuilding/<type-slug>/<slug>.md` (the type's kebab-case slug: `locations/`, `magic/`), stamps frontmatter (`category` = the type name verbatim). Returns completion log per file.
 - **Decisions extraction subagent** — reads brain dumps and legacy decision-style files, produces *proposals* for `decisions.md` entries (D-### IDs, summaries, details, source, scope in series mode). The subagent **does not write** — it returns proposed entries; the main session reviews them and decides what gets written. This is judgment work that stays in main.
-- **Questions extraction subagent** — same pattern as decisions: returns proposed Q-### entries; main session reviews before writing to `questions.md`.
+- **Questions extraction subagent** — same pattern as decisions: returns proposed Q-### entries (each with a 3–7 word title, one of the seven categories, `Source: ingestion`); main session reviews before writing to `questions.md`.
 - **History snapshot subagent** — copies superseded folders to `.storystormer/history/<timestamp>-init/`, writes the `intake-original-names.md` mapping table. Returns the snapshot inventory.
 - **Prose chapter stash subagent** (if applicable, see § Prose Chapter Stashing) — moves detected prose into `chapters/` with canonical naming, preserves content verbatim, adds minimal frontmatter, returns the original-to-canonical mapping.
 
@@ -141,7 +142,7 @@ Short summary:
 - What you deliberately did *not* create — always including `primer.md` (that's `treatment-update`'s job). Name the absent files and the skill that produces them.
 - The recommended next step. Typical recommendations by stage:
   - **`concept` / `brain-dump`**: `brainstorm-session` to work through the highest-priority question and accumulate more decisions before the first `treatment-update` run.
-  - **`brainstorming` and above** (enough decided that primer construction is meaningful): `treatment-update` in first-run mode — it will scaffold the six-section primer from your extracted decisions, plus any treatment-like document the user brought in, and produce/refine `treatment.md`.
+  - **`brainstorming` and above** (enough decided that primer construction is meaningful): `treatment-update` in first-run mode — it will scaffold the five-section primer from your extracted decisions, plus any treatment-like document the user brought in, and produce/refine `treatment.md`.
   - **`canon-development`**: `treatment-update` first (to crystallize the primer), then `character-bio` or `worldbuilding-entry` for the highest-priority gap. Once major bios are in place and the treatment is refined, `pre-outline-session` is the natural next step — it commits the project to a chapter structure.
   - **`outlining` / `outline-drafted`** (rare at intake — would only appear if the user brought in pre-existing outline materials): recommend `pre-outline-session` to map any imported outline materials into the canonical `outline/structure.md` shape, then `outline-chapters` to fill in or refine per-chapter outlines.
 
@@ -230,7 +231,7 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
 
 4. **Preserve the prose content verbatim**. Do not edit, normalize whitespace, fix typos, or restructure the prose. The intake-stashed file is the user's content, untouched. The only init-applied changes are:
    - Filename normalization.
-   - Adding minimal YAML frontmatter (`chapter`, `title`, `version: 1`, `last_updated`, `authorship: author-written`) if the file doesn't already have frontmatter. Title is extracted from an H1 heading if present, or from the filename's slug portion if discoverable, or left as `TBD` if neither.
+   - Adding minimal YAML frontmatter (`chapter`, `title`, `version: 1`, `last_updated`, `authorship: author_written`) if the file doesn't already have frontmatter. Title is extracted from an H1 heading if present, or from the filename's slug portion if discoverable, or left as `TBD` if neither.
 
 5. **Handle non-markdown formats** (`.docx`, `.txt`, `.rtf`, `.scrivx`, `.fountain`):
    - Stash as-is in the chapter folder with the original extension preserved on the prefixed name. Do NOT auto-convert.

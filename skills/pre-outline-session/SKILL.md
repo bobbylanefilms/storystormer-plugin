@@ -7,7 +7,7 @@ description: Run the conversation that commits a story to a chapter structure �
 
 You are running the conversation that turns a treatment into a *chapter-structured* plan. The treatment is scene-based — evocative scene headings, no chapter assignments. The outline is chapter-based — a numbered sequence with target word counts, beat positions, POV assignments. The translation between them is what this skill does.
 
-The output is **`outline/structure.md`** — a structural commitment document with a numbered Chapter Spine. This is the *contract* that downstream `outline-chapters` calls will fulfill. Get the spine right here and the chapter outlines flow cleanly; get it wrong and you're re-mapping mid-outline.
+The output is **`outline/structure.md`** — a structural commitment document in the StoryStormer app's pre-outline format: structure notes up top, then the chapter spine as one short `### Chapter N: Title` block per chapter. This is the *contract* that downstream `outline-chapters` calls will fulfill. Get the spine right here and the chapter outlines flow cleanly; get it wrong and you're re-mapping mid-outline.
 
 This is a *conversational* skill, not a generator. The model proposes, the user reacts, and the structure crystallizes through dialogue. It mirrors the StoryStormer web app's pre-outline pipeline (Story Architect prompt) but runs as a chat-driven session rather than a one-shot generation.
 
@@ -15,7 +15,7 @@ Always follow `references/plan-first.md` — propose what you intend to focus on
 
 ## What you produce
 
-- **`outline/structure.md`** — at version 1 for first-run, bumped on subsequent revisions. Contains the framework choice, the act structure table, POV strategy, pacing notes, the numbered Chapter Spine, and a list of open structural questions blocking specific spine slots. See `references/file-schemas.md` § `outline/structure.md` for the full schema.
+- **`outline/structure.md`** — at version 1 for first-run, bumped on subsequent revisions. The app's pre-outline header lines; a leading `## Structure Notes` section (framework choice, act structure table, POV strategy, pacing notes, open structural questions); then the chapter spine, one block per chapter with `**Status:**`, `**POV:**`, `**Act:**` and a 60–100 word entry. The exact format, and the parser rules that keep the app able to read it, are in `references/file-schemas.md` § `outline/structure.md`.
 - **`outline/_index.md`** — the outline view (chapter × stage matrix), seeded from the Chapter Spine. Every chapter row appears with all stage cells (`Outline`, `Blueprint`, `Prose`, `Notes`) set to `—` until the downstream skills run. See `references/file-schemas.md` § `outline/_index.md`.
 - Updates to `decisions.md` — every structural commitment that wasn't already a logged decision gets captured (e.g., *"D-031: Save the Cat as the structural framework"*; *"D-032: 40-chapter target, three-act split 10/20/10"*).
 - Updates to `questions.md` — any structural gaps that surface during the conversation get logged as critical/important questions (e.g., *"Q-024: Does the midpoint shift fall in ch 18 or ch 20?"*).
@@ -33,7 +33,7 @@ The natural entry points:
 Decline (or push back) when:
 
 - **Treatment is thin or unstable.** If the treatment has more than 3 `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT]` markers that affect structure (act break locations, midpoint mechanism, climax shape), suggest a brainstorming session to resolve those first. The spine you'd commit to is built on sand.
-- **Primer Section 3 (Structural Framework) hasn't been populated.** Run `treatment-update` first — the Treatment Word Budget table in Section 3 is what calibrates per-chapter density.
+- **Primer Section 3 (Structural Framework) hasn't been populated.** Run `treatment-update` first — the act structure and turning points in Section 3 are what the spine maps onto.
 - **Major bios for POV characters don't exist.** A multi-POV chapter assignment needs to know who carries each chapter's voice. Without bios for POV holders, the spine is guessing.
 
 Surface those preconditions in your plan-first proposal, not as a refusal — *"Before we commit to a chapter structure, I'd want the midpoint shift question resolved (Q-014 in the treatment). Want to brainstorm Q-014 first and then come back to this, or push through with the midpoint marked as TBD in the spine?"*
@@ -48,9 +48,9 @@ Load:
 - `treatment.md` (full — every scene, every act header, every marker)
 - `manifest.md` (full)
 - All major-tier character bios (full — POV holders especially)
-- `decisions.md` — full read, focused on structural decisions (`decision_type: structure` or `plot`)
-- `questions.md` — open structural questions (`category: structure` or `plot`)
-- `state.md` (full)
+- `decisions.md` — full read, focused on structural decisions (type `structure` or `plot`)
+- `questions.md` — open structural questions (category `Story Structure`, `Plot`, or `Pacing`)
+- `state.md` (full), and `target_word_count` from `.storystormer/config.json` (mirrored in `state.md`; unset means the project type's default)
 - `.storystormer/genre-reference.md` if it exists — genre obligatory scenes affect spine shape
 - Existing `outline/structure.md` if revising
 
@@ -60,7 +60,7 @@ Load:
 
 Before proposing anything, check what the **primer Section 3** commits to. If it names a framework (*"This novel uses Save the Cat's 15-beat structure"*), that is the binding choice — preserve it. If it hedges (*"consistent with Save the Cat's pattern"*), it's available to commit to but not yet binding. If it names no framework, the conversation will pick one.
 
-If `decisions.md` contains a decision that locks the framework (e.g., a `voice` or `structure` decision saying *"Truby's 22 blocks because the protagonist's moral weakness drives plot"*), that supersedes the primer's hedge.
+If `decisions.md` contains a decision that locks the framework (e.g., a `structure` or `theme` decision saying *"Truby's 22 blocks because the protagonist's moral weakness drives plot"*), that supersedes the primer's hedge.
 
 The framework choice is not yours to make unilaterally — it's the user's call, informed by your read of which framework the materials *want*.
 
@@ -71,8 +71,8 @@ The framework choice is not yours to make unilaterally — it's the user's call,
 > - **Read** (substantive mode): I'll full-read `primer.md`, `treatment.md` (~6,800w), `manifest.md`, the 4 major bios, and the 3 unresolved structural questions in `questions.md` — then quote at least one passage from each in my next response.
 > - **Frame the framework choice**: Primer Section 3 says *"consistent with Save the Cat's 15-beat pattern"* (hedged). The treatment's act structure mostly maps onto that, but the midpoint shift in Act 2 reads more like a Truby moral-argument inversion than a Save the Cat false-victory. I'll lay out three options — Save the Cat (lock the hedge), Truby 22 (reframe what the treatment is doing), or a hybrid spine — and you pick.
 > - **Talk through the act breaks**: The treatment's *## Act One: The Impossible Threat* ends after the Walsh assassination scene. Does that map to ch 10 or ch 12? Discussion.
-> - **Talk through chapter count and per-chapter density**: Primer Section 3 has Treatment Word Budget for a 120,000-word novel; that implies 40 chapters at ~500w treatment per chapter. We'll confirm that or recalibrate.
-> - **Build the Chapter Spine**: I'll propose a numbered list (40 entries, one line each). We iterate on it together — you can rewrite any line, reorder, merge, or split.
+> - **Talk through chapter count and act budgets**: the target is 120,000 words, so the default 25/50/25 split gives the acts 30,000 / 60,000 / 30,000, and 40 chapters puts them near 3,000 words each. We'll confirm that or recalibrate.
+> - **Build the Chapter Spine**: I'll propose 40 chapter blocks (title, POV, act, a short entry each). We iterate on them together — you can rewrite any entry, reorder, merge, or split.
 > - **Capture decisions and questions**: Every structural commitment that lands gets logged to `decisions.md` (typically 5–8 entries from a first-run session). Anything that doesn't resolve becomes a `Q-###` in `questions.md`.
 > - **Write the files**: `outline/structure.md` v1 + `outline/_index.md` stub. State.md updated. Snapshot if revising.
 >
@@ -114,17 +114,15 @@ The treatment has act headers (`## Act One`, `## Act Two`, `## Act Three`, or wh
 
 - **Where do the act breaks fall on the chapter scale?** The treatment's `## Act One: The Impossible Threat` might span what becomes chapters 1–10, or 1–8, or 1–12. The user picks. Default to the framework's canonical proportions (Save the Cat is 25/50/25 by page count; that maps to 25/50/25 by chapter count for evenly-paced novels).
 - **What's in each act's beat anchors?** Save the Cat's *Fun and Games* is chapters ~11–17 in a 40-chapter novel; *Bad Guys Close In* is ~17–23; *All Is Lost* lands at ~30. Surface those positions; let the user adjust.
-- **Are there sub-act divisions?** Many novels divide Act 2 into 2A and 2B (before/after midpoint). This affects the spine structure and the act table.
+- **Are there sub-act divisions?** Many novels divide Act 2 into halves before and after the midpoint. Record the halves in the act table's Beat Anchors; the act itself keeps one number (`**Act:** 2 — Fun and Games`), because the app reads `2A` as a title with no act. If the author wants the halves to be real acts, number them as acts (a four-act book).
 
-Each landed commitment becomes a row in the Act Structure table in `structure.md`, and ideally a decision in `decisions.md`.
+Each landed commitment becomes a row in the Act Structure table in `structure.md`'s Structure Notes, and ideally a decision in `decisions.md`.
 
 ### 7. The chapter count conversation
 
-The primer's Treatment Word Budget table gives you the answer most of the time: `target chapter count` is in the per-chapter density row. If the primer says ~500w treatment per chapter for a 120,000-word novel, that's 40 chapters.
+Compute the budgets from `target_word_count`, per `references/file-schemas.md` § Target word count and the derived budgets: each act's share of the book (25/50/25 for three acts by default, evenly for other act counts, or the weights primer §3 states), and a starting chapter count from the project type's default (40 for a novel). A 120,000-word novel in 40 chapters runs ~3,000 words a chapter, with ~500 words of treatment behind each.
 
-Surface this calibration to the user. If they want to deviate — *"40 feels right but I want 32 longer chapters"* — recalculate per-chapter density (120,000 / 32 = 3,750w per chapter, treatment density 625w per chapter) and confirm it's still in the "long literary novel" range rather than the "short genre novel" range.
-
-If the primer doesn't have a Treatment Word Budget table, run `treatment-update` first — the primer's Section 3 has to crystallize before chapter count is meaningful.
+Surface this calibration to the user. If they want to deviate — *"40 feels right but I want 32 longer chapters"* — recalculate (120,000 / 32 = 3,750w per chapter, treatment density 625w per chapter) and confirm it's still in the "long literary novel" range rather than the "short genre novel" range. If they change the book's length itself, update `target_word_count` in `.storystormer/config.json` and `state.md` and log it as a `structure` decision. The act table's Target Words column carries each act's share.
 
 ### 8. The POV strategy conversation
 
@@ -140,13 +138,19 @@ For ensemble casts (4+ POV characters) or unusual POV strategies (observer prota
 
 ### 9. Building the Chapter Spine
 
-This is the load-bearing step. You produce a numbered list — one line per chapter slot — that the user iterates on with you.
+This is the load-bearing step. You produce the chapter spine, one short block per chapter slot, that the user iterates on with you.
 
-Each spine entry is **a single sentence** plus optional POV tag:
+Each spine entry is a block in the app's pre-outline format: the heading, three metadata lines, and a 60–100 word entry (two to four sentences on what happens and what changes):
 
 ```
-17. **The Locket** — Marlowe finds her father's locket in the audit box and recognizes the engraving from Voss's office. POV: Marlowe.
+### Chapter 17: The Locket
+**Status:** new
+**POV:** Marlowe Reyes
+**Act:** 2 — Fun and Games
+Marlowe finds her father's locket in the audit box and recognizes the engraving from Voss's office. … (Payoff ← Ch 2)
 ```
+
+`Status` is `new` for every chapter on a first write. On a revision, chapters that already have an outline or prose are `existing (outlined)` or `existing (drafted)` with a one- or two-sentence entry drawn from what's written, and `re-outline` marks only the chapters the author asks to have redone (see `references/file-schemas.md` § `outline/structure.md`).
 
 Build the spine by walking through the treatment chronologically and mapping its scenes onto chapter slots:
 
@@ -155,9 +159,9 @@ Build the spine by walking through the treatment chronologically and mapping its
 - A long set-piece scene that the treatment covers in 1,500w → could span two chapters; ask the user.
 - A treatment marker (`[NEEDS DEVELOPMENT: …]`) that falls between scenes → flag as an open spine slot, the user decides whether it gets its own chapter or rides along with a neighbor.
 
-Show the spine in batches — Act 1 first (chapters 1–10), then Act 2A, etc. — and let the user react before moving to the next batch. Long unbroken spines are hard to react to; act-sized batches give natural pause points.
+Show the spine in batches — Act 1 first (chapters 1–10), then the first half of Act 2, etc. — and let the user react before moving to the next batch. Long unbroken spines are hard to react to; act-sized batches give natural pause points.
 
-**Spine entries are creative-titled, not just numbered.** *"Ch 17 — The Locket"* is better than *"Ch 17 — Midpoint."* The title is a mnemonic for the chapter's identity. Pull title language from the treatment's scene headings where possible; invent only when the treatment's heading doesn't fit a single chapter.
+**Spine entries are creative-titled, not just numbered.** *"Chapter 17: The Locket"* is better than *"Chapter 17: Midpoint."* The title is a mnemonic for the chapter's identity. Pull title language from the treatment's scene headings where possible; invent only when the treatment's heading doesn't fit a single chapter.
 
 **Use existing markers.** If the treatment has `[OPEN: Q-019]` on a scene, propagate that marker to the corresponding spine entry. If a spine slot has no treatment source (a chapter the user wants to invent at the outline level), insert `[NEEDS DEVELOPMENT: source]`.
 
@@ -168,11 +172,11 @@ As the conversation lands commitments, capture them:
 - Framework choice → `structure` decision.
 - Chapter count → `structure` decision (or `plot` if the user is choosing a non-default count).
 - Act break locations → `structure` decisions.
-- Sub-act divisions (2A / 2B) → `structure` decision.
-- POV strategy → `voice` decision.
+- Sub-act divisions (the two halves of Act 2) → `structure` decision.
+- POV strategy → `theme` decision (the app has no `voice` type).
 - Specific spine slot commitments that aren't already in the treatment (a chapter the user is inventing at the outline level) → `plot` decision.
 
-If a question surfaces that you can't resolve in the session — *"Does the midpoint shift land at ch 18 or ch 20?"* — log it as a `Q-###` in `questions.md` with `category: structure` and `priority: critical` (blocks chapter outlining for the affected range).
+If a question surfaces that you can't resolve in the session — *"Does the midpoint shift land at ch 18 or ch 20?"* — log it as a `Q-###` in `questions.md` with category `Story Structure`, priority `critical`, a 3–7 word title, and `Source: plugin` (blocks chapter outlining for the affected range).
 
 Lean toward capture. The structural decisions are load-bearing for everything downstream; a missed log here causes outline-to-prose drift later.
 
@@ -181,7 +185,7 @@ Lean toward capture. The structural decisions are load-bearing for everything do
 After the user approves the spine:
 
 - Snapshot any existing `outline/structure.md` to `.storystormer/history/<timestamp>-pre-outline/`.
-- Write `outline/structure.md` v1 (or bumped version) with all five sections per the schema.
+- Write `outline/structure.md` v1 (or bumped version) per the schema: header lines, `## Structure Notes` (Framework Choice, Act Structure, POV Strategy, Pacing Notes, Open Structural Questions) before the first chapter block, then every chapter block in order with no gaps. No `### Chapter …` heading inside the Structure Notes, and no `##` heading between chapter blocks: the app's parser reads either as the end of, or an error in, the spine.
 - Write `outline/_index.md` — the chapter × stage matrix, organized by act, every chapter row with all stage cells `—` (no chapter content exists yet).
 - Mark consumed decisions with `Integrated into structure: yes (<date>)`. (Add this line to entries even if you didn't add it to the canonical schema — it's a parallel to `Integrated into treatment` and useful for traceability.)
 - Update `state.md`:
@@ -193,7 +197,7 @@ After the user approves the spine:
 
 ### 12. Report
 
-> Pre-outline session complete. `outline/structure.md` v1 written with the Save the Cat framework, 40-chapter target, and 10/12/8/10 act split. Spine captured for all 40 chapters; 3 slots carry `[OPEN: Q-024]` (the Act 2 midpoint location), and 1 slot carries `[NEEDS DEVELOPMENT: source]` for the Act 3 reveal mechanism. 6 structural decisions logged (D-031 through D-036). Recommended next step: `outline-chapters` for Act 1, or resolve Q-024 in a brainstorm-session first if the midpoint position needs to be locked before we outline Act 2.
+> Pre-outline session complete. `outline/structure.md` v1 written with the Save the Cat framework, 40-chapter target, and a 10/20/10 act split (Act 2's halves at the ch 18 midpoint). Spine captured for all 40 chapters; 3 slots carry `[OPEN: Q-024]` (the Act 2 midpoint location), and 1 slot carries `[NEEDS DEVELOPMENT: source]` for the Act 3 reveal mechanism. 6 structural decisions logged (D-031 through D-036). Recommended next step: `outline-chapters` for Act 1, or resolve Q-024 in a brainstorm-session first if the midpoint position needs to be locked before we outline Act 2.
 
 ## Reading discipline
 
@@ -206,7 +210,7 @@ If you find yourself proposing a spine entry that has no treatment source, no de
 This session typically produces 5–8 decisions. Common categories:
 
 - **D-### · structure** — Framework commitment, act break locations, sub-act divisions, chapter count.
-- **D-### · voice** — POV strategy.
+- **D-### · theme** — POV strategy and narrative voice.
 - **D-### · plot** — Chapter-level inventions that don't have a treatment source.
 
 Log them as you go; don't batch-capture at the end. The plan-first protocol applies even within the session — when the user says *"OK, lock in Save the Cat,"* tell them *"capturing that as D-031"* before moving on.

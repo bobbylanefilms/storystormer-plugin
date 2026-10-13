@@ -9,13 +9,13 @@ You are creating or expanding a character bio. The bio is a *prose document* des
 
 Always follow `references/plan-first.md` — propose the tier and the approach, get confirmation, then write.
 
-The frameworks and bio structure are detailed in `references/frameworks.md` and `references/file-schemas.md`. Read those before drafting; they're the texture you're producing.
+The frameworks are in `references/frameworks.md`; the bio's section structure is in `references/canon-schemas.md` § Character Bio Schemas (the single body contract); the frontmatter is in `references/file-schemas.md` § Character bio files. Read those before drafting; they're the texture you're producing.
 
 ## What you produce
 
-A file at `characters/<slug>.md` following the bio schema (see `references/file-schemas.md`). YAML frontmatter, then a structured body proportional to the tier.
+A file at `characters/<slug>.md`: YAML frontmatter (`name`; `type`, one of the project's People types, by default Protagonist / Antagonist / Major / Supporting / Minor; optional `tags` under the tag rule in `references/file-schemas.md` § Tags on canon entries), then a structured body proportional to the tier.
 
-Three tiers — see `references/frameworks.md` for the framework vocabulary and `references/file-schemas.md` for section structure:
+Three tiers (bio depths, not a frontmatter field; the `type` picks the default depth) — see `references/canon-schemas.md` for the section structure of each:
 
 - **Major** — ~1,400 words standard, up to ~1,900 words extended for POV protagonists, primary antagonists, and characters carrying the thematic load.
 - **Supporting** — ~700 words. Preserves Voice Fingerprint and Lie/Ghost but condenses everything else.
@@ -27,16 +27,16 @@ Three tiers — see `references/frameworks.md` for the framework vocabulary and 
 
 - `treatment.md` — full read. Find every mention of the character. What do they do? Who do they interact with? What's their function in the story?
 - `primer.md` — full read. Are they central to the premise / theme?
-- `manifest.md` — what tier is the character currently logged at? Have they been promoted/demoted?
+- `manifest.md` — which role section is the character logged under, and at what status? Have they been promoted/demoted?
 - `decisions.md` — grep-permitted, but read the relevant decisions in full. Anything about the character's backstory, relationships, or function?
 - Existing bio at `characters/<slug>.md` if there is one (expansion/refresh case).
 - Other character bios (the major characters) — for Voice Fingerprint differentiation (see *Voice well overlap* below).
 
 **Operate in substantive mode** for this read — list the files you plan to consult at the top of your next response, full-read each with the Read tool (beginning to end, no grep), and quote at least one passage from each in your output. See `references/reading-discipline.md` § Substantive mode.
 
-### 2. Pick the tier (and explain it)
+### 2. Pick the type and tier (and explain them)
 
-Apply the criteria from `references/frameworks.md` and `references/file-schemas.md`. Tell the user your read:
+Pick the character's `type` from the project's People types (the story role: Protagonist, Antagonist, Major, Supporting, Minor by default), then the tier it implies, per `references/canon-schemas.md`. Tell the user your read:
 
 > Marlowe is a POV protagonist mentioned in 30+ scenes across the treatment — I'm going to write her at the **Extended Major** tier (~1,700–1,900 words) so the prose agent has full Voice Fingerprint and Inner Voice texture. Her thematic posture on the central game-theory axis will be a load-bearing section.
 >
@@ -73,7 +73,7 @@ The user picks: answer first, or draft first. Both are valid paths.
 
 ### 5. Draft the bio
 
-Use `references/file-schemas.md` for the section structure. Use `references/frameworks.md` for the vocabulary. Lean on the model — the structure tells you what sections to fill; the texture is judgment.
+Use `references/canon-schemas.md` for the section structure. Use `references/frameworks.md` for the vocabulary. Lean on the model — the structure tells you what sections to fill; the texture is judgment.
 
 Key things to nail:
 
@@ -110,7 +110,7 @@ Once approved:
 - Snapshot any existing bio to `.storystormer/history/<timestamp>-character-bio/<slug>.md`.
 - Write the new bio to `characters/<slug>.md`.
 - Update `characters/_index.md` (mirror of manifest's character list, with one-line descriptors).
-- Update `manifest.md` if the tier changed or the character is newly added.
+- Update `manifest.md` if the character is newly added, their role changed, or their manifest status should now read `Canon Asset Created`.
 - Update `state.md → What Exists` to reflect the new/updated bio.
 
 ### 9. Report
@@ -150,7 +150,7 @@ Three behavioral changes in series mode:
 
 1. **Read all relevant books' treatments**, not just the focused book's. To know what Maya does and how she changes, you need book 1's treatment, book 2's treatment, and book 3's treatment — wherever they exist. If a book's treatment doesn't exist yet (e.g., book 3 hasn't been drafted), use whatever is available — `series.md`'s Per-Book Synopses section is the lightest source of book-level arc material when treatments are absent. Also read `series.md` for the character's role in the series arc.
 2. **Add the Quick Reference's `Appears in:` field**. Lists the books the character appears in, e.g., *"Appears in: books 1, 2, 3"* or *"Appears in: book 1"*. For age-progressing characters, also use the form *"Age: 28 (book 1) → 32 (book 3)"*.
-3. **Add the Per-Book Sub-Arcs section** under Story Role & Arc. Each book the character appears in gets a 80–150w paragraph capturing what they do and how they change in that specific book. The overarching Series Arc paragraph (150–250w) captures the across-books trajectory. See `references/series.md` § Character bios in series mode for the exact subsection structure.
+3. **Add the Per-Book Sub-Arcs section** under Story Role & Relationships. Each book the character appears in gets a 80–150w paragraph capturing what they do and how they change in that specific book. The overarching Series Arc paragraph (150–250w) captures the across-books trajectory. See `references/series.md` § Character bios in series mode for the exact subsection structure.
 
 The cross-cast differentiation checks (Voice Well, Inner Voice, Thematic Posture) operate across the **full series cast**, not per book. Two characters who share a Voice Well in different books still produce voice collision when the books are read sequentially.
 
@@ -172,15 +172,15 @@ There's no capture workflow — just know the mechanism:
 ## What this skill does not do
 
 - Worldbuilding entries. Use `worldbuilding-entry` for locations, organizations, magic systems, technology, creatures, cultures, religions, and other non-character elements. **Disambiguation edge case**: if a sapient being functions as a worldbuilding element rather than as a character with an arc — a god, an AI system, a hive mind, a corporate egregore — use `worldbuilding-entry`, not `character-bio`. Reserve `character-bio` for entities the story portrays as individual people with inner lives.
-- Manifest updates beyond reflecting this character's tier. Use `manifest-sync` for a comprehensive refresh.
+- Manifest updates beyond reflecting this character's entry. Use `manifest-sync` for a comprehensive refresh.
 - Treatment updates. If the bio surfaces facts that should be in the treatment, capture them as decisions and let `treatment-update` fold them in.
 - Fork a character into multiple files for different books. One character = one bio file, regardless of how dramatically they evolve. Per-Book Sub-Arcs handle cross-book evolution; the **Revelation Log** (see above) handles chapter-level state changes crudely. Full point-in-time canon snapshots per chapter remain out of POC scope.
 
 ## References
 
 - `references/plan-first.md`
-- `references/file-schemas.md` — bio file layout, frontmatter
-- `references/canon-schemas.md` — per-section word budgets, sub-field guidance, Voice Fingerprint vectors, writing rules, worked example
+- `references/file-schemas.md` — bio frontmatter (`name`, `type`, `tags`), the tag rule
+- `references/canon-schemas.md` — the bio body contract (sections 0–7), per-section word budgets, sub-field guidance, Voice Fingerprint vectors, writing rules, worked example
 - `references/frameworks.md` — McKee, Truby, Egri, Weiland, Enneagram, Voice Fingerprint, Thematic Posture
 - `references/reading-discipline.md` — full-read rules, Zoom Selection
 - `references/subagent-pattern.md` — **read when project is series mode or treatment is large** (per-book character-appearance reads dispatched in parallel)

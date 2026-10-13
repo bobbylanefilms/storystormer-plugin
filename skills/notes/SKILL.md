@@ -1,6 +1,6 @@
 ---
 name: notes
-description: Record what a chapter's prose actually committed — the post-prose stage of the chapter pipeline (`outline → blueprint → prose → notes`). Writes `chapters/chapter-NN/ch<NN>-notes.md` with the as-written synopsis, divergences from the outline, the harvest of concrete particulars the chapter put on the page, accidental canon the prose invented, and a structured end-state block the next chapter's Blueprint inherits. Proposes canon changes and chain closures; writes none without approval. Single-chapter ("take notes on chapter 17," "record what ch 3 committed") and batch ("notes for Act 1," "catch up the notes") modes. Runs on prose at `revising` or `approved` status; warns when run on a first draft. Records; never evaluates.
+description: Record what a chapter's prose actually committed — the post-prose stage of the chapter pipeline (`outline → blueprint → prose → notes`). Writes `chapters/chapter-NN/ch<NN>-notes.md` with the as-written synopsis, divergences from the outline, the harvest of concrete particulars the chapter put on the page, accidental canon the prose invented, and a structured end-state block the next chapter's Blueprint inherits. Proposes canon changes and chain closures; writes none without approval. Single-chapter ("take notes on chapter 17," "record what ch 3 committed") and batch ("notes for Act 1," "catch up the notes") modes. Runs on prose at `revising` or `revised` status; warns when run on a first draft. Records; never evaluates.
 ---
 
 # StoryStormer · Notes
@@ -22,7 +22,7 @@ Four things, and capturing them is the whole job:
 
 ## What you produce
 
-- **`chapters/chapter-NN/ch<NN>-notes.md`** per the schema in `references/file-schemas.md` § Notes: As-Written Synopsis · Divergences from the Outline · Harvest · Accidental Canon · End State · Proposals.
+- **`chapters/chapter-NN/ch<NN>-notes.md`** per the schema in `references/file-schemas.md` § Notes, which is the app's chapter notes document: frontmatter `chapter`, `title`, `prose_draft`, `prose_status` (values quoted by the rule there), then exactly six sections with these headings, in this order: `## As-Written Synopsis`, `## Divergences from the Outline`, `## Harvest`, `## Accidental Canon`, `## End State`, `## Proposals`. The app's notes job writes the same document and its canon-sync finds each section by its exact heading, so never rename, reorder, or add one; an empty section reads `None.`.
 - **Proposals, never writes**, written to the notes file's § Proposals as unchecked items and repeated in the report: Revelation Log lines for state changes the prose established; promotions of accidental canon into a bio or worldbuilding entry; manifest additions for new named elements; **closures of Tier 1 chains** in primer §2 whose payoff this chapter delivered. Same contract as `blueprint`: canon is the author's, and the skill appends only on approval. This is also how chains close; without it, closure is manual and will not happen.
 - **`outline/_index.md`** regenerated so the chapter's **Notes** column reflects the new state; bump `chapters_noted` in its frontmatter.
 - Snapshots of any overwritten notes file to `chapters/chapter-NN/.history/` as `ch<NN>-notes-v<version>-<date>.md`.
@@ -31,24 +31,24 @@ Four things, and capturing them is the whole job:
 ## Preconditions
 
 - **`ch<NN>-prose.md` must exist.** Otherwise refuse and recommend `prose`.
-- **Gate on prose `status`, not on prose existing.** Notes taken from a first draft describe a chapter about to be rewritten, and every revision pass would invalidate them. Run at `revising` or `approved`. If the user asks for notes on a `drafted` chapter, say so, run if they insist, and stamp `prose_status_at_run: drafted` so the re-run is known to be owed.
+- **Gate on prose `status`, not on prose existing.** Notes taken from a first draft describe a chapter about to be rewritten, and every revision pass would invalidate them. Run at `revising` or `revised`. If the user asks for notes on a `drafted` chapter, say so, run if they insist, and say in the report that a re-run is owed once the chapter is revised. (`prose_status` records the app's two stages: `revised` for revised prose, `drafted` otherwise.)
 - **The outline and Blueprint should exist.** Notes diffs intent (outline) against page (prose) and checks plants (Blueprint) against what landed. Missing either, run with what exists and say which section is thinner for it.
-- **Staleness.** If the notes file's `prose_version` is older than the prose's current `version`, the notes are stale; offer to re-run before anything downstream reads them.
+- **Staleness.** If the notes file's `prose_draft` is older than the prose's current `version`, the notes are stale; offer to re-run before anything downstream reads them.
 
 ## What to do
 
 ### 1. Determine the mode
 
 - *"Take notes on chapter 17," "record what ch 3 committed"* → **single-chapter**.
-- *"Notes for Act 1," "catch up the notes," "run notes on everything approved"* → **batch**. Required for projects adopting the stage mid-stream.
-- Ambiguous *"run notes"* → propose a batch over every chapter with prose at `revising`/`approved` and no current notes file, and confirm.
+- *"Notes for Act 1," "catch up the notes," "run notes on everything revised"* → **batch**. Required for projects adopting the stage mid-stream.
+- Ambiguous *"run notes"* → propose a batch over every chapter with prose at `revising`/`revised` and no current notes file, and confirm.
 
 ### 2. Read context
 
 Per chapter, in substantive mode (full reads, never grep; see `references/reading-discipline.md`):
 
 - `ch<NN>-prose.md` (full). The page is the source of truth here.
-- `ch<NN>-outline.md` (full), to diff intent against page. Read its `authorship`: divergence from an author-written outline is more likely deliberate; divergence from an `ai-generated` outline in `ai-generated` prose is more likely drift. That informs the flag; it doesn't decide it.
+- `ch<NN>-outline.md` (full), to diff intent against page. Read its `authorship`: divergence from an author-written outline is more likely deliberate; divergence from an `ai_generated` outline in `ai_generated` prose is more likely drift. That informs the flag; it doesn't decide it.
 - `ch<NN>-blueprint.md` (full), to check what was to be planted and what state it set. Its § 8 Continuity is the list of things to verify landed.
 - The prior chapter's `ch<NN>-notes.md` End State, if it exists, so this chapter's inherited state can be checked against what the prose actually did with it.
 - `primer.md` § 2 Reveal Architecture, to see whether this chapter was a registered plant or payoff chapter.
@@ -58,7 +58,7 @@ This is roughly 12,000 words of input for a compact structured output, so **disp
 
 ### 3. Propose the plan
 
-> Notes for ch 1–6 (all `approved`, none noted yet):
+> Notes for ch 1–6 (all `revised`, none noted yet):
 >
 > - **Read** per chapter: prose, outline, Blueprint, prior notes end-state, primer §2, manifest. One subagent per chapter, parallel.
 > - **Write** six `ch<NN>-notes.md` files.
@@ -67,7 +67,7 @@ This is roughly 12,000 words of input for a compact structured output, so **disp
 
 ### 4. Extract
 
-Each subagent writes the six sections. The discipline per section:
+Each subagent writes the six sections, under the exact headings above. The discipline per section:
 
 - **As-Written Synopsis** (~150–250w): what is on the page, as its author, causal and specific: who did what, what was revealed, how the story's state changed by the last line. Not a teaser, not the outline's intent restated. Downstream consumers (`blueprint`, `prose`, `canon-sync`, `brainstorm-session`) prefer this over the prose frontmatter synopsis when it exists.
 - **Divergences from the Outline**: each place the page departs from the outline, one line each, flagged **deliberate** (the author wrote or revised it, or the change is clearly a choice) or **drift** (the model wandered). When in doubt, flag drift and say so; the author rules.
@@ -107,7 +107,7 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. O
 
 ## References
 
-- `references/file-schemas.md`: § Notes (`ch<NN>-notes.md` schema), § Blueprint, § Prose, `outline/_index.md`, per-chapter `.history/`, primer §2 Reveal Architecture (the chain register)
+- `references/file-schemas.md`: § Notes (`ch<NN>-notes.md` schema: the app's frontmatter keys, quoting rule, and six headings), § Blueprint, § Prose, `outline/_index.md`, per-chapter `.history/`, primer §2 Reveal Architecture (the chain register)
 - `references/canon-schemas.md`: § Revelation Log
 - `references/plan-first.md`, `references/reading-discipline.md`, `references/subagent-pattern.md`
 - `references/series.md`: read when `project_type: series`

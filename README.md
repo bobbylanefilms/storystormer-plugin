@@ -46,21 +46,21 @@ A fully-developed project's folder looks like this (files appear as the correspo
 ```
 my-story/
 ├── state.md                     # living dashboard — what exists, what's next
-├── primer.md                    # story craft dossier (6 sections, ~4,500–5,500w)
+├── primer.md                    # story craft dossier (5 sections, ~4,500w)
 ├── treatment.md                 # full prose treatment of the story
 ├── manifest.md                  # lean inventory of characters & worldbuilding
 ├── decisions.md                 # append-only decision log
 ├── questions.md                 # open questions triaged by priority
 ├── characters/
 │   ├── _index.md                # mirror of the manifest's character list
-│   └── alice.md, bob.md, …      # per-character bios (tiered)
+│   └── alice.md, bob.md, …      # per-character bios (type: Protagonist, Major, …)
 ├── worldbuilding/
-│   ├── locations/, organizations/, objects/, …
+│   ├── locations/, organizations/, magic/, …   # one folder per worldbuilding type
 ├── voice/                       # the author's voice inputs (read by the prose stage)
 │   ├── writing-sample.md        # the author's own non-AI prose — the voice north-star
 │   └── style-guide.md           # craft preferences + anti-patterns (optional)
 ├── outline/                     # book-level spine (the cross-chapter plan)
-│   ├── structure.md             # framework, act table, chapter spine (the contract)
+│   ├── structure.md             # structure notes + chapter spine, in the app's pre-outline format
 │   └── _index.md                # outline view: chapter × stage status matrix
 ├── chapters/                    # one folder per chapter, holding all its artifacts
 │   ├── chapter-01/
@@ -72,7 +72,7 @@ my-story/
 ├── research/
 │   └── 2026-05-11-genre-conventions.md
 └── .storystormer/
-    ├── config.json              # project metadata (genre, current_focus, surfacing_mode)
+    ├── config.json              # project metadata (type, target_word_count, genre, current_focus)
     ├── genre-reference.md       # synthesized genre research (obligatory scenes, tropes, pitfalls)
     └── history/                 # paired snapshots before any treatment/manifest rewrite
 ```
@@ -175,6 +175,16 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.17.0 added over v0.16.1
+
+- **File formats match the StoryStormer web app's**, so a project can move between the two without translation (groundwork for the app's storage backend). Decisions use the app's five types (`plot`, `character`, `worldbuilding`, `structure`, `theme`; the retired `setting`, `mechanics`, `voice`, `genre` map onto them) and questions its seven Title Case categories, a required 3–7 word `Title`, and a `Source`. Bios carry `type:` (a People type: Protagonist, Antagonist, Major, Supporting, Minor by default) instead of `tier:`, with `references/canon-schemas.md` as the one body contract. Worldbuilding folders and `category:` use the app's fourteen type names (`locations/`, `magic/`; `category: Locations`). Bios and entries may carry up to three `tags`.
+- **`outline/structure.md` is the app's pre-outline document**: header lines, a leading `## Structure Notes` section, then `### Chapter N: Title` blocks with `**Status:**`, `**POV:**`, `**Act:**` and a 60–100 word entry. Acts are numbers with an optional title (`2 — Fun and Games`), never `2A`.
+- **Chapter outlines carry the app's five frontmatter keys** (`chapter`, `title`, `pov`, `act`, `summary`) and the app's `authorship` spellings (`author_written`, `ai_generated`, `ai_generated_author_revised`); generated outlines end with `## Synopsis`. Present tense is a recommendation, never a rewrite.
+- **The manifest is the app's Manifest format**: role sections, capped descriptions, a `*Status: …*` ladder, `## Open Questions`, footer counts, and `*Appears in: …*` for series. No file pointers.
+- **Prose** `status` is `drafted | revising | revised` (`approved` retired), with new `pov_type` and `tense` keys in the app's values. **Notes** use the app's chapter-notes frontmatter (`chapter`, `title`, `prose_draft`, `prose_status`) and its six headings verbatim.
+- **Word budgets are computed, not stored.** The primer's Treatment Word Budget table is gone; `target_word_count` in `.storystormer/config.json` (mirrored in `state.md`) drives the treatment budget and the 25/50/25 act split. `project_type` accepts `short_story`. The "six-section primer" wording is fixed (it has five).
+- **Blueprint header** uses the app's labeled lines (`**Chapter:**`, `**Time:**`, `**POV:**`, `**Position:**`, `**Knowledge horizon:**`); the twelve sections were already the app's.
 
 ### What v0.16.0 added over v0.15.0
 

@@ -26,7 +26,7 @@ Event-driven, never calendar-driven:
 
 ## Preconditions
 
-- **Notes exist for the span.** Canon-sync reads `ch<NN>-notes.md`, not prose. Chapters in the span with no notes file, or with notes stale against their prose (`prose_version` behind the prose's `version`), are listed in the plan; recommend `notes` for them first, or proceed on the noted subset and say which chapters were skipped.
+- **Notes exist for the span.** Canon-sync reads `ch<NN>-notes.md`, not prose. Chapters in the span with no notes file, or with notes stale against their prose (`prose_draft` behind the prose's `version`), are listed in the plan; recommend `notes` for them first, or proceed on the noted subset and say which chapters were skipped.
 - **Canon exists.** `characters/`, `worldbuilding/`, `manifest.md`. A project with prose but no canon has nothing to reconcile into; recommend `character-bio` / `worldbuilding-entry` for the cast the harvest reveals.
 
 ## What you produce
@@ -50,7 +50,7 @@ Event-driven, never calendar-driven:
 
 In substantive mode (`references/reading-discipline.md`), full reads:
 
-- Every `ch<NN>-notes.md` in the span: § Proposals, § Accidental Canon, § Divergences, § Harvest, § End State.
+- Every `ch<NN>-notes.md` in the span: § Proposals, § Accidental Canon, § Divergences from the Outline, § Harvest, § End State. Find each by its exact heading; the notes file is the app's chapter notes document (`references/file-schemas.md` § Notes), so notes the app wrote read the same way.
 - Every canon entry any notes file references, in full, including its Revelation Log. **Read the entry, not the line**: drift is only visible against the whole bio.
 - `manifest.md` (full), for what already has an entry and what the harvest says should.
 - `decisions.md`, filtered to prior `canon-sync` rulings and to anything touching the contested facts, so settled conflicts are not re-opened.
@@ -63,7 +63,7 @@ A span of more than three or four chapters, or a cast of more than a handful of 
 
 ### 3. Classify
 
-Five categories accumulate, and they need different handling:
+Five categories accumulate, and they need different handling. They are the app's canon-sync item kinds, by the same names (`accretion`, `contradiction`, `drift`, `promotion`, `obsolescence`):
 
 | Category | What it is | Default handling |
 |---|---|---|
@@ -79,8 +79,8 @@ Five categories accumulate, and they need different handling:
 
 The instinct is *the manuscript wins*. But if the manuscript always wins, an unrevised prose agent's drift becomes canon and model error is laundered into the story bible. So:
 
-- **`author-written` or `ai-generated-author-revised` prose → the manuscript wins by default.** The author made a choice on the page; canon follows.
-- **Unrevised `ai-generated` prose → canon wins by default.** The model deviated. That is a defect, not a decision.
+- **`author_written` or `ai_generated_author_revised` prose → the manuscript wins by default.** The author made a choice on the page; canon follows.
+- **`ai_generated` prose, or prose with no `authorship` → canon wins by default**, and the item becomes a manuscript fix, not a canon edit. The model deviated. That is a defect, not a decision. (Unknown authorship is not protected, the same rule the app's canon-sync applies.)
 
 Defaults are defaults. **Every contradiction is still surfaced**, with the canon line, the page's line (quoted from the prose if wording matters), the default ruling and why, and the author can rule either way. A prior `canon-sync` decision on the same fact is applied without re-litigating and noted as such.
 
@@ -90,7 +90,7 @@ Defaults are defaults. **Every contradiction is still surfaced**, with the canon
 
 Plan first:
 
-> Canon-sync for ch 1–6 (Act 1). All six have current notes; 14 pending proposals across them. I'll full-read the 5 bios and 4 worldbuilding entries the notes touch, plus the manifest and prior canon-sync decisions (none yet). Snapshot the canon set to `.storystormer/history/` before writing anything. Expect roughly: 8 accretions, 2 contradictions (both in `ai-generated` prose, so canon wins by default), 1 drift candidate (Vinnie's register), 2 promotions to route, 1 obsolete line. Findings next, nothing applied until you rule.
+> Canon-sync for ch 1–6 (Act 1). All six have current notes; 14 pending proposals across them. I'll full-read the 5 bios and 4 worldbuilding entries the notes touch, plus the manifest and prior canon-sync decisions (none yet). Snapshot the canon set to `.storystormer/history/` before writing anything. Expect roughly: 8 accretions, 2 contradictions (both in `ai_generated` prose, so canon wins by default), 1 drift candidate (Vinnie's register), 2 promotions to route, 1 obsolete line. Findings next, nothing applied until you rule.
 
 Then the classified findings, one approve-or-rule list:
 
@@ -99,8 +99,8 @@ Then the classified findings, one approve-or-rule list:
 > 2. The Hartley property · mudroom floor is tile, cold underfoot; found objects go there. (notes ch 1, ch 4)
 >
 > **Contradiction (ruling needed)**
-> 3. `vinnie.md` says he gave up cigarettes fifteen years ago. Ch 5 prose (`ai-generated`, unrevised) has him lighting one. **Default: canon wins.** Fix list: ch 5, the grave-edge beat, remove the cigarette or move it to Tommy.
-> 4. `burial-site.md` places the grave fifty yards below the rise. Ch 1 prose (`author-written`) has it at thirty. **Default: manuscript wins.** Canon edit: `burial-site.md` → thirty yards; invalidates ch 1 and ch 3 Blueprints.
+> 3. `vinnie.md` says he gave up cigarettes fifteen years ago. Ch 5 prose (`ai_generated`, unrevised) has him lighting one. **Default: canon wins.** Fix list: ch 5, the grave-edge beat, remove the cigarette or move it to Tommy.
+> 4. `burial-site.md` places the grave fifty yards below the rise. Ch 1 prose (`author_written`) has it at thirty. **Default: manuscript wins.** Canon edit: `burial-site.md` → thirty yards; invalidates ch 1 and ch 3 Blueprints.
 >
 > **Drift (you rule)**
 > 5. `vinnie.md`: never says *why*, explains how. Across ch 1, 3, 5 he gives a reason four times. Either the bio loosens or those lines tighten.

@@ -21,9 +21,9 @@ Load `decisions.md` so you know the next ID. (If it doesn't exist yet, start at 
 
 Follow the schema in `references/file-schemas.md`. Fields:
 
-- **ID** — next sequential, zero-padded (`D-019`).
+- **ID** — next sequential, zero-padded (`D-019`). A local display number; the app keeps its own id.
 - **Date** — today (ISO format `YYYY-MM-DD`).
-- **Category** — one of: `character`, `plot`, `theme`, `setting`, `structure`, `voice`, `genre`, `mechanics`, `worldbuilding`.
+- **Type** — one of the app's five: `plot`, `character`, `worldbuilding`, `structure`, `theme`. Setting and speculative-mechanism rules are `worldbuilding`; voice, POV, tone, and genre choices are `theme` (`references/file-schemas.md` § `decisions.md` maps the retired types).
 - **Topic** — short noun phrase. *"Marlowe's relationship to Voss"*, *"the time loop's rules"*.
 - **Summary** — one sentence. The decision in its most compressed form. *"Marlowe and Voss are estranged siblings, not strangers."*
 - **Details** — 1–3 paragraphs of context. The *why* and the *texture*. What this means for character, plot, theme. Anything a future read should know to apply this decision correctly.
@@ -51,6 +51,8 @@ If the user adjusts wording, fold in the changes. If they want details expanded,
 Append the entry to the end of `decisions.md`. Bump `state.md → What Exists → Decisions` count and adjust `unintegrated decisions` count.
 
 ### 5. Update related questions
+
+If the conversation surfaced a new open question rather than a decision, log it in `questions.md` per its schema (a 3–7 word `Title`, one of the seven Title Case categories, `Source: plugin`).
 
 If this decision resolves a question in `questions.md`:
 

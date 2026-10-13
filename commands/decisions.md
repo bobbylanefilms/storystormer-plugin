@@ -11,7 +11,7 @@ Operate on `decisions.md`. The command takes optional arguments to control behav
 
 ### Default — list recent decisions
 
-If invoked without arguments: show the 10 most recent decisions in `decisions.md`, with their ID, date, category, summary, and integration status. Short, scannable.
+If invoked without arguments: show the 10 most recent decisions in `decisions.md`, with their ID, date, type, summary, and integration status. Short, scannable.
 
 Also show summary counts at the top:
 - Total decisions.
@@ -22,9 +22,9 @@ Also show summary counts at the top:
 
 Invoke the `decision-capture` skill. The user can also just say *"capture a decision: …"* in chat and `decision-capture` will load on its own.
 
-### `/storystormer:decisions filter [category]`
+### `/storystormer:decisions filter [type]`
 
-List all decisions matching a category (`character`, `plot`, `theme`, `setting`, `structure`, `voice`, `genre`, `mechanics`, `worldbuilding`). Recent first.
+List all decisions matching a type (`plot`, `character`, `worldbuilding`, `structure`, `theme`). Recent first. Older entries with a retired type count under the type it maps to (`setting` and `mechanics` → `worldbuilding`, `voice` and `genre` → `theme`).
 
 ### `/storystormer:decisions show D-019`
 

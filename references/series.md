@@ -119,6 +119,8 @@ In series mode, every decision and every question carries a `scope` field. Value
 - `series` — applies to the series arc as a whole, or to more than one book.
 - `book-<slug>` — applies to one specific book.
 
+In the StoryStormer app the same scope is the record's novel: `book-<slug>` is the novel that book is, and `series` is a record with no novel (series-wide).
+
 Examples:
 
 ```markdown
@@ -167,9 +169,9 @@ One bio per character. The bio reflects the character's **full series arc** with
 The character bio schema gets one additional section in series mode:
 
 ```markdown
-## Story Role & Arc
+## Story Role & Relationships
 
-[Standalone arc section — written for the whole series.]
+[Section 7 of the bio schema (`references/canon-schemas.md`), written for the whole series.]
 
 ### Series Arc
 [~150–250w on the character's full arc across all books — where they start in book 1, what they become by the end of book 3.]
@@ -202,19 +204,34 @@ The web app's "canon states" concept (point-in-time bio snapshots) is the deeper
 
 ## Manifest in series mode
 
-The manifest is shared. Each entry gets an `Appears in:` field:
+The manifest is shared. Every entry, characters and worldbuilding alike, gets an `*Appears in: …*` line directly under its Status line, naming books by their number in the series' `books` list (the app's Manifest format; see `references/file-schemas.md` § `manifest.md`):
 
 ```markdown
 ## Characters
 
-### Major
-- **Maya Vance** (`characters/maya.md`) — Congressional staffer; protagonist of all three books. *Appears in: books 1, 2, 3*
-- **Senator Vance** (`characters/senator-vance.md`) — Maya's father; antagonist of book 1, dead by book 2. *Appears in: book 1*
-- **Reyes** (`characters/reyes.md`) — FBI agent; surfaces in book 2, becomes major in book 3. *Appears in: books 2, 3*
+### Major Characters
 
-### Supporting
-- **Hartwell** (`characters/hartwell.md`) — Senator Vance's chief of staff. *Appears in: books 1, 2*
+**Maya Vance** — Protagonist / Congressional Staffer
+Hill staffer who learns her father's office brokered the deal she is investigating; wants the truth out, fears what it costs him.
+*Status: Canon Asset Created*
+*Appears in: books 1, 2, 3*
+
+**Senator Vance** — Antagonist
+Maya's father; protects the deal at any cost, dead by book 2.
+*Status: Canon Asset Created*
+*Appears in: book 1*
+
+---
+
+### Supporting Characters
+
+**Dale Hartwell** — Chief of Staff
+Senator Vance's fixer; outlives his boss.
+*Status: Partially Developed*
+*Appears in: books 1, 2*
 ```
+
+Keep an entry's existing books and add to them; never drop a book on the strength of one book's treatment alone.
 
 When `manifest-sync` runs in series mode, it cross-references each character's appearances against the treatments of all books to verify the `Appears in:` field is correct.
 

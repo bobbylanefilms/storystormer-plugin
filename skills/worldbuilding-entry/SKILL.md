@@ -9,11 +9,11 @@ You are creating or expanding a worldbuilding entry. Like character bios, worldb
 
 Always follow `references/plan-first.md` — propose the format and category, get confirmation, then write.
 
-The category vocabulary and tier framework are in `references/frameworks.md` § Worldbuilding. The detailed section schemas, length targets, and writing rules are in `references/canon-schemas.md` § Worldbuilding Entry Schemas. Read those before drafting.
+The worldbuilding types and tier framework are in `references/frameworks.md` § Worldbuilding. The detailed section schemas, length targets, and writing rules are in `references/canon-schemas.md` § Worldbuilding Entry Schemas. Read those before drafting.
 
 ## What you produce
 
-A file at `worldbuilding/<category>/<slug>.md` following the appropriate schema. YAML frontmatter (see `references/file-schemas.md`), then a structured body matching either Reference Note or Full Entry format.
+A file at `worldbuilding/<type-slug>/<slug>.md` following the appropriate schema: the folder is the kebab-case slug of the worldbuilding type (`locations/`, `magic/`), and the frontmatter `category` is the type name verbatim (`Locations`, `Magic`), with optional `tags` under the tag rule (see `references/file-schemas.md` § Worldbuilding files and § Tags on canon entries). Then a structured body matching either Reference Note or Full Entry format.
 
 Two formats, decided at Step 2:
 
@@ -26,9 +26,9 @@ Two formats, decided at Step 2:
 
 - `treatment.md` — full read. Find every mention of the element. What does it do? Who interacts with it? What's its function in the story?
 - `primer.md` — full read. Is it central to the premise / setting / mechanism?
-- `manifest.md` — what category is this element in? Is it already logged, or new?
+- `manifest.md` — what type is this element logged under? Is it already logged, or new?
 - `decisions.md` — grep-permitted, but read the relevant decisions in full. Anything about the element's rules, history, or function?
-- Existing entry at `worldbuilding/<category>/<slug>.md` if there is one (expansion / refresh case).
+- Existing entry at `worldbuilding/<type-slug>/<slug>.md` if there is one (expansion / refresh case).
 - Adjacent entries in the same category — for consistency. If you're writing a new organization, scan the other organizations for tone, structure, and naming conventions.
 
 **Operate in substantive mode** for this read — list the files you plan to consult at the top of your next response, full-read each with the Read tool (beginning to end, no grep), and quote at least one passage from each in your output. See `references/reading-discipline.md` § Substantive mode.
@@ -41,9 +41,9 @@ Apply the tier criteria from `references/frameworks.md` § Worldbuilding:
 - **Invented / unique / has rules the model can't infer?** → Full Entry.
 - **Well-known real-world element with no modifications?** → No entry needed. The manifest pointer is enough.
 
-Pick the category from the 14 in `frameworks.md` § Worldbuilding (Organization / Location / Geography / Object / Vehicle / Weapon / Technology / Magic / Creature / Culture / History / Religion / Languages / Lore). When uncertain between Reference Note and Full Entry, default to Full Entry.
+Pick the type from the project's worldbuilding types: the fourteen defaults in `frameworks.md` § Worldbuilding (Organizations / Locations / Geography / Objects / Vehicles / Weapons / Technology / Magic / Creatures / Culture / History / Religion / Languages / Lore), or a type the project already uses. Propose a new type only when none fits, and say so. When uncertain between Reference Note and Full Entry, default to Full Entry.
 
-**Character vs worldbuilding disambiguation**: if a sapient being functions as a worldbuilding element rather than as a character with an arc — a god, an AI system, a hive mind, a corporate egregore — use `worldbuilding-entry` (usually under Creature or Organization). If the story portrays the entity as an individual person with inner life and arc, use `character-bio` instead.
+**Character vs worldbuilding disambiguation**: if a sapient being functions as a worldbuilding element rather than as a character with an arc — a god, an AI system, a hive mind, a corporate egregore — use `worldbuilding-entry` (usually under Creatures or Organizations). If the story portrays the entity as an individual person with inner life and arc, use `character-bio` instead.
 
 Tell the user your read:
 
@@ -113,8 +113,8 @@ If the user wants edits, apply them. Don't argue.
 Once approved:
 
 - Snapshot any existing entry to `.storystormer/history/<timestamp>-worldbuilding-entry/<slug>.md`.
-- Write the new entry to `worldbuilding/<category>/<slug>.md`.
-- Update `manifest.md` if the entry is newly added, or the descriptor needs to change.
+- Write the new entry to `worldbuilding/<type-slug>/<slug>.md`.
+- Update `manifest.md` if the entry is newly added, its description needs to change, or its status should now read `Canon Asset Created`.
 - Update `state.md → What Exists` to reflect the new/updated entry.
 
 ### 9. Report
@@ -135,7 +135,7 @@ See `references/reading-discipline.md` § Substantive mode.
 
 ## Series Mode
 
-If `state.md` shows `project_type: series`, read `references/series.md` first. **Worldbuilding entries are shared across the series** — one entry per element at `<root>/worldbuilding/<category>/<slug>.md`. The Senate is the Senate regardless of which book is using it.
+If `state.md` shows `project_type: series`, read `references/series.md` first. **Worldbuilding entries are shared across the series** — one entry per element at `<root>/worldbuilding/<type-slug>/<slug>.md`. The Senate is the Senate regardless of which book is using it.
 
 One behavioral change in series mode:
 
@@ -176,9 +176,9 @@ No capture workflow — just know the mechanism:
 ## References
 
 - `references/plan-first.md`
-- `references/frameworks.md` § Worldbuilding — tier framework, 14 categories, character-vs-worldbuilding disambiguation
+- `references/frameworks.md` § Worldbuilding — tier framework, the fourteen default worldbuilding types, character-vs-worldbuilding disambiguation
 - `references/canon-schemas.md` § Worldbuilding Entry Schemas — Reference Note + Full Entry sections, length tables, category-specific guidance, writing rules, worked example
-- `references/file-schemas.md` — worldbuilding file layout, frontmatter
+- `references/file-schemas.md` — worldbuilding folder rule, frontmatter (`name`, `category`, `tags`), the tag rule
 - `references/reading-discipline.md` — full-read rules, Zoom Selection
 - `references/series.md` — **read when `project_type: series`** (shared worldbuilding, Status Over the Series pattern)
 - `references/philosophy.md` — what a good Canon asset privileges

@@ -11,6 +11,10 @@ For framework vocabulary (McKee, Truby, Egri, Weiland, Voice Fingerprint, Themat
 
 ## Character Bio Schemas
 
+**This section is the single body contract for character bios.** The Major schema's sections 0–7 below (Quick Reference through Story Role & Relationships) are the headings a bio carries, with the Supporting and Minor schemas as their condensed forms. The frontmatter (`name`, `type`, optional `tags`) is in `file-schemas.md` § Character bio files.
+
+The three schemas are **bio depths**, called tiers below. A bio's depth is not stored: its frontmatter `type` (one of the project's People types; the app's defaults are Protagonist, Antagonist, Major, Supporting, Minor) picks it by default. Protagonist, Antagonist, and Major get the Major schema; Supporting and Minor get theirs; a custom type gets the depth its prominence earns.
+
 Each tier has a target word count, a hard cap, and per-section budgets. The budgets are guidance, not gates — but if you're consistently exceeding them, trim before adding. Density matters as much as coverage; downstream prose agents do better with a sharper bio than with a sprawling one.
 
 ### Major Bio (~1,400w standard; ~1,700–1,900w Extended)
@@ -101,7 +105,7 @@ Bias toward Supporting when ambiguous with Minor — a Minor bio is fast but too
 
 ## Worldbuilding Entry Schemas
 
-Worldbuilding entries come in two formats: a short **Reference Note** for real-world elements with story-specific modifications, and a longer **Full Entry** for invented elements. See `frameworks.md` § Worldbuilding for the tier framework and the 14 categories.
+Worldbuilding entries come in two formats: a short **Reference Note** for real-world elements with story-specific modifications, and a longer **Full Entry** for invented elements. See `frameworks.md` § Worldbuilding for the tier framework and the fourteen default worldbuilding types (the app's names, used below). The frontmatter (`name`, `category`, optional `tags`) and folder rule are in `file-schemas.md` § Worldbuilding files. A project-specific type borrows the guidance of the default type it most resembles.
 
 ### Reference Note (~200–300w)
 
@@ -136,7 +140,7 @@ Add as relevant to the category:
 
 ### Length Guidelines by Category (Full Entries)
 
-| Category | Word Count | Rationale |
+| Type | Word Count | Rationale |
 |---|---|---|
 | Objects (simple, story-significant) | 300–400w | Light touch — just what's unique and how it feels. |
 | Locations (fictional) | 500–700w | Sensory palette, layout, atmosphere, interaction rules. |
@@ -144,9 +148,9 @@ Add as relevant to the category:
 | Vehicles | 400–500w | Sensory details, handling, failure modes. |
 | Weapons (fictional) | 400–500w | Interaction feel, failure modes, sensory signature. |
 | Technology (fictional) | 500–700w | Rules, limitations, sensory experience, social implications. |
-| Magic systems | 700–1000w | Full rules, costs, limitations, sensory experience, failure modes. |
+| Magic (systems) | 700–1000w | Full rules, costs, limitations, sensory experience, failure modes. |
 | Creatures | 400–600w | Physical description, behavior, threat level, interaction patterns. |
-| Organizations / factions | 500–700w | Identity, structure, goals, perception, internal tensions, reach. |
+| Organizations (factions) | 500–700w | Identity, structure, goals, perception, internal tensions, reach. |
 | Culture (customs, daily life) | 400–600w | How it works, who benefits, what's transgressive, daily life impact. |
 | History (eras, events, figures) | 400–600w | Key figures and events, living memory vs distant past, how it's remembered. |
 | Religion | 500–700w | Doctrine, practice, devotion gradient, folk vs official practice. |
@@ -155,17 +159,17 @@ Add as relevant to the category:
 
 ### Category-Specific Guidance
 
-Beyond the universal and section-by-section guidance above, each category has its own texture:
+Beyond the universal and section-by-section guidance above, each type has its own texture:
 
-- **Organization** — make it feel like a living entity with its own personality and internal contradictions. Add public-perception-vs-reality, internal tensions (factions, generational divides, ideological disagreements), and resources/reach.
-- **Location** — sense of place a prose agent can render into immersive scenes. Atmosphere and mood; what regulars see that newcomers miss.
+- **Organizations** — make it feel like a living entity with its own personality and internal contradictions. Add public-perception-vs-reality, internal tensions (factions, generational divides, ideological disagreements), and resources/reach.
+- **Locations** — sense of place a prose agent can render into immersive scenes. Atmosphere and mood; what regulars see that newcomers miss.
 - **Geography** — scale and spatial relationships, climate and seasonal character, natural hazards.
-- **Object** — provenance (where it came from, prior owners) and significance to specific characters.
-- **Vehicle** — handling quirks (what regulars know that first-timers don't), maintenance realities (what breaks, what's expensive).
-- **Weapon** — skill requirements; reload/maintenance rhythm (how it punctuates combat scenes).
+- **Objects** — provenance (where it came from, prior owners) and significance to specific characters.
+- **Vehicles** — handling quirks (what regulars know that first-timers don't), maintenance realities (what breaks, what's expensive).
+- **Weapons** — skill requirements; reload/maintenance rhythm (how it punctuates combat scenes).
 - **Technology** — access and stratification (who has it, who doesn't), user-experience curve.
 - **Magic** — Rules and Mechanics must be *exhaustive*. Who can use it and how it's learned; caster vs bystander experience. Failure Modes carry unusual weight — spell failure and backlash are frequent dramatic beats.
-- **Creature** — threat level and triggers; intelligence level (instinctive animal, cunning predator, sapient being); habitat; cultural significance (revered, feared, hunted, domesticated, mythologized).
+- **Creatures** — threat level and triggers; intelligence level (instinctive animal, cunning predator, sapient being); habitat; cultural significance (revered, feared, hunted, domesticated, mythologized).
 - **Culture** — who benefits and who suffers; what's considered transgressive; how characters navigate it (accept, resist, exploit, subvert).
 - **History** — living memory vs distant past; key figures and events characters invoke; how the past is remembered (honored, suppressed, mythologized, disputed).
 - **Religion** — devotion gradient (devout to lapsed to hostile); ritual and practice; doctrine vs folk practice.

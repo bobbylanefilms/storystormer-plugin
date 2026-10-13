@@ -11,7 +11,7 @@ Operate on `questions.md`. The command takes optional arguments to control behav
 
 ### Default — list open questions
 
-Show all `open` questions grouped by priority — `critical` first, then `important`, then `nice_to_resolve`. For each: ID, category, the question text, the why-it-matters line, possible approaches (compressed), and dependencies (if any).
+Show all `open` questions grouped by priority — `critical` first, then `important`, then `nice_to_resolve`. For each: ID, title, category, the question text, the why-it-matters line, possible approaches (compressed), and dependencies (if any).
 
 Also show counts at the top:
 - Open: N (critical: C, important: I, nice_to_resolve: NR)
@@ -22,12 +22,14 @@ Also show counts at the top:
 
 Walk the user through composing a new question. Fields (see `references/file-schemas.md`):
 
+- **Title** — 3–7 words naming the question (required).
 - **Question** — the actual question.
 - **Why it matters** — what downstream work depends on this.
 - **Priority** — `critical` / `important` / `nice_to_resolve`. Default to `important` if unclear.
-- **Category** — `plot` / `character` / `theme` / `setting` / `structure` / `voice` / `genre` / `mechanics`.
+- **Category** — one of the app's seven: `Story Structure` / `Character` / `Plot` / `Worldbuilding` / `Theme` / `Setting` / `Pacing`.
 - **Possible approaches** — 2–4 plausible answers. (You may propose some based on what's in the materials; the user picks/edits.)
 - **Dependencies** — other questions that need to be answered first, if any.
+- **Source** — `manual` (the user is adding it here).
 
 Show the composed entry; confirm; append to `questions.md` with the next sequential ID (`Q-019`).
 

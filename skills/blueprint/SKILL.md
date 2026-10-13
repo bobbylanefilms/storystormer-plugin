@@ -76,7 +76,7 @@ From the outline's narrative, identify **every character and worldbuilding eleme
 
 > Plan for the ch 17 Blueprint, *The Locket*:
 >
-> - **Seed**: `ch17-outline.md` (1,140w, `author-written`, so its dialogue is yours and gets preserved); ch 16 notes end-state block; spine slot + Chapter Spine; primer filtered to this chapter + §2 for what ch 17 must plant; treatment's *Audit Box* passage only; `voice/style-guide.md` present.
+> - **Seed**: `ch17-outline.md` (1,140w, `author_written`, so its dialogue is yours and gets preserved); ch 16 notes end-state block; spine slot + Chapter Spine; primer filtered to this chapter + §2 for what ch 17 must plant; treatment's *Audit Box* passage only; `voice/style-guide.md` present.
 > - **Surfacing cast**: Marlowe (POV), Voss (Major), Park (Supporting), Doris (Minor) + 3 elements (the locket, Mara's Diner, Voss Industries). Full-read each; carry all frameworks; Revelation Logs ≤ ch 17.
 > - **Write**: `ch17-blueprint.md` v1; index cell → v1; `state.md` updated.
 
@@ -86,7 +86,7 @@ For a **single chapter**, gather and write in the main session unless the canon 
 
 - **Reads** (substantive mode, full reads, no grep): the outline, the carried-state source, the filtered primer harvest and §2, the style guide's existence, and the full canon entry for each surfacing character and element, including each `## Revelation Log`.
 - **Applies the Revelation Log filter** to `chapter ≤ N`, and strips later-chapter references from the text of entries it carries.
-- **Writes** `ch<NN>-blueprint.md` to the spec: twelve sections, synthesized, backward-only.
+- **Writes** `ch<NN>-blueprint.md` to the spec: the header block (`**Chapter:**`, `**Time:**`, `**POV:**`, `**Position:**`, `**Knowledge horizon:**`), then the twelve sections, synthesized, backward-only.
 - **Runs the backward-only scan** over its own output before returning (the grep in the spec's Core Principles), and fixes what it finds.
 - **Returns** a structured summary: cast and tiers, elements, Revelation Log gaps detected, canon-vs-scene conflicts resolved, precondition gaps, and the backward-only scan's remaining flags for the main session to review.
 

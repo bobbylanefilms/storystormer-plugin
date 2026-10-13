@@ -48,14 +48,16 @@ Every skill follows the same rhythm: it reads what matters, **proposes a plan**,
 You don't need to memorize the folder layout (the [README](../README.md) has the full map), but five documents do most of the work, and knowing what each one *is for* makes the whole system click:
 
 - **`decisions.md` — the story's spine.** An append-only log of everything you've settled: "Marlowe and Voss are estranged siblings," "present tense, first person," "the midpoint is the locket reveal." Decisions are never deleted — a changed mind *supersedes* the old entry, so the history of your thinking survives.
-- **`questions.md` — the open-question queue.** Everything unresolved, triaged by priority (critical / important / nice-to-resolve). Brainstorm sessions work through these; decisions resolve them.
+- **`questions.md` — the open-question queue.** Everything unresolved, triaged by priority (critical / important / nice-to-resolve), each with a short title and a category. Brainstorm sessions work through these; decisions resolve them.
 - **`primer.md` — the craft dossier.** A ~4,500-word structured reference: premise and moral argument, reveal architecture, structural framework, tone and writing rules, character dynamics. The 50,000-foot view.
 - **`treatment.md` — the story itself, in prose.** The full narrative treatment, written in propulsive treatment voice. This is the source of truth every downstream stage builds from.
-- **`manifest.md` — the index.** One line per character and worldbuilding element, with a pointer to its file. Lean by design — depth lives in the files it points to.
+- **`manifest.md` — the index.** A short entry per character and worldbuilding element: a capped one-line description and a status (*Mentioned* up to *Canon Asset Created*) that tells you which ones still need a bio or entry. Lean by design — depth lives in the bios and entries.
 
 Plus **`state.md`**, the living dashboard — what exists, what stage you're at, what's next. Say **"status"** (or run `/storystormer:status`) anytime to see it.
 
-All of it is plain markdown. You can open and hand-edit any file at any time — the agent reads your edits like anything else.
+All of it is plain markdown. You can open and hand-edit any file at any time — the agent reads your edits like anything else. The formats match the StoryStormer web app's (the same decision types, question categories, manifest layout, and outline fields), so a project can move between the two.
+
+Decisions carry one of five types (plot, character, worldbuilding, structure, theme) and questions one of seven categories (Story Structure, Character, Plot, Worldbuilding, Theme, Setting, Pacing). Your book's **target word count** lives in `.storystormer/config.json` and `state.md`; every word budget (the treatment's length, each act's share of the book) is computed from it, 25/50/25 across three acts unless you say otherwise.
 
 ---
 
@@ -130,21 +132,23 @@ The treatment says what happens; canon is the depth underneath — who these peo
 
 ### Character bios
 
-Say **"develop Marlowe"** or **"write a bio for the antagonist."** Bios come in three tiers, auto-recommended from story role (you can override):
+Say **"develop Marlowe"** or **"write a bio for the antagonist."** Each bio has a **type**, its story role: Protagonist, Antagonist, Major, Supporting, or Minor by default. The type sets how deep the bio goes, in three tiers, auto-recommended from story role (you can override):
 
 - **Major** (~1,400–1,900 words) — POV characters, antagonists, thematic load-bearers. Full psychological scaffolding: the **Lie** they believe, the **Ghost** that created it, a **Voice Fingerprint** (how they talk — register, reference well, verbal tells, what they'd never say), inner voice for POV characters, and where they stand on the story's thematic question.
 - **Supporting** (~700 words) — keeps the voice and Lie/Ghost, condenses the rest.
 - **Minor** (~350 words) — a voice signature and one defining trait. Deliberately no Lie/Ghost: a fabricated wound is worse than none.
 
+A bio or worldbuilding entry may also carry up to three **tags** that group it with others (`the bureau`, `mentor`, `before the war`); they're optional, and never a name or the entry's own type.
+
 The skill reads your full treatment first, tells you what it can draft from evidence and what it genuinely doesn't know, and asks rather than inventing — you choose whether to answer its questions first or let it draft best-guesses for you to correct. Before finalizing a major bio it also checks the *cast as a set*: two characters who reach for the same analogies, or two POV characters who think in the same register, will blur on the page — collisions get flagged, not silently absorbed.
 
 ### Worldbuilding entries
 
-Say **"write up the Mercer Foundation"** or **"develop the magic system."** Entries live in 14 categories (locations, organizations, objects, magic, creatures, cultures…) in two formats: a compact **Reference Note** for real-world things with story-specific modifications, and a **Full Entry** for anything invented. The sections that matter most are the ones prose leans on hardest — the **Sensory Palette** (what it looks, sounds, smells like — the defense against generic description) and **Consistency Constraints**, stated as hard rules: *"the magazine holds exactly 8 rounds — never describe a ninth shot without a reload."* For magic systems, the bar is: could a new scene be written from the rules alone without inventing mechanics? If not, the rules aren't done.
+Say **"write up the Mercer Foundation"** or **"develop the magic system."** Entries are filed under a type, fourteen by default (Organizations, Locations, Geography, Objects, Vehicles, Weapons, Technology, Magic, Creatures, Culture, History, Religion, Languages, Lore), one folder each (`worldbuilding/locations/`, `worldbuilding/magic/`), in two formats: a compact **Reference Note** for real-world things with story-specific modifications, and a **Full Entry** for anything invented. The sections that matter most are the ones prose leans on hardest — the **Sensory Palette** (what it looks, sounds, smells like — the defense against generic description) and **Consistency Constraints**, stated as hard rules: *"the magazine holds exactly 8 rounds — never describe a ninth shot without a reload."* For magic systems, the bar is: could a new scene be written from the rules alone without inventing mechanics? If not, the rules aren't done.
 
 ### Manifest sync
 
-After a stretch of development or a treatment update that added, renamed, or promoted elements, say **"sync the manifest."** It diffs the inventory against the current treatment and proposes additions, renames, tier promotions ("Alice is in 18 scenes now — functionally major, want to promote her?"), and descriptor updates. Approvals are yours; nothing is auto-removed.
+After a stretch of development or a treatment update that added, renamed, or promoted elements, say **"sync the manifest."** It diffs the inventory against the current treatment and proposes additions, renames, merges, role promotions ("Alice is in 18 scenes now — functionally major, want to promote her?"), status changes, and description updates. Approvals are yours; nothing is auto-removed.
 
 ### One habit for later: the Revelation Log
 
@@ -162,9 +166,9 @@ Say **"let's outline the story"** or **"set up the chapter structure."** This is
 
 1. **The framework.** Which structural vocabulary fits *this* story — Save the Cat's beat sheet, Truby's moral-argument blocks, Seven-Point, a heroine's-journey descent, or a custom shape for material that fights convention? You'll get 2–3 options with the reason each fits and the friction each would create. You pick.
 2. **The act breaks.** Where the treatment's acts fall on the chapter scale, beat anchors (midpoint, all-is-lost), sub-act splits.
-3. **Chapter count.** Calibrated from your target word count — a 120,000-word novel at ~3,000 words a chapter is 40 chapters. Prefer 32 longer ones? It recalculates.
+3. **Chapter count.** Calibrated from your target word count — a 120,000-word novel at ~3,000 words a chapter is 40 chapters, and the default 25/50/25 split gives the acts 30,000 / 60,000 / 30,000 words. Prefer 32 longer ones? It recalculates.
 4. **POV strategy.** Who holds POV, in what distribution, under what rules.
-5. **The Chapter Spine.** The payoff: a numbered list, one line per chapter (*"17. **The Locket** — Marlowe finds her father's locket in the audit box. POV: Marlowe."*), built act by act so you can react in batches. Every entry traces to a treatment scene — where the treatment has a gap, the slot gets an honest marker instead of invented content.
+5. **The Chapter Spine.** The payoff: a short block per chapter (*"Chapter 17: The Locket"*, its status, POV, and act, then 60–100 words on what happens and what changes), built act by act so you can react in batches. Every entry traces to a treatment scene — where the treatment has a gap, the slot gets an honest marker instead of invented content. `structure.md` is written in the web app's pre-outline format, so the app can read the same spine.
 
 If the treatment isn't ready — too many unresolved structural markers, no primer, missing POV bios — the skill says so and recommends what to resolve first, rather than building a spine on sand. Structural commitments get logged as decisions as you go; the session ends with `outline/structure.md` written and `/storystormer:outline` available as a read-only dashboard of outline progress from here on.
 
@@ -176,7 +180,8 @@ A chapter outline is **your prose account of what happens in the chapter**, and 
 
 The outline is the one artifact in the pipeline that carries *your* voice, and the skill is built to protect it:
 
-- **It knows whose outline it is.** Every outline carries an `authorship` field: `author-written`, `ai-generated`, or `ai-generated-author-revised`. If you wrote it, or reworked one the skill wrote, the skill goes into **correction-only mode**: it can fix a fact that contradicts your canon, a thing the POV character couldn't know, or a stale version stamp, and it shows you the full triage with the smallest fix for each item before touching anything. It will not rewrite your sentences, and it will not "improve" your rhythm. Say **"check chapter 1 against canon"** to run that pass on purpose.
+- **It knows whose outline it is.** Every outline carries an `authorship` field: `author_written`, `ai_generated`, or `ai_generated_author_revised`. If you wrote it, or reworked one the skill wrote, the skill goes into **correction-only mode**: it can fix a fact that contradicts your canon, a thing the POV character couldn't know, or a stale version stamp, and it shows you the full triage with the smallest fix for each item before touching anything. It will not rewrite your sentences, and it will not "improve" your rhythm. Say **"check chapter 1 against canon"** to run that pass on purpose.
+- **Generated outlines carry a short `summary` and end with a `## Synopsis`** recording what the chapter does, so later chapters can build on it. Your own outlines get the summary line (in the frontmatter) but no added section unless you ask.
 - **Generated outlines borrow your style.** Before writing a new one, the skill reads your two or three most recent hand-written or hand-revised outlines and matches them — tense, density, how much dialogue you quote, whether you narrate or direct, whether you let yourself editorialize. With no samples yet, it flags the first batch as **style-setting** so you review it as a template.
 - **Everything traces to a source.** The spine, the treatment, a logged decision, a bio. The classic failure of AI outlining is invented scene mechanics — a chase the treatment never called for. Content with no source becomes an inline marker, not a guess.
 - **Batches get cross-checked.** Chapter-to-chapter seams, unplanned POV shifts, and every load-bearing chain registered in the primer's Reveal Architecture — is its plant actually present in the chapter that's supposed to plant it? Problems surface to you rather than getting quietly patched.
@@ -230,9 +235,9 @@ questions.md                 ← everything open, by priority
 primer.md                    ← the craft dossier (built by treatment-update)
 treatment.md                 ← the story in prose (the source of truth)
 manifest.md                  ← one-line index of characters & worldbuilding
-characters/<slug>.md         ← tiered bios
-worldbuilding/<cat>/<slug>.md ← locations, orgs, magic, objects…
-outline/structure.md         ← framework + act table + chapter spine
+characters/<slug>.md         ← bios (type: Protagonist, Major, …)
+worldbuilding/<type>/<slug>.md ← locations/, organizations/, magic/…
+outline/structure.md         ← structure notes + chapter spine
 outline/_index.md            ← chapter × stage progress matrix
 chapters/chapter-NN/…        ← per-chapter outlines (then blueprints, prose)
 .storystormer/history/       ← every superseded version, snapshotted

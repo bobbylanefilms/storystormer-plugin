@@ -151,7 +151,17 @@ For every element: **name the scene trigger** (the moment in the chapter where i
 
 ### Header
 
-Chapter number and title; time of day and narrative date; POV with narrative style; position in the book (what precedes it, or *nothing precedes this chapter*); and a one-line knowledge-horizon statement.
+The Blueprint opens with a header block, then the twelve numbered sections below, in this order and with these headings verbatim; the app's Blueprint prompt (v4) writes the same twelve, so the two produce one document. The header is a block of bold-labeled lines, the same labels the app reads:
+
+```
+**Chapter:** <number>, <chapter title>
+**Time:** <time of day>, <narrative date>
+**POV:** <name>, <narrative style>, <tense>
+**Position:** <what precedes it, by chapter number, or "nothing precedes this chapter">
+**Knowledge horizon:** <one line: the end of this chapter, and nothing after it>
+```
+
+(The app's Blueprints are per scene, so its `**Chapter:**` line adds `· Scene <number>, <scene title>`; a chapter-level Blueprint omits it.)
 
 ### 1. Scene Function
 One line, 3–6 words, standard structure terminology.

@@ -7,6 +7,8 @@ Every file the plugin manages is human-readable markdown with optional YAML fron
 
 This document is the canonical spec. If a skill wants a field that isn't here, add it here first.
 
+**The formats match the StoryStormer web app's.** Enum values, frontmatter keys, and section headings below are the app's own, so a project can move between the plugin and the app without translation. Where a key is plugin-only (version stamps, provenance), the app ignores it. When this file and the app disagree, the app's format wins and this file is the one to fix.
+
 ## `state.md` — living project dashboard
 
 The agent's record of what the project is, where it stands, and what to work on next. Updated after every significant action. The user can read this any time to see the current state, and can hand-edit `Next Recommended Action` if they want to redirect.
@@ -16,7 +18,8 @@ The agent's record of what the project is, where it stands, and what to work on 
 title: [working title]
 genre: [primary]
 genre_secondary: [optional, omit if not applicable]
-project_type: novel | novella | short-story | screenplay | series
+project_type: novel | novella | short_story | screenplay | series
+target_word_count: 120000                   # mirrors .storystormer/config.json; see § Target word count
 logline: [one sentence, or null if not yet written]
 stage: concept | brain-dump | brainstorming | treatment-drafted | treatment-refined | canon-development | outlining | outline-drafted
 initial_maturity: concept | brain-dump | brainstorming | treatment-drafted | treatment-refined  # set once on intake, never changed
@@ -50,11 +53,11 @@ Per-book `state.md` files omit `books` and `current_focus` (those live only on t
 - **Primer** — v3 (2026-05-09), built from D-001..D-018
 - **Treatment** — v7 (2026-05-10), built from D-001..D-018
 - **Manifest** — v2 (2026-05-10), 4 characters, 2 locations, 1 organization
-- **Character bios** — Marlowe (major, ~1700w), Alice (supporting, ~700w), Bob (minor, ~350w)
-- **Worldbuilding** — Voss Industries (organization), the Heights (location)
+- **Character bios** — Marlowe (Protagonist, ~1700w), Alice (Supporting, ~700w), Bob (Minor, ~350w)
+- **Worldbuilding** — Voss Industries (Organizations), the Heights (Locations)
 - **Voice** — sample + style guide (or `README only` — the prose stage has no voice anchor until a sample exists)
 - **Structure** — v1 (2026-05-12), based on Primer v3 + Treatment v7, 40 chapters planned, Save the Cat framework
-- **Chapter outlines** — 12/40 drafted (Act 1 complete, Act 2A through ch 12), based on Structure v1
+- **Chapter outlines** — 12/40 drafted (Act 1 complete, Act 2 through ch 12), based on Structure v1
 - **Prose chapters** — 6/40 written (ch 1–6), stashed in `chapters/` (prose-writing functionality pending)
 - **Decisions** — 18 total, 14 integrated into current treatment
 - **Open questions** — 6 (2 critical, 3 important, 1 nice_to_resolve)
@@ -70,6 +73,7 @@ Per-book `state.md` files omit `books` and `current_focus` (those live only on t
 
 ### Update rules
 
+- The counts in **What Exists** are computed from the files on disk (bios in `characters/`, entries under `worldbuilding/`, chapter files under `chapters/`, entries in `decisions.md` and `questions.md`), never carried forward from the last write. Recount whenever the line is rewritten.
 - Bumping a numbered version (primer / treatment / manifest / bio) → update the corresponding line in **What Exists** and bump `session_count` only if it's a new session.
 - Resolving a question → update **What's Next** to point to the next priority question.
 - Treating the user's `Next Recommended Action` as suggestion — the user can ignore or hand-edit it. Never overwrite a user's hand-edit silently; if it conflicts with what the agent would write, mention the conflict in the next response.
@@ -141,24 +145,9 @@ The central dramatic question the story asks, the premise/moral argument (what t
 
 Act structure with approximate word counts and key turning points per act, POV strategy (which characters get POV, distribution, special rules), timeline structure (compressed present, flashback pattern, parallel timelines), pacing notes (where to accelerate, where to breathe, rhythm patterns), structural mechanisms (e.g., *"the recruitment sequence is the thematic engine"*).
 
-**Required subsection — Treatment Word Budget.** Calculated as:
+Section 3 carries **no word-budget table.** The treatment's budget is computed on each run from `target_word_count` (see § Target word count and the derived budgets), exactly as the app does, so a stored table could only go stale. If the story wants weighted act proportions rather than the defaults, say so in prose here (*"Act 2 runs long: 60% of the book"*); the budget calculation honors it.
 
-- `treatment budget = target novel word count / 6`
-- Standard three-act allocation: Act 1 = 25%, Act 2 = 50%, Act 3 = 25%
-- Per-chapter density = `treatment budget / target chapter count`
-
-Example for a 120,000-word novel with ~40 chapters:
-
-| Segment | Novel Share | Treatment Words |
-|---|---|---|
-| Act 1 (~10 chapters) | 25% | ~5,000 |
-| Act 2 (~20 chapters) | 50% | ~10,000 |
-| Act 3 (~10 chapters) | 25% | ~5,000 |
-| Per-chapter density | — | ~500 |
-
-For non-standard structures (five-act, etc.), distribute equally unless the author has specified weighted proportions. Per-chapter density is a *calibration signal* for the treatment writer, not a chapter assignment.
-
-**Does NOT contain**: beat-by-beat scene breakdowns (treatment), detailed staging deliberations (state conclusions, not the analytical process), full scene choreography (treatment).
+**Does NOT contain**: a word-budget table (computed, not stored), beat-by-beat scene breakdowns (treatment), detailed staging deliberations (state conclusions, not the analytical process), full scene choreography (treatment).
 
 ### Section 4 — Tone, Style & Writing Rules (800–1,200w)
 
@@ -188,7 +177,7 @@ Separate the five sections with `---` horizontal rules for visual clarity.
 |---|---|
 | 1. Story Identity | 800–1,200 |
 | 2. Premise & Moral Argument (incl. Reveal Architecture) | 800–1,400 |
-| 3. Structural Framework (incl. Treatment Word Budget table) | 800–1,200 |
+| 3. Structural Framework | 800–1,200 |
 | 4. Tone, Style & Writing Rules | 800–1,200 |
 | 5. Character Dynamics | 400–800 |
 | **Total** | **~4,500 (hard ceiling 5,000)** |
@@ -243,20 +232,13 @@ Two marker types — both signal pending work and are replaced with developed co
 
 ### Length
 
-The treatment's total length is calibrated by the **Treatment Word Budget** table in primer Section 3 (`Structural Framework`). The formula is `treatment budget = target novel word count / 6`, with per-act allocation and per-chapter density derived from there. Read that table during treatment generation; it governs.
-
-Without a primer to reference (first-run or stub state), fallback by project type:
-
-- Novel: ~5,000–7,000 words (≈ 15–20 pages)
-- Novella: ~1,500–2,500 words (≈ 5–10 pages)
-- Short story: ~600–1,200 words (≈ 2–4 pages)
-- Screenplay: ~5,000 words (≈ 15–20 pages)
+The treatment's total length, its per-act split, and its per-chapter density are computed from `target_word_count`; see § Target word count and the derived budgets. They govern every treatment generation, first-run included (an unset target falls back to the project type's default).
 
 The treatment does **not** duplicate the primer — they're read together when full context is needed. The `primer_version` field records which primer this treatment was built against; a primer refresh that bumps `primer_version` past the treatment's recorded value means the treatment may need an update pass.
 
 ## `manifest.md` — lean inventory
 
-A structural index. Not a deep document — it's a directory of what exists in the story, with one-line descriptors. The deep content lives in the character bios and worldbuilding files.
+A structural index of every character and worldbuilding element, in the app's Manifest format (the Manifest Sync prompt's "Manifest Document Format", v1.4.0). Not a deep document: each entry is a name, a capped description, and a development status. The depth lives in the bios and worldbuilding entries; the manifest carries no file paths.
 
 ```yaml
 ---
@@ -266,35 +248,86 @@ treatment_version: 7
 ---
 ```
 
+The frontmatter is plugin bookkeeping. The body below it is the app's document, verbatim in shape:
+
 ```markdown
+# Manifest — The Pattern Recognition
+
+*Last synced: 2026-05-10 · Source: Treatment Update*
+
+---
+
 ## Characters
 
-### Major
-- **Marlowe Reyes** (`characters/marlowe.md`) — Disgraced forensic accountant; protagonist; sees patterns no one else can.
-- **Voss** (`characters/voss.md`) — Tech-mogul antagonist; built his empire on a fraud Marlowe missed twelve years ago.
+### Major Characters
 
-### Supporting
-- **Alice Chen** (`characters/alice.md`) — Marlowe's former partner at the bureau; ambivalent ally.
-- **Detective Park** (`characters/park.md`) — Local detective on the parallel investigation.
+**Marlowe Reyes** — Protagonist / Disgraced Forensic Accountant
+Forensic accountant who missed Voss's fraud twelve years ago; wants it proven; her own guilt keeps her from asking for help.
+*Status: Canon Asset Created*
 
-### Minor
-- **Doris** (`characters/doris.md`) — The diner regular who passes information.
-- **Hartwell** (`characters/hartwell.md`) — Voss's lawyer; appears once in Act 3.
+---
+
+### Supporting Characters
+
+**Alice Chen** — Ally
+Marlowe's former bureau partner; ambivalent, owes Voss a favor she hasn't disclosed.
+*Status: Partially Developed*
+
+---
+
+### Minor Characters
+
+**Doris Pruitt** — Informant
+Diner regular who trades gossip for pie.
+*Status: Mentioned*
+
+---
 
 ## Worldbuilding
 
 ### Locations
-- **The Heights** (`worldbuilding/locations/the-heights.md`) — Suburb where Voss's compound sits.
-- **Mara's Diner** (`worldbuilding/locations/maras-diner.md`) — Marlowe's information-trading spot.
+
+**The Heights**
+Gated suburb where Voss's compound sits; private security, one road in.
+*Status: Canon Asset Created*
 
 ### Organizations
-- **Voss Industries** (`worldbuilding/organizations/voss-industries.md`) — Public-facing tech firm; private fraud operation underneath.
 
-### Objects
-- **The Locket** (`worldbuilding/objects/the-locket.md`) — Marlowe's only memento from her father; surfaces three times.
+**Voss Industries**
+Public-facing tech firm with a private fraud operation run from its compliance office.
+*Status: Ready for Asset*
+
+---
+
+## Open Questions
+
+1. **Does Alice know about the fraud before Act 2?** Determines whether her betrayal is a choice or a discovery; blocks Alice's bio.
+
+---
+
+*Manifest entries: 5 (3 characters, 2 worldbuilding) · 1 open questions*
 ```
 
-Sections that have no entries can be omitted. Add new sections as needed (Cultures, Technology, Magic Systems, etc.) following the same one-line-descriptor pattern.
+**Entries.** A character is `**Full Name** — Role Label / Brief Archetype or Title` for major characters and `**Full Name** — Role Label` for supporting and minor; a worldbuilding entry is `**Entry Name**` alone. The description is one line under hard word caps: **major ≤30 words** (who they are, what they want, what blocks them), **supporting ≤20**, **minor ≤10**, **worldbuilding ≤20**. Every character is named (no "The CFO"); major and supporting characters carry first and last names.
+
+**Status.** Every entry ends with `*Status: …*`, one of:
+
+| Status | Meaning |
+|---|---|
+| **Mentioned** | Named, minimal detail; not enough for an entry yet |
+| **Partially Developed** | Some details established, gaps remain |
+| **Ready for Asset** | Rich enough, with a clear story function, for a full bio or worldbuilding entry |
+| **Canon Asset Created** | A bio or worldbuilding entry exists (in the plugin: the file exists under `characters/` or `worldbuilding/`) |
+
+The status replaces the old file pointers and "(no bio yet)" notes: "Canon Asset Created" says the file exists, anything lower says it doesn't.
+
+**Sections.** Characters are grouped under `### Major Characters`, `### Supporting Characters`, `### Minor Characters` (the manifest's own roles, not the bios' `type`). Worldbuilding is grouped under `### <Type>` using the app's worldbuilding type names, the fourteen defaults in `references/frameworks.md` § Worldbuilding (Organizations · Locations · Geography · Objects · Vehicles · Weapons · Technology · Magic · Creatures · Culture · History · Religion · Languages · Lore); no categories outside the project's list. Omit any section with no entries, and omit `## Open Questions` when nothing is unresolved.
+
+**Open Questions** are decisions the author hasn't made that block downstream canon or outline work (including uncertain merges and role reclassifications): flagged as a blockquote under the affected entry and collected in the numbered `## Open Questions` list. They are not brainstorming prompts.
+
+**Footer.** The last line counts the document: `*Manifest entries: {total} ({X} characters, {Y} worldbuilding) · {Z} open questions*`.
+
+**Series projects** add one line under every entry's Status line, characters and worldbuilding alike: `*Appears in: books 1, 2*`, naming books by their number in the series' `books` list. Standalone novels never carry it. See `references/series.md`.
 
 ## `decisions.md` — append-only decision log
 
@@ -312,9 +345,19 @@ Entries are never deleted, only superseded. Each decision has a stable ID (`D-00
 **Superseded by**: (only set if a later decision invalidates this one)
 ```
 
+The header's last field is the decision **type**, one of the app's five: `plot`, `character`, `worldbuilding`, `structure`, `theme`. The plugin's older types are retired; read them in existing logs as their mapped type, and write only the five:
+
+| Retired type | Write it as | Note |
+|---|---|---|
+| `setting` | `worldbuilding` | also retired in the app |
+| `mechanics` | `worldbuilding` | the rules of a speculative mechanism are worldbuilding |
+| `voice` | `theme` | voice, POV and tone choices; primer §4 still owns them (see `treatment-update`'s routing) |
+| `genre` | `theme` | |
+
 ID rules:
 - Sequential, zero-padded to 3 digits (`D-001`, `D-099`, `D-100`). Pad to 4 if you cross 1000.
 - Never reused. A superseded decision keeps its ID.
+- `D-###` is the plugin's **local display number**. When a decision moves to the app, the app keeps its own record id; the number survives only as the label in this file.
 
 ### Series-mode additions
 
@@ -346,13 +389,14 @@ For book-scoped decisions, the format is simpler:
 **Integrated into**: book-1 treatment yes (2026-05-24)
 ```
 
-`Scope` values: `series` (affects multiple books or the arc as a whole) or `book-<slug>` (affects one specific book). In standalone-novel projects, the `Scope` field is omitted — every decision is implicitly project-scoped. See `references/series.md` § Scoping decisions and questions.
+`Scope` values: `series` (affects multiple books or the arc as a whole) or `book-<slug>` (affects one specific book). In standalone-novel projects, the `Scope` field is omitted — every decision is implicitly project-scoped. In the app, `book-<slug>` is the record's novel and `series` is a record with no novel. See `references/series.md` § Scoping decisions and questions.
 
 ## `questions.md` — open questions, status mutated in place
 
 ```markdown
-## Q-014 · critical · plot
+## Q-014 · critical · Plot
 
+**Title**: How Marlowe finds the loop
 **Question**: How does Marlowe discover the time loop?
 **Why it matters**: The inciting incident hinges on this. Without clarity, Act 1 beat 3 can't be written and the protagonist's agency in Act 1 is undefined.
 **Possible approaches**:
@@ -360,36 +404,44 @@ For book-scoped decisions, the format is simpler:
   - Deliberate experiment by her mentor in the bureau
   - Inherited device from her father, activated when she opens the locket
 **Dependencies**: Marlowe's background, the rules of the time loop (Q-007), setting constraints
+**Source**: plugin
 **Status**: open | resolved (D-023) | invalidated (Marlowe doesn't actually time-loop, see D-031)
 ```
+
+- **`Title`** is required: 3–7 words naming the question, the label the app lists it under.
+- **`Q-###`** is the plugin's local display number, like `D-###`; the app keeps its own record id.
 
 Priority levels:
 - `critical` — blocks treatment progress; downstream work can't proceed without an answer.
 - `important` — affects multiple downstream elements; should be answered before the next treatment update.
 - `nice_to_resolve` — would improve the story but isn't blocking.
 
-Question categories: `plot`, `character`, `theme`, `setting`, `structure`, `voice`, `genre`, `mechanics` (for stories with a speculative mechanism).
+Question categories are the app's seven, written in Title Case: `Story Structure`, `Character`, `Plot`, `Worldbuilding`, `Theme`, `Setting`, `Pacing`. Older plugin categories map to them: `structure` → `Story Structure`, `voice` and `genre` → `Theme`, `mechanics` → `Worldbuilding`; the rest are the same word capitalized.
+
+`Source` is one of the app's values (`decision_capture`, `treatment_update`, `manual`, `ai_marker`, `question_triage`, `agent_tool`, `ingestion`) or `plugin`. The plugin writes `treatment_update` for a question `treatment-update` logs, `ingestion` for one `storystormer-init` extracts from intake materials, `manual` for one the user dictates through `/storystormer:questions add`, and `plugin` for any other skill (`brainstorm-session`, `pre-outline-session`, `outline-chapters`, and so on). A question that came from the app keeps its value.
 
 In series-mode projects, each question also carries a `Scope` field (`series` or `book-<slug>`), placed below the priority/category header:
 
 ```markdown
-## Q-031 · critical · plot
+## Q-031 · critical · Plot
 
 **Scope**: series
 **Affects books**: book-1 (ending), book-2 (opening)
+**Title**: Maya's choice at book one's end
 **Question**: Does Maya leave Washington at the end of book 1, or stay?
 **Why it matters**: The answer determines book 2's setting — a Washington-bound book 2 means Maya is the insider trying to reform from within; a depart-and-return arc means she comes back in book 2 with outsider's eyes. These produce very different book 2 treatments.
 ...
 ```
 
-In standalone-novel projects, `Scope` is omitted.
+In standalone-novel projects, `Scope` is omitted. As with decisions, `book-<slug>` is the app record's novel and `series` is a record with no novel.
 
 ## Character bio files (`characters/<slug>.md`)
 
 ```yaml
 ---
 name: Marlowe Reyes
-tier: major | supporting | minor
+type: Protagonist
+tags: [POV character, the bureau]
 version: 2
 last_updated: 2026-05-11
 manifest_version: 2
@@ -397,69 +449,49 @@ treatment_version: 7
 ---
 ```
 
-Body follows the StoryStormer canon bio structure. For the framework vocabulary (McKee, Truby, Egri, Weiland, Voice Fingerprint, Thematic Posture) see `references/frameworks.md`. For the per-section word budgets, sub-field guidance, writing rules, and a worked example, see `references/canon-schemas.md` § Character Bio Schemas. Tier targets:
+- **`name`** is the character's display name. The app calls this field `title`; the value is the same.
+- **`type`** is one of the project's **People types**. The app's default list is `Protagonist`, `Antagonist`, `Major`, `Supporting`, `Minor`; a project may rename or extend it (the app's settings can swap in other lists), so use the project's list when it has one. It replaces the retired `tier:` key; read an old `tier: major | supporting | minor` as `type: Major | Supporting | Minor`.
+- **`tags`** is optional; see § Tags on canon entries.
 
-- **Major** — ~1,400 words standard, up to ~1,900 words extended for POV protagonists, primary antagonists, and characters carrying the thematic load.
-- **Supporting** — ~700 words.
-- **Minor** — ~350 words.
+**The body contract lives in one place:** `references/canon-schemas.md` § Character Bio Schemas, sections 0–7 (Quick Reference, Essential Identity, Physical Presence, Voice & Mannerisms, Psychology & Personality, Background & Family, Social Context & Lifestyle, Story Role & Relationships), with the per-section budgets, the Supporting and Minor variants, writing rules, and a worked example. For the framework vocabulary (McKee, Truby, Egri, Weiland, Voice Fingerprint, Thematic Posture) see `references/frameworks.md`.
 
-Structure for major (abbreviated — full version in `references/frameworks.md`):
-
-```markdown
-# Marlowe Reyes
-
-## Quick Reference
-- **Name:** …
-- **Age:** …
-- **Occupation:** …
-- **Story Role:** Protagonist
-- **MBTI:** …
-- **Enneagram:** … (with wing → integration/disintegration)
-- **Clifton Strengths:** …
-- **The Lie:** [one sentence]
-
-## Essential Identity
-[~60w prose]
-
-## Physical Presence
-[~150w including sensory anchors]
-
-## Voice & Mannerisms
-[~250–400w including Voice Fingerprint vectors]
-
-## Psychology & Personality
-[~250–350w, includes Lie/Ghost, and Thematic Posture if the story has one]
-
-## Background & History
-[~200–300w]
-
-## Relationships
-[~150–250w]
-
-## Story Role & Arc
-[~150–250w]
-```
-
-Supporting and minor bios collapse sections proportionally — they preserve Voice Fingerprint and Lie/Ghost but condense everything else.
+**Bio depth is a writing choice, not a field.** `canon-schemas.md` defines three depths: **Major** (~1,400 words standard, up to ~1,900 Extended for POV protagonists, primary antagonists, and characters carrying the thematic load), **Supporting** (~700), **Minor** (~350). By default the type picks the depth: Protagonist, Antagonist, and Major get the Major schema; Supporting and Minor get theirs. A custom type takes the depth its prominence in the story earns. The skills still say "tier" for this depth; it is never written to the frontmatter.
 
 A bio may also carry an optional **`## Revelation Log`** as its final section — a chapter-keyed, append-only list of state changes (injuries, deaths, allegiance shifts, reader-facing reveals) that make the character scene-current at a given chapter. See `references/canon-schemas.md` § Revelation Log. The `blueprint` skill reads it, filtered to `chapter ≤ N`, to fuse current state into a chapter's brief.
 
-## Worldbuilding files (`worldbuilding/<category>/<slug>.md`)
+## Worldbuilding files (`worldbuilding/<type-slug>/<slug>.md`)
 
-Categories follow the 14-category taxonomy in `references/frameworks.md` § Worldbuilding (Organization / Location / Geography / Object / Vehicle / Weapon / Technology / Magic / Creature / Culture / History / Religion / Languages / Lore). Use the plural directory form for each (`locations/`, `organizations/`, `magic-systems/`, etc.). The manifest tracks whatever exists.
+Each entry has a **worldbuilding type** from the project's list. The app's fourteen defaults are in `references/frameworks.md` § Worldbuilding: Organizations, Locations, Geography, Objects, Vehicles, Weapons, Technology, Magic, Creatures, Culture, History, Religion, Languages, Lore. The list is editable per project, so a project may use others.
+
+- **Folder:** the kebab-case slug of the type name: `locations/`, `organizations/`, `magic/`, `languages/`, and for a custom type such as "Star Systems", `star-systems/`. Never an invented plural (`magic-systems/`, `cultures/`).
+- **`category`:** the type name verbatim, as the app spells it (`Locations`, not `location`). The app stores the type in a field of the same name.
 
 ```yaml
 ---
 name: The Heights
-category: location
+category: Locations
+tags: [Voss holdings]
 version: 1
 last_updated: 2026-05-10
 ---
 ```
 
-Body follows one of two formats — **Reference Note** (~200–300w) for real-world elements with story-specific modifications, or **Full Entry** (~300–1,000w depending on category) for invented elements. For section structures, length targets per category, category-specific guidance, and a worked example, see `references/canon-schemas.md` § Worldbuilding Entry Schemas. For the tier framework (Full Canon entry / Reference note / No entry needed) and character-vs-worldbuilding disambiguation, see `references/frameworks.md` § Worldbuilding.
+`name` is the app's `title`, as for bios. `tags` is optional; see § Tags on canon entries.
+
+Body follows one of two formats — **Reference Note** (~200–300w) for real-world elements with story-specific modifications, or **Full Entry** (~300–1,000w depending on type) for invented elements. For section structures, length targets per type, type-specific guidance, and a worked example, see `references/canon-schemas.md` § Worldbuilding Entry Schemas. For the tier framework (Full Canon entry / Reference note / No entry needed) and character-vs-worldbuilding disambiguation, see `references/frameworks.md` § Worldbuilding.
 
 Like character bios, a worldbuilding entry may carry an optional **`## Revelation Log`** as its final section — chapter-keyed state changes for the element (a location damaged in ch 20, a device that gains a new capability in ch 14). Same mechanism and rules as for characters; see `references/canon-schemas.md` § Revelation Log.
+
+## Tags on canon entries
+
+Bios and worldbuilding entries may carry an optional `tags:` list in their frontmatter, under the app's tag rule:
+
+- **Lowercase, with spaces** (`the bureau`, not `The_Bureau` or `the-bureau`). A short all-caps word of two to four letters keeps its capitals (`POV character`, `FBI informant`).
+- **Reuse the project's tags first.** Before inventing one, scan the tags already on bios and entries and take the existing spelling.
+- **At most three per entry**, and only tags that **group more than one entry**: an affiliation (`the bureau`), a story role or archetype (`mentor`), an era (`before the war`), a story status (`dead by act 2`).
+- **Never** the entry's own type (`Protagonist`, `Locations`), a name, a relationship (`Marlowe's sister`), or provenance (`ai generated`, `from intake`).
+
+Tags are optional; no tags is better than a tag that groups nothing. The app normalizes every tag on write in any case.
 
 ## Voice assets (`voice/`)
 
@@ -484,7 +516,7 @@ Chapter content is organized **entity-first**: one folder per chapter (`chapters
 Two layers:
 
 - **Book-level spine** (`outline/`) — the macro plan, shared across all chapters:
-  - **`outline/structure.md`** — the structural commitment: framework choice, act boundaries, the chapter spine (one line per chapter slot).
+  - **`outline/structure.md`** — the structural commitment, in the app's pre-outline format: structure notes (framework, act table, POV, pacing), then the chapter spine, one short block per chapter.
   - **`outline/_index.md`** — the **outline view**: a chapter × stage status matrix, one row per chapter, regenerated as chapters advance. This is the horizontal scan surface.
 - **Per-chapter content** (`chapters/chapter-NN/`) — the micro layer, one folder per chapter:
   - **`ch<NN>-outline.md`** — the author's prose account of what happens in the chapter (typically 500–1,500w per 3,000-word chapter). Frontmatter plus a flowing body; no scaffolding.
@@ -501,6 +533,8 @@ The horizontal scan that *outlining* needs (read every chapter's outline at once
 
 ### `outline/structure.md` — structural commitment
 
+`structure.md` **is the app's pre-outline document**: the same header lines and the same `### Chapter N: Title` blocks the app's Story Architect writes and its pre-outline parser reads, so the file and the app's Pre-Outline asset are one document. The plugin's structural reasoning (framework, act table, POV strategy, pacing, open questions) rides along as a leading `## Structure Notes` section that the app's parser skips.
+
 ```yaml
 ---
 version: 1
@@ -512,45 +546,76 @@ framework: save-the-cat | seven-point | truby-22 | three-act | story-circle | fr
 ---
 ```
 
+The frontmatter is plugin bookkeeping. The body:
+
 ```markdown
-## Framework Choice
+# Pre-Outline: The Pattern Recognition
+
+**Structural Approach:** Save the Cat, fifteen beats over three acts
+**Chapter Count:** 40 chapters (40 new, 0 existing)
+**POV Mode:** single · **POV Characters:** Marlowe Reyes · **Narrative Person:** close third, past tense
+**Generated:** 2026-05-12
+
+---
+
+## Structure Notes
+
+### Framework Choice
 [~150–300w: which framework, *why this story uses it* (drawing from primer Section 3 if it commits to one), and any deviations from the canonical beat positions. If the primer's Structural Framework section already commits to a framework, preserve that choice and explain how the spine implements it; don't second-guess the primer.]
 
-## Act Structure
+### Act Structure
 
 | Act | Chapter Range | Treatment Source | Target Words | Beat Anchors |
 |---|---|---|---|---|
-| 1 | 1–10 | Prologue + Act One | ~25,000 | Opening Image (ch1), Inciting Incident (ch3), Plot Point 1 (ch10) |
-| 2A | 11–22 | Act Two (first half) | ~30,000 | Fun & Games (ch11–17), Midpoint shift (ch18) |
-| 2B | 23–30 | Act Two (second half) | ~20,000 | Bad Guys Close In, All Is Lost (ch30) |
-| 3 | 31–40 | Act Three | ~25,000 | Dark Night (ch31), Break into 3 (ch33), Climax (ch37–39), Final Image (ch40) |
+| 1 — Setup | 1–10 | Prologue + Act One | ~30,000 | Opening Image (ch1), Inciting Incident (ch3), Plot Point 1 (ch10) |
+| 2 — Fun and Games | 11–30 | Act Two | ~60,000 | Fun & Games (ch11–17), Midpoint shift (ch18), Bad Guys Close In (ch19–29), All Is Lost (ch30) |
+| 3 — Resolution | 31–40 | Act Three | ~30,000 | Dark Night (ch31), Break into 3 (ch33), Climax (ch37–39), Final Image (ch40) |
 
-Word counts are the per-act target from primer Section 3's Treatment Word Budget × 6 (treatment-to-novel ratio). Chapter ranges are inclusive on both ends.
+[Target Words come from § Target word count and the derived budgets: the act's share of `target_word_count`. Chapter ranges are inclusive on both ends. A two-half middle act (the old 2A / 2B) is described in Beat Anchors, not given its own act number.]
 
-## POV Strategy
+### POV Strategy
 [~100–200w: who has POV, how often, special rules. If the primer specifies POV strategy, mirror it. Note any chapter-level POV assignments that diverge from the default.]
 
-## Pacing Notes
+### Pacing Notes
 [~100–200w: where the story accelerates, where it breathes, rhythmic patterns. Anchor to specific chapter ranges.]
 
-## Chapter Spine
-
-A one-line concept for each chapter slot. This is the *contract* — when `outline-chapters` writes a chapter's `ch<NN>-outline.md`, it fulfills the concept on this line. Keep each entry to one sentence: what happens in this chapter, plus POV if multi-POV.
-
-1. **The Auditing Room** — Marlowe at the courthouse, late for her own swearing-in; intro to her competence signature and the Heights. POV: Marlowe.
-2. **The First Crack** — A receipt in the audit doesn't reconcile; Marlowe begins the pattern that defines her arc. POV: Marlowe.
-3. **The Body in the River** — Inciting incident: Walsh found dead, the case opens. POV: Detective Park.
-…
-40. **Final Image** — [the closing image that answers the opening].
-
-## Open Structural Questions
-[Tracked questions in `questions.md` that block or affect the spine. Reference by ID. Resolve before generating chapter outlines for the affected range.]
-
+### Open Structural Questions
 - Q-014 unresolved — affects ch3 (inciting incident mechanism) and ch18 (midpoint payoff).
 - Q-019 unresolved — affects all Act 3 chapter outlines.
+
+---
+
+### Chapter 1: The Auditing Room
+**Status:** new
+**POV:** Marlowe Reyes
+**Act:** 1 — Setup
+Marlowe arrives late to her own swearing-in at the county courthouse, and the reader meets her competence signature: she reconciles a vending-machine receipt in her head while the judge waits. She catches the bailiff's watch running four minutes fast and says so. The Heights sits on the ridge above town, and she does not look at it. (Hook)
+
+---
+
+### Chapter 2: The First Crack
+**Status:** new
+**POV:** Marlowe Reyes
+**Act:** 1 — Setup
+…
+
+---
+
+### Chapter 40: Final Image
+…
 ```
 
-The Chapter Spine is the load-bearing element. The pre-outline conversation produces it; chapter outlines hang off it.
+**The chapter blocks are the chapter spine** (skills call each block a *spine slot*). One block per chapter number, ascending, no gaps, each with exactly these lines, in this order:
+
+- **`### Chapter N: Title`** — this exact heading form. The title is a creative mnemonic (*The Locket*, not *Midpoint*).
+- **`**Status:**`** — exactly one of `new`, `existing (outlined)`, `existing (drafted)`, `re-outline`. It records each chapter's state when this document was written: `new` for every chapter on first write; on a revision, `existing (outlined)` for a chapter with an outline file, `existing (drafted)` for one with prose, and `re-outline` only for a chapter the author asked to have re-outlined. `pre-outline-session` sets it on every write; no other skill edits it.
+- **`**POV:**`** — the POV character's name.
+- **`**Act:**`** — the act **number**, optionally followed by a dash and the act's title: `2 — Fun and Games`, or just `2`. The app reads the number and title from this (it also accepts `Act II: Fun and Games` and `Act Two`, which is how the app writes it). Never `2A` or `2B`: those read as a title with no act number.
+- **The entry** — a new or re-outline chapter gets 60–100 words: two to four sentences on what happens and what changes, with optional tags such as `(Foreshadow → Ch 30)`, `(Payoff ← Ch 2)`, `(Hook)`, `(Theme)`, and any `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: …]` marker the slot carries. An existing chapter gets one or two sentences drawn from what is already written.
+
+**Parser rules the plugin must keep** (the app reads this file with them): the `## Structure Notes` section must come **before** the first chapter block, because any `##` heading after the chapters begin ends the chapter list; and no heading inside Structure Notes may start with `### Chapter`, which the parser takes for a malformed chapter block. The app's own optional closing sections (`## Story Architecture Notes`, `## Commentary`) may follow the last block; the plugin doesn't write them, and keeps them if present.
+
+The chapter spine is the load-bearing element. The pre-outline conversation produces it; chapter outlines hang off it.
 
 ### `chapters/chapter-NN/ch<NN>-outline.md` — per-chapter outline
 
@@ -562,34 +627,48 @@ Lives in the chapter's folder, prefixed with the chapter number: `chapters/chapt
 ---
 chapter: 17
 title: The Locket
+pov: Marlowe Reyes
+act: 2 — Fun and Games
+summary: Marlowe finds her father's locket in the audit box and recognizes the engraving from Voss's office.
+authorship: ai_generated        # author_written | ai_generated | ai_generated_author_revised
 version: 1
 last_updated: 2026-05-12
-structure_version: 1
-treatment_version: 8
-primer_version: 4
-pov: Marlowe
-tense: past
-act: 2A
-target_words: null
-authorship: ai-generated        # author-written | ai-generated | ai-generated-author-revised
 word_count: 1140
 source: treatment §Audit Box + D-031
 revision: >-
   free-text note on what changed and why
+structure_version: 1
+treatment_version: 8
+primer_version: 4
 ---
 ```
 
 ```markdown
-# Chapter 17 — The Locket
-
 [the author's prose account, and nothing else]
+
+## Synopsis
+
+[150–250 words, generated outlines only: see below]
 ```
 
-- **`authorship`** drives how `outline-chapters` treats the file. `author-written` and `ai-generated-author-revised` put the skill in **correction-only mode** (facts, POV breaches, stale scaffolding, surfaced sequencing errors; never rhythm, diction, or regeneration). `ai-generated` is freely regenerable. The skill sets `ai-generated-author-revised` when it detects the body changed outside a skill run (compare `word_count` and the body against the last skill-written snapshot in `.history/`) and never downgrades `author-written`.
-- **`word_count`** is the body's count, recorded on every write; it is the cheap half of author-revision detection.
-- **`source`** names what the outline was built from (a treatment scene, a decision, the author).
+**The first five keys are the app's outline contract**, in its order: `chapter` (a whole number), `title`, `pov` (the POV character's name, blank for a book without one), `act` (same form as the structure document's `**Act:**` line: `2 — Fun and Games`, or `2`; never `2A`), and `summary` (one or two sentences: the chapter's core event and turning point). All five are present on every write; `chapter`, `title`, and `summary` must have values. A value containing `: ` or starting with a quote or YAML-special character is wrapped in double quotes; the app strips them on read.
 
-**What the outline does not carry**, because the Blueprint derives it from canon at better resolution: premise blocks, a beat index, setups and payoffs, character notes, dialogue-anchor lists, chapter connections, open-thread sections, craft rules. A heading inside the body is the tell that something is in the wrong file.
+The rest are plugin keys the app ignores:
+
+- **`authorship`** (the app's three values, which the app also stores): `author_written`, `ai_generated`, `ai_generated_author_revised`. It drives how `outline-chapters` treats the file. `author_written` and `ai_generated_author_revised` put the skill in **correction-only mode** (facts, POV breaches, stale scaffolding, surfaced sequencing errors; never rhythm, diction, or regeneration). `ai_generated` is freely regenerable. The skill sets `ai_generated_author_revised` when it detects the body changed outside a skill run (compare `word_count` and the body against the last skill-written snapshot in `.history/`) and never downgrades `author_written`. Older files spell these with hyphens (`author-written`); read them as the same values and write the underscore form.
+- **`version`**, **`last_updated`**: the file's version and date, as on every plugin artifact.
+- **`word_count`** is the body's count (frontmatter and `## Synopsis` excluded), recorded on every write; it is the cheap half of author-revision detection.
+- **`source`** names what the outline was built from (a treatment scene, a decision, the author).
+- **`revision`**: a free-text note on what changed and why.
+- **`structure_version`**, **`treatment_version`**, **`primer_version`**: the provenance stamps `/storystormer:outline` uses to flag stale outlines.
+
+POV type and tense are not outline keys; they live on the prose (`pov_type`, `tense`), as they do on the app's scene.
+
+**Body.** The author's prose account, with no H1 (the title lives in the frontmatter, and the app's outline has none; an H1 already in an author's file is left alone). Present tense is the recommended register for generated outlines, not a rule: an author-written outline in past tense stays in past tense and is never rewritten for tense. The app refuses an outline body under 150 words, so a stub outline is not ready to move to the app.
+
+**`## Synopsis`** is the one heading an outline may carry, and only at the very end. Generated outlines end with it (the app's chapter writer produces the same shape): 150–250 words on the chapter's causal events, reveals, who learns what, and how the story's state has changed by the chapter's end, written as a record for later chapters, not a teaser. It replaces repeating that material in `summary`, which stays one or two sentences. The app splits it off into the chapter's synopsis. An author-written outline gets a synopsis section only if the author asks for one.
+
+**What the outline does not carry**, because the Blueprint derives it from canon at better resolution: premise blocks, a beat index, setups and payoffs, character notes, dialogue-anchor lists, chapter connections, open-thread sections, craft rules. Any heading in the body other than the closing `## Synopsis` is the tell that something is in the wrong file.
 
 ### Markers for unresolved elements
 
@@ -624,7 +703,7 @@ chapters_noted: 0
 ```markdown
 # Outline View
 
-Generated from `outline/structure.md` and the chapter folders under `chapters/`. Each row shows a chapter's spine concept and its status at each pipeline stage. Status cells: `vN` (artifact exists, version N) · `—` (not started) · plus inline `[OPEN: Q-###]` / `[NEEDS DEVELOPMENT]` flags carried up from the artifact body.
+Generated from `outline/structure.md` and the chapter folders under `chapters/`. Act sections follow the chapter blocks' `**Act:**` lines. Each row shows a chapter's spine concept and its status at each pipeline stage. Status cells: `vN` (artifact exists, version N) · `—` (not started) · plus inline `[OPEN: Q-###]` / `[NEEDS DEVELOPMENT]` flags carried up from the artifact body.
 
 ## Act 1: Setup (chapters 1–10)
 
@@ -636,22 +715,19 @@ Generated from `outline/structure.md` and the chapter folders under `chapters/`.
 | … |  |  |  |  |  |
 | 10 | *Plot Point 1: She Commits* | — | — | — | — |
 
-## Act 2A: Fun and Games (chapters 11–22)
+## Act 2: Fun and Games (chapters 11–30)
 
 | Ch | Title / Spine concept | Outline | Blueprint | Prose | Notes |
 |----|------------------------|---------|-----------|-------|-------|
 | 11 | *Surveillance Begins* | [v1](../chapters/chapter-11/ch11-outline.md) | — | — | — |
 | … |  |  |  |  |  |
 
-## Act 2B: Bad Guys Close In (chapters 23–30)
-…
-
 ## Act 3: Resolution (chapters 31–40)
 …
 ```
 
 Each row shows:
-- Chapter number and title (`title` from the chapter's `ch<NN>-outline.md` frontmatter, or the spine concept's bold phrase if no outline exists yet).
+- Chapter number and title (`title` from the chapter's `ch<NN>-outline.md` frontmatter, or the chapter block's heading in `structure.md` if no outline exists yet).
 - A status cell per stage: a versioned link to the artifact if it exists (`[v2](../chapters/chapter-03/ch03-outline.md)`), or `—` if that stage hasn't started.
 - Inline marker flags (`[OPEN: Q-###]` or `[NEEDS DEVELOPMENT]`) in the relevant stage cell when that artifact carries unresolved markers.
 
@@ -700,7 +776,7 @@ manifest_version: 2
 pov: Marlowe
 tense: past
 narrative_style: close third, past tense
-act: 2A
+act: 2 — Fun and Games
 scene_split: false        # true when the Blueprint carries per-scene sections
 outline_words: 1140
 expansion_target: ~2.5–3× the outline
@@ -717,10 +793,11 @@ Body — the twelve sections (full formats in `references/blueprint-spec.md`):
 ```markdown
 # Chapter 17 Blueprint — *The Locket*
 
-**Time:** [time of day / narrative date]
-**POV:** Marlowe — close third, past tense. [Sole POV; no scene split.]
-**Position:** [what precedes it and what it inherits, or *nothing precedes this chapter*]
-**Knowledge horizon:** This chapter. Nothing in this brief reaches past it, and the prose must not either.
+**Chapter:** 17, The Locket
+**Time:** [time of day], [narrative date]
+**POV:** Marlowe Reyes, close third, past tense
+**Position:** [what precedes it, by chapter number, or *nothing precedes this chapter*]
+**Knowledge horizon:** The end of chapter 17, and nothing after it.
 
 ## 1. Scene Function
 ## 2. Story Context
@@ -752,14 +829,16 @@ chapter: 17
 title: The Locket
 version: 1
 last_updated: 2026-05-12
-pov: Marlowe
+pov: Marlowe Reyes
+pov_type: 3rd_limited       # 3rd_limited | 3rd_objective | 3rd_omniscient | 1st_person | 2nd_person
+tense: past                 # past | present | future
 # Provenance — the versions this prose was generated against (staleness detection):
 outline_version: 1
 blueprint_version: 1        # null on the fallback (no-Blueprint) path
 treatment_version: 8
 primer_version: 4
-status: drafted | revising | approved
-authorship: ai-generated     # author-written | ai-generated | ai-generated-author-revised
+status: drafted             # drafted | revising | revised
+authorship: ai_generated     # author_written | ai_generated | ai_generated_author_revised
 word_count: 4127
 synopsis: |
   ~150–250w summary of THIS chapter, written as its author — causal events, the
@@ -771,32 +850,43 @@ synopsis: |
 
 **Body: prose only.** No markdown headers, no frontmatter-style labels, no meta-commentary — just the chapter's fiction, paragraphs separated by single blank lines, scene breaks as a single blank line. (The `synopsis` lives in frontmatter precisely so the body stays pure prose.) See `references/prose-spec.md` § Output rules.
 
-- **`pov`** mirrors the chapter outline's `pov`. The `prose` skill uses it to find the POV-matched prior prose chapter (the voice anchor) and to assert the correct POV mode.
+- **`pov`** mirrors the chapter outline's `pov`: a character's name. The `prose` skill uses it to find the POV-matched prior prose chapter (the voice anchor).
+- **`pov_type`** and **`tense`** are the app's scene enums, verbatim: `pov_type` is `3rd_limited`, `3rd_objective`, `3rd_omniscient`, `1st_person`, or `2nd_person`; `tense` is `past`, `present`, or `future`. The `prose` skill resolves them before generating (see `references/prose-spec.md` § POV rules and § Tense) and records them here, so the POV-mode rule it asserted is on the file.
 - **`blueprint_version`** records which Blueprint this prose was built against, or `null` if generated on the fallback (no-Blueprint) path. A Blueprint regenerated past this value means the prose may be stale w.r.t. current canon.
 - **`synopsis`** is written at generation time and is the chapter's contribution to every later chapter's story-so-far. Regenerate it whenever the prose is rewritten (it must track the prose's actual events).
-- **`status`**: `drafted` (generated, unreviewed) → `revising` (surgical edits in progress) → `approved` (the user has signed off). `notes` runs at `revising` or `approved`.
-- **`authorship`**: `ai-generated` on generation; `author-written` for intake-stashed prose; `ai-generated-author-revised` when the `prose` skill detects the body changed outside a skill run. `canon-sync` reads it to adjudicate contradictions: author-written or author-revised prose wins by default, unrevised AI prose yields to canon by default.
+- **`status`**: `drafted` (generated, unreviewed) → `revising` (surgical edits in progress) → `revised` (the author has signed off on the revision). `notes` runs at `revising` or `revised`. The app has two of these stages: `revised` is the app's `revised`, and `revising` is still the app's `drafted` (the revision isn't finished). The retired `approved` reads as `revised`.
+- **`authorship`**: `ai_generated` on generation; `author_written` for intake-stashed prose; `ai_generated_author_revised` when the `prose` skill detects the body changed outside a skill run. Older files' hyphenated spellings read as the same values. `canon-sync` reads it to adjudicate contradictions: author-written or author-revised prose wins by default, AI-generated prose (or prose with no `authorship`) yields to canon by default.
 - **Kit Bash provenance** (only on consolidated chapters): `kitbash_base: <draft label>` and `kitbash_drafts: [<labels>]` record which competing drafts produced this chapter. Draft files live in `chapters/chapter-NN/kitbash/` (`ch<NN>-draft-<label>.md`, plus the `ch<NN>-packet.md` generation packet) — see `references/kitbash-spec.md`.
 
 **Scene-split prose.** When the Blueprint is `scene_split: true`, prose moves into `scenes/` (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`); each scene file carries the same frontmatter scoped to that scene (the chapter-level `synopsis` lives on a stitched `ch<NN>-prose.md` or the first scene — keep one synopsis per chapter for story-so-far). Default to the single `ch<NN>-prose.md`.
 
 ### Notes (`ch<NN>-notes.md`) — what the prose actually committed
 
-Lives in the chapter folder: `chapters/chapter-17/ch17-notes.md`. Written by the `notes` skill. Notes **records what the prose committed; it does not evaluate the prose.** Run at prose `status: revised` or `approved`, not `drafted`; if run early, the frontmatter says so.
+Lives in the chapter folder: `chapters/chapter-17/ch17-notes.md`. Written by the `notes` skill. Notes **records what the prose committed; it does not evaluate the prose.** Run at prose `status: revising` or `revised`, not `drafted`.
+
+**This is the app's chapter notes document**, byte for byte in its shape: the same four frontmatter keys first, then the same six `##` sections in the same order and wording, because the app's canon-sync and this plugin's find each section by its exact heading.
 
 ```yaml
 ---
 chapter: 17
+title: The Locket
+prose_draft: v2
+prose_status: revised
 version: 1
 last_updated: 2026-06-21
-prose_version: 2
-prose_status_at_run: approved     # drafted | revising | approved — a run at `drafted` owes a re-run
 ---
 ```
 
-```markdown
-# Chapter 17 Notes
+- **`chapter`**, **`title`**: the chapter's number and title.
+- **`prose_draft`**: the prose draft the notes were read from. The plugin writes the prose file's version (`v2`); the app writes the draft's title or number. A notes file whose `prose_draft` is older than the prose's current `version` is stale.
+- **`prose_status`**: the app's two-value stage, `drafted` or `revised`. Write `revised` when the prose's `status` is `revised`, otherwise `drafted` (a `revising` chapter is still a draft to the app). Notes taken on a `drafted` chapter owe a re-run once it is revised.
+- **`version`**, **`last_updated`**: plugin keys the app ignores.
 
+**Quoting.** A frontmatter value is wrapped in double quotes, with `"` written `\"` and `\` written `\\`, when it contains `:` or `#`, starts or ends with a quote or a space, starts with a YAML-special character (`-`, `?`, `[`, `]`, `{`, `}`, `*`, `&`, `!`, `|`, `>`, `%`, `@`, a backtick), or would otherwise read as a non-string scalar (`null`, `~`, `true`, `false`, `yes`, `no`, `on`, `off`, or a number). So a chapter titled *Ten: Countdown* is `title: "Ten: Countdown"`, and one titled *1984* is `title: "1984"`. The app writes and reads the same rule.
+
+The body is exactly these six sections, in this order. A section with nothing to record reads `None.`, so all six headings are always present; **As-Written Synopsis** and **End State** always have content. No H1.
+
+```markdown
 ## As-Written Synopsis
 [what is on the page, distinct from the outline's intent; downstream consumers prefer this over the prose frontmatter synopsis when it exists]
 
@@ -849,7 +939,7 @@ Pattern: `ch<NN>-<stage>-v<version>-<YYYY-MM-DD>.md`. The `version` is the super
 
 The only chapter content created in the POC comes from `storystormer-init`'s intake, when the user brings in pre-existing prose. Init stashes each detected chapter as `chapters/chapter-NN/ch<NN>-prose.md` (markdown), or preserves the original extension (`ch<NN>-prose.docx`, etc.) when the source isn't markdown — flagged in the report, since prose-writing skills will require markdown.
 
-For intake-stashed prose, init populates only `chapter`, `title` (from the file's H1 or filename if discoverable), `version: 1`, `last_updated`, and `authorship: author-written`. The remaining frontmatter fields (`pov`, version stamps, `status`, `synopsis`) are populated by the `prose` skill when it next touches the chapter — e.g. it can synopsize stashed prose into the `synopsis` field so the chapter joins the story-so-far. **Body**: raw user content — preserve verbatim, do not rewrite or normalize.
+For intake-stashed prose, init populates only `chapter`, `title` (from the file's H1 or filename if discoverable), `version: 1`, `last_updated`, and `authorship: author_written`. The remaining frontmatter fields (`pov`, version stamps, `status`, `synopsis`) are populated by the `prose` skill when it next touches the chapter — e.g. it can synopsize stashed prose into the `synopsis` field so the chapter joins the story-so-far. **Body**: raw user content — preserve verbatim, do not rewrite or normalize.
 
 **Init's responsibility ends at stashing.** Init does not generate or rewrite prose, generate summaries, cross-check against the treatment or outline, or verify continuity. All of that is downstream prose-writing work. The intake job is purely "find the chapters the user already has, put them in the canonical chapter folder with canonical naming, and report what was stashed."
 
@@ -932,6 +1022,7 @@ For light updates (a new cross-book chain identified, a continuity concern logge
 {
   "title": "The Pattern Recognition",
   "project_type": "novel",
+  "target_word_count": 120000,
   "genre": "literary thriller",
   "genre_secondary": null,
   "created": "2026-05-11",
@@ -939,7 +1030,28 @@ For light updates (a new cross-book chain identified, a continuity concern logge
 }
 ```
 
-Mirrors a subset of `state.md` frontmatter, in JSON for any tooling that wants to read it programmatically. Treat `state.md` as the source of truth; `config.json` is a convenience mirror.
+Mirrors a subset of `state.md` frontmatter, in JSON for any tooling that wants to read it programmatically. Treat `state.md` as the source of truth; `config.json` is a convenience mirror, and the two must agree.
+
+- **`project_type`**: `novel`, `novella`, `short_story`, `screenplay`, or `series` (the app's values; an older `short-story` reads as `short_story`).
+- **`target_word_count`**: the book's target length in words (per book, in a series). Set at init from the author's answer, or from the type's default below; change it whenever the author does. Every word budget in the workspace is computed from it.
+
+### Target word count and the derived budgets
+
+The one place the plugin's word budgets come from, matching the app's treatment pipeline:
+
+| Project type | Default `target_word_count` | Default acts | Default chapters |
+|---|---|---|---|
+| `novel` | 120,000 | 3 | 40 |
+| `novella` | 40,000 | 3 | 15 |
+| `short_story` | 8,000 | 1 | 1 |
+| `screenplay` | 30,000 | 3 | — |
+| `series` (per book) | 120,000 | 3 | 40 |
+
+- **Act budgets (the book):** a three-act structure splits the target **25 / 50 / 25**. Any other act count splits it evenly, unless primer §3's Structural Framework states weighted proportions, which then govern. For 120,000 words in three acts: 30,000 / 60,000 / 30,000.
+- **Treatment budget:** `target_word_count / 6` in total (20,000 for 120,000), split across acts in the same proportions. Each act's treatment stays within ±15% of its share.
+- **Per-chapter treatment density:** `treatment budget / chapter count`, where the chapter count is `target_chapter_count` from `outline/structure.md` once it exists, else the type's default (500 words for a 40-chapter, 120,000-word novel). It is a calibration signal for sizing treatment scenes, not a chapter assignment.
+
+These numbers are computed whenever a skill needs them and never stored as a table in the primer.
 
 For series-mode projects, `config.json` carries the series fields:
 
@@ -947,6 +1059,7 @@ For series-mode projects, `config.json` carries the series fields:
 {
   "title": "Inauguration Day",
   "project_type": "series",
+  "target_word_count": 110000,
   "genre": "political thriller",
   "genre_secondary": null,
   "created": "2026-05-24",
