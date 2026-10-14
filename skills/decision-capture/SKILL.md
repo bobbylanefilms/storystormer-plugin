@@ -112,7 +112,7 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. I
 
 The capture flow gains two steps in series mode:
 
-1. **Determine scope.** Look at the decision content. If it's purely a per-book matter (Maya confronts her father in book 1 ch 35 — that's book 1's plot), use `Scope: book-<current_focus>`. If it affects the arc, plants a setup that pays off in a later book, or has implications for multiple books, use `Scope: series`. **When ambiguous, ask the user**: *"Is this just about book 1, or does it affect what books 2 and 3 do? I want to scope it right so we know which treatments to refresh."*
+1. **Determine scope.** Look at the decision content. If it's purely a per-book matter (Maya confronts her father in book 1 ch 35 — that's book 1's plot), use `Scope: book-<slug>`, where `<slug>` is the focused book's entry in `config.json`'s `books` list (a slug that already starts with `book-`, such as `book-1`, is written as it is: `Scope: book-1`, never `book-book-1`). If it affects the arc, plants a setup that pays off in a later book, or has implications for multiple books, use `Scope: series`. **When ambiguous, ask the user**: *"Is this just about book 1, or does it affect what books 2 and 3 do? I want to scope it right so we know which treatments to refresh."*
 
 2. **For series-scoped decisions, list `Affects books`.** Name every book the decision touches, with the relevant act/chapter reference if known:
 

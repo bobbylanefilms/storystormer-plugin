@@ -28,7 +28,7 @@ my-series/
 ├── questions.md                 # All questions, each with scope: series | book-<slug>
 ├── characters/                  # Shared bios — one bio per character, full series arc
 │   ├── _index.md
-│   ├── maya.md
+│   ├── maya-vance.md
 │   └── senator-vance.md
 ├── worldbuilding/               # Shared worldbuilding
 │   ├── locations/, organizations/, …

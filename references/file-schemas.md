@@ -14,11 +14,11 @@ This document is the canonical spec. If a skill wants a field that isn't here, a
 One quoting rule for every YAML frontmatter value the plugin writes: outlines, notes, prose, bios, worldbuilding entries, and the rest. A single-line value is written bare unless a YAML reader would misread it, in which case it is wrapped in double quotes, with `"` written `\"` and `\` written `\\`. Quote a value when it:
 
 - contains `:` or `#` anywhere;
-- starts or ends with a quote (`"` or `'`) or a space;
+- starts or ends with a quote (`"` or `'`);
 - starts with a YAML-special character: `-`, `?`, `[`, `]`, `{`, `}`, `*`, `&`, `!`, `|`, `>`, `%`, `@`, or a backtick;
 - or would read as something other than text: `null`, `~`, `true`, `false`, `yes`, `no`, `on`, `off` (any case), or a number (`1984`, `3.5`, `1e3`, `0x1F`, `.inf`).
 
-So *Ten: Countdown* is `title: "Ten: Countdown"`, *The Answer #7* is `title: "The Answer #7"`, and *1984* is `title: "1984"`. Values that are meant as numbers (`chapter: 17`, `version: 2`, `word_count: 1140`) and lists (`tags: [the bureau]`) are written as such. Read a double-quoted value by undoing exactly those two escapes. The app writes and reads its chapter notes with this rule and parses outline frontmatter the same way.
+So *Ten: Countdown* is `title: "Ten: Countdown"`, *The Answer #7* is `title: "The Answer #7"`, and *1984* is `title: "1984"`. Values that are meant as numbers (`chapter: 17`, `version: 2`, `word_count: 1140`) and lists (`tags: [the bureau]`) are written as such. Read a double-quoted value by undoing exactly those two escapes. The app writes and reads its chapter notes with this rule and parses outline frontmatter the same way. Leading and trailing spaces are not part of a value: the app trims them on read and never quotes a value to keep them, so a value that needs edge whitespace cannot round-trip and is not written.
 
 ## `state.md` — living project dashboard
 
@@ -351,7 +351,7 @@ Entries are never deleted, only superseded. Each decision has a stable ID (`D-00
 **Summary**: Marlowe's father was an accountant murdered when she was 14; this is her unresolved Ghost.
 **Details**: He had uncovered the early version of the Voss fraud and was killed for it. Marlowe was raised by her mother in the Heights, became a forensic accountant herself, and missed the same fraud years later when Voss had grown sophisticated enough to hide it. She doesn't yet know about her father's involvement at the start of the story.
 **Affects**: Marlowe (protagonist), Voss (antagonist), the locket, Act 2 reveal
-**Source**: brainstorm | intake | treatment-update | user-declared | canon-sync
+**Source**: brainstorm | intake | treatment-update | user-declared | canon-sync | plugin | agent_tool | manual | decision_capture | sweep | canon_sync
 **Integrated into treatment**: no
 **Superseded by**: (only set if a later decision invalidates this one)
 ```
@@ -364,6 +364,8 @@ The header's last field is the decision **type**, one of the app's five: `plot`,
 | `mechanics` | `worldbuilding` | the rules of a speculative mechanism are worldbuilding |
 | `voice` | `theme` | voice, POV and tone choices; primer §4 still owns them (see `treatment-update`'s routing) |
 | `genre` | `theme` | |
+
+`Source` names what produced the decision. The plugin writes its workflow (`brainstorm`, `intake`, `treatment-update`, `user-declared`, `canon-sync`); the app writes its own values (`agent_tool`, `manual`, `decision_capture`, `sweep`, `canon_sync`), and a decision the plugin appended to a connected project reads back as `plugin` because the app records the channel, not the workflow. Read every value in this list as valid; a decision that came from the app keeps its value. `canon-sync` (plugin) and `canon_sync` (app) are the same provenance.
 
 ID rules:
 - Sequential, zero-padded to 3 digits (`D-001`, `D-099`, `D-100`). Pad to 4 if you cross 1000.
@@ -448,6 +450,8 @@ In standalone-novel projects, `Scope` is omitted. As with decisions, `book-<slug
 
 ## Character bio files (`characters/<slug>.md`)
 
+The file's slug is the kebab-case of the character's full `name` (`marlowe-reyes.md` for Marlowe Reyes, never a short form such as `marlowe.md`); the app derives the file name from the title the same way and renames the file when the title changes, so a reference to a bio by path is only as stable as the name.
+
 ```yaml
 ---
 name: Marlowe Reyes
@@ -499,10 +503,10 @@ Like character bios, a worldbuilding entry may carry an optional **`## Revelatio
 
 Bios and worldbuilding entries may carry an optional `tags:` list in their frontmatter, under the app's tag rule:
 
-- **Lowercase, with spaces** (`the bureau`, not `The_Bureau` or `the-bureau`). A short all-caps word of two to four letters keeps its capitals (`POV character`, `FBI informant`).
+- **Lowercase, with spaces** (`the bureau`, not `The_Bureau`). A hyphen inside a tag is kept (`sci-fi`, `FBI-agent`); an underscore becomes a space. A short all-caps word of two to four letters keeps its capitals (`POV character`, `FBI informant`, each hyphen-separated part judged on its own).
 - **Reuse the project's tags first.** Before inventing one, scan the tags already on bios and entries and take the existing spelling.
 - **At most 40 characters** per tag; the app drops a longer one rather than truncating it.
-- **At most three per entry**, and only tags that **group more than one entry**: an affiliation (`the bureau`), a story role or archetype (`mentor`), an era (`before the war`), a story status (`dead by act 2`).
+- **At most three per entry when the plugin chooses them**, and only tags that **group more than one entry**; this is the generation rule, not a storage limit. An entry that already carries more tags (the author's, or the app's, whose own list can be longer) keeps them: never drop or respell an existing tag to fit this rule. an affiliation (`the bureau`), a story role or archetype (`mentor`), an era (`before the war`), a story status (`dead by act 2`).
 - **Never** the entry's own type (`Protagonist`, `Locations`), a name, a relationship (`Marlowe's sister`), or provenance (`ai generated`, `from intake`).
 
 Tags are optional; no tags is better than a tag that groups nothing. The app normalizes every tag on write in any case.
@@ -633,7 +637,7 @@ The chapter spine is the load-bearing element. The pre-outline conversation prod
 
 ### `chapters/chapter-NN/ch<NN>-outline.md` — per-chapter outline
 
-Lives in the chapter's folder, prefixed with the chapter number: `chapters/chapter-17/ch17-outline.md`. Folder and prefix both use the two-digit zero-padded chapter number (pad to three digits past 99 chapters).
+Lives in the chapter's folder, prefixed with the chapter number: `chapters/chapter-17/ch17-outline.md`. Folder and prefix both use the two-digit zero-padded chapter number; a number past 99 is written as it is (`chapter-100`, `ch100-outline.md`), which is how the app names them, so a long book mixes two-digit and three-digit names.
 
 **What it is:** the author's prose account of what happens in the chapter, to be expanded into full narrative prose. **Nothing else.** It is the only artifact in the pipeline that carries the author's voice, and it is read by the prose agent as *the task* and by the `blueprint` stage as *the content*. It may include specific action beats, interiority, direction, and dialogue, up to and including every line of dialogue in the chapter. It is written the way the author thinks, not to a schema.
 
@@ -674,11 +678,11 @@ The rest are plugin keys the app ignores:
 - **`word_count`** is the body's count (frontmatter and `## Synopsis` excluded), recorded on every write; it is the cheap half of author-revision detection.
 - **`source`** names what the outline was built from (a treatment scene, a decision, the author).
 - **`revision`**: a free-text note on what changed and why.
-- **`structure_version`**, **`treatment_version`**, **`primer_version`**: the provenance stamps `/storystormer:outline` uses to flag stale outlines.
+- **`structure_version`**, **`treatment_version`**, **`primer_version`**: the provenance stamps `/storystormer:outline` uses to flag stale outlines. An outline the app wrote has none; a missing stamp means the freshness is unknown, which is reported as unverified, never as stale or current.
 
 POV type and tense are not outline keys; they live on the prose (`pov_type`, `tense`), as they do on the app's scene.
 
-**Body.** The author's prose account, with no H1 (the title lives in the frontmatter, and the app's outline has none; an H1 already in an author's file is left alone). Present tense is the recommended register for generated outlines, not a rule: an author-written outline in past tense stays in past tense and is never rewritten for tense. The app refuses an outline body under 150 words, so a stub outline is not ready to move to the app.
+**Body.** The author's prose account, with no H1 (the title lives in the frontmatter, and the app's outline has none; an H1 already in an author's file is left alone). Present tense is the recommended register for generated outlines, not a rule: an author-written outline in past tense stays in past tense and is never rewritten for tense. The app's own outline jobs refuse an outline body under 150 words, and a connected write warns about one, so a stub outline is not ready to move to the app.
 
 **`## Synopsis`** is the one heading an outline may carry, and only at the very end. Generated outlines end with it (the app's chapter writer produces the same shape): 150–250 words on the chapter's causal events, reveals, who learns what, and how the story's state has changed by the chapter's end, written as a record for later chapters, not a teaser. It replaces repeating that material in `summary`, which stays one or two sentences. An author-written outline gets a synopsis section only if the author asks for one.
 
@@ -757,7 +761,7 @@ The `chapters/` folder holds one **folder per chapter** (`chapters/chapter-NN/`)
 - Standalone novel: `<root>/chapters/chapter-NN/`
 - Series mode: `<root>/books/<slug>/chapters/chapter-NN/`
 
-**Chapter folder naming:** `chapter-NN`, zero-padded to two digits (three if the story exceeds 99 chapters). **Files inside** are chapter-number-prefixed: `ch<NN>-<stage>.md`.
+**Chapter folder naming:** `chapter-NN`, zero-padded to two digits (a number past 99 is written as it is: `chapter-100`). **Files inside** are chapter-number-prefixed: `ch<NN>-<stage>.md`.
 
 ```
 chapters/chapter-17/
@@ -868,7 +872,7 @@ Values (the `title`, a `pov` name) are quoted per § Frontmatter values; the mul
 - **`pov_type`** and **`tense`** are the app's scene enums, verbatim: `pov_type` is `3rd_limited`, `3rd_objective`, `3rd_omniscient`, `1st_person`, or `2nd_person`; `tense` is `past`, `present`, or `future`. The `prose` skill resolves them before generating (see `references/prose-spec.md` § POV rules and § Tense) and records them here, so the POV-mode rule it asserted is on the file.
 - **`blueprint_version`** records which Blueprint this prose was built against, or `null` if generated on the fallback (no-Blueprint) path. A Blueprint regenerated past this value means the prose may be stale w.r.t. current canon.
 - **`synopsis`** is written at generation time and is the chapter's contribution to every later chapter's story-so-far. Regenerate it whenever the prose is rewritten (it must track the prose's actual events).
-- **`status`**: `drafted` (generated, unreviewed) → `revising` (surgical edits in progress) → `revised` (the author has signed off on the revision). `notes` runs at `revising` or `revised`. The app has two of these stages: `revised` is the app's `revised`, and `revising` is still the app's `drafted` (the revision isn't finished). The retired `approved` reads as `revised`.
+- **`status`**: `drafted` (generated, unreviewed) → `revising` (surgical edits in progress) → `revised` (the author has signed off on the revision). `notes` runs at `revising` or `revised`. The app has two of these stages: `revised` is the app's `revised`, and `revising` is still the app's `drafted` (the revision isn't finished). The retired `approved` reads as `revised`. The app never lowers a scene's stage: a `drafted` or `revising` file written over a scene the app holds at `revised` reads back `revised`, so a regeneration of signed-off prose is reported as such rather than relied on to reset the stage.
 - **`authorship`**: `ai_generated` on generation; `author_written` for intake-stashed prose; `ai_generated_author_revised` when the `prose` skill detects the body changed outside a skill run. Older files' hyphenated spellings read as the same values. `canon-sync` reads it to adjudicate contradictions: author-written or author-revised prose wins by default, AI-generated prose (or prose with no `authorship`) yields to canon by default.
 - **Kit Bash provenance** (only on consolidated chapters): `kitbash_base: <draft label>` and `kitbash_drafts: [<labels>]` record which competing drafts produced this chapter. Draft files live in `chapters/chapter-NN/kitbash/` (`ch<NN>-draft-<label>.md`, plus the `ch<NN>-packet.md` generation packet) — see `references/kitbash-spec.md`.
 

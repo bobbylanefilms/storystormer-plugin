@@ -176,6 +176,10 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 
 These may follow in later versions once the kernel proves out.
 
+### What v0.17.2 added over v0.17.1
+
+- **Round-trip corrections from a plugin-vs-app format review.** The decision `Source` vocabulary lists the app's values beside the plugin's workflows (a plugin append reads back as `plugin`); edge whitespace is not part of a frontmatter value (the app trims it); hyphens inside tags are kept and the three-tag rule governs only tags the plugin chooses; the app never lowers a scene's prose stage; a missing provenance stamp reads as unknown, not stale; bio file names are the kebab-case of the full name; chapter numbers past 99 are written unpadded, as the app names them; a series decision's `Scope` is the book's slug as listed in `config.json`.
+
 ### What v0.17.1 added over v0.17.0
 
 - **Review follow-ups to the app-format alignment.** Notes keep a plugin-only `prose_version` freshness stamp beside the app's display-only `prose_draft` (0.16.x notes still read); one quoting rule for every frontmatter value; per-book `target_word_count` in a series, with `config.json` as the owner; the chapter count for budgets comes from `structure.md`'s `**Chapter Count:**` line; a chapter that already has prose is `existing (drafted)` on the first structure write; worldbuilding entries in old folders (`magic-systems/`) are found and moved instead of duplicated; prose story-so-far reads an outline's `## Synopsis` before the spine; legacy outline `tense` is honored.
