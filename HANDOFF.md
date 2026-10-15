@@ -3,7 +3,7 @@
 
 # HANDOFF — storystormer-plugin
 
-**Date:** 2026-10-15 · **Branch:** `main` @ `9f71785` (SB1+SB2 fast-forwarded from `feat/sb1-sb2-store-contract`) · **Version:** `0.18.0-poc`
+**Date:** 2026-10-15 · **Branch:** `main` @ `9f71785` (SB1+SB2 fast-forwarded from `feat/sb1-sb2-store-contract`, now deleted) · **Version:** `0.18.0-poc`
 
 ## What landed
 
@@ -30,4 +30,3 @@ The store contract (SB1) and the skill rewrite onto it (SB2), as one release:
 
 - Delete the private Notion page "StoryStormer Storage Test".
 - ISSUE068 § A triage after the first real plugin session against the MCP server.
-- `feat/sb1-sb2-store-contract` is fully merged into `main` (fast-forward); delete it when you're ready.
