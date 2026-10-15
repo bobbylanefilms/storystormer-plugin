@@ -10,13 +10,13 @@ Change the **current focus** in a series project. The slash command takes a book
 ## Preconditions
 
 - `state.md` must show `project_type: series`. If the project is standalone (`project_type: novel`), refuse the command and explain: *"This project is a single-novel workspace. The `/storystormer:switch` command only applies to series projects. If you meant to convert this project to a series, ask me to run `/storystormer:init` in convert-to-series mode."*
-- The book slug argument must match one of the slugs in the config's `books` array (`.storystormer/config.json`, which owns the book list; `state.md`'s `books:` mirrors it). If it doesn't match, list the available slugs and ask the user to pick. If the two lists disagree, say so and repair the `state.md` mirror from the config.
+- The book slug argument must match one of the slugs in `state.md`'s `books:` (the source of truth; the config's `books` array mirrors it, per `references/series.md`). If it doesn't match, list the available slugs and ask the user to pick. If the two lists disagree, say so and repair the config mirror from `state.md`.
 
 ## What to do
 
 Resolve the store first per `references/store.md` if the session hasn't.
 
-1. **Validate the book slug.** `store.read` `state.md` and `.storystormer/config.json` and check the slug against the config's `books` array (the owner; see Preconditions). If the slug isn't listed, surface the valid options and stop.
+1. **Validate the book slug.** `store.read` `state.md` and `.storystormer/config.json` and check the slug against `state.md`'s `books:` (the owner; see Preconditions). If the slug isn't listed, surface the valid options and stop.
 
 2. **Verify the book folder exists.** Check that `books/<slug>/` exists (`store.list`). If it doesn't (e.g., user added the book to the list but never scaffolded the folder), offer to scaffold it via a recommended `/storystormer:init` re-run rather than silently creating an empty folder.
 
