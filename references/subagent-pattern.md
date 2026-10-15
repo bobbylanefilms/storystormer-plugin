@@ -105,7 +105,7 @@ Store: binding <kind>; root <root>; capabilities <the binding's capabilities lin
 What to do:
 - Perform each operation in scope.
 - Stamp frontmatter per references/file-schemas.md (the brief includes the exact frontmatter to write).
-- For any operation that snapshots existing content, snapshot per `store.md` first.
+- For any operation that snapshots existing content, write the snapshot paths this brief's triggered clauses name first (the main session takes them from `store.md`; you can't read it).
 
 What to return:
 {

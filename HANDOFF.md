@@ -1,48 +1,51 @@
 <!-- ABOUTME: Session handoff for long-running work in this repo; rewritten whole at each checkpoint -->
-<!-- ABOUTME: Current thread: the storage-backend stage (SB1–SB5), SB1+SB2 sliced and baselined, 2026-10-15 -->
+<!-- ABOUTME: Current thread: /implement run of SB1+SB2 (store contract + skill rewrite), 2026-10-15 -->
 
 # HANDOFF — storystormer-plugin
 
-**Date:** 2026-10-15 · **Branch:** `main` @ `ef1ef20` (v0.17.2-poc) · **Thread:** SB1+SB2 sliced; parity baseline **captured**; implementation **not started** (waiting on ISSUE069 in the app repo to finish its build, review loop and merge, per Rob)
+## Run
 
-## Decisions this session (Rob, 2026-10-15)
+- **Skill:** `/implement` · no flags · orchestrator Opus 5.5 · effort high · started 2026-10-15
+- **Branch:** `feat/sb1-sb2-store-contract` from `main` @ `fa6e048`
+- **Plans:** `.plans/SB1-store-contract.md`, `.plans/SB2-skill-rewrite.md` (one release, `0.18.0-poc`)
+- **Reviewer:** GPT-6.1 Sol via Codex CLI 0.162.1, per slice
 
-1. `references/store/local.md` moves from SB3 into SB1 (SB1's success test and SB2's adversarial check both need a binding in hand).
-2. SB1 and SB2 ship as **one release**: one branch, two committed phases, one version bump (→ `0.18.0-poc`), one landing on `main`.
-3. Behavioral parity is judged **structurally** (files written, snapshot trees, index updates, `state.md` fields), never on generated prose.
-4. The baseline runs now, before ISSUE069 lands (it changes nothing in this repo).
+## Slices
 
-All four are recorded in the plans' Key decisions (`SB1` § 1, `SB2` § 1, `SB3` § A).
+| # | Slice | Tier | Status | Commit | Review |
+|---|---|---|---|---|---|
+| 1 | Contract: `references/store.md` + `references/store/local.md` + `mcp__*` validate check | Opus | accepted | `b769cf5`, fix `3f054f1` | Sol: 10 confirmed, fixed inline |
+| 2 | Schema, references, docs (SB1 §3B–C + SB2 §3C refs) | Sonnet | accepted | `bd4769e` + fix | Sol running (gate) |
+| — | Review gate: `store.md` vs CW5 §4–5; SB1 phase commit | Sol | pending | — | — |
+| 3 | Skills: all 13 `skills/*/SKILL.md` | Sonnet (parallel with 4) | pending | — | — |
+| 4 | Commands + guides (incl. checkpoint capture-list fix) | Sonnet (parallel with 3) | pending | — | — |
+| 6 | Gate + release: greps, validate, parity run, adversarial read, bump, land on `main` | inline | pending | — | — |
 
-## Slicing for SB1+SB2
+## Current position
 
-| # | Slice | Files | Tier |
-|---|---|---|---|
-| 0 | Baseline capture | `~/Git/storystormer-parity/` | headless runs (in progress) |
-| 1 | Contract | `references/store.md`, `references/store/local.md`; check `mcp__*` in `allowed-tools` validates | Opus |
-| 2 | Schema, references, docs | `file-schemas`, `plan-first`, `reading-discipline`, `subagent-pattern`, `prose-spec`, `blueprint-spec`, `series`, `kitbash-spec`; `CLAUDE.md`, `PLUGIN-GUIDE.md`, `README.md` | Sonnet |
-| — | Review gate | fresh-context check of `store.md` against CW5 § 4–5 | fresh context |
-| 3a | Skills, heavy half | `treatment-update`, `worldbuilding-entry`, `character-bio`, `canon-sync`, `blueprint`, `pre-outline-session`, `outline-chapters` | Sonnet (parallel with 3b) |
-| 3b | Skills, light half | `storystormer-init`, `notes`, `manifest-sync`, `prose`, `brainstorm-session`, `decision-capture` | Sonnet |
-| 4 | Commands | 7 files; `checkpoint`/`switch` non-local rules | Sonnet |
-| 5 | Guides | 3 files | Haiku |
-| 6 | Gate and release | both greps, validate, `run.py … after-sb2` + `compare.py`, adversarial cold read, bump, land on `main` | Opus |
+SB1 phase committed. Gate review (Sol on Slice 2; the CW5 §4–5 comparison was already done in Slice 1's review) runs alongside Slices 3 and 4 in parallel worktrees.
 
-SB1 is one committed phase (slices 1–2 plus the gate); SB2 is the second (slices 3–6).
+## Decisions and deviations
+
+- Rob 2026-10-15: `store/local.md` in SB1; SB1+SB2 one release; structural parity; baseline before ISSUE069 (done).
+- 3a/3b merged into one skills slice: the measured surface is ~90 hits across skills/commands/guides, far below the plan's estimate; skills and commands+guides run in parallel worktrees (disjoint files).
+- Slice 2 extras: 3 non-history lines in file-schemas.md also moved to "per store.md"; prose-spec/blueprint-spec had no hits; kitbash's external `codex exec` prompt left as is.
+- Guides (planned slice 5) folded into Slice 4: guides land in the repo, so Haiku is out; one Sonnet slice is cheaper than two.
+- Slice 1 open calls taken: no `storage` block → local; local `delete` unavailable (report names the file for the author to remove; no shell); local edits all-or-nothing by pre-checking anchors; edit grammar is old/new pairs + `replace_all` (AP4 must map single edits to the app's `replace_range`).
+- Sol review of Slice 1 (all confirmed, fixed in `3f054f1`): concurrency baseline pinned to the preparing read and guard fires on any version change (CW5 "moved", wider than SB1's "higher"); non-atomic write recovery; subagent briefs carry triggered clauses; computed config changes route to a writable realization; `local_root` roots local; series chapter `.history/` and root-relative snapshot paths; resolve bootstraps via local; re-resolve on project change.
+- `mcp__*` in `allowed-tools`: validator accepts it but only type-checks the field; runtime pre-approval unverified (SB5).
+- `checkpoint` capture list fix is the one deliberate behavior change (baseline finding).
+- No TypeScript here: the check per slice is `claude plugin validate .` plus the SB2 greps.
 
 ## Parity harness
 
-`~/Git/storystormer-parity/` (outside the repo so it never ships in the bundle; see its README). A frozen copy of `main` @ `ef1ef20`, a Good Dog fixture and a series brain-dump fixture, and a 20-step headless script (the dev loop, the chapter loop on ch 1–2, all seven commands, `init` and `switch` in series mode). Two baseline runs (`baseline-a`, `baseline-b`) measure run-to-run noise. Note: Rob's installed plugin is 0.16.1-poc; the harness uses `--plugin-dir` with the installed one disabled, so it is unaffected.
+`~/Git/storystormer-parity/` (README § Baseline findings). Baselines `baseline-a`, `baseline-b` on frozen `main` @ `ef1ef20`. After Slice 4: `python3 run.py ~/Git/storystormer-plugin after-sb2 opus`, then `compare.py` and `invariants.py` against both baselines.
 
-**Baseline result:** both runs completed all 20 steps (about $100 list-price Opus). Run-to-run noise is real (snapshot scope, `session_count`, `_index.md` keys, judgment calls), so the gate after SB2 is variance-plus-invariants, not identity; details in the harness README § Baseline findings. Two plugin defects surfaced and are folded into the plans: `checkpoint`'s capture list is stale (SB2 slice 4), and `file-schemas.md`'s snapshot rule omits worldbuilding entries (SB1 slice 2).
+## Open items
 
-## Next
+- Rob: delete the private Notion page "StoryStormer Storage Test"; ISSUE068 § A triage after the first real MCP session.
+- Log entries owed at the end: model-picks lines for every slice.
 
-1. When ISSUE069 has merged: branch `feat/sb1-sb2-store-contract` from `main`, then slices 1 → 6.
-2. SB3 → SB4 → SB5, then AP4 and AP5 in the web-app repo.
-3. Re-test the Google Drive and Microsoft 365 connectors around November 2026.
+## Last check
 
-## Open items for Rob
-
-- A private Notion page "StoryStormer Storage Test" from the research needs a manual delete.
-- The ISSUE068 § A triage session after the first real plugin session against the MCP server.
+`claude plugin validate .` — not yet run on this branch.
