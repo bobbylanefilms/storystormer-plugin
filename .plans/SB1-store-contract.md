@@ -10,6 +10,7 @@
 
 **What changes:**
 1. **`references/store.md`** — the contract: operations, semantics, capabilities, resolution, the concurrency guard, the confirmation posture, the subagent rule.
+1a. **`references/store/local.md`** — today's behavior written as the first binding (moved here from SB3, decision 2026-10-15: SB1's own success test and SB2's adversarial check both need a binding doc in hand).
 2. **`references/file-schemas.md`** — `.storystormer/config.json` gains `storage`; `state.md` frontmatter gains `storage_kind`.
 3. **`PLUGIN-GUIDE.md` and `CLAUDE.md`** — the contract becomes a hard constraint: no skill names a host or connector tool directly.
 
@@ -32,12 +33,14 @@
 - **Tools are named by connector and short name**, never by prefixed id: "the Dropbox connector's `create_file`". Connector ids differ per user and per surface.
 - **Concurrency guard** on connector backends: before an overwrite, re-read the target's frontmatter `version`; if it is higher than what this session read, stop and show the author both versions. Native history keeps the loser after that.
 - **Confirmation posture:** the plan-first approval covers every write in that run; a binding whose connector asks for per-mutation confirmation says so and tells the model not to re-ask per file.
+- **Execution decisions (Rob, 2026-10-15):** (1) `references/store/local.md` is written in SB1, not SB3, using SB3 § 3A's spec and capabilities line; (2) SB1 and SB2 ship as **one release** on one branch (two committed phases, one version bump, one landing on `main`), so Cowork never sees references and skills speaking different vocabularies; (3) the reference edits SB2 § 3C lists (`plan-first`, `reading-discipline`, `subagent-pattern`, `prose-spec`, `blueprint-spec`, `series`, `kitbash-spec`) are all done in SB1's references slice so no file is edited twice; (4) check early that `claude plugin validate .` accepts `mcp__*` in a command's `allowed-tools`.
 
 **Success criteria** (each independently verifiable):
 - [ ] `references/store.md` exists, is under ~250 lines, and a fresh model reading only it plus one binding doc can state how `write` of an existing `treatment.md` is realized on that backend without guessing.
 - [ ] `references/file-schemas.md` § `.storystormer/config.json` shows the `storage` block for standalone and series projects; § `state.md` lists `storage_kind`.
 - [ ] `PLUGIN-GUIDE.md` and `CLAUDE.md` name the contract as a hard constraint with the grep that enforces it (see SB2).
-- [ ] `claude plugin validate .` passes; version bumped in both manifests; landed on `main`.
+- [ ] `references/store/local.md` exists with the local capabilities line from SB3 § 1.
+- [ ] `claude plugin validate .` passes. Version bump and landing on `main` happen once, at the end of SB2 (combined release).
 
 ---
 
@@ -92,7 +95,7 @@ confirm:  none | batch
 ### C. Constraints and docs
 **Files:** `CLAUDE.md`, `PLUGIN-GUIDE.md`, `README.md`
 
-`CLAUDE.md` § Hard constraints gains: *"Skills and commands address `references/store.md`, never a host or connector tool by name; the grep in SB2 enforces it."* `PLUGIN-GUIDE.md` gets a short "Storage backends" section pointing at `store.md` and the bindings table. `README.md` gains one paragraph: where a story can live, and that only local mode exists until SB3 ships. Version bump in both manifests.
+`CLAUDE.md` § Hard constraints gains: *"Skills and commands address `references/store.md`, never a host or connector tool by name; the grep in SB2 enforces it."* `PLUGIN-GUIDE.md` gets a short "Storage backends" section pointing at `store.md` and the bindings table. `README.md` gains one paragraph: where a story can live, and that only local mode exists until SB3 ships. No version bump here; the combined SB1+SB2 release bumps once.
 
 ---
 
@@ -116,6 +119,6 @@ confirm:  none | batch
 
 ## 6. Scope & Assumptions
 
-- **Out of scope:** any skill or command change (SB2); the bindings themselves (SB3, AP4); the onboarding question and the locator's behavior beyond naming them (SB4).
+- **Out of scope:** any skill or command change (SB2); the Dropbox and Notion bindings (SB3) and the StoryStormer binding (AP4); the onboarding question and the locator's behavior beyond naming them (SB4).
 - **Required first:** nothing. Independent of AP0 Part B (formats, not I/O); do not ship the two in the same release.
 - **Needs human judgment:** none expected; the decisions are resolved above.

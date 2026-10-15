@@ -29,11 +29,12 @@
 - **`allowed-tools` on commands** becomes `["Read", "Write", "Edit", "Glob", "Grep", "Task"]` plus the line `mcp__*` so connector tools are pre-approved where the host honors the field; the field pre-approves, it does not restrict, so a wider list is harmless.
 - **`checkpoint` and `switch`** keep their semantics but say what happens where `history` is `native` (checkpoint reports it is unsupported on that backend and points at the backend's own history) and where `config.json` is computed (switch writes `current_focus` through `store.write('state.md')`'s writable frontmatter; the config follows).
 - **`init`** is rewritten for I/O only here; the onboarding question, the locator and migration are SB4.
+- **Execution decisions (Rob, 2026-10-15):** (1) released together with SB1 (one bump, one landing); (2) the § 3C references are done in SB1's references slice, so SB2 § 3C covers guides only; (3) behavioral parity is judged **structurally**, not textually: the same files written, the same `.history/` and `.storystormer/history/` snapshot trees, the same index updates, the same `state.md` frontmatter fields and version bumps. Prose content will differ run to run and is not compared. (4) The baseline is captured by a scripted harness against a frozen copy of `main` @ `ef1ef20` (v0.17.2-poc) **before** SB1 lands, at `~/Git/storystormer-parity/` (see that folder's README); the post-rewrite run reuses the same script. (5) A second, eyeball-only grep (`snapshot|_index|preview|send-file|present the file`) lists every restated local-mode step for the reviewer, since the gate grep catches only tool names and history paths.
 - **The grep is the gate:** `grep -rnE '\b(Read|Write|Glob|Edit) tool\b|\bGlob `|\bthe Read\b|\.storystormer/history/|/\.history/' skills commands references guides` returns matches only inside `references/store.md`, `references/store/*.md` and the two history sections of `references/file-schemas.md`.
 
 **Success criteria** (each independently verifiable):
 - [ ] The grep above returns no matches outside the allowed files.
-- [ ] On a local test project (a copy of The Good Dog or Twelve to Zero): `brainstorm-session` → `decision-capture` → `character-bio` → `treatment-update` → `manifest-sync` produce the same files, snapshots and index updates as before the rewrite (compare the `.history/` tree and `state.md` diff).
+- [ ] Structural parity against the harness baseline (decision 3 above). On a local test project (a copy of The Good Dog): `brainstorm-session` → `decision-capture` → `character-bio` → `treatment-update` → `manifest-sync` produce the same files, snapshots and index updates as before the rewrite (compare the `.history/` tree and `state.md` diff).
 - [ ] `outline-chapters`, `blueprint`, `prose` (generate then one revise-mode edit), `notes`, `canon-sync` run on one chapter with the same outputs as before.
 - [ ] All seven commands run; `checkpoint` writes the same snapshot folder it did before.
 - [ ] `claude plugin validate .` passes; version bumped; landed on `main`.
@@ -95,5 +96,5 @@ Version bump in both manifests; `claude plugin validate .`; land on `main`.
 ## 6. Scope & Assumptions
 
 - **Out of scope:** bindings (SB3), onboarding and migration (SB4), format changes (AP0 Part B), any behavioral change to a skill.
-- **Required first:** SB1 merged and on `main`.
+- **Required first:** SB1's phase committed on the shared SB1+SB2 branch (combined release).
 - **Needs human judgment:** none; if a substitution is ambiguous in context, keep the original meaning and note it in the as-built notes.

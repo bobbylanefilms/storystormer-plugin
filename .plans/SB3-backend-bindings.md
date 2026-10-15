@@ -9,7 +9,7 @@
 **Tier:** FULL — the Notion path map is a new schema; Dropbox's overwrite semantics are a load-bearing workaround · **Judgment profile:** judgment
 
 **What changes:**
-1. **`references/store/local.md`** — today's behavior as a binding.
+1. **`references/store/local.md`** — *moved to SB1 (decision 2026-10-15); already on `main` when SB3 starts.* SB3 only adds it to anything SB1 left out.
 2. **`references/store/dropbox.md`** — mirror tree under `/StoryStormer/<slug>/`, delete-create writes, read-modify-write edits.
 3. **`references/store/notion.md`** — hub page, Projects / Assets / Chapters / Decisions / Questions databases, frontmatter ↔ properties, the path map, DDL, computed documents.
 
@@ -117,7 +117,7 @@ CREATE TABLE ("Name" TITLE, "ID" UNIQUE_ID PREFIX 'Q', "Project" RELATION('<proj
 ## 3. Implementation (by change-area, goal-shaped)
 
 ### A. `references/store/local.md`
-The current behavior, written as a binding: host tools by name (this is the one place they are allowed, with `store.md`), the snapshot conventions by reference to `file-schemas.md`, `open` = present the file in the host's pane.
+*Written in SB1 (decision 2026-10-15). Spec kept here for reference.* The current behavior, written as a binding: host tools by name (this is the one place they are allowed, with `store.md`), the snapshot conventions by reference to `file-schemas.md`, `open` = present the file in the host's pane.
 
 ### B. `references/store/dropbox.md`
 Tool list and verified-on date; root convention; each operation's realization per the decisions; the retry rule; the confirmation clause; the quirks (case, NFC, 5 MiB, async delete, `path_display` for display and `path` for follow-on calls).

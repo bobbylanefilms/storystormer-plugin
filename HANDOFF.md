@@ -1,31 +1,47 @@
 <!-- ABOUTME: Session handoff for long-running work in this repo; rewritten whole at each checkpoint -->
-<!-- ABOUTME: Current thread: the storage-backend stage (SB1–SB5), ready to start, 2026-10-14 -->
+<!-- ABOUTME: Current thread: the storage-backend stage (SB1–SB5), SB1+SB2 sliced and baselined, 2026-10-15 -->
 
 # HANDOFF — storystormer-plugin
 
-**Date:** 2026-10-14 · **Branch:** `main` @ `74bdda7` (v0.17.2-poc) · **Thread:** storage-backend stage SB1–SB5, no implementation started
+**Date:** 2026-10-15 · **Branch:** `main` @ `ef1ef20` (v0.17.2-poc) · **Thread:** SB1+SB2 sliced; parity baseline capturing; implementation **not started** (waiting on ISSUE069 in the app repo to finish its build, review loop and merge, per Rob)
 
-## What changed since the 2026-10-12 handoff
+## Decisions this session (Rob, 2026-10-15)
 
-- **AP0 B1–B12 landed on `main`** (`df63313`, `bcc603e`, `74bdda7`, v0.17.2-poc): the plugin's file formats now match the app's MCP virtual filesystem (decision `Source` vocabulary, quoting-rule whitespace, tag hyphens and the three-tag rule, never-demote stage, provenance stamps, bio file slugs, chapter padding past 99, series `Scope` slug, short-outline wording). The feature branch is deleted locally and on origin; `feat/artifact-boundaries` and `feat/blueprint-v3-fidelity` remain on origin, merged and untouched.
-- **The app side shipped and is live.** AP0–AP3 merged into the web-app repo's `main` on 2026-10-14 ([PR #170](https://github.com/bobbylanefilms/storystormer/pull/170), four-round review loop). The MCP server answers at `https://storystormer.vercel.app/api/mcp` with Clerk OAuth (CIMD + PKCE, opaque tokens); Rob's Claude Code has it registered at user scope as `storystormer` and signed in; `whoami` and `list_projects` return live data. Branch previews sit behind Vercel SSO, so only production is reachable by MCP clients.
-- **Round-trip gap inventory.** Two independent reviews of the plugin's contract against the app's virtual filesystem (37 + 24 findings) are triaged in the web-app repo at `.plans/ISSUE068-mcp-plugin-roundtrip-gaps.md`: § A tool-surface gaps for AP5, § B model decisions (§ B 21 decided: the path map translates book-local chapter numbers, option a), § C binding behaviors for AP4. Read § C before writing `store/storystormer.md` in AP4; nothing in it blocks SB1–SB5.
-- **ISSUE069** (app repo, in progress on `fix/issue069-sweep-novel-scope` as of this handoff): the app's decision sweep now scopes each decision to a book (`novel_id`, a Convex novel id, `""` = series-wide), the same vocabulary `record_decision` uses. If a plugin skill ever reads decisions through the MCP, expect a book on each row.
+1. `references/store/local.md` moves from SB3 into SB1 (SB1's success test and SB2's adversarial check both need a binding in hand).
+2. SB1 and SB2 ship as **one release**: one branch, two committed phases, one version bump (→ `0.18.0-poc`), one landing on `main`.
+3. Behavioral parity is judged **structurally** (files written, snapshot trees, index updates, `state.md` fields), never on generated prose.
+4. The baseline runs now, before ISSUE069 lands (it changes nothing in this repo).
 
-## Where things stand
+All four are recorded in the plans' Key decisions (`SB1` § 1, `SB2` § 1, `SB3` § A).
 
-- Research into Dropbox, Google Drive, Notion and the Microsoft 365 connectors is done and recorded in the web-app repo at `plan/_cowork/CW5-storage-backends-brainstorm.md` (decisions by Rob, 2026-10-12: tiers, five Notion databases, plan split).
-- Five execution plans here: `.plans/SB1-store-contract.md`, `SB2-skill-rewrite.md`, `SB3-backend-bindings.md`, `SB4-onboarding-and-migrate.md`, `SB5-backend-test-matrix.md`. Run them in order with `/implement`.
-- The web-app repo's `AP4` plan assumes SB1, SB2 and SB4 are done first; `AP5` takes the ISSUE068 § A backlog.
+## Slicing for SB1+SB2
+
+| # | Slice | Files | Tier |
+|---|---|---|---|
+| 0 | Baseline capture | `~/Git/storystormer-parity/` | headless runs (in progress) |
+| 1 | Contract | `references/store.md`, `references/store/local.md`; check `mcp__*` in `allowed-tools` validates | Opus |
+| 2 | Schema, references, docs | `file-schemas`, `plan-first`, `reading-discipline`, `subagent-pattern`, `prose-spec`, `blueprint-spec`, `series`, `kitbash-spec`; `CLAUDE.md`, `PLUGIN-GUIDE.md`, `README.md` | Sonnet |
+| — | Review gate | fresh-context check of `store.md` against CW5 § 4–5 | fresh context |
+| 3a | Skills, heavy half | `treatment-update`, `worldbuilding-entry`, `character-bio`, `canon-sync`, `blueprint`, `pre-outline-session`, `outline-chapters` | Sonnet (parallel with 3b) |
+| 3b | Skills, light half | `storystormer-init`, `notes`, `manifest-sync`, `prose`, `brainstorm-session`, `decision-capture` | Sonnet |
+| 4 | Commands | 7 files; `checkpoint`/`switch` non-local rules | Sonnet |
+| 5 | Guides | 3 files | Haiku |
+| 6 | Gate and release | both greps, validate, `run.py … after-sb2` + `compare.py`, adversarial cold read, bump, land on `main` | Opus |
+
+SB1 is one committed phase (slices 1–2 plus the gate); SB2 is the second (slices 3–6).
+
+## Parity harness
+
+`~/Git/storystormer-parity/` (outside the repo so it never ships in the bundle; see its README). A frozen copy of `main` @ `ef1ef20`, a Good Dog fixture and a series brain-dump fixture, and a 20-step headless script (the dev loop, the chapter loop on ch 1–2, all seven commands, `init` and `switch` in series mode). Two baseline runs (`baseline-a`, `baseline-b`) measure run-to-run noise. Note: Rob's installed plugin is 0.16.1-poc; the harness uses `--plugin-dir` with the installed one disabled, so it is unaffected.
 
 ## Next
 
-1. `/implement .plans/SB1-store-contract.md` in a fresh session (this repo). Start from `main` @ `74bdda7`.
-2. SB2 → SB3 → SB4 → SB5, each a release (version bump in both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`, `claude plugin validate .`, land on `main`, re-sync Cowork).
-3. Then back to the web-app repo for AP4 (plugin re-target) and AP5.
-4. Re-test the Google Drive and Microsoft 365 connectors around November 2026 (Tier 3 today: sync-folder only).
+1. Confirm both baselines completed; run `compare.py baseline-a baseline-b` and note the noise floor.
+2. When ISSUE069 has merged: branch `feat/sb1-sb2-store-contract` from `main`, then slices 1 → 6.
+3. SB3 → SB4 → SB5, then AP4 and AP5 in the web-app repo.
+4. Re-test the Google Drive and Microsoft 365 connectors around November 2026.
 
 ## Open items for Rob
 
-- A private Notion page "StoryStormer Storage Test" from the research needs a manual delete (the connector has no page-delete tool; its database is already trashed).
-- The ISSUE068 § A triage session (sort the tool-surface gaps into AP5, AP4 or drop) after the first real plugin session against the MCP server.
+- A private Notion page "StoryStormer Storage Test" from the research needs a manual delete.
+- The ISSUE068 § A triage session after the first real plugin session against the MCP server.
