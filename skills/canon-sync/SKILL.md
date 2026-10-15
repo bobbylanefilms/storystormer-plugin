@@ -135,7 +135,7 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. N
 - **Rebuild Blueprints.** It lists them; `blueprint` rebuilds.
 - **Read prose wholesale.** Notes are the input; prose is opened only at a disputed passage.
 - **Regenerate the primer or treatment.** It recommends `treatment-update` when the changes warrant it.
-- **Run without a snapshot.** Ever.
+- **Skip the snapshot step** (per `store.md`; on a backend that keeps its own history, that step is the report's note saying so). Ever.
 
 ## References
 

@@ -36,7 +36,7 @@ Every outline's frontmatter carries `authorship`, and it changes how this skill 
 - **`ai_generated`**: this skill wrote it. Freely regenerable.
 - **`ai_generated_author_revised`**: this skill wrote it and the author reworked it. **Correction-only mode**, identical to `author_written`.
 
-These are the app's values, and the app enforces the same protection: its re-outline refuses an author-written or author-revised outline unless told to. Older files spell them with hyphens; read those as the same values and write the underscore form on the next write. A new AI outline is written as `ai_generated`. Before touching any existing outline, **detect author revision**: compare the file's `word_count` and body against the most recent skill-written snapshot (`store.history`). If the body has changed outside a skill run, set `authorship: ai_generated_author_revised` before doing anything else. **Never downgrade `author_written`**, whatever the history folder says.
+These are the app's values, and the app enforces the same protection: its re-outline refuses an author-written or author-revised outline unless told to. Older files spell them with hyphens; read those as the same values and write the underscore form on the next write. A new AI outline is written as `ai_generated`. Before touching any existing outline, **detect author revision**: compare the file's `word_count` and body against the most recent skill-written version (`store.history`; where no prior body is retrievable, use the `word_count` rule in `references/file-schemas.md` § the outline's `authorship` key). If the body has changed outside a skill run, set `authorship: ai_generated_author_revised` before doing anything else. **Never downgrade `author_written`**, whatever the history folder says.
 
 ## What you produce
 
@@ -194,7 +194,7 @@ Where outlines are partly voiced, a style-matched outline carries author voice i
 
 Projects outlined under the older nine-section schema (Premise / Setting & Time / Scene Beats / Setups Planted / Payoffs Delivered / Character Notes / Dialogue Anchors / Connections / Open Threads) need a one-time pass per chapter, which this skill runs when it encounters one:
 
-1. Snapshot the outline to `.history/`.
+1. Snapshot the outline per `store.md`.
 2. Reduce the body to the prose account. If the old file had no prose body (beats only), the beats *are* the content: expand them into a prose account in `ai_generated` mode, or, if the author wrote the beats, leave them and set `author_written` so the Blueprint stage reads them as content.
 3. Open Threads: confirm each `[OPEN: Q-###]` is registered in `questions.md`; leave the marker inline in the body only where it marks a real gap in the narrative.
 4. Set `authorship`. Default `ai_generated` if the history shows a skill wrote it; otherwise ask. Fill the five app keys (`chapter`, `title`, `pov`, `act`, `summary`) from the spine slot.

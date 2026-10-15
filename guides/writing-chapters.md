@@ -108,7 +108,7 @@ With the draft open, just talk about it:
 - *"Tighten the rooftop confrontation — Voss should never raise his voice."*
 - *"The second scene drags; cut it by a third."*
 
-Each note runs a **surgical edit**: the current version is snapshotted to `.history/` first, then only what you named changes — everything else is preserved verbatim. Loop as many rounds as you like. The chapter's status moves `drafted` → `revising` while you work; say **"chapter 17 is done"** when you're happy and it becomes `revised`. If your note is vague ("this feels flat"), the skill will diagnose first — naming what it thinks is off — and confirm before editing.
+Each note runs a **surgical edit**: the current version is snapshotted first (in a local folder, to the chapter's `.history/`), then only what you named changes — everything else is preserved verbatim. Loop as many rounds as you like. The chapter's status moves `drafted` → `revising` while you work; say **"chapter 17 is done"** when you're happy and it becomes `revised`. If your note is vague ("this feels flat"), the skill will diagnose first — naming what it thinks is off — and confirm before editing.
 
 ### The spoiler firewall (why it won't read your treatment)
 

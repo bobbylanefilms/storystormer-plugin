@@ -15,8 +15,8 @@ Always follow `references/plan-first.md` — load context, propose a plan in pla
 
 When the user gives you the go-ahead, you create or update:
 
-- `state.md` — living dashboard (see `references/file-schemas.md`), with `storage_kind: local` in its frontmatter
-- `.storystormer/config.json` — project metadata, including `project_type`, `target_word_count` (config owns the target; `state.md` mirrors it) and `"storage": { "kind": "local" }`
+- `state.md` — living dashboard (see `references/file-schemas.md`), with `storage_kind` in its frontmatter mirroring the config
+- `.storystormer/config.json` — project metadata, including `project_type`, `target_word_count` (config owns the target; `state.md` mirrors it) and `storage`: a new project here gets `"storage": { "kind": "local" }`; an existing project keeps the `storage` block it has
 - `.storystormer/` — supporting subfolder structure
 - `decisions.md` and `questions.md` — seeded from any materials you found
 - `treatment.md` — only when the user brings in an existing treatment-like document and explicitly agrees to a copy-and-clean-up step. **Never generate a new treatment at init.**
@@ -225,7 +225,7 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
 
 2. **Confirm the chapter assignments**. For each file, verify:
    - **Which chapter number** it represents. If the filename is ambiguous, ask.
-   - **Which version** if there are duplicates (`ch3.md` + `chapter3-rewrite.md`). Ask the user which is canonical; stash the canonical one, snapshot the superseded version per `store.md`, filed under `superseded-prose/`.
+   - **Which version** if there are duplicates (`ch3.md` + `chapter3-rewrite.md`). Ask the user which is canonical; stash the canonical one, snapshot the superseded version per `store.md`, filed under `superseded-prose/` inside this run's `init` snapshot folder.
 
 3. **Normalize to the chapter-folder convention**: each chapter gets its own folder `chapters/chapter-NN/` (zero-padded to two digits), and the prose lands inside as `ch<NN>-prose.md`. So `ch1.md` becomes `chapters/chapter-01/ch01-prose.md`, `Chapter 17 - The Locket.md` becomes `chapters/chapter-17/ch17-prose.md`. Tell the user about the renames in the report.
 
@@ -248,7 +248,7 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
 
    The denominator (`/40`) is from the outline structure if it exists, or just `6 written` if no structure has been committed yet.
 
-8. **Snapshot a mapping** of original filenames to canonical filenames as `intake-original-names.md`, written inside this run's `init` snapshot folder (per `store.md`). Example:
+8. **Snapshot a mapping** of original filenames to canonical filenames as `intake-original-names.md`, written inside this run's `init` snapshot folder (per `store.md`), or to `.storystormer/intake-original-names.md` where the binding keeps no snapshot folders. Example:
 
    ```markdown
    # Intake — Original Filename Mapping
@@ -292,7 +292,7 @@ In series mode:
 For intake of an existing standalone project that the user wants to convert to series:
 - Confirm with the user before restructuring — this is a non-trivial move.
 - Snapshot the current standalone folder per `store.md` before any file moves.
-- `store.move` existing `primer.md`, `treatment.md`, `outline/` into `books/book-1/`.
+- `store.move` existing `primer.md`, `treatment.md`, and each document under `outline/` (enumerate with `store.list(outline/**)`) into `books/book-1/`, keeping their relative paths.
 - Keep `manifest.md`, `decisions.md`, `questions.md`, `characters/`, `worldbuilding/` at root (they were already shared in spirit).
 - Update each existing decision and question to add `Scope: book-1` (since pre-series, they were all about the one book).
 - Create stubs for book 2 and book 3 (or however many the user is planning).

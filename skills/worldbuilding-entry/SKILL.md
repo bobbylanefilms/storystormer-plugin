@@ -113,7 +113,7 @@ If the user wants edits, apply them. Don't argue.
 Once approved:
 
 - Snapshot any existing entry per `store.md`.
-- `store.write(worldbuilding/<type-slug>/<slug>.md)` with the new entry. If it was found in an old folder, move it first: snapshot, `store.move(from, to)` into the new folder, then `store.write` the new entry over the moved file, and name both paths in the report.
+- `store.write(worldbuilding/<type-slug>/<slug>.md)` with the new entry. If it was found in an old folder, move it first: snapshot, `store.move(from, to)` into the new folder, then `store.write` the new entry over the moved file, and name both paths in the report. If the binding leaves the old file for the author to remove, say so as a pending step: until it's gone, two copies are discoverable.
 - Update `manifest.md` if the entry is newly added, its description needs to change, or its status should now read `Canon Asset Created`.
 - Update `state.md → What Exists` to reflect the new/updated entry.
 

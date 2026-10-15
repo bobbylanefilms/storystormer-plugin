@@ -186,7 +186,7 @@ After the user approves the spine:
 
 - Snapshot any existing `outline/structure.md` per `store.md`.
 - `store.write(outline/structure.md)` v1 (or bumped version) per the schema: header lines, `## Structure Notes` (Framework Choice, Act Structure, POV Strategy, Pacing Notes, Open Structural Questions) before the first chapter block, then every chapter block in order with no gaps. No `### Chapter …` heading inside the Structure Notes, and no `##` heading between chapter blocks: the app's parser reads either as the end of, or an error in, the spine.
-- `store.write(outline/_index.md)` — the chapter × stage matrix, organized by act, every chapter row with all stage cells `—` (no chapter content exists yet).
+- Regenerate `outline/_index.md` per `store.md` — the chapter × stage matrix, organized by act, every chapter row with all stage cells `—` (no chapter content exists yet).
 - Mark consumed decisions with `Integrated into structure: yes (<date>)`. (Add this line to entries even if you didn't add it to the canonical schema — it's a parallel to `Integrated into treatment` and useful for traceability.)
 - Update `state.md`:
   - `What Exists → Structure` line added with version, frameworks, chapter count.

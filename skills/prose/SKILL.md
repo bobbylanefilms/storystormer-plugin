@@ -84,7 +84,7 @@ The subagent gathers this in its window, but you specify the source in the recip
 
 ### 6. Generate — dispatch the subagent
 
-On approval, build the brief per `references/subagent-pattern.md` § Generation subagents (including the store block from § Mandatory brief fields) and dispatch:
+On approval, build the brief per `references/subagent-pattern.md` § Generation subagents (including the store block from § Mandatory brief fields, which every subagent this skill dispatches carries: generate, revise, packet-builder and consolidation alike) and dispatch:
 
 - **Behavioral frame** first: prose-specialist identity; the resolved **POV-mode rule** + **tense directive** (from `prose-spec.md` § POV rules / Tense); the **target-length directive**; output rules; the spoiler firewall; continuation framing (prior prose is a voice reference, not text to continue or recap).
 - **The full text of `references/prose-spec.md`** pasted as the operational contract (input #3) — the subagent can't reach the plugin bundle. When `voice/style-guide.md` is absent, also paste the full text of the **selected craft rulebook** (`references/prose-craft.md` or the genre variant named in the plan) into the style-guide slot (an authored style guide supersedes it — never both unless the user asks).
@@ -109,10 +109,10 @@ From the subagent's returned report (compact — the prose is on disk, not in yo
 
 When the user wants targeted changes to existing prose:
 
-- Snapshot the current `ch<NN>-prose.md` to `.history/` first; bump `version`, set `status: revising`. When the author signs off on the revision, set `status: revised` (the app's `revised` stage; the retired `approved` means the same).
-- **Detect author revision first.** Compare the file's `word_count` and body against the last skill-written snapshot (`store.history`); if the body changed outside a skill run, set `authorship: ai_generated_author_revised` before editing. Never downgrade `author_written`. (Generate mode writes `authorship: ai_generated`; intake-stashed prose is `author_written`; older files' hyphenated spellings read as the same values. `canon-sync` reads this field to decide whether the manuscript or canon wins a contradiction.)
+- Snapshot the current `ch<NN>-prose.md` per `store.md` first; bump `version`, set `status: revising`. When the author signs off on the revision, set `status: revised` (the app's `revised` stage; the retired `approved` means the same).
+- **Detect author revision first.** Compare the file's `word_count` and body against the last skill-written version (`store.history`; where no prior body is retrievable, a body that doesn't match the recorded `word_count` counts as changed); if the body changed outside a skill run, set `authorship: ai_generated_author_revised` before editing. Never downgrade `author_written`. (Generate mode writes `authorship: ai_generated`; intake-stashed prose is `author_written`; older files' hyphenated spellings read as the same values. `canon-sync` reads this field to decide whether the manuscript or canon wins a contradiction.)
 - Dispatch a subagent in **surgical-edit mode** (`prose-spec.md` § Surgical edit mode): the *current* chapter prose goes in the final position as both the text to edit and the voice anchor; the editorial notes follow it; prior-chapter prose is dropped. The instruction: change ONLY what the notes name, preserve everything else verbatim, minimize collateral changes, return the complete chapter.
-- The subagent rewrites `ch<NN>-prose.md` and updates the `synopsis` **only if** the edit changed the chapter's events.
+- The subagent rewrites `ch<NN>-prose.md` and updates the `synopsis` **only if** the edit changed the chapter's events. Then `store.open` the revised file.
 - If the user's complaint is vague (*"this feels flat"*), diagnose before editing — name what you think is off (dialogue carrying no subtext, beats rushed, interiority thin) and confirm before dispatching.
 
 ## Kit Bash mode (multi-model drafts)
