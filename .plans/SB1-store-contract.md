@@ -122,3 +122,12 @@ confirm:  none | batch
 - **Out of scope:** any skill or command change (SB2); the Dropbox and Notion bindings (SB3) and the StoryStormer binding (AP4); the onboarding question and the locator's behavior beyond naming them (SB4).
 - **Required first:** nothing. Independent of AP0 Part B (formats, not I/O); do not ship the two in the same release.
 - **Needs human judgment:** none expected; the decisions are resolved above.
+
+---
+
+**Implementation notes (as built):** 2026-10-15, `/implement` on `feat/sb1-sb2-store-contract`, released with SB2 as `0.18.0-poc`.
+- **Files:** `references/store.md` (new), `references/store/local.md` (new, moved here from SB3), `references/file-schemas.md`, `plan-first.md`, `reading-discipline.md`, `subagent-pattern.md`, `series.md`, `kitbash-spec.md`, `CLAUDE.md`, `PLUGIN-GUIDE.md`, `README.md`, `.gitignore` (agent worktrees). `prose-spec.md` and `blueprint-spec.md` had nothing to change.
+- **Commits:** `b769cf5` (Opus slice), `3f054f1` (Sol review, 10 confirmed), `bd4769e` (Sonnet references slice), `a246bed`, `03dd90c` (gate review, 8 confirmed), `a315588` (cold-read fixes).
+- **Contract deviations from § 1, all from review:** the concurrency guard fires on any version change (CW5's "moved"), not only a higher one, and its baseline is the read the new content was prepared from; non-atomic writes must recover and never leave a path absent; subagent briefs paste the triggered clauses as text, since subagents can't open `store.md`; changes to author-owned values in computed documents go through the binding's writable realization; `local_root` roots the local binding at the synced folder; resolution bootstraps through the local binding and re-resolves on a project change; `store.read` has a frontmatter-only form; local `delete` works where the host can remove a file and is reported for the author otherwise (no shell dependency); skills may `store.delete` only an intake original they just archived.
+- **Schema:** `config.json` owns `storage` as well as `target_word_count`; `state.md` mirrors `storage_kind`. Snapshot folders keep root-relative paths, and worldbuilding entries joined the book-level snapshot list.
+- **`mcp__*` in `allowed-tools`:** the validator accepts it but only type-checks the field; runtime pre-approval is unverified (SB5).

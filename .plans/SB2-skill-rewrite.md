@@ -98,3 +98,13 @@ Version bump in both manifests; `claude plugin validate .`; land on `main`.
 - **Out of scope:** bindings (SB3), onboarding and migration (SB4), format changes (AP0 Part B), any behavioral change to a skill.
 - **Required first:** SB1's phase committed on the shared SB1+SB2 branch (combined release).
 - **Needs human judgment:** none; if a substitution is ambiguous in context, keep the original meaning and note it in the as-built notes.
+
+---
+
+**Implementation notes (as built):** 2026-10-15, same branch and release as SB1 (`0.18.0-poc`).
+- **Slicing:** skills (all 13, Sonnet) and commands + guides (Sonnet) ran in parallel worktrees; the measured surface was ~90 hits, far below the estimate, so the planned 3a/3b split and the separate guides slice were merged.
+- **Commits:** `b724f5b` + `0343e38` + `e97b9cc` (skills; Sol: 13 confirmed), `9bcfb3e` + `eb1663c` + `66b4b93` + `b1b84f1` (commands and guides; Sol: 11 confirmed), `a315588` (cold-read fixes).
+- **Behavior changes, deliberate:** `checkpoint` captures every document `file-schemas.md` defines (chapters, `kitbash/`, outline, voice, notes, canon-sync records, config, genre reference), excludes history, `research/` and author folders, copies text only, and never reuses a checkpoint folder; every command resolves the store first; `switch` treats `state.md` as owning the books list; `prose` revise reopens the result; author-revision detection keys on the `word_count` the last skill write recorded.
+- **Gate grep:** widened from `/\.history/` to `\.history/` after the original missed backtick-quoted paths; the allowed hits are listed in § 1.
+- **Parity:** structural, against two baselines of `0.17.2-poc` (`~/Git/storystormer-parity`, README § After SB2): zero missed snapshots (baselines missed 1–2), per-step writes inside baseline variance, expected differences only. Cost ~$54 list-price Opus for the run, ~$100 for the two baselines.
+- **Not done here:** the `delete` realization on Cowork (folder connection) is unverified; `init`'s onboarding, locator and migration remain SB4.
