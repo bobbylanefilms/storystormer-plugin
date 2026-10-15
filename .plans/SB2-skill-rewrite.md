@@ -64,7 +64,7 @@ Apply the substitution table. Where a skill lists what it writes (the "What you 
 
 ### B. Commands
 **Files:** `commands/*.md`
-`allowed-tools` per the decision above. `checkpoint.md`: the copy is `store.read` then `store.write` into the snapshot folder, and the command refuses with a one-line explanation where `history` is `native` or `versions`. `switch.md`: write the focus through the contract; where `config.json` is computed, write only `state.md`. `status.md`: the drift check lists through `store.list`.
+`allowed-tools` per the decision above. `checkpoint.md`: **fix the stale capture list** (baseline finding 2026-10-15: it predates the outline, chapter and voice stages, so one baseline run copied 30 files and missed every chapter, and the other improvised 79 including `pipeline/lint.py`). Capture every path `references/file-schemas.md` defines, except the history folders and `research/`, rather than a hand-kept list. This is the one deliberate behavior change in SB2; parity step 16 is an expected difference. The copy is `store.read` then `store.write` into the snapshot folder, and the command refuses with a one-line explanation where `history` is `native` or `versions`. `switch.md`: write the focus through the contract; where `config.json` is computed, write only `state.md`. `status.md`: the drift check lists through `store.list`.
 
 ### C. References and guides
 **Files:** `references/plan-first.md`, `reading-discipline.md`, `subagent-pattern.md`, `prose-spec.md`, `blueprint-spec.md`, `series.md`, `guides/*.md`

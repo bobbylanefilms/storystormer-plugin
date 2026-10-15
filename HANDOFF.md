@@ -3,7 +3,7 @@
 
 # HANDOFF — storystormer-plugin
 
-**Date:** 2026-10-15 · **Branch:** `main` @ `ef1ef20` (v0.17.2-poc) · **Thread:** SB1+SB2 sliced; parity baseline capturing; implementation **not started** (waiting on ISSUE069 in the app repo to finish its build, review loop and merge, per Rob)
+**Date:** 2026-10-15 · **Branch:** `main` @ `ef1ef20` (v0.17.2-poc) · **Thread:** SB1+SB2 sliced; parity baseline **captured**; implementation **not started** (waiting on ISSUE069 in the app repo to finish its build, review loop and merge, per Rob)
 
 ## Decisions this session (Rob, 2026-10-15)
 
@@ -34,12 +34,13 @@ SB1 is one committed phase (slices 1–2 plus the gate); SB2 is the second (slic
 
 `~/Git/storystormer-parity/` (outside the repo so it never ships in the bundle; see its README). A frozen copy of `main` @ `ef1ef20`, a Good Dog fixture and a series brain-dump fixture, and a 20-step headless script (the dev loop, the chapter loop on ch 1–2, all seven commands, `init` and `switch` in series mode). Two baseline runs (`baseline-a`, `baseline-b`) measure run-to-run noise. Note: Rob's installed plugin is 0.16.1-poc; the harness uses `--plugin-dir` with the installed one disabled, so it is unaffected.
 
+**Baseline result:** both runs completed all 20 steps (about $100 list-price Opus). Run-to-run noise is real (snapshot scope, `session_count`, `_index.md` keys, judgment calls), so the gate after SB2 is variance-plus-invariants, not identity; details in the harness README § Baseline findings. Two plugin defects surfaced and are folded into the plans: `checkpoint`'s capture list is stale (SB2 slice 4), and `file-schemas.md`'s snapshot rule omits worldbuilding entries (SB1 slice 2).
+
 ## Next
 
-1. Confirm both baselines completed; run `compare.py baseline-a baseline-b` and note the noise floor.
-2. When ISSUE069 has merged: branch `feat/sb1-sb2-store-contract` from `main`, then slices 1 → 6.
-3. SB3 → SB4 → SB5, then AP4 and AP5 in the web-app repo.
-4. Re-test the Google Drive and Microsoft 365 connectors around November 2026.
+1. When ISSUE069 has merged: branch `feat/sb1-sb2-store-contract` from `main`, then slices 1 → 6.
+2. SB3 → SB4 → SB5, then AP4 and AP5 in the web-app repo.
+3. Re-test the Google Drive and Microsoft 365 connectors around November 2026.
 
 ## Open items for Rob
 

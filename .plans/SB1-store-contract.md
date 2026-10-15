@@ -90,7 +90,7 @@ confirm:  none | batch
 ### B. Schema updates
 **Files:** `references/file-schemas.md`, `references/plan-first.md`, `references/subagent-pattern.md`, `references/reading-discipline.md`
 
-`config.json` examples (standalone and series) gain `storage`; `state.md` frontmatter gains `storage_kind: local | dropbox | notion | storystormer`. The § `.storystormer/history/` and per-chapter `.history/` sections open with one sentence: these apply where the binding's `history` is `snapshots`. `plan-first.md` step 5 and `reading-discipline.md` stop naming host tools. `subagent-pattern.md` adds the three mandatory brief fields and the rule that the main session rejects a report naming a local path when the session's binding is not local.
+`config.json` examples (standalone and series) gain `storage`; `state.md` frontmatter gains `storage_kind: local | dropbox | notion | storystormer`. The § `.storystormer/history/` and per-chapter `.history/` sections open with one sentence: these apply where the binding's `history` is `snapshots`. The book-level snapshot rule's file list gains worldbuilding entries (baseline finding 2026-10-15: `worldbuilding-entry` and `canon-sync` already snapshot them; the rule just never said so). `plan-first.md` step 5 and `reading-discipline.md` stop naming host tools. `subagent-pattern.md` adds the three mandatory brief fields and the rule that the main session rejects a report naming a local path when the session's binding is not local.
 
 ### C. Constraints and docs
 **Files:** `CLAUDE.md`, `PLUGIN-GUIDE.md`, `README.md`
