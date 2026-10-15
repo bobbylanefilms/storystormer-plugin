@@ -1,6 +1,6 @@
 ---
 description: List, filter, or add to the decision log
-allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Task", "mcp__*"]
 ---
 
 # /storystormer:decisions

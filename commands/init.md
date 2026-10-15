@@ -1,13 +1,13 @@
 ---
 description: Set up a StoryStormer story workspace in the current folder, with any starting materials
-allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "WebSearch", "Task"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "WebSearch", "Task", "mcp__*"]
 ---
 
 # /storystormer:init
 
 Invoke the `storystormer-init` skill on the user's current folder. The skill will:
 
-1. Read whatever is in the folder (or note that it's empty).
+1. Read whatever is in the project (or note that it's empty).
 2. Triage the project's maturity (`concept` / `brain-dump` / `brainstorming` / `treatment-drafted` / `treatment-refined`).
 3. Ask 2–4 questions to fill in what the materials don't tell it.
 4. Propose a plan for what it will scaffold and what it will defer.

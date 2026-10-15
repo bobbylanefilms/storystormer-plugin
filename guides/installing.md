@@ -29,7 +29,7 @@ You only need one of them. Most authors want Cowork.
 
 2. **Install the plugin.** From the synced marketplace, install **`storystormer`** (its full id is `storystormer@storystormer-plugin`).
 
-3. **Connect your story folder.** Open **Settings → connect a folder** and point it at the directory where your story lives (or an empty one where it will). This folder connection is how the skills read and write your files — there's nothing else to configure.
+3. **Connect your story project.** Open **Settings → connect a folder** and point it at the directory where your story lives (or an empty one where it will); a connected Dropbox or Notion workspace will work the same way once those bindings ship. This folder connection is how the skills read and write your files — there's nothing else to configure.
 
 4. **Verify.** In a session with the folder connected, run `/storystormer:init` (for a new project) or just ask *"status"* on an existing one. If the slash commands autocomplete with the `storystormer:` prefix, the install worked.
 
@@ -58,7 +58,7 @@ Now `cd` into your **story folder** and start a session there — that's where t
 
 One thing trips people up: **the skills act on whatever folder the session is open in.** Install once, then *use* the plugin from a story folder — empty, or holding your brain dump, draft treatment, whatever you have. Don't run `/storystormer:init` inside a clone of the plugin repo itself; there's no story there to develop.
 
-One folder = one project (a standalone novel, or a whole series in series mode). Writing two unrelated novels? Two folders — connect whichever you're working on.
+One story project = one standalone novel, or a whole series in series mode. Writing two unrelated novels? Two projects (today, two folders) — connect whichever you're working on.
 
 ---
 
@@ -76,7 +76,7 @@ New versions are published to the same marketplace, and an update only appears w
 
 then start a new session.
 
-Updates never touch your story files. The plugin is skills and reference docs; your project is plain markdown in your own folder, and it stays put across any number of plugin updates (or a full uninstall).
+Updates never touch your story files. The plugin is skills and reference docs; your story project is plain markdown that you own, and it stays put across any number of plugin updates (or a full uninstall).
 
 ---
 

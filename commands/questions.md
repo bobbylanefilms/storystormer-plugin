@@ -1,6 +1,6 @@
 ---
 description: Triage open questions — list by priority, add new, resolve, or invalidate
-allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Task", "mcp__*"]
 ---
 
 # /storystormer:questions

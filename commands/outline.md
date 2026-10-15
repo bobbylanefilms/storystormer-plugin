@@ -1,6 +1,6 @@
 ---
 description: Show where outlining stands — structure status, chapters drafted, unresolved markers, and the recommended next outline action
-allowed-tools: ["Read", "Glob", "Grep"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Task", "mcp__*"]
 ---
 
 # /storystormer:outline
@@ -11,7 +11,7 @@ What to report:
 
 1. **Structure file** — if `outline/structure.md` exists, report version, framework choice, chapter count target, act split from the chapter blocks' `**Act:**` lines (e.g., `10/20/10`), how many blocks are `new` vs `existing`, and a count of any `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: ...]` markers in `structure.md`. If it doesn't exist, say so and recommend `pre-outline-session`.
 
-2. **Chapter outlines** — count `chapters/*/ch*-outline.md` files (one per chapter folder) vs. spine target. Report `N/M drafted`. Show how it breaks down by act (`Act 1: 10/10`, `Act 2: 8/20`, etc.). If any chapter outlines exist but `outline/_index.md` doesn't, flag the drift. If `outline/_index.md` is the chapter × stage matrix, its `Outline` column should agree with the file count — flag any mismatch.
+2. **Chapter outlines** — count `chapters/*/ch*-outline.md` files (`store.list`; one per chapter folder) vs. spine target. Report `N/M drafted`. Show how it breaks down by act (`Act 1: 10/10`, `Act 2: 8/20`, etc.). If any chapter outlines exist but `outline/_index.md` doesn't, flag the drift. If `outline/_index.md` is the chapter × stage matrix, its `Outline` column should agree with the file count — flag any mismatch.
 
 3. **Open threads in chapter outlines** — scan the chapter outline bodies for `[OPEN: Q-###]` and `[NEEDS DEVELOPMENT: ...]` markers (grep-permitted; these are inline tags, not narrative content). Report totals by type and which chapters carry them. Three carrying `[OPEN: Q-019]` means Q-019 is blocking three chapters from being prose-ready.
 

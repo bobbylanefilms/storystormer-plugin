@@ -29,7 +29,7 @@ init  →  ┌─ the development loop ─────────────�
 
 | Skill | What it does | When |
 |---|---|---|
-| **Init** (`storystormer-init`) | Triages whatever is in your folder and scaffolds the workspace | Once, at the start |
+| **Init** (`storystormer-init`) | Triages whatever is in your project and scaffolds the workspace | Once, at the start |
 | **Brainstorm** (`brainstorm-session`) | The conversation where the story gets developed | Constantly — this is the core |
 | **Decisions** (`decision-capture`) | Logs anything the story now treats as true | Inline, as things get settled |
 | **Treatment update** (`treatment-update`) | Regenerates the primer + treatment from accumulated decisions | Every ~5+ new decisions |
@@ -63,7 +63,7 @@ Decisions carry one of five types (plot, character, worldbuilding, structure, th
 
 ## Getting started: init
 
-Run `/storystormer:init` (or just say **"set up StoryStormer here"**) in the folder where your story will live. Any starting state works:
+Run `/storystormer:init` (or just say **"set up StoryStormer here"**) in the story project where your story will live (a folder, or a connected Dropbox or Notion workspace once those bindings ship). Any starting state works:
 
 - **Empty folder** — you'll answer a few questions (title, project type, genre) and get a minimal scaffold.
 - **A one-line concept or a brain dump** — init reads it, extracts the decisions already implicit in it ("protagonist is a forensic accountant" was a decision, even if you never called it one), surfaces the open questions you wrote as "maybe X or Y???", and seeds both logs — showing you the lists for confirmation first.
@@ -199,9 +199,9 @@ A chapter outline with zero unresolved markers is prose-ready — which is exact
 | `/storystormer:outline` | Outline-specific status — spine, chapters drafted, blockers, staleness |
 | `/storystormer:decisions` | Browse the decision log (filter, show one, add) |
 | `/storystormer:questions` | The open-question queue by priority |
-| `/storystormer:checkpoint` | Manual snapshot of every story file — take one before anything risky |
+| `/storystormer:checkpoint` | Manual snapshot of every document the plugin manages (canon, outline, chapters, voice, config) — take one before anything risky |
 
-The plugin is git-agnostic: `/storystormer:checkpoint` is your save point. Skills also snapshot automatically before overwriting anything, so checkpoints are for milestones ("pre-act-3-rework"), not routine safety.
+The plugin is git-agnostic: `/storystormer:checkpoint` is your save point. Skills also snapshot automatically before overwriting anything, so checkpoints are for milestones ("pre-act-3-rework"), not routine safety. (If your story lives somewhere that keeps its own version history, checkpoint says so and writes nothing; use that history instead.)
 
 **Writing a trilogy?** Series mode gives you shared characters and worldbuilding at the root with per-book treatments and outlines inside `books/` — say "series" during init (or ask to convert an existing project). Everything in this guide works the same; decisions just gain a scope, and `/storystormer:switch book-2` changes focus. The [README](../README.md#series-mode-multi-book-projects) has the details.
 

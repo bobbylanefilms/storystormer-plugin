@@ -1,6 +1,6 @@
 ---
 description: Switch the current focus to a different book in a series project. Series mode only.
-allowed-tools: ["Read", "Edit", "Glob"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Task", "mcp__*"]
 ---
 
 # /storystormer:switch
@@ -14,15 +14,17 @@ Change the **current focus** in a series project. The slash command takes a book
 
 ## What to do
 
-1. **Validate the book slug.** Read `state.md` frontmatter and `.storystormer/config.json`'s `books` array. If the slug isn't listed, surface the valid options and stop.
+Resolve the store first per `references/store.md` if the session hasn't.
 
-2. **Verify the book folder exists.** Check that `books/<slug>/` exists. If it doesn't (e.g., user added the book to the list but never scaffolded the folder), offer to scaffold it via a recommended `/storystormer:init` re-run rather than silently creating an empty folder.
+1. **Validate the book slug.** `store.read` `state.md` and `.storystormer/config.json` and check the slug against `state.md`'s `books:` and the config's `books` array. If the slug isn't listed, surface the valid options and stop.
 
-3. **Update both stores.**
-   - Edit `state.md` frontmatter: set `current_focus: <slug>`. Update the `last_session` date.
-   - Edit `.storystormer/config.json`: set `"current_focus": "<slug>"`.
+2. **Verify the book folder exists.** Check that `books/<slug>/` exists (`store.list`). If it doesn't (e.g., user added the book to the list but never scaffolded the folder), offer to scaffold it via a recommended `/storystormer:init` re-run rather than silently creating an empty folder.
 
-4. **Read the newly-focused book's `state.md`.** Load `books/<slug>/state.md` and pull out its `Summary`, `What Exists`, `What's Next`, and `Last Session` sections.
+3. **Update both places the focus lives.**
+   - `state.md` frontmatter: set `current_focus: <slug>` and update the `last_session` date, with `store.edit` (or `store.write`).
+   - `.storystormer/config.json`: set `"current_focus": "<slug>"`. Where the binding stores the config, use `store.edit`. Where the binding computes it, go through the writable realization the binding names for `current_focus` (`references/store.md` § Local-mode clauses); if it names none, say so in the report rather than skip it silently.
+
+4. **Read the newly-focused book's `state.md`.** `store.read` `books/<slug>/state.md` and pull out its `Summary`, `What Exists`, `What's Next`, and `Last Session` sections.
 
 5. **Report the new focus.** Format the report so the user can immediately see where they are in the new book:
 
