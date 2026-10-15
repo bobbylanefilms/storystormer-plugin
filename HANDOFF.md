@@ -23,7 +23,7 @@
 
 ## Current position
 
-All slices accepted at `e97b9cc`. Running: parity harness (`~/Git/storystormer-parity`, label `after-sb2`, plugin frozen at `plugins/after-sb2-e97b9cc`) and an Opus cold read of treatment-update / prose / init. Next: `compare.py baseline-a after-sb2`, `compare.py baseline-b after-sb2`, `invariants.py after-sb2`; fix anything real; bump to `0.18.0-poc`; validate; merge to `main`; push.
+All slices accepted; cold-read fixes landed at `a315588` (pushed). **Blocked:** the parity run needs the `claude` CLI signed in (it expired; `claude auth status` → loggedIn false). When Rob signs in: `git archive a315588` into `~/Git/storystormer-parity/plugins/after-sb2-a315588`, `python3 run.py plugins/after-sb2-a315588 after-sb2 opus`, then `compare.py` against both baselines and `invariants.py`. Then bump to `0.18.0-poc`, validate, merge to `main`, push.
 
 ## Decisions and deviations
 
@@ -35,6 +35,7 @@ All slices accepted at `e97b9cc`. Running: parity harness (`~/Git/storystormer-p
 - Slice 4 fix (`eb1663c`): checkpoint keeps `.storystormer/genre-reference.md`.
 - Gate grep widened (`\.history/`, was `/\.history/`): the original pattern missed backtick-quoted paths; allowed-hit list recorded in SB2 § 1.
 - Expected parity differences: snapshot folders keep root-relative paths (`<op>/characters/<slug>.md`, was `<op>/<slug>.md`); checkpoint captures chapters, outline, voice; init writes `storage`/`storage_kind`.
+- Cold read (`a315588`): `store.read` frontmatter-only form; local `delete` restored where the host can remove a file (reported otherwise; no shell dependency); intake archive vs snapshot; prose revise bookkeeping owned by the main session; author-revision detection keys on recorded `word_count`.
 - Guides (planned slice 5) folded into Slice 4: guides land in the repo, so Haiku is out; one Sonnet slice is cheaper than two.
 - Slice 1 open calls taken: no `storage` block → local; local `delete` unavailable (report names the file for the author to remove; no shell); local edits all-or-nothing by pre-checking anchors; edit grammar is old/new pairs + `replace_all` (AP4 must map single edits to the app's `replace_range`).
 - Sol review of Slice 1 (all confirmed, fixed in `3f054f1`): concurrency baseline pinned to the preparing read and guard fires on any version change (CW5 "moved", wider than SB1's "higher"); non-atomic write recovery; subagent briefs carry triggered clauses; computed config changes route to a writable realization; `local_root` roots local; series chapter `.history/` and root-relative snapshot paths; resolve bootstraps via local; re-resolve on project change.
