@@ -1,57 +1,33 @@
 <!-- ABOUTME: Session handoff for long-running work in this repo; rewritten whole at each checkpoint -->
-<!-- ABOUTME: Current thread: /implement run of SB1+SB2 (store contract + skill rewrite), 2026-10-15 -->
+<!-- ABOUTME: Current thread: SB1+SB2 released as 0.18.0-poc on main; SB3 (Dropbox + Notion bindings) next -->
 
 # HANDOFF — storystormer-plugin
 
-## Run
+**Date:** 2026-10-15 · **Branch:** `main` @ `9f71785` (SB1+SB2 fast-forwarded from `feat/sb1-sb2-store-contract`) · **Version:** `0.18.0-poc`
 
-- **Skill:** `/implement` · no flags · orchestrator Opus 5.5 · effort high · started 2026-10-15
-- **Branch:** `feat/sb1-sb2-store-contract` from `main` @ `fa6e048`
-- **Plans:** `.plans/SB1-store-contract.md`, `.plans/SB2-skill-rewrite.md` (one release, `0.18.0-poc`)
-- **Reviewer:** GPT-6.1 Sol via Codex CLI 0.162.1, per slice
+## What landed
 
-## Slices
+The store contract (SB1) and the skill rewrite onto it (SB2), as one release:
+- `references/store.md`: six operations plus optional `move`/`delete`, a declared capabilities line per backend, once-per-project resolution, local-mode clauses (snapshots, indexes, config), concurrency guard, confirmation posture, bindings table.
+- `references/store/local.md`: the first binding; today's behavior, with `delete` working where the host can remove a file.
+- Every skill, command, reference and guide now addresses the contract; no skill names a host tool. `checkpoint` captures every document `file-schemas.md` defines.
+- Plans carry full as-built notes: `.plans/SB1-store-contract.md`, `.plans/SB2-skill-rewrite.md`.
 
-| # | Slice | Tier | Status | Commit | Review |
-|---|---|---|---|---|---|
-| 1 | Contract: `references/store.md` + `references/store/local.md` + `mcp__*` validate check | Opus | accepted | `b769cf5`, fix `3f054f1` | Sol: 10 confirmed, fixed inline |
-| 2 | Schema, references, docs (SB1 §3B–C + SB2 §3C refs) | Sonnet | accepted | `bd4769e`, fixes `a246bed`, `03dd90c` | Sol gate: 8 confirmed, fixed |
-| — | Review gate: `store.md` vs CW5 §4–5; SB1 phase commit | Sol | pending | — | — |
-| 3 | Skills: all 13 `skills/*/SKILL.md` | Sonnet (parallel with 4) | accepted | `b724f5b`, fixes `0343e38`, `e97b9cc` | Sol: 13 confirmed, fixed |
-| 4 | Commands + guides (incl. checkpoint capture-list fix) | Sonnet (parallel with 3) | accepted | `9bcfb3e`, fixes `eb1663c`, `66b4b93`, `b1b84f1` | Sol: 11 confirmed, fixed |
-| 6 | Gate + release: greps, validate, parity run, adversarial read, bump, land on `main` | inline | in progress | — | — |
+## Verification
 
-## Current position
+- Sol (GPT-6.1) reviewed every slice: 42 findings confirmed and fixed. An Opus cold read added 8 more fixes.
+- `claude plugin validate .` passes (one pre-existing warning: CLAUDE.md at the plugin root).
+- Parity harness (`~/Git/storystormer-parity`, README § After SB2): zero missed snapshots versus 1–2 in each baseline; per-step writes inside baseline variance; only intended differences.
 
-All slices accepted; cold-read fixes landed at `a315588` (pushed). **Blocked:** the parity run needs the `claude` CLI signed in (it expired; `claude auth status` → loggedIn false). When Rob signs in: `git archive a315588` into `~/Git/storystormer-parity/plugins/after-sb2-a315588`, `python3 run.py plugins/after-sb2-a315588 after-sb2 opus`, then `compare.py` against both baselines and `invariants.py`. Then bump to `0.18.0-poc`, validate, merge to `main`, push.
+## Next
 
-## Decisions and deviations
+1. Rob: re-sync in Cowork (update marketplace → update plugin → restart session). Rob's local Claude Code install is still `0.16.1-poc`: `claude plugin marketplace update storystormer-plugin`, then update the plugin.
+2. SB3: Dropbox and Notion bindings (`references/store/dropbox.md`, `notion.md`). `local.md` already exists. Reuse the parity harness for regressions.
+3. SB4 (onboarding, locator, migrate) → SB5 (backend test matrix, incl. whether `mcp__*` in `allowed-tools` pre-approves connector tools, and Cowork's `delete`).
+4. Then AP4 and AP5 in the web-app repo. AP4's binding must map single edits to the app's `replace_range` (not `find_replace`) to keep the contract's ambiguous-anchor failure rule.
 
-- Rob 2026-10-15: `store/local.md` in SB1; SB1+SB2 one release; structural parity; baseline before ISSUE069 (done).
-- 3a/3b merged into one skills slice: the measured surface is ~90 hits across skills/commands/guides, far below the plan's estimate; skills and commands+guides run in parallel worktrees (disjoint files).
-- Slice 2 extras: 3 non-history lines in file-schemas.md also moved to "per store.md"; prose-spec/blueprint-spec had no hits; kitbash's external `codex exec` prompt left as is.
-- Gate review fixes (`03dd90c`): briefs paste triggered clauses as text; author-revision detection via `store.history`; config owns `storage`; `.history/` layout marked snapshots-only; CLAUDE.md file-ops line.
-- Slice 3 fixes (`0343e38`): worldbuilding old-folder case moves before writing; init mapping file stays in the init snapshot folder; convert-to-series uses `store.move`.
-- Slice 4 fix (`eb1663c`): checkpoint keeps `.storystormer/genre-reference.md`.
-- Gate grep widened (`\.history/`, was `/\.history/`): the original pattern missed backtick-quoted paths; allowed-hit list recorded in SB2 § 1.
-- Expected parity differences: snapshot folders keep root-relative paths (`<op>/characters/<slug>.md`, was `<op>/<slug>.md`); checkpoint captures chapters, outline, voice; init writes `storage`/`storage_kind`.
-- Cold read (`a315588`): `store.read` frontmatter-only form; local `delete` restored where the host can remove a file (reported otherwise; no shell dependency); intake archive vs snapshot; prose revise bookkeeping owned by the main session; author-revision detection keys on recorded `word_count`.
-- Guides (planned slice 5) folded into Slice 4: guides land in the repo, so Haiku is out; one Sonnet slice is cheaper than two.
-- Slice 1 open calls taken: no `storage` block → local; local `delete` unavailable (report names the file for the author to remove; no shell); local edits all-or-nothing by pre-checking anchors; edit grammar is old/new pairs + `replace_all` (AP4 must map single edits to the app's `replace_range`).
-- Sol review of Slice 1 (all confirmed, fixed in `3f054f1`): concurrency baseline pinned to the preparing read and guard fires on any version change (CW5 "moved", wider than SB1's "higher"); non-atomic write recovery; subagent briefs carry triggered clauses; computed config changes route to a writable realization; `local_root` roots local; series chapter `.history/` and root-relative snapshot paths; resolve bootstraps via local; re-resolve on project change.
-- `mcp__*` in `allowed-tools`: validator accepts it but only type-checks the field; runtime pre-approval unverified (SB5).
-- `checkpoint` capture list fix is the one deliberate behavior change (baseline finding).
-- No TypeScript here: the check per slice is `claude plugin validate .` plus the SB2 greps.
+## Open items for Rob
 
-## Parity harness
-
-`~/Git/storystormer-parity/` (README § Baseline findings). Baselines `baseline-a`, `baseline-b` on frozen `main` @ `ef1ef20`. After Slice 4: `python3 run.py ~/Git/storystormer-plugin after-sb2 opus`, then `compare.py` and `invariants.py` against both baselines.
-
-## Open items
-
-- Rob: delete the private Notion page "StoryStormer Storage Test"; ISSUE068 § A triage after the first real MCP session.
-- Log entries owed at the end: model-picks lines for every slice.
-
-## Last check
-
-`claude plugin validate .` — not yet run on this branch.
+- Delete the private Notion page "StoryStormer Storage Test".
+- ISSUE068 § A triage after the first real plugin session against the MCP server.
+- `feat/sb1-sb2-store-contract` is fully merged into `main` (fast-forward); delete it when you're ready.
