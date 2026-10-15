@@ -36,13 +36,13 @@ Every outline's frontmatter carries `authorship`, and it changes how this skill 
 - **`ai_generated`**: this skill wrote it. Freely regenerable.
 - **`ai_generated_author_revised`**: this skill wrote it and the author reworked it. **Correction-only mode**, identical to `author_written`.
 
-These are the app's values, and the app enforces the same protection: its re-outline refuses an author-written or author-revised outline unless told to. Older files spell them with hyphens; read those as the same values and write the underscore form on the next write. A new AI outline is written as `ai_generated`. Before touching any existing outline, **detect author revision**: compare the file's `word_count` and body against the most recent skill-written snapshot in `chapters/chapter-NN/.history/`. If the body has changed outside a skill run, set `authorship: ai_generated_author_revised` before doing anything else. **Never downgrade `author_written`**, whatever the history folder says.
+These are the app's values, and the app enforces the same protection: its re-outline refuses an author-written or author-revised outline unless told to. Older files spell them with hyphens; read those as the same values and write the underscore form on the next write. A new AI outline is written as `ai_generated`. Before touching any existing outline, **detect author revision**: compare the file's `word_count` and body against the most recent skill-written snapshot (`store.history`). If the body has changed outside a skill run, set `authorship: ai_generated_author_revised` before doing anything else. **Never downgrade `author_written`**, whatever the history folder says.
 
 ## What you produce
 
 - **`chapters/chapter-NN/ch<NN>-outline.md`**: one file per chapter, in that chapter's folder, chapter-number-prefixed and zero-padded (`ch17-outline.md`).
-- **`outline/_index.md`**: the outline view (chapter × stage matrix), regenerated so each chapter's Outline column reflects the new state (version link, or `—`, plus any inline markers).
-- Snapshots of any overwritten outline to that chapter's `chapters/chapter-NN/.history/` as a flat `ch<NN>-outline-v<version>-<date>.md` file. New outlines have nothing to snapshot.
+- **`outline/_index.md`**: the outline view (chapter × stage matrix), regenerated per `store.md` so each chapter's Outline column reflects the new state (version link, or `—`, plus any inline markers).
+- Snapshots of any overwritten outline, per `store.md`. New outlines have nothing to snapshot.
 - Updates to `state.md`: `What Exists → Chapter outlines` line (`12/40 drafted`), `Summary`, `Last Session`, `What's Next`; `stage` advances to `outline-drafted` only when every spine chapter is outlined and zero unresolved markers remain across the bodies, otherwise `outlining`.
 
 ## Preconditions
@@ -93,7 +93,7 @@ List the files at the top of your next response, full-read each, and quote at le
 > - **Generate**: 10 outline files, each a prose account of its chapter at roughly 600–1,200w. Shown in two halves (ch 1–5, then 6–10).
 > - **Markers**: 2 spine slots carry `[OPEN: Q-014]` (the ch 3 inciting mechanism); I'll carry the marker inline rather than invent the mechanism.
 > - **Chain check**: primer §2 registers 4 load-bearing chains; 2 plant in this range. I'll confirm each plant is present in its chapter's body.
-> - **Update**: `outline/_index.md` regenerated; `state.md` updated.
+> - **Update**: `outline/_index.md` regenerated per `store.md`; `state.md` updated.
 
 **Correction-only example:**
 
@@ -136,7 +136,7 @@ If a chapter slot's treatment source is thin or absent, surface it before genera
 1. Audit the outline against current canon in substantive mode.
 2. **Triage into buckets** and present the full triage before editing anything: canon contradictions, POV breaches, prose-stage items (declined, listed anyway), additive gaps (things canon says should happen here that the text omits, offered, never inserted unasked), and canon-internal conflicts. Quote the smallest possible fix for each item.
 3. Apply only what is approved.
-4. Snapshot the prior version to `chapters/chapter-NN/.history/`.
+4. Snapshot the prior version per `store.md`.
 5. Report what was declined and why, not just what was changed.
 
 **When canon disagrees with itself**, surface it, apply the more recent and more specific entry, mark it reversible in the report, and say plainly that a choice was made. Do not block the pass on a single unresolved word.
@@ -163,7 +163,7 @@ Surface failures to the user before writing. Don't fix them silently.
 
 ### 9. Show, write, wire, report
 
-Show batches in halves and let the user approve, request per-chapter edits, or request a global adjustment (then re-show). After approval: snapshot superseded versions, write the files with full frontmatter (the five app keys filled; `authorship` set; `structure_version`, `treatment_version`, `primer_version` stamped; `word_count` recorded), regenerate `outline/_index.md`, update `state.md`.
+Show batches in halves and let the user approve, request per-chapter edits, or request a global adjustment (then re-show). After approval: snapshot superseded versions per `store.md`, `store.write` the files with full frontmatter (the five app keys filled; `authorship` set; `structure_version`, `treatment_version`, `primer_version` stamped; `word_count` recorded), regenerate `outline/_index.md` per `store.md`, update `state.md`.
 
 > Outline-chapters batch complete. Wrote 10 outlines (ch 01–10), ~9,100w total, all `ai_generated`, matched to the style of your ch 1 and ch 2 (`author_written`). ch 3 carries `[OPEN: Q-014]` inline (the inciting mechanism). Chain check: both §2 chains that plant in Act 1 are present (the locket, ch 2; the ledger page, ch 7). Index regenerated. Next: review Act 1, then the first half of Act 2.
 

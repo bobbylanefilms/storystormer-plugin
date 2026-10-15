@@ -23,8 +23,8 @@ The division of labor:
 ## What you produce
 
 - **`chapters/chapter-NN/ch<NN>-prose.md`** — the chapter's prose, per the schema in `references/file-schemas.md` § `ch<NN>-prose.md`. Body is **prose only** (no markdown headers, no meta-commentary). Frontmatter carries `pov`, `pov_type` and `tense` (the app's scene enums), the version stamps (`outline_version`, `blueprint_version`, `treatment_version`, `primer_version`), `status: drafted`, `authorship: ai_generated`, `word_count`, and a **~150–250w `synopsis`** — the chapter's contribution to every later chapter's story-so-far. Scene-split chapters write `scenes/ch<NN>-scene-MM.md` instead.
-- **`outline/_index.md`** — regenerated so each chapter's **Prose** column reflects the new state (version link, or `—`); bump `chapters_drafted` in its frontmatter.
-- Snapshots any overwritten prose (a prior draft, or intake-stashed prose) to `chapters/chapter-NN/.history/` as `ch<NN>-prose-v<version>-<date>.md`.
+- **`outline/_index.md`** — regenerated per `store.md` so each chapter's **Prose** column reflects the new state (version link, or `—`); bump `chapters_drafted` in its frontmatter.
+- Snapshots any overwritten prose (a prior draft, or intake-stashed prose), per `store.md`.
 - Updates to `state.md`: `What Exists → Prose chapters` line (`6/40 written`), `Summary`, `Last Session`, `What's Next`.
 
 ## Preconditions
@@ -51,7 +51,7 @@ For each chapter in scope:
 - **Target length** — resolve a word-count target: the user's ask, else the chapter outline's density, else the project's chapter norm. It rides in the behavioral frame as the target-length directive (`prose-spec.md` § Target length; generate mode only — surgical edits keep the existing length).
 - **Craft rulebook** (only when `voice/style-guide.md` is absent) — pick the variant matching the project's genre per `prose-spec.md` § Which rulebook (genre variants for literary thriller, cozy mystery, fantasy, romance, literary fiction; else the default `prose-craft.md`). Name the pick in the plan; the user's explicit choice always wins. An authored style guide supersedes the rulebook entirely.
 - **Model** — the generation subagent inherits the session's model unless the user names one; if they do, pass it on dispatch and note it in the plan.
-- **POV-matched prior prose** — walk backward to the most recent prior chapter (chapter < NN) with the **same `pov`** that has prose; that's the voice anchor. Fall back to the most recent any-POV prior prose if no same-POV chapter exists; if none at all (a POV debut, or chapter 1), there is no prior-prose anchor and the writing sample carries voice alone. (Glob `chapters/*/ch*-prose.md`, read each one's `pov` + `chapter` frontmatter, filter `< NN`, prefer matching `pov`, pick the max chapter.)
+- **POV-matched prior prose** — walk backward to the most recent prior chapter (chapter < NN) with the **same `pov`** that has prose; that's the voice anchor. Fall back to the most recent any-POV prior prose if no same-POV chapter exists; if none at all (a POV debut, or chapter 1), there is no prior-prose anchor and the writing sample carries voice alone. (`store.list(chapters/*/ch*-prose.md)`, read each one's `pov` + `chapter` frontmatter, filter `< NN`, prefer matching `pov`, pick the max chapter.)
 
 ### 3. The spoiler firewall (hold this throughout)
 
@@ -84,7 +84,7 @@ The subagent gathers this in its window, but you specify the source in the recip
 
 ### 6. Generate — dispatch the subagent
 
-On approval, build the brief per `references/subagent-pattern.md` § Generation subagents and dispatch:
+On approval, build the brief per `references/subagent-pattern.md` § Generation subagents (including the store block from § Mandatory brief fields) and dispatch:
 
 - **Behavioral frame** first: prose-specialist identity; the resolved **POV-mode rule** + **tense directive** (from `prose-spec.md` § POV rules / Tense); the **target-length directive**; output rules; the spoiler firewall; continuation framing (prior prose is a voice reference, not text to continue or recap).
 - **The full text of `references/prose-spec.md`** pasted as the operational contract (input #3) — the subagent can't reach the plugin bundle. When `voice/style-guide.md` is absent, also paste the full text of the **selected craft rulebook** (`references/prose-craft.md` or the genre variant named in the plan) into the style-guide slot (an authored style guide supersedes it — never both unless the user asks).
@@ -97,11 +97,11 @@ For a **sequential batch**, dispatch one subagent per chapter in order; chapter 
 
 From the subagent's returned report (compact — the prose is on disk, not in your context):
 
-- Regenerate `outline/_index.md` — Prose column updated; bump `chapters_drafted`.
+- Regenerate `outline/_index.md` per `store.md` — Prose column updated; bump `chapters_drafted`.
 - When the chapter's `status` later reaches `revising` or `revised`, recommend `notes` so the chapter's end-state and harvest exist for the next chapter's Blueprint.
 - Update `state.md` (What Exists → Prose chapters; Summary; Last Session; What's Next).
 - Present: the synopsis the subagent wrote, the word count, which path it used, the prior-prose anchor it chose, and any continuity flags it raised. Point the user at `chapters/chapter-NN/ch<NN>-prose.md` to read — **the file is the review surface** (don't dump 4,000 words into the conversation).
-- **Surface the file for in-app reading** where the host can render it (Cowork's file preview; a send-file/render tool in Claude Code): present the prose file itself so the user reads the draft beside the chat — present the file, never paste its contents into the conversation. Chat feedback on the open draft (*"make the intro more atmospheric," "tighten the second scene"*) is **revise mode** (below): each note becomes a surgical edit against the same file, snapshotted to `.history/` first, so the reading pane always reflects the current draft and the loop can run as many rounds as the user wants.
+- **Surface the file for in-app reading**: `store.open(chapters/chapter-NN/ch<NN>-prose.md)` so the user reads the draft beside the chat — never paste its contents into the conversation. Chat feedback on the open draft (*"make the intro more atmospheric," "tighten the second scene"*) is **revise mode** (below): each note becomes a surgical edit against the same file, snapshotted first per `store.md`, so the reading pane always reflects the current draft and the loop can run as many rounds as the user wants.
 
 > Ch 17 prose written — 4,180 words, lean path (used `ch17-blueprint.md`), voice anchored on ch 14 (Marlowe's prior POV chapter). Synopsis: *[the ~200w synopsis]*. One continuity flag: the Blueprint references Marlowe's father's locket as still hidden, but ch 14's prose has her already holding it — I wrote toward the ch-14 state (she has it) and flagged the Blueprint as possibly stale. Open `chapters/chapter-17/ch17-prose.md` to read. Next: review it, then ch 18, or revise anything that's off.
 
@@ -110,7 +110,7 @@ From the subagent's returned report (compact — the prose is on disk, not in yo
 When the user wants targeted changes to existing prose:
 
 - Snapshot the current `ch<NN>-prose.md` to `.history/` first; bump `version`, set `status: revising`. When the author signs off on the revision, set `status: revised` (the app's `revised` stage; the retired `approved` means the same).
-- **Detect author revision first.** Compare the file's `word_count` and body against the last skill-written snapshot in `.history/`; if the body changed outside a skill run, set `authorship: ai_generated_author_revised` before editing. Never downgrade `author_written`. (Generate mode writes `authorship: ai_generated`; intake-stashed prose is `author_written`; older files' hyphenated spellings read as the same values. `canon-sync` reads this field to decide whether the manuscript or canon wins a contradiction.)
+- **Detect author revision first.** Compare the file's `word_count` and body against the last skill-written snapshot (`store.history`); if the body changed outside a skill run, set `authorship: ai_generated_author_revised` before editing. Never downgrade `author_written`. (Generate mode writes `authorship: ai_generated`; intake-stashed prose is `author_written`; older files' hyphenated spellings read as the same values. `canon-sync` reads this field to decide whether the manuscript or canon wins a contradiction.)
 - Dispatch a subagent in **surgical-edit mode** (`prose-spec.md` § Surgical edit mode): the *current* chapter prose goes in the final position as both the text to edit and the voice anchor; the editorial notes follow it; prior-chapter prose is dropped. The instruction: change ONLY what the notes name, preserve everything else verbatim, minimize collateral changes, return the complete chapter.
 - The subagent rewrites `ch<NN>-prose.md` and updates the `synopsis` **only if** the edit changed the chapter's events.
 - If the user's complaint is vague (*"this feels flat"*), diagnose before editing — name what you think is off (dialogue carrying no subtext, beats rushed, interiority thin) and confirm before dispatching.

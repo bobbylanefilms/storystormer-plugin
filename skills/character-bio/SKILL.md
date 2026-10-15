@@ -32,7 +32,7 @@ Three tiers (bio depths, not a frontmatter field; the `type` picks the default d
 - Existing bio at `characters/<slug>.md` if there is one (expansion/refresh case).
 - Other character bios (the major characters) — for Voice Fingerprint differentiation (see *Voice well overlap* below).
 
-**Operate in substantive mode** for this read — list the files you plan to consult at the top of your next response, full-read each with the Read tool (beginning to end, no grep), and quote at least one passage from each in your output. See `references/reading-discipline.md` § Substantive mode.
+**Operate in substantive mode** for this read — list the files you plan to consult at the top of your next response, full-read each with `store.read` (full read, beginning to end, no grep), and quote at least one passage from each in your output. See `references/reading-discipline.md` § Substantive mode.
 
 ### 2. Pick the type and tier (and explain them)
 
@@ -107,9 +107,9 @@ If the user wants edits, apply them. Don't argue.
 
 Once approved:
 
-- Snapshot any existing bio to `.storystormer/history/<timestamp>-character-bio/<slug>.md`.
-- Write the new bio to `characters/<slug>.md`.
-- Update `characters/_index.md` (mirror of manifest's character list, with one-line descriptors).
+- Snapshot any existing bio per `store.md`.
+- `store.write(characters/<slug>.md)` with the new bio.
+- Update `characters/_index.md` per `store.md` (mirror of manifest's character list, with one-line descriptors).
 - Update `manifest.md` if the character is newly added, their role changed, or their manifest status should now read `Canon Asset Created`.
 - Update `state.md → What Exists` to reflect the new/updated bio.
 
@@ -133,7 +133,7 @@ See `references/reading-discipline.md` § Substantive mode.
 
 In **series mode**, populating a character bio's Per-Book Sub-Arcs section requires reading every book's treatment for the character's appearances. For a trilogy, that's 3 treatments × ~6,000 words each = ~18,000 words of treatment context just for one character's bio. Add the cross-cast differentiation checks (Voice Well, Inner Voice, Thematic Posture against other major bios) and the context cost grows further.
 
-Dispatch read subagents per `references/subagent-pattern.md` for series-mode bio work:
+Dispatch read subagents per `references/subagent-pattern.md` for series-mode bio work. Every brief carries the store block from `references/subagent-pattern.md` § Mandatory brief fields.
 
 1. **One per-book character-appearance subagent per book** (parallel) — each subagent full-reads its book's treatment and returns the character's appearances, actions, and arc development *in that book*, with verbatim excerpts. Scope is the character's slice of that book's treatment, not the full narrative.
 2. **Cross-cast Voice Wells subagent** (when writing or expanding a major bio in a series with 3+ existing major bios) — full-reads each existing major bio's Voice Fingerprint section, returns just the Reference Wells field per character. Used by the main session's Voice Well overlap check.

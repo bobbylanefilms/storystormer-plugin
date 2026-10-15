@@ -20,7 +20,7 @@ Always follow `references/plan-first.md` — propose what you intend to focus on
 - Updates to `decisions.md` — every structural commitment that wasn't already a logged decision gets captured (e.g., *"D-031: Save the Cat as the structural framework"*; *"D-032: 40-chapter target, three-act split 10/20/10"*).
 - Updates to `questions.md` — any structural gaps that surface during the conversation get logged as critical/important questions (e.g., *"Q-024: Does the midpoint shift fall in ch 18 or ch 20?"*).
 - Updates to `state.md` — `What Exists → Structure` line added, `stage` advanced to `outlining` (or `outline-drafted` if the spine covers all chapters with no critical gaps).
-- Snapshot to `.storystormer/history/<timestamp>-pre-outline/` if an existing `structure.md` is being replaced.
+- Snapshot per `store.md` if an existing `structure.md` is being replaced.
 
 ## When this skill fires
 
@@ -184,9 +184,9 @@ Lean toward capture. The structural decisions are load-bearing for everything do
 
 After the user approves the spine:
 
-- Snapshot any existing `outline/structure.md` to `.storystormer/history/<timestamp>-pre-outline/`.
-- Write `outline/structure.md` v1 (or bumped version) per the schema: header lines, `## Structure Notes` (Framework Choice, Act Structure, POV Strategy, Pacing Notes, Open Structural Questions) before the first chapter block, then every chapter block in order with no gaps. No `### Chapter …` heading inside the Structure Notes, and no `##` heading between chapter blocks: the app's parser reads either as the end of, or an error in, the spine.
-- Write `outline/_index.md` — the chapter × stage matrix, organized by act, every chapter row with all stage cells `—` (no chapter content exists yet).
+- Snapshot any existing `outline/structure.md` per `store.md`.
+- `store.write(outline/structure.md)` v1 (or bumped version) per the schema: header lines, `## Structure Notes` (Framework Choice, Act Structure, POV Strategy, Pacing Notes, Open Structural Questions) before the first chapter block, then every chapter block in order with no gaps. No `### Chapter …` heading inside the Structure Notes, and no `##` heading between chapter blocks: the app's parser reads either as the end of, or an error in, the spine.
+- `store.write(outline/_index.md)` — the chapter × stage matrix, organized by act, every chapter row with all stage cells `—` (no chapter content exists yet).
 - Mark consumed decisions with `Integrated into structure: yes (<date>)`. (Add this line to entries even if you didn't add it to the canonical schema — it's a parallel to `Integrated into treatment` and useful for traceability.)
 - Update `state.md`:
   - `What Exists → Structure` line added with version, frameworks, chapter count.

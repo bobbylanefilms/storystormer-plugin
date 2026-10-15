@@ -24,8 +24,8 @@ Four things, and capturing them is the whole job:
 
 - **`chapters/chapter-NN/ch<NN>-notes.md`** per `references/file-schemas.md` § Notes, which is the app's chapter notes document: its frontmatter keys (the app's four plus the plugin's `prose_version` freshness stamp), its six section headings in their fixed order, and its empty-section convention all live there. The app's notes job writes the same document and both sides' canon-sync find sections by exact heading, so never rename, reorder, or add one.
 - **Proposals, never writes**, written to the notes file's § Proposals as unchecked items and repeated in the report: Revelation Log lines for state changes the prose established; promotions of accidental canon into a bio or worldbuilding entry; manifest additions for new named elements; **closures of Tier 1 chains** in primer §2 whose payoff this chapter delivered. Same contract as `blueprint`: canon is the author's, and the skill appends only on approval. This is also how chains close; without it, closure is manual and will not happen.
-- **`outline/_index.md`** regenerated so the chapter's **Notes** column reflects the new state; bump `chapters_noted` in its frontmatter.
-- Snapshots of any overwritten notes file to `chapters/chapter-NN/.history/` as `ch<NN>-notes-v<version>-<date>.md`.
+- **`outline/_index.md`** regenerated per `store.md` so the chapter's **Notes** column reflects the new state; bump `chapters_noted` in its frontmatter.
+- Snapshots of any overwritten notes file, per `store.md`.
 - Updates to `state.md`: `What Exists → Notes` line, `Summary`, `Last Session`, `What's Next` (including the count of unintegrated proposals, which is what tells the author a `canon-sync` is owed).
 
 ## Preconditions
@@ -54,7 +54,7 @@ Per chapter, in substantive mode (full reads, never grep; see `references/readin
 - `primer.md` § 2 Reveal Architecture, to see whether this chapter was a registered plant or payoff chapter.
 - `manifest.md`, to know which named things already have entries.
 
-This is roughly 12,000 words of input for a compact structured output, so **dispatch it as a subagent** (`references/subagent-pattern.md`) returning a short report; in batch mode, one subagent per chapter, in parallel. Notes never reads a later chapter.
+This is roughly 12,000 words of input for a compact structured output, so **dispatch it as a subagent** (`references/subagent-pattern.md`) returning a short report; in batch mode, one subagent per chapter, in parallel. Every brief carries the store block from `references/subagent-pattern.md` § Mandatory brief fields. Notes never reads a later chapter.
 
 ### 3. Propose the plan
 
@@ -80,7 +80,7 @@ Then the subagent checks the Blueprint's plants and established state against th
 
 ### 5. Show, write, wire, report
 
-Show the notes file (or the batch in chunks). After approval: snapshot, write, regenerate the index, update `state.md`. The report carries the proposals as a single approve-or-decline list:
+Show the notes file (or the batch in chunks). After approval: snapshot per `store.md`, `store.write`, regenerate the index per `store.md`, update `state.md`. The report carries the proposals as a single approve-or-decline list:
 
 > Notes complete for ch 1–6. Proposals (nothing written yet):
 > - **Revelation Log**: Muppy · Ch 1 — cheatgrass awn in the webbing of a forepaw, still in at chapter's end. Append to `characters/muppy.md`?
@@ -102,7 +102,7 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. O
 - **Evaluate the prose.** No craft judgments, no pacing opinions, no quality adjectives.
 - **Edit the prose.** A divergence flagged drift is the author's to resolve through `prose` revise mode.
 - **Write canon.** It proposes; `canon-sync`, `character-bio`, `worldbuilding-entry`, `manifest-sync`, and `decision-capture` apply on approval.
-- **Maintain a central harvest file.** The harvest lives inside each chapter's notes; searching it is a glob across `chapters/*/ch*-notes.md`. Derived artifacts can be large; maintained artifacts must be small.
+- **Maintain a central harvest file.** The harvest lives inside each chapter's notes; searching it is a `store.list(chapters/*/ch*-notes.md)` across chapters. Derived artifacts can be large; maintained artifacts must be small.
 - **Read a later chapter.** Ever.
 
 ## References

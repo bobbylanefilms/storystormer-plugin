@@ -34,7 +34,7 @@ Event-driven, never calendar-driven:
 - **Canon edits**, applied on approval: Revelation Log lines appended; accretion folded into the governing section of a bio or worldbuilding entry; obsolete lines removed or corrected; each touched file's `version` bumped. Promotions (a minor element that needs its own entry) are **recommended and routed** to `character-bio` / `worldbuilding-entry`, not written here.
 - **A run record** at `.storystormer/canon-sync/<YYYY-MM-DD>-ch<NN>-<MM>.md`: the classified findings, every adjudication with its ruling and decision ID, the **manuscript fix list**, and the **invalidated Blueprints** list. This is the artifact the author works from afterward.
 - **Decisions**, one per adjudication, appended via `decision-capture` with `Source: canon-sync`. A ruling that is not recorded is not a ruling; without this the next pass re-litigates the same conflict.
-- **Snapshot** of the full canon set (`characters/`, `worldbuilding/`, `manifest.md`) to `.storystormer/history/<timestamp>-canon-sync/` **before applying anything**.
+- **Snapshot** of the full canon set (`characters/`, `worldbuilding/`, `manifest.md`), per `store.md`, **before applying anything**.
 - **Notes proposals marked** in each `ch<NN>-notes.md` § Proposals: `applied (D-###)`, `declined (reason)`, or `routed (character-bio)`.
 - Updates to `state.md`: unintegrated-proposal count reset to what remains; `What's Next` carries the fix list pointer and the Blueprints to rebuild; `Last Session` updated. Recommend `manifest-sync` and, if the accumulated changes touch the story frame, `treatment-update`.
 
@@ -59,7 +59,7 @@ In substantive mode (`references/reading-discipline.md`), full reads:
 
 **Drop into prose only to adjudicate a specific disputed point.** A ten-chapter span reads ten notes files rather than 35,000 words of fiction; that is what makes this cheap enough to run often, and it is the concrete payoff for having built `notes`. When a contradiction turns on exact wording, read that passage and quote it in the ruling.
 
-A span of more than three or four chapters, or a cast of more than a handful of entries, is subagent work (`references/subagent-pattern.md`): one subagent per canon entry, each reading the entry in full plus every notes line that touches it, returning a classified list. Adjudication and writing stay in the main session, where the author is.
+A span of more than three or four chapters, or a cast of more than a handful of entries, is subagent work (`references/subagent-pattern.md`): one subagent per canon entry, each reading the entry in full plus every notes line that touches it, returning a classified list. Every brief carries the store block from `references/subagent-pattern.md` § Mandatory brief fields. Adjudication and writing stay in the main session, where the author is.
 
 ### 3. Classify
 
@@ -90,7 +90,7 @@ Defaults are defaults. **Every contradiction is still surfaced**, with the canon
 
 Plan first:
 
-> Canon-sync for ch 1–6 (Act 1). All six have current notes; 14 pending proposals across them. I'll full-read the 5 bios and 4 worldbuilding entries the notes touch, plus the manifest and prior canon-sync decisions (none yet). Snapshot the canon set to `.storystormer/history/` before writing anything. Expect roughly: 8 accretions, 2 contradictions (both in `ai_generated` prose, so canon wins by default), 1 drift candidate (Vinnie's register), 2 promotions to route, 1 obsolete line. Findings next, nothing applied until you rule.
+> Canon-sync for ch 1–6 (Act 1). All six have current notes; 14 pending proposals across them. I'll full-read the 5 bios and 4 worldbuilding entries the notes touch, plus the manifest and prior canon-sync decisions (none yet). Snapshot the canon set per `store.md` before writing anything. Expect roughly: 8 accretions, 2 contradictions (both in `ai_generated` prose, so canon wins by default), 1 drift candidate (Vinnie's register), 2 promotions to route, 1 obsolete line. Findings next, nothing applied until you rule.
 
 Then the classified findings, one approve-or-rule list:
 
@@ -115,14 +115,14 @@ Then the classified findings, one approve-or-rule list:
 
 After the author rules:
 
-1. **Snapshot** `characters/`, `worldbuilding/`, and `manifest.md` to `.storystormer/history/<YYYY-MM-DDTHH-MM>-canon-sync/`, preserving relative paths. This happens before the first edit, no exceptions.
+1. **Snapshot** `characters/`, `worldbuilding/`, and `manifest.md` per `store.md`. This happens before the first edit, no exceptions.
 2. **Apply canon edits**: append Revelation Log lines (`- **Ch N** — …`); fold accretion into the governing section with the smallest edit that makes the entry accurate; correct or remove obsolete lines; bump each touched file's `version` and `last_updated`. Never restyle, expand, or tidy anything the ruling didn't name.
 3. **Log each adjudication** via `decision-capture`: `Source: canon-sync`, `Category` per the fact, `Summary` stating the ruling, `Details` naming the notes line, the canon line, the authorship that set the default, and whether the author overrode it. Accretions absorbed without dispute do not need a decision; contradictions, drift rulings, and obsolescence removals do.
 4. **Mark proposals** in each notes file's § Proposals.
-5. **Write the run record** to `.storystormer/canon-sync/<date>-ch<NN>-<MM>.md`: findings by category with outcomes; the manuscript fix list (chapter · passage · required change); invalidated Blueprints (chapter · entry that changed · version stamp it was built against); promotions routed; chain closures struck from §2 (logged as decisions so `treatment-update` preserves the strike).
+5. **Write the run record** with `store.write` to `.storystormer/canon-sync/<date>-ch<NN>-<MM>.md`: findings by category with outcomes; the manuscript fix list (chapter · passage · required change); invalidated Blueprints (chapter · entry that changed · version stamp it was built against); promotions routed; chain closures struck from §2 (logged as decisions so `treatment-update` preserves the strike).
 6. **Update `state.md`** and report.
 
-> Canon-sync complete for ch 1–6. Snapshot at `.storystormer/history/2026-08-22T10-14-canon-sync/`. Applied: 8 accretions, 1 obsolete line removed, 2 contradictions ruled (D-041, D-042), 1 drift ruling (D-043: bio loosens). Routed: Wagon Wheel → `worldbuilding-entry`. **Fix list (2 items)** and **Blueprints to rebuild (ch 1, 3)** in `.storystormer/canon-sync/2026-08-22-ch01-06.md`. 0 proposals pending. Next: `manifest-sync`, then rebuild the two Blueprints before writing ch 7; `treatment-update` when convenient, since the burial-site change touches the treatment's staging.
+> Canon-sync complete for ch 1–6. Canon set snapshotted per `store.md`. Applied: 8 accretions, 1 obsolete line removed, 2 contradictions ruled (D-041, D-042), 1 drift ruling (D-043: bio loosens). Routed: Wagon Wheel → `worldbuilding-entry`. **Fix list (2 items)** and **Blueprints to rebuild (ch 1, 3)** in `.storystormer/canon-sync/2026-08-22-ch01-06.md`. 0 proposals pending. Next: `manifest-sync`, then rebuild the two Blueprints before writing ch 7; `treatment-update` when convenient, since the burial-site change touches the treatment's staging.
 
 ## Series Mode
 
@@ -139,7 +139,7 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. N
 
 ## References
 
-- `references/file-schemas.md`: § Notes (§ Proposals statuses), § `.storystormer/history/`, § `.storystormer/canon-sync/`, `decisions.md` (the `canon-sync` source), primer §2 Reveal Architecture
+- `references/file-schemas.md`: § Notes (§ Proposals statuses), § the history-snapshot section, § `.storystormer/canon-sync/`, `decisions.md` (the `canon-sync` source), primer §2 Reveal Architecture
 - `references/canon-schemas.md`: § Revelation Log, bio and worldbuilding content shape
 - `references/plan-first.md`, `references/reading-discipline.md`, `references/subagent-pattern.md`
 - `references/series.md`: read when `project_type: series`

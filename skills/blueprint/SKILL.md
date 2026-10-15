@@ -21,8 +21,8 @@ Always follow `references/plan-first.md`: propose, confirm, execute.
 ## What you produce
 
 - **`chapters/chapter-NN/ch<NN>-blueprint.md`**: one file per chapter, per the file shape in `references/file-schemas.md` § Blueprint and the content spec in `references/blueprint-spec.md`.
-- **`outline/_index.md`**: regenerated so each chapter's Blueprint column reflects the new state.
-- Snapshots of any overwritten Blueprint to `chapters/chapter-NN/.history/` as `ch<NN>-blueprint-v<version>-<date>.md`.
+- **`outline/_index.md`**: regenerated per `store.md` so each chapter's Blueprint column reflects the new state.
+- Snapshots of any overwritten Blueprint, per `store.md`.
 - **Proposed Revelation Log additions**, never silent edits. See § Revelation Log handling.
 - **A style-guide warning** when `voice/style-guide.md` is absent (see § Style-guide dependency).
 - Updates to `state.md`: `What Exists → Blueprints` line, `Summary`, `Last Session`, `What's Next`. Blueprinting does not advance `stage`.
@@ -33,7 +33,7 @@ Always follow `references/plan-first.md`: propose, confirm, execute.
 - **The outline should be marker-free.** One carrying `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: …]` can be blueprinted, but the Blueprint inherits the gap. Surface the markers and let the user decide.
 - **`primer.md` and `treatment.md` exist.** Story Context and the chain register come from the primer; chapter chronology from the treatment's spine-slot passage.
 - **Canon exists for the chapter's on-page cast.** If the outline names a character or element with no canon file, surface the gap and recommend `character-bio` / `worldbuilding-entry`. Never fabricate a tier entry.
-- **Canon-sync owed (batch mode).** Blueprinting a new act is the moment stale canon does damage. Before a batch, glob `chapters/*/ch*-notes.md` for chapters before the range and count unchecked items in § Proposals; if any exist, say so in the plan and recommend `canon-sync` first. Proceed only if the user says so, and note in the report that the Blueprints were built against unreconciled canon.
+- **Canon-sync owed (batch mode).** Blueprinting a new act is the moment stale canon does damage. Before a batch, `store.list(chapters/*/ch*-notes.md)` for chapters before the range and count unchecked items in § Proposals; if any exist, say so in the plan and recommend `canon-sync` first. Proceed only if the user says so, and note in the report that the Blueprints were built against unreconciled canon.
 - **Schema-form outlines.** If the outline still carries the older nine-section scaffolding (Premise, Scene Beats, Setups Planted, Character Notes, and so on), recommend the `outline-chapters` migration pass first. You can proceed, but read the outline for **content** only and derive the scaffolding from canon yourself; never transplant the outline's summary of canon into the Blueprint.
 
 ## What to do
@@ -50,7 +50,7 @@ For each chapter, the judgment-free context, read directly:
 
 - **The chapter's `ch<NN>-outline.md`, read for content.** It is the author's prose account of what happens; it is not a cast list or a scaffolding source. Note its `word_count` and `authorship` (an author-written outline's dialogue is the author's, and the Dialogue Anchors section will say so).
 - **`outline/structure.md`**: the spine slot, the POV strategy, and the Chapter Spine so you know where this chapter sits without reading future chapters' plot.
-- **Carried-forward state.** Prefer the **prior chapter's `ch<NN>-notes.md` end-state block** when it exists: a short structured statement of wardrobe, injuries, objects, location, residue, and the hour as the chapter actually left them. When no notes file exists, walk back from chapter N to the most recent prior chapter with the **same `pov`** and read its prose if written, else its outline; fall back to the immediately preceding chapter of any POV. Chapter 1, and a POV debut, have no anchor and lean on the treatment slot and the Revelation Log. (Glob `chapters/*/ch*-{notes,prose,outline}.md`, read `pov` and `chapter` frontmatter, filter `< N`.)
+- **Carried-forward state.** Prefer the **prior chapter's `ch<NN>-notes.md` end-state block** when it exists: a short structured statement of wardrobe, injuries, objects, location, residue, and the hour as the chapter actually left them. When no notes file exists, walk back from chapter N to the most recent prior chapter with the **same `pov`** and read its prose if written, else its outline; fall back to the immediately preceding chapter of any POV. Chapter 1, and a POV debut, have no anchor and lean on the treatment slot and the Revelation Log. (`store.list(chapters/*/ch*-{notes,prose,outline}.md)`, read `pov` and `chapter` frontmatter, filter `< N`.)
 - **The primer**, harvested for § 2 Story Context and **filtered to this chapter**, plus its **§2 Reveal Architecture**, consulted only to learn *what this chapter must plant*. Nothing about where a reveal lands may reach the file.
 - **`treatment.md`, the spine-slot passage for this chapter only.** Never seed the full treatment.
 - **`voice/style-guide.md`** if it exists: not to copy from, but to know what general craft the Blueprint may omit.
@@ -58,7 +58,7 @@ For each chapter, the judgment-free context, read directly:
 
 ### 3. Identify the surfacing cast and elements
 
-From the outline's narrative, identify **every character and worldbuilding element that surfaces**: on the page, in dialogue, in the POV's thoughts, in the setting. Resolve each to its canon file via `manifest.md`; `Glob` `characters/` and `worldbuilding/**` when a name isn't in the manifest. A character who neither appears nor is thought about in this chapter is not in the Blueprint at all, even inside canon wording about someone else.
+From the outline's narrative, identify **every character and worldbuilding element that surfaces**: on the page, in dialogue, in the POV's thoughts, in the setting. Resolve each to its canon file via `manifest.md`; `store.list(characters/*)` and `store.list(worldbuilding/**)` when a name isn't in the manifest. A character who neither appears nor is thought about in this chapter is not in the Blueprint at all, even inside canon wording about someone else.
 
 ### 4. Propose the plan
 
@@ -82,11 +82,11 @@ From the outline's narrative, identify **every character and worldbuilding eleme
 
 ### 5. Gather and generate
 
-For a **single chapter**, gather and write in the main session unless the canon reads are large (then dispatch one subagent per `references/subagent-pattern.md`). For a **batch**, dispatch **one subagent per chapter, in parallel**. Each subagent:
+For a **single chapter**, gather and write in the main session unless the canon reads are large (then dispatch one subagent per `references/subagent-pattern.md`). For a **batch**, dispatch **one subagent per chapter, in parallel**. Every brief carries the store block from `references/subagent-pattern.md` § Mandatory brief fields. Each subagent:
 
 - **Reads** (substantive mode, full reads, no grep): the outline, the carried-state source, the filtered primer harvest and §2, the style guide's existence, and the full canon entry for each surfacing character and element, including each `## Revelation Log`.
 - **Applies the Revelation Log filter** to `chapter ≤ N`, and strips later-chapter references from the text of entries it carries.
-- **Writes** `ch<NN>-blueprint.md` to the spec: the header block (`blueprint-spec.md` § Header), then the twelve sections, synthesized, backward-only.
+- **Writes** (`store.write`) `ch<NN>-blueprint.md` to the spec: the header block (`blueprint-spec.md` § Header), then the twelve sections, synthesized, backward-only.
 - **Runs the backward-only scan** over its own output before returning (the grep in the spec's Core Principles), and fixes what it finds.
 - **Returns** a structured summary: cast and tiers, elements, Revelation Log gaps detected, canon-vs-scene conflicts resolved, precondition gaps, and the backward-only scan's remaining flags for the main session to review.
 
@@ -121,7 +121,7 @@ For a batch, show the Blueprints in reviewable chunks. For a single chapter, sho
 
 ### 9. Write, wire, report
 
-After approval: snapshot overwritten Blueprints; write each file with full frontmatter (`outline_version`, `treatment_version`, `primer_version`, `manifest_version`, `outline_words`, `expansion_target`, `knowledge_horizon`, `open_questions_touching_this_chapter`, `depends_on`); regenerate `outline/_index.md`; update `state.md`. Report: chapters blueprinted, cast sizes, markers carried, proposed Revelation Log lines, precondition gaps, any backward-only scan flags left for the user's eye, the style-guide warning if it applies, and the next step.
+After approval: snapshot overwritten Blueprints per `store.md`; `store.write` each file with full frontmatter (`outline_version`, `treatment_version`, `primer_version`, `manifest_version`, `outline_words`, `expansion_target`, `knowledge_horizon`, `open_questions_touching_this_chapter`, `depends_on`); regenerate `outline/_index.md` per `store.md`; update `state.md`. Report: chapters blueprinted, cast sizes, markers carried, proposed Revelation Log lines, precondition gaps, any backward-only scan flags left for the user's eye, the style-guide warning if it applies, and the next step.
 
 > Blueprint batch complete. Built 10 Blueprints (ch 01–10), 4,200–8,100w each. ch 03 carries Q-014 as a pointer with a Continuity gap note. Backward-only scan: 2 flags reviewed and cleared, 1 left for you (ch 6 Worldbuilding mentions *the later fire*; I rewrote it to present state but check the wording). One un-logged state change: Marlowe's ch 9 limp isn't in her Revelation Log; proposed line below, append it? Index regenerated. Next: write prose for ch 1.
 

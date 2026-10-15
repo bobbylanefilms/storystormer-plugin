@@ -36,7 +36,7 @@ That's the texture. Lean. Scannable. Each entry is what a casting director would
 - Worldbuilding files (`worldbuilding/**/*.md`) — frontmatter + first paragraph. Tells you what each element is in a sentence, and its type (`category`).
 - `state.md` for context.
 
-This is a heavy-context turn. **Operate in substantive mode** — list the files at the top of your response, full-read each (Read tool, beginning to end), and quote at least one passage from each in your output. See `references/reading-discipline.md` § Substantive mode.
+This is a heavy-context turn. **Operate in substantive mode** — list the files at the top of your response, full-read each (`store.read`, full read, beginning to end), and quote at least one passage from each in your output. See `references/reading-discipline.md` § Substantive mode.
 
 ### 2. Diff against the current manifest
 
@@ -75,8 +75,8 @@ Compare what the treatment / bios / worldbuilding name vs. what the existing man
 
 After the user approves:
 
-- Snapshot current `manifest.md` to `.storystormer/history/<timestamp>-manifest-sync/manifest.md`.
-- Write the new `manifest.md` with the version bumped, `treatment_version` set to the current treatment version, `last_updated` set to today, the body's `*Last synced: …*` line updated, and the footer counts recomputed.
+- Snapshot current `manifest.md` per `store.md`.
+- `store.write(manifest.md)` with the new manifest, with the version bumped, `treatment_version` set to the current treatment version, `last_updated` set to today, the body's `*Last synced: …*` line updated, and the footer counts recomputed.
 - Update `state.md → What Exists → Manifest` to reflect the new version and current element counts.
 
 ### 5. Report
@@ -107,7 +107,7 @@ The cardinal rule: *the manifest is generated from the treatment as a structural
 
 Manifest sync in **series mode** reads ALL books' treatments to build the `Appears in:` field per entry, plus all bios' frontmatter and Quick Reference blocks. For a trilogy with three ~6,000-word treatments and 18 bios, that's substantial context — exactly the case the subagent pattern was designed for.
 
-Dispatch read subagents per `references/subagent-pattern.md`:
+Dispatch read subagents per `references/subagent-pattern.md`. Every brief carries the store block from `references/subagent-pattern.md` § Mandatory brief fields.
 
 1. **One treatment subagent per book** (parallel) — each subagent full-reads `books/<slug>/treatment.md` and returns a structured per-character / per-worldbuilding-element appearance map with quoted excerpts of each appearance. Scope: just the appearance map, not the full narrative analysis (this skill is about the structural index, not the story).
 2. **Bios scan subagent** — reads each bio's frontmatter + Quick Reference + first paragraph (lighter than the major-bio scan in `character-bio`'s subagent). Returns canonical name, `type`, current `Appears in:` value (if any), and the bio's own claim about which books the character appears in.
