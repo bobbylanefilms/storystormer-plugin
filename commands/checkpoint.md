@@ -14,7 +14,7 @@ What to capture: **every document `references/file-schemas.md` defines for the p
 - the outline (`outline/`) and every chapter artifact (`chapters/chapter-NN/` outlines, blueprints, prose, scenes, notes);
 - voice (`voice/`);
 - notes and records (canon-sync run records);
-- config (`.storystormer/config.json`).
+- config and the genre reference (`.storystormer/config.json`, `.storystormer/genre-reference.md`; the reference is defined in `references/genres.md` and is costly to regenerate).
 
 In a series, that is the series-level documents plus the same set under each `books/<slug>/`.
 
