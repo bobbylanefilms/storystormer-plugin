@@ -540,7 +540,7 @@ Two layers:
 - **Per-chapter content** (`chapters/chapter-NN/`) — the micro layer, one folder per chapter:
   - **`ch<NN>-outline.md`** — the author's prose account of what happens in the chapter (typically 500–1,500w per 3,000-word chapter). Frontmatter plus a flowing body; no scaffolding.
   - **`ch<NN>-blueprint.md`**, **`ch<NN>-prose.md`**, **`ch<NN>-notes.md`** — the continuity brief, the prose, and the post-prose record (see § `chapters/` folder).
-  - **`.history/`** — co-located snapshots of this chapter's artifacts.
+  - **`.history/`** — co-located snapshots of this chapter's artifacts, where the binding's `history` is `snapshots` (`references/store.md`).
 
 ### Why entity-first, and the naming rule
 
@@ -674,7 +674,7 @@ primer_version: 4
 
 The rest are plugin keys the app ignores:
 
-- **`authorship`** (the app's three values, which the app also stores): `author_written`, `ai_generated`, `ai_generated_author_revised`. It drives how `outline-chapters` treats the file. `author_written` and `ai_generated_author_revised` put the skill in **correction-only mode** (facts, POV breaches, stale scaffolding, surfaced sequencing errors; never rhythm, diction, or regeneration). `ai_generated` is freely regenerable. The skill sets `ai_generated_author_revised` when it detects the body changed outside a skill run (compare `word_count` and the body against the last skill-written snapshot in `.history/`) and never downgrades `author_written`. Older files spell these with hyphens (`author-written`); read them as the same values and write the underscore form.
+- **`authorship`** (the app's three values, which the app also stores): `author_written`, `ai_generated`, `ai_generated_author_revised`. It drives how `outline-chapters` treats the file. `author_written` and `ai_generated_author_revised` put the skill in **correction-only mode** (facts, POV breaches, stale scaffolding, surfaced sequencing errors; never rhythm, diction, or regeneration). `ai_generated` is freely regenerable. The skill sets `ai_generated_author_revised` when it detects the body changed outside a skill run (compare `word_count` and the body against the last skill-written version from `store.history`; where no prior version can be retrieved, treat a body that doesn't match the recorded `word_count` as author-revised, since correction-only is the safe side) and never downgrades `author_written`. Older files spell these with hyphens (`author-written`); read them as the same values and write the underscore form.
 - **`version`**, **`last_updated`**: the file's version and date, as on every plugin artifact.
 - **`word_count`** is the body's count (frontmatter and `## Synopsis` excluded), recorded on every write; it is the cheap half of author-revision detection.
 - **`source`** names what the outline was built from (a treatment scene, a decision, the author).
@@ -773,7 +773,7 @@ chapters/chapter-17/
   scenes/              # OPTIONAL — only when the chapter is genuinely scene-split
     ch17-scene-01.md
     ch17-scene-02.md
-  .history/            # co-located snapshots of this chapter's artifacts
+  .history/            # co-located snapshots (only where the binding's history is `snapshots`)
 ```
 
 **Stages are filenames, not folders.** Adding a future pipeline stage means a new `ch<NN>-<stage>.md` file in each chapter folder — never a new parallel top-level tree. The stages, in pipeline order: `outline` → `blueprint` → `prose` → `notes`.
@@ -1058,7 +1058,7 @@ For light updates (a new cross-book chain identified, a continuity concern logge
 }
 ```
 
-Mirrors a subset of `state.md` frontmatter, in JSON for any tooling that wants to read it programmatically. For most fields `state.md` is the source of truth and `config.json` a convenience mirror; **`target_word_count` is the exception: `config.json` owns it** and `state.md` mirrors it. The two must agree, and any skill that reads the target and finds them different repairs the mirror from its owner and says so.
+Mirrors a subset of `state.md` frontmatter, in JSON for any tooling that wants to read it programmatically. For most fields `state.md` is the source of truth and `config.json` a convenience mirror; **`target_word_count` and `storage` are the exceptions: `config.json` owns them** and `state.md` mirrors them (`storage.kind` as `storage_kind`); never repair the config's `storage` from `state.md`, since resolution reads the config. The two must agree, and any skill that reads the target and finds them different repairs the mirror from its owner and says so.
 
 - **`project_type`**: `novel`, `novella`, `short_story`, `screenplay`, or `series` (the app's values; an older `short-story` reads as `short_story`).
 - **`storage`**: where the story lives, resolved once per session (`references/store.md` § Resolve). Full shape: `"storage": { "kind": "dropbox", "root": "<backend root>", "local_root": "<absolute path of the synced folder on this machine>" }`. `kind` is `local | dropbox | notion | storystormer`; `root` is the backend's project root (a Dropbox folder path, a Notion project page id, a StoryStormer project id); `local_root` is optional. A config without `storage` is local. `state.md` mirrors `kind` as `storage_kind`.

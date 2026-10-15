@@ -45,7 +45,7 @@ my-series/
 │   │       ├── chapter-01/
 │   │       │   ├── ch01-outline.md
 │   │       │   ├── ch01-prose.md   # (prose/blueprint/notes land post-POC)
-│   │       │   └── .history/
+│   │       │   └── .history/    # where the binding's history is snapshots
 │   │       └── chapter-02/ …
 │   ├── book-2/
 │   │   └── … (same shape)
@@ -54,7 +54,7 @@ my-series/
 └── .storystormer/
     ├── config.json              # project_type: series, target_word_count, books: [...] (each may carry its own target), current_focus: book-2
     ├── genre-reference.md
-    └── history/
+    └── history/                 # where the binding's history is snapshots
 ```
 
 A book inside `books/<slug>/` looks **identical** to a standalone-novel project — same primer.md / treatment.md / outline/ shape. That's intentional. The skills' per-book behavior is unchanged; only the **paths** they resolve to change.

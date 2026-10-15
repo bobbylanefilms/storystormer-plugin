@@ -25,7 +25,7 @@ Doc-only changes (README, this file, PLUGIN-GUIDE.md) do **not** need a version 
 - **`source` in marketplace.json must be `"./"`** — bare `"."` fails validation.
 - **Repo must stay PUBLIC** — Cowork's cloud sync has no git auth; a private repo breaks Cowork install.
 - **No paths escape the bundle** — on install the folder is copied to a cache, so `../` links break. Keep everything skills cite (e.g. `references/*.md`) inside this repo.
-- **No `Bash` dependency** — Cowork's file primitive is the folder connection, not a shell. File ops use `Read`/`Write`/`Glob`/`Edit`. Don't add a skill/command that *requires* `Bash` to function.
+- **No `Bash` dependency** — Cowork's file primitive is the folder connection, not a shell. File ops go through `references/store.md`; the local binding realizes them with `Read`/`Write`/`Glob`/`Edit`. Don't add a skill/command that *requires* `Bash` to function.
 - **Skills and commands address `references/store.md`, never a host or connector tool by name** (the grep in SB2 enforces it).
 - **Skills define texture and outputs, not step-by-step procedure** — trust the model; keep descriptions intent-shaped (they're the progressive-disclosure triggers).
 

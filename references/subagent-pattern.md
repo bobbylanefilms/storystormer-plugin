@@ -24,7 +24,12 @@ A subagent cannot reach the plugin bundle and never resolves the store (`referen
 - **Root:** the project root the paths hang from.
 - **Capabilities line:** the binding's line, verbatim.
 - **Realizations:** the binding's realization of each operation this subagent will use (`store.read`, `store.write`, `store.list`, and so on), pasted from the binding document.
-- **Triggered clauses:** the `store.md` clauses its work triggers: the snapshot paths it must write, the concurrency baseline (the version each target was read at), and the documents it must not write because they are computed.
+- **Triggered clauses:** the `store.md` clauses its work triggers, **pasted as text, not cited** (the subagent can't open `store.md`):
+  - **Snapshot:** for each existing target, read it and write it to the named snapshot path before overwriting it. Reading the target for this is authorized even when the brief otherwise limits what to read.
+  - **Concurrency guard** (non-local bindings): the baseline version of each target; before overwriting, re-read its frontmatter `version`, and if it differs from the baseline, write nothing to that target and return the conflict to the main session.
+  - **Write recovery** (`write: delete-create` or `create-trash`): retry the create with the content in hand; if it still fails, write back the prior content; never end with the path absent; report what happened.
+  - **Confirmation:** the main session's plan approval covers every mutation in this brief; don't ask again per file.
+  - **Computed documents:** the ones the binding computes, which the subagent must not write.
 
 The subagent reaches the store only through that block. **The main session rejects a report that names a local filesystem path when the session's binding is not local**, and re-dispatches with the store block restated.
 
@@ -99,8 +104,9 @@ Scope: <list of file operations — each {source_path, target_path, action: writ
 
 Store: binding <kind>; root <root>; capabilities <the binding's capabilities line>;
   operations <the binding's realization of each operation used here: store.read / write / list / move>;
-  triggered clauses <snapshot paths to write; concurrency baseline per target (version it was read at);
-  documents not to write because the binding computes them>
+  triggered clauses <pasted: snapshot procedure + paths; concurrency guard + baseline per target;
+  write recovery where write is not native; confirmation posture; documents not to write because the
+  binding computes them>
 
 What to do:
 - Perform each operation in scope.
@@ -164,7 +170,8 @@ conditioning. Skip this block entirely when the author has a style guide.>
 
 [STORE] binding <kind>; root <root>; capabilities <the binding's capabilities line>;
   operations <the binding's realization of store.read / store.write>;
-  triggered clauses <snapshot path for any existing prose; concurrency baseline for the target;
+  triggered clauses <pasted: snapshot procedure + path for any existing prose; concurrency guard +
+  baseline for the target; write recovery where write is not native; confirmation posture;
   documents not to write because the binding computes them (indexes, config)>
 
 [PROJECT METADATA] <genre, logline, position in the book>
@@ -182,7 +189,8 @@ sample first for primacy, prior prose last for recency):
   5. chapters/chapter-<NN>/ch<NN>-outline.md     (the task)
   6. <prior POV-matched prose chapter, full>     (the voice anchor — read LAST)
 
-Then: `store.write` the chapter's prose to chapters/chapter-<NN>/ch<NN>-prose.md with full
+Then, if the target already exists, apply the triggered clauses to it (snapshot, concurrency
+guard), and `store.write` the chapter's prose to chapters/chapter-<NN>/ch<NN>-prose.md with full
 frontmatter (pov, version stamps, status: drafted, word_count, and a ~150–250w
 synopsis) per the schema the prose spec references.
 
