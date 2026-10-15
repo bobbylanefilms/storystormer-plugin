@@ -60,7 +60,7 @@ When the plugin adds prose generation in a later release, two new zoom levels wi
 For any heavy-context turn — treatment update, manifest sync, bio creation or expansion, worldbuilding entry creation, sweeping consistency checks — operate in **substantive mode**. Four rules, all mandatory for that turn:
 
 1. **List every file you plan to consult before generating any output.** Name them explicitly at the top of your response. This creates an audit trail the user can call out if it looks thin.
-2. **Read each file in full, using the Read tool, from beginning to end.** Do not rely on grep or glob to summarize content. Do not sample. Do not skim. If a file is genuinely too long to absorb in one pass, say so explicitly — don't pretend you read it.
+2. **Read each file in full, through `store.read`, from beginning to end.** Do not rely on grep or glob to summarize content. Do not sample. Do not skim. If a file is genuinely too long to absorb in one pass, say so explicitly — don't pretend you read it.
 3. **Quote at least one verbatim sentence from each file you used.** The quote must be exact, with surrounding context. Format: `> "exact passage" — `filename`, section`. Hallucinations don't come with quotes. This is non-negotiable.
 4. **If you find yourself wanting to infer something about a character, plot, or world element that isn't directly stated in a file you've read, stop and tell the user.** Do not infer from genre conventions, training priors, or surrounding context. The source material is the only source of truth. Surface the gap as a question, not an answer.
 

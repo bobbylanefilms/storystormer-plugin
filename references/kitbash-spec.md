@@ -21,7 +21,7 @@ chapters/chapter-NN/
   ch<NN>-prose.md               ← the consolidated result (normal prose schema)
 ```
 
-Draft labels come from the generating model or the user's filename — the skill treats any `ch<NN>-draft-*.md` in `kitbash/` as a draft. Drafts are plain prose (frontmatter optional and tolerated). After consolidation the drafts stay in `kitbash/` as the archive of the session; the consolidated chapter is a normal `ch<NN>-prose.md` and follows all standard rules (`.history/` snapshots, synopsis, index/state wiring).
+Draft labels come from the generating model or the user's filename — the skill treats any `ch<NN>-draft-*.md` in `kitbash/` as a draft. Drafts are plain prose (frontmatter optional and tolerated). After consolidation the drafts stay in `kitbash/` as the archive of the session; the consolidated chapter is a normal `ch<NN>-prose.md` and follows all standard rules (snapshots per `store.md`, synopsis, index/state wiring).
 
 ---
 
@@ -113,7 +113,7 @@ A **clean-window consolidation subagent** receives, in order: the behavioral fra
 - Unannotated divergences between drafts resolve in favor of the base.
 - Conflicts (a loved passage that contradicts a strike or the outline) are resolved by judgment and **flagged in the return report** — never silently dropped.
 - Strip all annotation formatting; the output body is prose only.
-- Write the result as a normal `ch<NN>-prose.md` — full frontmatter, `status: drafted`, word count, the ~150–250w synopsis — plus two provenance fields: `kitbash_base: <label>` and `kitbash_drafts: [<labels>]`. Snapshot any existing prose to `.history/` first.
+- Write the result as a normal `ch<NN>-prose.md` — full frontmatter, `status: drafted`, word count, the ~150–250w synopsis — plus two provenance fields: `kitbash_base: <label>` and `kitbash_drafts: [<labels>]`. Snapshot any existing prose per `store.md` first.
 
 Return schema: the standard prose report (word count, synopsis, continuity flags) plus `loved_passages_incorporated: <n>/<n>`, `strikes_honored: <n>`, and `conflicts: [...]`. The main session wires `outline/_index.md` + `state.md` exactly as a normal prose generation — the consolidated chapter is the chapter.
 

@@ -115,6 +115,12 @@ Only when you're happy with a change and want it live in Cowork:
 
 ---
 
+## Storage backends
+
+Skills and commands never touch a store directly; they call the operations in `references/store.md`, and one **binding** document per backend (`references/store/<kind>.md`) says how each operation is realized there. To add a backend: write one binding doc and add a row to the Bindings table in `store.md`. Never edit skills for a new backend.
+
+---
+
 ## 6. Versioning convention
 
 Current: `0.4.0-poc`. While it's a POC, keep the `-poc` suffix.

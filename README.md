@@ -118,6 +118,10 @@ To start a series, run `/storystormer:init` and answer "series" when asked about
 
 See [references/series.md](references/series.md) for the full series doctrine — folder structure, what's shared vs per-book, path resolution, scoping rules, and bio handling.
 
+## Where a story can live
+
+A story lives in a local folder today, including a Dropbox, Google Drive or OneDrive folder synced to your laptop (the plugin just sees a folder). Dropbox and Notion connector backends, where the story lives in the service itself, arrive in a later release.
+
 ## Install
 
 This folder is **both a plugin and a one-entry marketplace** — `.claude-plugin/` holds the plugin manifest (`plugin.json`) and the marketplace catalog (`marketplace.json`) side by side, and the catalog's single plugin points at the repo root (`"source": "."`). The same bundle installs in Claude Cowork (desktop) and Claude Code; only the install entry point differs.

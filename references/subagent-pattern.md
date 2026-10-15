@@ -16,6 +16,18 @@ This doctrine applies to any skill that would otherwise consume substantial main
 
 Other substantive-mode skills (`pre-outline-session`, `outline-chapters`, `worldbuilding-entry`, `brainstorm-session`) can adopt the pattern when their own context budgets become tight; the doctrine here is the template.
 
+## Mandatory brief fields
+
+A subagent cannot reach the plugin bundle and never resolves the store (`references/store.md` § Resolve, "Subagents never resolve"). Every brief therefore carries a **store block**, whatever the kind of subagent:
+
+- **Binding:** the session's backend (`kind`) and the binding's name.
+- **Root:** the project root the paths hang from.
+- **Capabilities line:** the binding's line, verbatim.
+- **Realizations:** the binding's realization of each operation this subagent will use (`store.read`, `store.write`, `store.list`, and so on), pasted from the binding document.
+- **Triggered clauses:** the `store.md` clauses its work triggers: the snapshot paths it must write, the concurrency baseline (the version each target was read at), and the documents it must not write because they are computed.
+
+The subagent reaches the store only through that block. **The main session rejects a report that names a local filesystem path when the session's binding is not local**, and re-dispatches with the store block restated.
+
 ## The kinds of subagent work
 
 ### Read subagents
@@ -29,8 +41,12 @@ Task: substantive-mode read of <scope-name>
 
 Scope: <list of file paths, or a folder path>
 
+Store: binding <kind>; root <root>; capabilities <the binding's capabilities line>;
+  operations <the binding's realization of store.read / store.list as used here>;
+  triggered clauses <none: read-only>
+
 What to do:
-- Full-read each file in scope using the Read tool (beginning to end, no grep, no sampling).
+- Full-read each file in scope with `store.read`, using the binding named in this brief (beginning to end, no grep, no sampling).
 - For each file, produce a structured summary entry (see return schema below).
 - Note cross-file patterns, contradictions, and anomalies across the scope.
 
@@ -81,10 +97,15 @@ Task: execute <category> operations per the approved plan
 
 Scope: <list of file operations — each {source_path, target_path, action: write|move|stamp, frontmatter_to_apply}>
 
+Store: binding <kind>; root <root>; capabilities <the binding's capabilities line>;
+  operations <the binding's realization of each operation used here: store.read / write / list / move>;
+  triggered clauses <snapshot paths to write; concurrency baseline per target (version it was read at);
+  documents not to write because the binding computes them>
+
 What to do:
 - Perform each operation in scope.
 - Stamp frontmatter per references/file-schemas.md (the brief includes the exact frontmatter to write).
-- For any operation that snapshots existing content, write the snapshot to .storystormer/history/<timestamp>-<operation-name>/ first.
+- For any operation that snapshots existing content, snapshot per `store.md` first.
 
 What to return:
 {
@@ -141,9 +162,14 @@ variant named in the plan), pasted by the main session. Rules text, not exemplar
 prose — like the spec, its pre-sample position doesn't compete for voice
 conditioning. Skip this block entirely when the author has a style guide.>
 
+[STORE] binding <kind>; root <root>; capabilities <the binding's capabilities line>;
+  operations <the binding's realization of store.read / store.write>;
+  triggered clauses <snapshot path for any existing prose; concurrency baseline for the target;
+  documents not to write because the binding computes them (indexes, config)>
+
 [PROJECT METADATA] <genre, logline, position in the book>
 
-Now read these story-folder files IN THIS ORDER (the order conditions voice —
+Now `store.read` these story files IN THIS ORDER (the order conditions voice —
 sample first for primacy, prior prose last for recency):
   1. voice/writing-sample.md            (skip if absent)
   2. voice/style-guide.md               (skip if absent)
@@ -156,7 +182,7 @@ sample first for primacy, prior prose last for recency):
   5. chapters/chapter-<NN>/ch<NN>-outline.md     (the task)
   6. <prior POV-matched prose chapter, full>     (the voice anchor — read LAST)
 
-Then: write the chapter's prose to chapters/chapter-<NN>/ch<NN>-prose.md with full
+Then: `store.write` the chapter's prose to chapters/chapter-<NN>/ch<NN>-prose.md with full
 frontmatter (pov, version stamps, status: drafted, word_count, and a ~150–250w
 synopsis) per the schema the prose spec references.
 

@@ -31,6 +31,7 @@ genre: [primary]
 genre_secondary: [optional, omit if not applicable]
 project_type: novel | novella | short_story | screenplay | series
 target_word_count: 120000                   # mirrors .storystormer/config.json; see § Target word count
+storage_kind: local | dropbox | notion | storystormer   # mirrors .storystormer/config.json storage.kind
 logline: [one sentence, or null if not yet written]
 stage: concept | brain-dump | brainstorming | treatment-drafted | treatment-refined | canon-development | outlining | outline-drafted
 initial_maturity: concept | brain-dump | brainstorming | treatment-drafted | treatment-refined  # set once on intake, never changed
@@ -136,7 +137,7 @@ The primer holds only material with **no other home** in the workspace. Content 
 - **Project-specific plot machinery** (named operations, invented technologies, faction charters, worldbuilding apparatus) → canon (`characters/`, `worldbuilding/`), not the primer.
 - **Scene-level detail** (beat sheets, choreography, what-happens-next narrative) → `treatment.md`, not the primer.
 
-Every primer rewrite is snapshotted in `.storystormer/history/`, so ejected content is never destroyed — it just stops riding along in the front-matter. Do not carry ejected content forward "just in case."
+Every primer rewrite is snapshotted (per `references/store.md`), so ejected content is never destroyed — it just stops riding along in the front-matter. Do not carry ejected content forward "just in case."
 
 ### Section 1 — Story Identity (800–1,200w)
 
@@ -945,9 +946,11 @@ The **End State** block is what the next chapter's Blueprint reads for carried-f
 
 ### Canon-sync run records (`.storystormer/canon-sync/`)
 
-Each `canon-sync` run writes `.storystormer/canon-sync/<YYYY-MM-DD>-ch<NN>-<MM>.md`: findings by category (accretion, contradiction, drift, promotion, obsolescence) with outcomes and decision IDs; the **manuscript fix list** (chapter · passage · required change) for every contradiction canon won; the **invalidated Blueprints** list (chapter · entry that changed · stamp it was built against) for every contradiction the manuscript won; promotions routed; chain closures struck. The run's pre-edit canon snapshot lives in `.storystormer/history/<timestamp>-canon-sync/`. Run records are never deleted by the plugin.
+Each `canon-sync` run writes `.storystormer/canon-sync/<YYYY-MM-DD>-ch<NN>-<MM>.md`: findings by category (accretion, contradiction, drift, promotion, obsolescence) with outcomes and decision IDs; the **manuscript fix list** (chapter · passage · required change) for every contradiction canon won; the **invalidated Blueprints** list (chapter · entry that changed · stamp it was built against) for every contradiction the manuscript won; promotions routed; chain closures struck. The run's pre-edit canon snapshot is taken per `references/store.md`. Run records are never deleted by the plugin.
 
 ### Per-chapter history (`.history/`)
+
+These snapshots apply where the binding's `history` capability is `snapshots` (`references/store.md` § Local-mode clauses). In a series the chapter folder is `books/<slug>/chapters/chapter-NN/`.
 
 Chapter artifacts revise frequently and locally, so their snapshots are **co-located** in the chapter folder rather than in the central `.storystormer/history/`. Snapshots are flat, version+date-named files:
 
@@ -1038,7 +1041,7 @@ Target total length: **2,000–3,000w**. Series.md is a *lower-frequency, higher
 
 ### When series.md is regenerated vs. patched
 
-For light updates (a new cross-book chain identified, a continuity concern logged, an open question added), patch the relevant section in place. For structural shifts (the series arc changed, a book's role flipped from sequel to prequel, a major decision rippled across the arc), regenerate the whole document. Snapshot the old version to `.storystormer/history/<timestamp>-series-update/series.md` before any structural regeneration.
+For light updates (a new cross-book chain identified, a continuity concern logged, an open question added), patch the relevant section in place. For structural shifts (the series arc changed, a book's role flipped from sequel to prequel, a major decision rippled across the arc), regenerate the whole document. Snapshot the old version per `references/store.md` before any structural regeneration.
 
 ## `.storystormer/config.json`
 
@@ -1050,13 +1053,15 @@ For light updates (a new cross-book chain identified, a continuity concern logge
   "genre": "literary thriller",
   "genre_secondary": null,
   "created": "2026-05-11",
-  "surfacing_mode": "active"
+  "surfacing_mode": "active",
+  "storage": { "kind": "local" }
 }
 ```
 
 Mirrors a subset of `state.md` frontmatter, in JSON for any tooling that wants to read it programmatically. For most fields `state.md` is the source of truth and `config.json` a convenience mirror; **`target_word_count` is the exception: `config.json` owns it** and `state.md` mirrors it. The two must agree, and any skill that reads the target and finds them different repairs the mirror from its owner and says so.
 
 - **`project_type`**: `novel`, `novella`, `short_story`, `screenplay`, or `series` (the app's values; an older `short-story` reads as `short_story`).
+- **`storage`**: where the story lives, resolved once per session (`references/store.md` § Resolve). Full shape: `"storage": { "kind": "dropbox", "root": "<backend root>", "local_root": "<absolute path of the synced folder on this machine>" }`. `kind` is `local | dropbox | notion | storystormer`; `root` is the backend's project root (a Dropbox folder path, a Notion project page id, a StoryStormer project id); `local_root` is optional. A config without `storage` is local. `state.md` mirrors `kind` as `storage_kind`.
 - **`target_word_count`**: the book's target length in words. Set at init from the author's answer, or from the type's default below; change it (here first, then the `state.md` mirror) whenever the author does. Every word budget in the workspace is computed from it. In a series the root value is the default for every book, and a book may carry its own (see the series example below).
 
 ### Target word count and the derived budgets
@@ -1093,7 +1098,8 @@ For series-mode projects, `config.json` carries the series fields:
     { "slug": "book-2", "title": "The Aftermath" },
     { "slug": "book-3", "title": "Reckoning", "target_word_count": 95000 }
   ],
-  "current_focus": "book-1"
+  "current_focus": "book-1",
+  "storage": { "kind": "local" }
 }
 ```
 
@@ -1101,7 +1107,9 @@ The `books` array preserves both slug (for filesystem paths) and human-readable 
 
 ## `.storystormer/history/` — book-level history
 
-This is the **book-level** snapshot mechanism. Before any rewrite of `primer.md`, `treatment.md`, `manifest.md`, `outline/structure.md`, `series.md`, or a character bio, snapshot the current versions into a timestamped folder:
+These snapshots apply where the binding's `history` capability is `snapshots` (`references/store.md` § Local-mode clauses).
+
+This is the **book-level** snapshot mechanism. Before any rewrite of `primer.md`, `treatment.md`, `manifest.md`, `outline/structure.md`, `series.md`, a character bio, or a worldbuilding entry (`worldbuilding/<type>/<slug>.md`; `worldbuilding-entry` and `canon-sync` already snapshot these), snapshot the current versions into a timestamped folder:
 
 ```
 .storystormer/history/
@@ -1110,6 +1118,8 @@ This is the **book-level** snapshot mechanism. Before any rewrite of `primer.md`
     ├── treatment.md
     └── manifest.md
 ```
+
+Inside a snapshot folder each file keeps its root-relative path (`books/book-2/treatment.md` in a series), so two books' documents stay distinct.
 
 The folder name encodes both the timestamp and the operation. It uses **per-snapshot folders** because a single operation often archives several files **as a set** — primer and treatment are snapshotted as a pair during treatment updates, since the primer version that built a treatment is meaningless without the treatment it informed.
 

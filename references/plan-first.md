@@ -9,7 +9,7 @@ Goal: the experience should feel like claude.ai's planning behavior, applied to 
 
 ## The pattern
 
-1. **Load context.** Read the files relevant to what was asked. Be explicit about what you read. For heavy-context turns (treatment update, manifest sync, bio or worldbuilding generation), operate in substantive mode — see `references/reading-discipline.md` § Substantive mode.
+1. **Load context.** Read the files relevant to what was asked. Loading happens through the store contract, after resolving (`references/store.md` § Resolve). Be explicit about what you read. For heavy-context turns (treatment update, manifest sync, bio or worldbuilding generation), operate in substantive mode — see `references/reading-discipline.md` § Substantive mode.
 
 2. **Propose a plan in plain language.** What you intend to do, what it will produce, what you need from the user. Keep it short — a paragraph or a short bullet list, not a wall of steps. The user is reading this to decide whether to redirect; long plans bury the choice.
 
@@ -17,7 +17,7 @@ Goal: the experience should feel like claude.ai's planning behavior, applied to 
 
 4. **Execute once the user gives a go-ahead.** "Yes," "go," "sounds good," "do it" — any clear affirmative. If the user redirects, fold the redirect in and **re-propose** if the change is substantive. Tiny tweaks ("make it Alice not Alex") don't require a full re-plan.
 
-5. **Report.** A short summary of what changed (files written or modified), what was snapshotted to `.storystormer/history/`, and the next recommended step. Update `state.md` with the new state.
+5. **Report.** A short summary of what changed (files written or modified), what was snapshotted (per `references/store.md`), and the next recommended step. Update `state.md` with the new state.
 
 ## What a good plan looks like
 
@@ -28,7 +28,7 @@ For `treatment-update`:
 > - **Read in full (substantive mode)**: `primer.md`, `treatment.md`, `decisions.md` (the 7 unintegrated entries), `manifest.md`, and the 4 major-tier bios in `characters/`. I'll quote at least one passage from each to prove the read.
 > - **Phase 1**: rewrite `primer.md` to reflect the new decisions about the antagonist's backstory and the second-act revelation.
 > - **Phase 2**: regenerate `treatment.md` against the refreshed primer. I expect this to be a meaningful rewrite of Act 2 and a lighter pass on Acts 1 and 3.
-> - **Snapshot** the current primer + treatment to `.storystormer/history/` first.
+> - **Snapshot** the current primer + treatment first (per `store.md`).
 > - **Mark** the 7 decisions as `integrated: treatment` with today's date.
 >
 > About 4–6 minutes. Anything you want to adjust before I start?

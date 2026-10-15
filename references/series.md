@@ -101,7 +101,7 @@ Shared artifacts (`manifest.md`, `characters/*.md`, `decisions.md`, `questions.m
 
 Sometimes you need to read a non-focused book's files — e.g., when working on book 2's treatment, you may need to check book 1's ending. This is permitted and explicit:
 
-- Read `books/book-1/treatment.md` directly (full path).
+- `store.read` `books/book-1/treatment.md` directly (full path).
 - Quote from it as you would any other source.
 - Don't change `current_focus` for a read-only cross-book reference — focus only changes when the user is *working on* a different book.
 
