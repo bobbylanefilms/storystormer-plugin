@@ -248,7 +248,7 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
 
    The denominator (`/40`) is from the outline structure if it exists, or just `6 written` if no structure has been committed yet.
 
-8. **Snapshot a mapping** of original filenames to canonical filenames as `intake-original-names.md`, per `store.md`. Example:
+8. **Snapshot a mapping** of original filenames to canonical filenames as `intake-original-names.md`, written inside this run's `init` snapshot folder (per `store.md`). Example:
 
    ```markdown
    # Intake — Original Filename Mapping
@@ -292,7 +292,7 @@ In series mode:
 For intake of an existing standalone project that the user wants to convert to series:
 - Confirm with the user before restructuring — this is a non-trivial move.
 - Snapshot the current standalone folder per `store.md` before any file moves.
-- Move existing `primer.md`, `treatment.md`, `outline/` into `books/book-1/`.
+- `store.move` existing `primer.md`, `treatment.md`, `outline/` into `books/book-1/`.
 - Keep `manifest.md`, `decisions.md`, `questions.md`, `characters/`, `worldbuilding/` at root (they were already shared in spirit).
 - Update each existing decision and question to add `Scope: book-1` (since pre-series, they were all about the one book).
 - Create stubs for book 2 and book 3 (or however many the user is planning).
