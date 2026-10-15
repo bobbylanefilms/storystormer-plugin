@@ -5,7 +5,7 @@ allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Task", "mcp__*"]
 
 # /storystormer:questions
 
-Operate on `questions.md`. The command takes optional arguments to control behavior. If no argument is given, list open questions grouped by priority.
+Operate on `questions.md`. Resolve the store first per `references/store.md` if the session hasn't; every read and write below goes through its operations (`store.read`, `store.edit`, `store.write`), including the binding's own realization where it computes this document. The command takes optional arguments to control behavior. If no argument is given, list open questions grouped by priority.
 
 ## Sub-actions
 

@@ -231,7 +231,7 @@ chapters/chapter-17/
 
 **The prose doesn't sound like me.** Add (or improve) `voice/writing-sample.md` — it's the strongest voice input by far. A style guide with your specific anti-patterns is the second lever.
 
-**Where did my old draft go?** Nothing is ever overwritten silently — every superseded version is in that chapter's `.history/` folder, timestamped.
+**Where did my old draft go?** Nothing is ever overwritten silently — in a local folder, every superseded version is in that chapter's `.history/` folder, timestamped (a backend with its own version history keeps them there instead).
 
 **Can I regenerate a chapter from scratch?** Yes — "rewrite chapter 17 from the outline" generates fresh (the old version is snapshotted). For a change of approach on an important chapter, consider a Kit Bash instead.
 

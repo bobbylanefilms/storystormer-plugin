@@ -5,7 +5,7 @@ allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Task", "mcp__*"]
 
 # /storystormer:status
 
-`store.read` `state.md` and present its contents to the user in a scannable summary. Also surface anything that the file-system says exists but `state.md` doesn't mention (a drift check).
+Resolve the store first per `references/store.md` if the session hasn't. `store.read` `state.md` and present its contents to the user in a scannable summary. Also surface any document the plugin manages (one `references/file-schemas.md` defines) that exists in the project but `state.md` doesn't mention (a drift check). Snapshot and history folders, `research/`, and the author's own folders aren't inventory; don't report them as drift.
 
 What to report:
 

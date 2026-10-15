@@ -5,7 +5,7 @@ allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Task", "mcp__*"]
 
 # /storystormer:outline
 
-Read the outline layer and present a scannable summary of where outlining stands. This is a read-only inspection command, parallel to `/storystormer:status` but focused specifically on the outline.
+Resolve the store first per `references/store.md` if the session hasn't. Read the outline layer through the store and present a scannable summary of where outlining stands. This is a read-only inspection command, parallel to `/storystormer:status` but focused specifically on the outline.
 
 What to report:
 
@@ -13,7 +13,7 @@ What to report:
 
 2. **Chapter outlines** — count `chapters/*/ch*-outline.md` files (`store.list`; one per chapter folder) vs. spine target. Report `N/M drafted`. Show how it breaks down by act (`Act 1: 10/10`, `Act 2: 8/20`, etc.). If any chapter outlines exist but `outline/_index.md` doesn't, flag the drift. If `outline/_index.md` is the chapter × stage matrix, its `Outline` column should agree with the file count — flag any mismatch.
 
-3. **Open threads in chapter outlines** — scan the chapter outline bodies for `[OPEN: Q-###]` and `[NEEDS DEVELOPMENT: ...]` markers (grep-permitted; these are inline tags, not narrative content). Report totals by type and which chapters carry them. Three carrying `[OPEN: Q-019]` means Q-019 is blocking three chapters from being prose-ready.
+3. **Open threads in chapter outlines** — scan the chapter outline bodies for `[OPEN: Q-###]` and `[NEEDS DEVELOPMENT: ...]` markers (`store.read` each outline and scan for the tags; no full-read discipline needed, since these are inline tags, not narrative content). Report totals by type and which chapters carry them. Three carrying `[OPEN: Q-019]` means Q-019 is blocking three chapters from being prose-ready.
 
 4. **Staleness** — for each chapter outline, compare its frontmatter `structure_version` / `treatment_version` / `primer_version` against the current versions of those files. Report any chapter outlines built against superseded sources. Stale outlines are candidates for revision via `outline-chapters` single-chapter mode (or a correction pass, for an `author_written` or `ai_generated_author_revised` outline).
 

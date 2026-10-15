@@ -29,7 +29,7 @@ You only need one of them. Most authors want Cowork.
 
 2. **Install the plugin.** From the synced marketplace, install **`storystormer`** (its full id is `storystormer@storystormer-plugin`).
 
-3. **Connect your story project.** Open **Settings → connect a folder** and point it at the directory where your story lives (or an empty one where it will); a connected Dropbox or Notion workspace will work the same way once those bindings ship. This folder connection is how the skills read and write your files — there's nothing else to configure.
+3. **Connect your story project.** Open **Settings → connect a folder** and point it at the directory where your story lives (or an empty one where it will). This folder connection is how the skills read and write your files — there's nothing else to configure. (A Dropbox, Drive or OneDrive folder synced to your computer counts as a folder. Connecting Dropbox or Notion directly will have its own setup once those backends ship.)
 
 4. **Verify.** In a session with the folder connected, run `/storystormer:init` (for a new project) or just ask *"status"* on an existing one. If the slash commands autocomplete with the `storystormer:` prefix, the install worked.
 

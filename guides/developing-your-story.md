@@ -201,7 +201,7 @@ A chapter outline with zero unresolved markers is prose-ready — which is exact
 | `/storystormer:questions` | The open-question queue by priority |
 | `/storystormer:checkpoint` | Manual snapshot of every document the plugin manages (canon, outline, chapters, voice, config) — take one before anything risky |
 
-The plugin is git-agnostic: `/storystormer:checkpoint` is your save point. Skills also snapshot automatically before overwriting anything, so checkpoints are for milestones ("pre-act-3-rework"), not routine safety. (If your story lives somewhere that keeps its own version history, checkpoint says so and writes nothing; use that history instead.)
+The plugin is git-agnostic: `/storystormer:checkpoint` is your save point. Skills also snapshot automatically before overwriting anything, so checkpoints are for milestones ("pre-act-3-rework"), not routine safety. (Once connected backends ship, a project stored in a service that keeps its own version history, such as Notion, won't need checkpoints: checkpoint says so and writes nothing. A synced Dropbox folder on your computer is a local folder and checkpoints normally.)
 
 **Writing a trilogy?** Series mode gives you shared characters and worldbuilding at the root with per-book treatments and outlines inside `books/` — say "series" during init (or ask to convert an existing project). Everything in this guide works the same; decisions just gain a scope, and `/storystormer:switch book-2` changes focus. The [README](../README.md#series-mode-multi-book-projects) has the details.
 
@@ -259,4 +259,4 @@ chapters/chapter-NN/…        ← per-chapter outlines (then blueprints, prose)
 
 **Can I edit the files by hand?** Yes, all of them — it's plain markdown. The agent reads your edits like anything else it finds.
 
-**Something got overwritten and I want it back.** Nothing is ever overwritten silently. Book-level documents snapshot to `.storystormer/history/`, chapter files to their own `.history/` folders — all timestamped.
+**Something got overwritten and I want it back.** Nothing is ever overwritten silently. In a local folder, book-level documents snapshot to `.storystormer/history/`, chapter files to their own `.history/` folders — all timestamped. (A backend with its own version history keeps them there instead.)
