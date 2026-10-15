@@ -19,7 +19,7 @@ The host’s file tools **Read**, **Write**, **Edit** and **Glob**. No shell and
 
 ## Root
 
-The open folder that holds `.storystormer/config.json`. A contract path joins onto it: `treatment.md` is `<root>/treatment.md`, `chapters/chapter-07/ch07-prose.md` is `<root>/chapters/chapter-07/ch07-prose.md`.
+The open folder that holds `.storystormer/config.json`, or the config’s `local_root` when it names a folder that exists on this machine (`store.md` § Resolve). A contract path joins onto it: `treatment.md` is `<root>/treatment.md`, `chapters/chapter-07/ch07-prose.md` is `<root>/chapters/chapter-07/ch07-prose.md`.
 
 ## Stored and computed
 
@@ -33,7 +33,7 @@ Everything is **stored** as a real file; nothing is computed. That includes the 
 | `read(path)` | Read the file from beginning to end; if the tool returns only part of it, keep reading from where it stopped until the end |
 | `write(path, content)` | Write the full content to the path, which creates the file and any missing folders. Skip the call when the content is identical to what is there. Write refuses to overwrite a file this conversation has not read: the snapshot step’s read satisfies that, and otherwise read the file first |
 | `edit(path, edits, reason)` | Edit, one call per item in order: `old` → `old_string`, `new` → `new_string`, `replace_all` → `replace_all`. All or nothing: before the first call, check every anchor against the text the earlier items would leave; if any is missing or ambiguous, stop with nothing written. If a call still fails partway, write back the content read before the first call. `reason` is not recorded; the snapshot is the history |
-| `history(path)` | Book-level documents: Glob `.storystormer/history/**` and keep the files that match the document. Chapter artifacts: Glob `chapters/chapter-NN/.history/ch<NN>-<stage>-v*.md`. Return them newest first |
+| `history(path)` | Book-level documents: Glob `.storystormer/history/*/<path>` (each snapshot folder keeps root-relative paths, so `books/book-2/treatment.md` matches only book 2’s). Chapter artifacts: Glob `<chapter folder>/.history/ch<NN>-<stage>-v*.md`, where the chapter folder is the document’s own (`books/<slug>/chapters/chapter-NN/` in a series). Return them newest first |
 | `open(path)` | Present the file itself in the host’s reading pane (Cowork’s file preview; a send-file or render tool in Claude Code) so the author reads it beside the chat; never paste its contents into the conversation. Where the host has no pane, name the path |
 | `move(from, to)` | Read `from`, Write it to `to`, then report `from` for the author to remove (see `delete`) |
 | `delete(path)` | Not available. The four tools cannot remove a file and the binding takes no shell, so name the path in the report for the author to remove |

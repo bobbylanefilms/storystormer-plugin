@@ -44,7 +44,7 @@ confirm:  none | batch
 ```
 
 - **`identity`:** `path` means the store addresses documents by path; `id` means it addresses objects by id and the binding keeps the path-to-object map.
-- **`write`:** `native` overwrites in place; `delete-create` overwrites by deleting the old document and then creating the new one; `create-trash` creates a new object and trashes the old, so the id changes on every write.
+- **`write`:** `native` overwrites in place; `delete-create` overwrites by deleting the old document and then creating the new one; `create-trash` creates a new object and trashes the old, so the id changes on every write. Neither is atomic, so a binding with either value states its recovery: keep the new content in hand, retry the create, and if it still fails write back the prior content (the snapshot or the read that preceded the write). **No call may end with the path absent**, and the report says what happened.
 - **`edit`:** `native` applies the edit grammar in the store; `read-modify-write` reads, applies the edits in the model under the same failure rule, then writes through the binding’s `write`.
 - **`list`:** `glob` matches the glob in the store; `folder-walk` walks the tree from the root and filters by the glob in the model; `query` answers from a query over the project’s rows.
 - **`history`:** `snapshots` means prior versions exist only as the snapshot files skills write (§ Local-mode clauses); `native` means the backend keeps its own history, which the binding may not be able to read; `versions` means the backend keeps versions that `store.history` returns.
@@ -56,7 +56,9 @@ confirm:  none | batch
 
 ## Resolve
 
-Every skill and command runs this before its first store operation. It happens **once per session**: when the conversation already holds a binding, skip it.
+Every skill and command runs this before its first store operation. It happens **once per project per session**: when the conversation already holds a binding for the project the author is working on, skip it; when the author points at a different folder or project, resolve again and replace the remembered binding.
+
+Resolution reads the open folder’s config through the local binding (`references/store/local.md`), whatever `kind` it turns out to name; that read is the one store operation that precedes resolution.
 
 1. **An open working folder holds `.storystormer/config.json`.** Its `storage` block decides the binding:
 
@@ -68,7 +70,8 @@ Every skill and command runs this before its first store operation. It happens *
    }
    ```
 
-   - No `storage` block, `kind: local`, or a `local_root` that exists on this machine → the **local** binding, rooted at the open folder. (A project created before this contract has no block and is local.)
+   - No `storage` block, or `kind: local` → the **local** binding, rooted at the open folder. (A project created before this contract has no block and is local.)
+   - A `local_root` that exists on this machine → the **local** binding, rooted at `local_root` (the synced copy of the connector’s folder), even when the config was opened from somewhere else.
    - Otherwise → the binding for `kind`, rooted at `root`, if its connector is present. If it is not, tell the author which connector to connect, and stop.
 
    The config lives in the store: a real file where the binding stores it, computed from the project’s record where it does not. `state.md` frontmatter mirrors `kind` as `storage_kind`.
@@ -77,7 +80,7 @@ Every skill and command runs this before its first store operation. It happens *
 
 **What the session remembers:** the binding (its `kind` and document path), the root, and the capabilities line. They stay in the conversation for the rest of the session; later skills use them without resolving again.
 
-**Subagents never resolve.** Every subagent brief carries all three, and because a subagent cannot reach the plugin bundle, it also carries the binding’s realization of each operation the subagent will use. The subagent reaches the store only through that binding.
+**Subagents never resolve.** Every subagent brief carries all three, and because a subagent cannot reach the plugin bundle, it also carries the binding’s realization of each operation the subagent will use **and the clauses below that its work triggers**: the snapshot clause with the snapshot paths it must write, the concurrency guard with the version each target was read at, and the documents it must not write because they are computed. The subagent reaches the store only through that binding.
 
 ---
 
@@ -86,16 +89,16 @@ Every skill and command runs this before its first store operation. It happens *
 Behaviors the plugin has always had on a local folder are clauses keyed on the capabilities line. Skills say “snapshot per `store.md`” or “regenerate the index per `store.md`” and follow the clause here; they do not restate it.
 
 - **Snapshot**, before a write or edit replaces a document `file-schemas.md` says to snapshot:
-  - `history: snapshots` → `read` the current version and `write` it to its snapshot path, and finish that before the overwrite begins. Book-level documents go to `.storystormer/history/<timestamp>-<operation>/` as `file-schemas.md` § `.storystormer/history/` describes (including which files snapshot together as a set); chapter artifacts go to `chapters/chapter-NN/.history/` as § `chapters/` folder → Per-chapter history describes.
+  - `history: snapshots` → `read` the current version and `write` it to its snapshot path, and finish that before the overwrite begins. Book-level documents go to `.storystormer/history/<timestamp>-<operation>/` as `file-schemas.md` § `.storystormer/history/` describes (including which files snapshot together as a set); chapter artifacts go to the `.history/` folder inside their own chapter folder (`chapters/chapter-NN/.history/`, or `books/<slug>/chapters/chapter-NN/.history/` in a series) as § `chapters/` folder → Per-chapter history describes. Inside a book-level snapshot folder each file keeps its root-relative path (`books/book-2/treatment.md` in a series), so `history` can tell two books’ documents apart.
   - `history: native` or `versions` → write no snapshot; the backend keeps the prior version, and the report says so instead of naming a snapshot folder.
-- **Indexes and config:** `characters/_index.md`, `outline/_index.md`, `voice/README.md` and `.storystormer/config.json`. The binding lists each as **stored** or **computed**. Stored → skills regenerate and `write` it as `file-schemas.md` describes. Computed → `read` returns the backend’s rendering, skills never write it, and a step that would update it is skipped. A binding may compute other documents too; it lists them and names any writable realization they have (for example, how a new decision is recorded).
+- **Indexes and config:** `characters/_index.md`, `outline/_index.md`, `voice/README.md` and `.storystormer/config.json`. The binding lists each as **stored** or **computed**. Stored → skills regenerate and `write` it as `file-schemas.md` describes. Computed → `read` returns the backend’s rendering and skills never write it. A step that only regenerates it is skipped. A step that changes a value the author owns (a config field such as `current_focus` or `target_word_count`, a new decision) goes through the writable realization the binding names for it; a binding that computes a document lists every such realization, and where it names none for a value the author asked to change, say so rather than skip it silently. A binding may compute other documents too (for example `decisions.md`) under the same rule.
 - **`open`:** `pane` → present the document itself in the host’s reading pane so the author reads it beside the chat; never paste its contents into the conversation. `url` → give the author the binding’s link for the document. Where the host offers neither, name the path.
 
 ---
 
 ## Concurrency guard
 
-Applies on every binding except local, because a connector store can change between calls (another device, the app). Before a `write` or `edit` that replaces an existing document, re-read its frontmatter `version` (a document without one is not guarded). If it is **higher than the version this session read**, stop: show the author both versions (what the store holds now and what this session was about to write) and write nothing until they choose. After that, last write wins; the backend’s history keeps the losing version.
+Applies on every binding except local, because a connector store can change between calls (another device, the app). The **baseline** is the version of the read the new content was prepared from; later reads (the snapshot’s included) never move it. Before a `write` or `edit` that replaces an existing document, re-read its frontmatter `version` (a document without one is not guarded). If it **differs from the baseline**, stop: show the author both versions (what the store holds now and what this session was about to write) and write nothing until they choose; don’t snapshot the newer version as if it were the one being replaced. After that, last write wins; the backend’s history keeps the losing version.
 
 ---
 
