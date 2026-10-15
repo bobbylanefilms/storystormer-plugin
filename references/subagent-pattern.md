@@ -181,7 +181,7 @@ sample first for primacy, prior prose last for recency):
   1. voice/writing-sample.md            (skip if absent)
   2. voice/style-guide.md               (skip if absent)
   3. <prior chapter synopses — read each prior chapter's ch<NN>-prose.md
-      `synopsis` frontmatter; fall back to its ch<NN>-outline.md Premise where
+      `synopsis` frontmatter via store.read(path, frontmatter only); fall back to its ch<NN>-outline.md Premise where
       prose doesn't exist. Chapters < NN only.>
   4. chapters/chapter-<NN>/ch<NN>-blueprint.md   (lean path)
        — OR, if no Blueprint: POV-first character bios + worldbuilding the

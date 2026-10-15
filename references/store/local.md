@@ -13,7 +13,7 @@ identity: path · write: native · edit: native · list: glob · history: snapsh
 
 ## Tools
 
-The host’s file tools **Read**, **Write**, **Edit** and **Glob**. No shell and no connector. Claude Code and Cowork both provide these four under these names, so the binding behaves the same on both; resolution’s tool check passes when all four are present.
+The host’s file tools **Read**, **Write**, **Edit** and **Glob**, and, optionally, a way to remove a file (`delete`). No connector, and no shell required. Claude Code and Cowork both provide these four under these names, so the binding behaves the same on both; resolution’s tool check passes when all four are present.
 
 **Verified on:** 2026-10-15.
 
@@ -30,13 +30,13 @@ Everything is **stored** as a real file; nothing is computed. That includes the 
 | Operation | Realization |
 |---|---|
 | `list(glob)` | Glob with the pattern from the root; return root-relative paths |
-| `read(path)` | Read the file from beginning to end; if the tool returns only part of it, keep reading from where it stopped until the end |
+| `read(path)` | Read the file from beginning to end; if the tool returns only part of it, keep reading from where it stopped until the end. *Frontmatter only:* Read the first lines (a limit of about 60), extending until the closing `---` |
 | `write(path, content)` | Write the full content to the path, which creates the file and any missing folders. Skip the call when the content is identical to what is there. Write refuses to overwrite a file this conversation has not read: the snapshot step’s read satisfies that, and otherwise read the file first |
 | `edit(path, edits, reason)` | Edit, one call per item in order: `old` → `old_string`, `new` → `new_string`, `replace_all` → `replace_all`. All or nothing: before the first call, check every anchor against the text the earlier items would leave; if any is missing or ambiguous, stop with nothing written. If a call still fails partway, write back the content read before the first call. `reason` is not recorded; the snapshot is the history |
 | `history(path)` | Book-level documents: Glob `.storystormer/history/*/<path>` (each snapshot folder keeps root-relative paths, so `books/book-2/treatment.md` matches only book 2’s). Chapter artifacts: Glob `<chapter folder>/.history/ch<NN>-<stage>-v*.md`, where the chapter folder is the document’s own (`books/<slug>/chapters/chapter-NN/` in a series). Return them newest first |
 | `open(path)` | Present the file itself in the host’s reading pane (Cowork’s file preview; a send-file or render tool in Claude Code) so the author reads it beside the chat; never paste its contents into the conversation. Where the host has no pane, name the path |
-| `move(from, to)` | Read `from`, Write it to `to`, then report `from` for the author to remove (see `delete`) |
-| `delete(path)` | Not available. The four tools cannot remove a file and the binding takes no shell, so name the path in the report for the author to remove |
+| `move(from, to)` | Read `from`, Write it to `to`, then `delete(from)` |
+| `delete(path)` | Remove the file with whatever the host offers for it (a shell’s `rm` in Claude Code, a file-delete tool where the host has one). Where the host offers none (Cowork’s folder connection today), don’t fail: name the path in the report for the author to remove, and say until then that two copies exist. Never required for the binding to work, so the no-shell rule holds |
 
 ## Snapshots
 

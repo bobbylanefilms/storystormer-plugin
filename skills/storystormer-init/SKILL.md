@@ -225,7 +225,7 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
 
 2. **Confirm the chapter assignments**. For each file, verify:
    - **Which chapter number** it represents. If the filename is ambiguous, ask.
-   - **Which version** if there are duplicates (`ch3.md` + `chapter3-rewrite.md`). Ask the user which is canonical; stash the canonical one, snapshot the superseded version per `store.md`, filed under `superseded-prose/` inside this run's `init` snapshot folder.
+   - **Which version** if there are duplicates (`ch3.md` + `chapter3-rewrite.md`). Ask the user which is canonical; stash the canonical one, copy the superseded file as is to `superseded-prose/<original filename>` inside this run's `init` snapshot folder (an intake archive, not a per-document snapshot), then `store.delete` the original per the binding.
 
 3. **Normalize to the chapter-folder convention**: each chapter gets its own folder `chapters/chapter-NN/` (zero-padded to two digits), and the prose lands inside as `ch<NN>-prose.md`. So `ch1.md` becomes `chapters/chapter-01/ch01-prose.md`, `Chapter 17 - The Locket.md` becomes `chapters/chapter-17/ch17-prose.md`. Tell the user about the renames in the report.
 
