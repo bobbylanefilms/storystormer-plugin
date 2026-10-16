@@ -27,7 +27,7 @@ Lean hard on `references/philosophy.md` — character and theme matter as much a
 
 5. **Capture decisions aggressively as they surface.** Lean toward capturing rather than deferring — the log is the story's spine, and gaps in it cost more than overcapture does. When something is settled — *"OK, Marlowe and Voss are estranged siblings, not strangers"* — invoke the `decision-capture` skill (or just write the entry yourself if it's clear-cut). Always tell the user *"capturing that as decision D-019"* so they see the log forming. See `skills/decision-capture/SKILL.md` § "When to capture" for the full trigger list — character Lies and Ghosts, thematic articulations, worldbuilding rules with constraints, relationship dynamics, faction definitions, and "let's move on" transitions all warrant capture.
 
-6. **Update question status.** When a question is resolved by a decision, set its status to `resolved (D-019)` in `questions.md`.
+6. **Update question status.** When a question is resolved by a decision, set its status to `resolved (D-019)` in `questions.md`, using the decision’s ID as the store reported it.
 
 7. **Offer step-back moments — light, then structured.** Every 4–6 substantive decisions, or at natural conversational pauses, pause to take stock. The light version is just *"That's been a productive run. Want me to summarize what we've decided, or keep pushing?"* The user can also ask any time.
 

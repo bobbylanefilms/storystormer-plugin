@@ -120,7 +120,13 @@ See [references/series.md](references/series.md) for the full series doctrine �
 
 ## Where a story can live
 
-A story lives in a local folder today, including a Dropbox, Google Drive or OneDrive folder synced to your laptop (the plugin just sees a folder). Dropbox and Notion connector backends, where the story lives in the service itself, arrive in a later release.
+A story can live in one of three places. Every skill works the same on all three; only where the files sit changes.
+
+- **A local folder:** the folder your session is open in. A Google Drive or OneDrive folder synced to your computer counts (the plugin just sees a folder); those services have no direct backend.
+- **Dropbox:** the story lives in your Dropbox at `/StoryStormer/<your-project>/`, through the Dropbox connector, as the same folder tree a local project has, file for file. If that folder also syncs to your computer, tell init where, and sessions on that machine work on the synced copy directly. Snapshots and `/storystormer:checkpoint` work as they do locally.
+- **Notion:** the story lives in your Notion workspace, through the Notion connector, under a page called `StoryStormer` that holds five databases (Projects, Assets, Chapters, Decisions, Questions). Each document is a row you can open, browse and edit in Notion; the agent reads your edits like anything else. Notion keeps every page’s version history itself, so there are no snapshot folders and `/storystormer:checkpoint` politely declines.
+
+To put a new project in Dropbox or Notion, connect that connector, then tell `/storystormer:init` where you want it (*“set this up in Notion”*). Not here yet: an onboarding question that asks where a new project should live, and moving an existing project from one store to another; both are coming.
 
 ## Install
 
@@ -136,6 +142,8 @@ Cowork installs plugins from a **git-hosted marketplace**, so push this folder t
 ```
 
 Then give Cowork access to the folder your story lives in: open **Settings → connect a folder** (Cowork's "folder connection") and point it at your story directory. That's how the skills read and write your `.md` files — no filesystem MCP server required. The plugin's skills use the standard file tools, so they work the moment the folder is connected.
+
+Keeping the story in Dropbox or Notion instead? Connect that service’s connector to Claude as well (the Dropbox or Notion connector); see [Where a story can live](#where-a-story-can-live).
 
 > Org-wide distribution instead of personal install? An admin can publish the same marketplace under **Organization settings → Plugins**.
 
@@ -179,6 +187,10 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.19.0 added over v0.18.0
+
+- **Stories can live in Dropbox or Notion.** Two new store bindings: Dropbox keeps the local folder tree under `/StoryStormer/<slug>/` (with an optional synced copy on your computer), and Notion keeps a project as rows in five linked databases under a `StoryStormer` hub page, with the decision and question logs, indexes and dashboard computed from those rows. `init` scaffolds a new project in either when you ask, and leaves a small pointer config in the open folder so the next session finds it. On Notion, checkpoints decline (Notion keeps version history) and decision and question numbers are assigned by the store; skills use the number it reports.
 
 ### What v0.17.2 added over v0.17.1
 
@@ -282,6 +294,6 @@ These may follow in later versions once the kernel proves out.
 
 ## Status
 
-POC — parallel offering to the [StoryStormer web app](https://storystormer.io). The two are not synchronized; they're independent experiments in the same workflow. The plugin runs against local markdown; the web app runs against Convex. Both share the brainstorm → canon → treatment philosophy and the framework vocabulary.
+POC — parallel offering to the [StoryStormer web app](https://storystormer.io). The two are not synchronized; they're independent experiments in the same workflow. The plugin runs against markdown in a local folder, Dropbox or Notion; the web app runs against Convex. Both share the brainstorm → canon → treatment philosophy and the framework vocabulary.
 
 For design rationale, read the per-skill `SKILL.md` files and the docs in `references/` — each skill cites the references it leans on. (The full design history lives in the StoryStormer web-app repo's `plan/_cowork/` notes.)

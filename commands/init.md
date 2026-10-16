@@ -12,7 +12,7 @@ Invoke the `storystormer-init` skill on the user's current folder. The skill wil
 3. Ask 2–4 questions to fill in what the materials don't tell it.
 4. Propose a plan for what it will scaffold and what it will defer.
 5. Wait for the user's go-ahead before writing anything.
-6. Scaffold the canonical structure (`state.md`, `.storystormer/`, `decisions.md`, `questions.md`, and only the deeper files appropriate to the maturity stage).
+6. Scaffold the canonical structure (`state.md`, `.storystormer/`, `decisions.md`, `questions.md`, and only the deeper files appropriate to the maturity stage). The project goes in the open folder unless the user asks for Dropbox or Notion (the skill’s § Where a new project lives).
 
 This is the marquee skill — designed to accept any starting state, from an empty folder to a tangled mid-project mess, and produce a coherent workspace.
 

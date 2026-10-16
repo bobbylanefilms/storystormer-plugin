@@ -40,4 +40,4 @@ Read-only by default. Adding a decision goes through `decision-capture` (which h
 
 If the user wants to edit a decision in place (rare — decisions are normally append-only), do so but explicitly note the edit in the decision's `Details` field with the date of the edit.
 
-If the user wants to supersede a decision (a new decision invalidates an earlier one), invoke `decision-capture` for the new entry and update the old entry's `Superseded by` field.
+If the user wants to supersede a decision (a new decision invalidates an earlier one), invoke `decision-capture` for the new entry and update the old entry's `Superseded by` field with the new entry’s ID as the store reported it.

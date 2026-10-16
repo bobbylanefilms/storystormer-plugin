@@ -15,7 +15,7 @@ Always follow `references/plan-first.md` — confirm the wording with the user b
 
 ### 1. Read what's there
 
-Load `decisions.md` so you know the next ID. (If it doesn't exist yet, start at `D-001`.) Read the relevant active question in `questions.md` if this decision resolves one.
+Load `decisions.md` so you can propose the next ID. (If it doesn't exist yet, start at `D-001`.) Read the relevant active question in `questions.md` if this decision resolves one.
 
 ### 2. Compose the entry
 
@@ -48,7 +48,7 @@ If the user adjusts wording, fold in the changes. If they want details expanded,
 
 ### 4. Append, never overwrite
 
-Append the entry to the end of `decisions.md`. Bump `state.md → What Exists → Decisions` count and adjust `unintegrated decisions` count.
+Append the entry to the end of `decisions.md` through the store (`references/store.md`; where the binding computes the log, its realization adds the entry). The ID you proposed is provisional: a store that assigns numbers may use a different one and reports it, and from then on that reported ID is the decision’s ID, in the confirmation line, in a question’s `resolved (D-###)`, in an earlier entry’s `**Superseded by**`, and in every other cross-reference. Bump `state.md → What Exists → Decisions` count and adjust `unintegrated decisions` count (a store that computes `state.md` keeps the counts itself).
 
 ### 5. Update related questions
 

@@ -29,7 +29,9 @@ You only need one of them. Most authors want Cowork.
 
 2. **Install the plugin.** From the synced marketplace, install **`storystormer`** (its full id is `storystormer@storystormer-plugin`).
 
-3. **Connect your story project.** Open **Settings → connect a folder** and point it at the directory where your story lives (or an empty one where it will). This folder connection is how the skills read and write your files — there's nothing else to configure. (A Dropbox, Drive or OneDrive folder synced to your computer counts as a folder. Connecting Dropbox or Notion directly will have its own setup once those backends ship.)
+3. **Connect your story project.** Open **Settings → connect a folder** and point it at the directory where your story lives (or an empty one where it will). This folder connection is how the skills read and write your files — there's nothing else to configure. (A Dropbox, Drive or OneDrive folder synced to your computer counts as a folder.)
+
+   **Keeping the story in Dropbox or Notion instead?** Connect that connector too (in Cowork, from its connector settings; in Claude Code, `/mcp` shows whether the session has it), then tell init where you want the project: *“set this up in Dropbox”* or *“…in Notion.”* Dropbox projects go in `/StoryStormer/<your-project>/`; Notion projects go under a `StoryStormer` page init creates (or finds) in your workspace. Connecting a folder as well is worth it: init leaves a small pointer file there, so opening that folder next time finds the project.
 
 4. **Verify.** In a session with the folder connected, run `/storystormer:init` (for a new project) or just ask *"status"* on an existing one. If the slash commands autocomplete with the `storystormer:` prefix, the install worked.
 
@@ -85,6 +87,7 @@ Updates never touch your story files. The plugin is skills and reference docs; y
 | Symptom | What's going on | Fix |
 |---|---|---|
 | **"Marketplace sync failed"** in Cowork | Cowork's cloud sync can only read **public** repos, or the repo name was mistyped | Check the spelling (`bobbylanefilms/storystormer-plugin`); if you're hosting your own copy, make the repo public |
+| **“Connect the Dropbox (or Notion) connector”** when you open a project | The project lives in that service, and this session can’t reach it | Connect the connector named, then start a new session |
 | **Installed, but nothing happens** when you talk about your story | The session isn't in (or connected to) a story folder | Cowork: connect the folder in Settings. Claude Code: launch from the story directory |
 | **Slash commands don't autocomplete** | Plugin not actually installed, or the session predates the install | Re-check the install, then start a new session |
 | **An update isn't showing up** | Marketplace not re-synced, or the session is stale | Re-sync the marketplace, update the plugin, restart the session |

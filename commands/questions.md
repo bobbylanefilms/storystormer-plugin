@@ -31,7 +31,7 @@ Walk the user through composing a new question. Fields (see `references/file-sch
 - **Dependencies** — other questions that need to be answered first, if any.
 - **Source** — `manual` (the user is adding it here).
 
-Show the composed entry; confirm; append to `questions.md` with the next sequential ID (`Q-019`).
+Show the composed entry; confirm; append to `questions.md` with the next sequential ID from the read (`Q-019`). That ID is provisional: if the store reports a different one, use it in the confirmation and everywhere the question is referenced.
 
 ### `/storystormer:questions resolve Q-019`
 

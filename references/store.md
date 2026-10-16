@@ -50,7 +50,7 @@ confirm:  none | batch
 - **`history`:** `snapshots` means prior versions exist only as the snapshot files skills write (§ Local-mode clauses); `native` means the backend keeps its own history, which the binding may not be able to read; `versions` means the backend keeps versions that `store.history` returns.
 - **`open`:** `pane` presents the document in the host’s reading pane; `url` hands the author a link the binding supplies.
 - **`size`:** the largest document one read and one write can carry (`unbounded` when there is no practical cap); the binding says how it handles anything larger.
-- **`confirm`:** `none` means the backend’s tools ask nothing; `batch` means the connector asks for confirmation per mutation and the plan-first approval answers it (§ Confirmation posture).
+- **`confirm`:** `none` means the backend’s tools ask nothing of the author (a binding may still pass a confirmation flag on a call, such as a delete, which the plan-first approval supplies; the binding names it); `batch` means the connector asks for confirmation per mutation and the plan-first approval answers it (§ Confirmation posture).
 
 ---
 
@@ -113,8 +113,8 @@ The plan-first approval (`references/plan-first.md`) is the confirmation for eve
 | Backend (`kind`) | Binding document | Tier | Verified on |
 |---|---|---|---|
 | `local` | `references/store/local.md` | 1 | 2026-10-15 |
-| `dropbox` | `references/store/dropbox.md` | 2 | pending |
-| `notion` | `references/store/notion.md` | 1 | pending |
+| `dropbox` | `references/store/dropbox.md` | 2 | 2026-10-16 |
+| `notion` | `references/store/notion.md` | 1 | 2026-10-16 |
 | `storystormer` | `references/store/storystormer.md` | 1 | pending |
 
 Tier 1 realizes every operation directly; tier 2 needs a load-bearing workaround (Dropbox overwrites by delete and create). A **pending** binding is not written yet: a project whose `kind` names one cannot resolve, and the author is told so.

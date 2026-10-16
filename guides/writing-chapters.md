@@ -108,7 +108,7 @@ With the draft open, just talk about it:
 - *"Tighten the rooftop confrontation — Voss should never raise his voice."*
 - *"The second scene drags; cut it by a third."*
 
-Each note runs a **surgical edit**: the current version is snapshotted first (in a local folder, to the chapter's `.history/`), then only what you named changes — everything else is preserved verbatim. Loop as many rounds as you like. The chapter's status moves `drafted` → `revising` while you work; say **"chapter 17 is done"** when you're happy and it becomes `revised`. If your note is vague ("this feels flat"), the skill will diagnose first — naming what it thinks is off — and confirm before editing.
+Each note runs a **surgical edit**: the current version is snapshotted first (in a local or Dropbox folder, to the chapter's `.history/`), then only what you named changes — everything else is preserved verbatim. Loop as many rounds as you like. The chapter's status moves `drafted` → `revising` while you work; say **"chapter 17 is done"** when you're happy and it becomes `revised`. If your note is vague ("this feels flat"), the skill will diagnose first — naming what it thinks is off — and confirm before editing.
 
 ### The spoiler firewall (why it won't read your treatment)
 
@@ -231,7 +231,7 @@ chapters/chapter-17/
 
 **The prose doesn't sound like me.** Add (or improve) `voice/writing-sample.md` — it's the strongest voice input by far. A style guide with your specific anti-patterns is the second lever.
 
-**Where did my old draft go?** Nothing is ever overwritten silently — in a local folder, every superseded version is in that chapter's `.history/` folder, timestamped (a backend with its own version history keeps them there instead).
+**Where did my old draft go?** Nothing is ever overwritten silently — in a local or Dropbox folder, every superseded version is in that chapter's `.history/` folder, timestamped (in Notion, it’s in the page’s own version history: ••• → Version history).
 
 **Can I regenerate a chapter from scratch?** Yes — "rewrite chapter 17 from the outline" generates fresh (the old version is snapshotted). For a change of approach on an important chapter, consider a Kit Bash instead.
 

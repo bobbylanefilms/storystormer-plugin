@@ -72,6 +72,7 @@ The descriptions also ask, after each mutation, for a note on how to revert it. 
 - **Size:** `fetch` reads up to 5 MiB; `create_file` writes up to 5 MB (`CONTENT_TOO_LARGE`), so a file between the two can be read but not written back (§ Write step 3). No story document comes near either; if one does, stop and report it rather than split it.
 - **Async jobs:** `delete` and `move` answer `in_progress` even for one file, and per-entry failures appear only in `check_job_status`’s result. Never treat the first response as the outcome.
 - **The trailing newline:** `fetch` adds one `\n` to every file it reads; `create_file` stores content byte for byte. Remove the extra one on every read, or anchors, the no-op check and snapshots drift by a line each round trip.
+- **Text only:** `create_file` writes UTF-8 text, so a binary file (a `.docx`, an image) can’t be stored; `init` leaves a binary intake original in the open folder and names it (`storystormer-init` § Prose Chapter Stashing). Text formats (`.txt`, `.fountain`, `.rtf`) store as they are.
 - **New file, new id:** every overwrite deletes the file and creates another, so its `file_id` and `url` change. Never keep either across a write.
 
 ## Worked example: `treatment-update` replaces `treatment.md`
