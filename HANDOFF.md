@@ -1,32 +1,34 @@
 <!-- ABOUTME: Session handoff for long-running work in this repo; rewritten whole at each checkpoint -->
-<!-- ABOUTME: Current thread: SB1+SB2 released as 0.18.0-poc on main; SB3 (Dropbox + Notion bindings) next -->
+<!-- ABOUTME: Current thread: /implement SB3 (Dropbox + Notion bindings) on feature/sb3-backend-bindings -->
 
 # HANDOFF — storystormer-plugin
 
-**Date:** 2026-10-15 · **Branch:** `main` @ `9f71785` (SB1+SB2 fast-forwarded from `feat/sb1-sb2-store-contract`, now deleted) · **Version:** `0.18.0-poc`
+**Run:** `/implement SB3` · no flags · orchestrator Opus 5.5 · effort high · started 2026-10-16
+**Branch:** `feature/sb3-backend-bindings` off `main` @ `05227d4` · **Plan:** `.plans/SB3-backend-bindings.md`
+**Version on main:** `0.18.0-poc`
 
-## What landed
+## Slices
 
-The store contract (SB1) and the skill rewrite onto it (SB2), as one release:
-- `references/store.md`: six operations plus optional `move`/`delete`, a declared capabilities line per backend, once-per-project resolution, local-mode clauses (snapshots, indexes, config), concurrency guard, confirmation posture, bindings table.
-- `references/store/local.md`: the first binding; today's behavior, with `delete` working where the host can remove a file.
-- Every skill, command, reference and guide now addresses the contract; no skill names a host tool. `checkpoint` captures every document `file-schemas.md` defines.
-- Plans carry full as-built notes: `.plans/SB1-store-contract.md`, `.plans/SB2-skill-rewrite.md`.
+| # | Tasks | Tier | Status | Commit | Review |
+|---|---|---|---|---|---|
+| 1 | B: `references/store/dropbox.md`, live-probed | Opus | in progress (worktree) | — | — |
+| 2 | C: `references/store/notion.md`, live-probed | Opus | in progress (worktree) | — | — |
+| 3 | D+E: skill touch-points, store.md table, README/guides, version bump | Opus | pending | — | — |
 
-## Verification
+## Current position
 
-- Sol (GPT-6.1) reviewed every slice: 42 findings confirmed and fixed. An Opus cold read added 8 more fixes.
-- `claude plugin validate .` passes (one pre-existing warning: CLAUDE.md at the plugin root).
-- Parity harness (`~/Git/storystormer-parity`, README § After SB2): zero missed snapshots versus 1–2 in each baseline; per-step writes inside baseline variance; only intended differences.
+Slices 1 and 2 running in parallel worktrees. Next: verify each, cherry-pick onto the branch, Sol review, then slice 3. Phase 6 = live success-criteria runs on Dropbox and Notion.
 
-## Next
+## Decisions and deviations
 
-1. Rob: re-sync in Cowork (update marketplace → update plugin → restart session). Rob's local Claude Code install is still `0.16.1-poc`: `claude plugin marketplace update storystormer-plugin`, then update the plugin.
-2. SB3: Dropbox and Notion bindings (`references/store/dropbox.md`, `notion.md`). `local.md` already exists. Reuse the parity harness for regressions.
-3. SB4 (onboarding, locator, migrate) → SB5 (backend test matrix, incl. whether `mcp__*` in `allowed-tools` pre-approves connector tools, and Cowork's `delete`).
-4. Then AP4 and AP5 in the web-app repo. AP4's binding must map single edits to the app's `replace_range` (not `find_replace`) to keep the contract's ambiguous-anchor failure rule.
+- Parallel 1 ∥ 2: disjoint files, no shared interfaces.
+- Facts newer than the plan, passed to the slices: Notion has `notion-delete-pages` now (CW5 said no delete); Notion SQL mode is quota-limited on non-Business plans and can't join data sources there, and rows mode (limit 100) has no cursor; Dropbox recursive `list_folder` returns ns_path only (no path_display); Dropbox `create_file` needs the parent folder to exist; Dropbox `delete` can return `in_progress` (needs `check_job_status`).
+- Release lands on `main` only with Rob's go-ahead (global rule: never push main; project rule: Cowork reads main).
 
-## Open items for Rob
+## Open questions for Rob
 
-- Delete the private Notion page "StoryStormer Storage Test".
-- ISSUE068 § A triage after the first real plugin session against the MCP server.
+- (none yet)
+
+## Checks
+
+- `claude plugin validate .`: not yet run on this branch.
