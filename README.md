@@ -149,14 +149,14 @@ Keeping the story in Dropbox or Notion instead? Connect that service’s connect
 
 ### Claude Code (CLI / IDE)
 
-No GitHub round-trip needed — add the marketplace straight from the local path:
+Add the marketplace from GitHub, or from a local clone of this repo by its path:
 
 ```text
-/plugin marketplace add ./plan/_cowork/storystormer-plugin
+/plugin marketplace add bobbylanefilms/storystormer-plugin
 /plugin install storystormer@storystormer-plugin
 ```
 
-In both surfaces, plugin skills are namespaced (`/storystormer:init`, `/storystormer:status`, …) and the eleven workflow skills load automatically via progressive disclosure when your intent matches their descriptions.
+In both surfaces, plugin skills are namespaced (`/storystormer:init`, `/storystormer:status`, …) and the workflow skills load automatically via progressive disclosure when your intent matches their descriptions.
 
 ## Use it
 

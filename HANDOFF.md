@@ -1,39 +1,49 @@
 <!-- ABOUTME: Session handoff for long-running work in this repo; rewritten whole at each checkpoint -->
-<!-- ABOUTME: Current thread: /implement SB3 (Dropbox + Notion bindings) on feature/sb3-backend-bindings -->
+<!-- ABOUTME: Current thread: SB3 (Dropbox + Notion bindings) done on feature/sb3-backend-bindings as 0.19.0-poc; awaiting Rob's go-ahead to land on main -->
 
 # HANDOFF — storystormer-plugin
 
-**Run:** `/implement SB3` · no flags · orchestrator Opus 5.5 · effort high · started 2026-10-16
-**Branch:** `feature/sb3-backend-bindings` off `main` @ `05227d4` · **Plan:** `.plans/SB3-backend-bindings.md`
-**Version on main:** `0.18.0-poc`
+**Run:** `/implement SB3` · orchestrator Opus 5.5 · effort high · 2026-10-16 · **complete**
+**Branch:** `feature/sb3-backend-bindings` (pushed) off `main` @ `05227d4` · **Plan:** `.plans/SB3-backend-bindings.md` (as-built notes at the end)
+**Version on branch:** `0.19.0-poc` · **main:** `0.18.0-poc`
 
 ## Slices
 
-| # | Tasks | Tier | Status | Commit | Review |
+| # | Tasks | Tier | Status | Commits | Review |
 |---|---|---|---|---|---|
-| 1 | B: `references/store/dropbox.md`, live-probed | Opus | accepted (verified; cherry-picked) | `d607bb9`, fix `8544ba2` | Sol: 14 found, 13 confirmed, fixed inline |
-| 2 | C: `references/store/notion.md`, live-probed | Opus | accepted (cherry-picked) | `945f863`, fix `be59a10` | Sol: 40 found, 39 confirmed; fresh Opus fix slice fixed all 39 |
-| 3 | D+E: skill touch-points, store.md table, README/guides, version bump | Opus | accepted | `7a43dcd` | Sol running |
+| 1 | `references/store/dropbox.md`, live-probed | Opus | accepted | `d607bb9`, fix `8544ba2` | Sol: 14 found, 13 fixed inline |
+| 2 | `references/store/notion.md`, live-probed | Opus | accepted after send-back | `945f863`, fix `be59a10` | Sol: 40 found, 39 fixed by a fresh Opus fix slice |
+| 3 | skill wiring, store.md table, README/guides, version bump | Opus | accepted | `7a43dcd`, fix `ac7aa6b` | Sol: 12, plus 26 from E2E, fixed in one slice |
+
+E2E (fresh-context Opus following the docs cold): Dropbox D1–D7 all pass (tree matches a local run path for path); Notion N1–N7 five pass, two partial (dropped leading H1, bio property mapping), both fixed in `ac7aa6b`.
 
 ## Current position
 
-Slice 1 done (review fixes `8544ba2`). Slice 2 done (fix `be59a10`). Slice 3 accepted (`7a43dcd`, version 0.19.0-poc). Running in parallel: Sol on slice 3 (worktree `review-sb3-s3`), and two fresh-context E2E testers (Dropbox: project `/StoryStormer/lighthouse-ledger/`; Notion: real "StoryStormer" hub + test project). Both leave their test projects in place for Rob to inspect. Next: triage, fix, final commit + push branch, ask Rob about landing on main. Phase 6 = live success-criteria runs on Dropbox and Notion.
+Done on the branch. Not on `main`, so Cowork doesn't see it yet. Next for Rob: approve landing on `main` (fast-forward + push), then re-sync Cowork.
 
 ## Decisions and deviations
 
-- Parallel 1 ∥ 2: disjoint files, no shared interfaces.
-- Facts newer than the plan, passed to the slices: Notion has `notion-delete-pages` now (CW5 said no delete); Notion SQL mode is quota-limited on non-Business plans and can't join data sources there, and rows mode (limit 100) has no cursor; Dropbox recursive `list_folder` returns ns_path only (no path_display); Dropbox `create_file` needs the parent folder to exist; Dropbox `delete` can return `in_progress` (needs `check_job_status`).
-- Dropbox probe: `fetch` appends one trailing `\n` (binding strips it); delete/move always async, wait on `check_job_status` before create; `create_folder` one level per call. Rob's question from the slice: keep `search`/`get_file_metadata` in the required tool list (recommend keep).
-- Sol finding not taken (slice 1): chapter `history` doesn't surface checkpoint copies; local.md behaves the same, kept consistent.
-- Notion slice deviations (forced by the live connector): per-project `Number` instead of UNIQUE_ID (prefix needs 2+ chars, counts per database); Type/Category/Tags are text not select (selects reject unknown values); decision/question fields are properties; state.md has three writable sections; Questions Status open/resolved/invalidated; added Logline, Type, Body Words, Markers, decision/question entry fields. AP0 Part B has landed, so the app's enums are used. Truncation recovery is written but unobserved (12.7k words came back whole). A second "StoryStormer" page exists in Rob's workspace (Software Hub), so the locator checks title + root + five databases.
-- Slice 2 send-back went to a fresh Opus agent (the author couldn't resume after its worktree was removed). Rejected Sol finding: create-pages does accept teamspace_id.
-- Slice 3: Dropbox also gets a pointer config in the open folder (same as Notion); added a "Text only" quirk to dropbox.md for binary intake; store.md `confirm: none` definition gained a clause for per-call confirmation flags.
-- Release lands on `main` only with Rob's go-ahead (global rule: never push main; project rule: Cowork reads main).
+- Notion deviations forced by the connector are in the plan's as-built notes (per-project `Number`, text instead of selects, decision/question fields as properties, three writable `state.md` sections, `notion-delete-pages` with `user_confirmed`).
+- Dropbox: `fetch` appends one trailing newline (stripped); the write waits on `check_job_status` before the create.
+- Contract changes: `confirm: none` allows per-call confirmation flags; the concurrency guard now covers un-versioned documents by content compare; subagent briefs for remote-store intake carry a source and a destination block.
+- Sol findings not taken: chapter `history` doesn't surface checkpoint copies (same as local.md); `create-pages` does accept `teamspace_id`.
 
-## Open questions for Rob
+## Open for Rob
 
-- (none yet)
+- Land on `main`? (fast-forward `feature/sb3-backend-bindings`, push `main`, delete the branch).
+- Test projects left for inspection: Dropbox `/StoryStormer/lighthouse-ledger/`; Notion hub "StoryStormer" with "The Lighthouse Ledger". Keep the Notion hub (init reuses it) and trash only the project, or trash all?
+- `.plans/ISSUE070-treatment-first-run-budget.md` (Needs Rob): hard act budget vs. no-invention on a thin first run.
+- Older: delete the private Notion page "StoryStormer Storage Test"; ISSUE068 § A triage (web-app repo).
+
+## Follow-ups noted
+
+- `pre-outline-session`'s `Integrated into structure` line has no entry in `file-schemas.md` § `decisions.md`.
+- Notion Assets `Authorship` column is unused (no Assets kind carries `authorship`).
+- `genre-reference.md` has no named owning skill (init's plan offers it; `genres.md` says research on confirmation).
+- README lacks a v0.18.0 changelog entry.
+- SB5: truncation recovery on a very long Notion page; Dropbox version history across delete-create; 50× overwrite loop.
 
 ## Checks
 
-- `claude plugin validate .`: not yet run on this branch.
+- `claude plugin validate .`: pass (expected CLAUDE.md warning) at the final commit.
+- Tool-name grep over skills/commands: clean apart from the SB2 `allowed-tools: mcp__*` wildcard.
