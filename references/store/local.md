@@ -29,7 +29,7 @@ Everything is **stored** as a real file; nothing is computed. That includes the 
 
 | Operation | Realization |
 |---|---|
-| `list(glob)` | Glob with the pattern from the root; return root-relative paths |
+| `list(glob)` | Glob with the pattern from the root; return root-relative paths. Where the host’s Glob skips dot-folders, glob them explicitly (`.storystormer/**`, each chapter folder’s `.history/*`) when the pattern can reach them |
 | `read(path)` | Read the file from beginning to end; if the tool returns only part of it, keep reading from where it stopped until the end. *Frontmatter only:* Read the first lines (a limit of about 60), extending until the closing `---` |
 | `write(path, content)` | Write the full content to the path, which creates the file and any missing folders. Skip the call when the content is identical to what is there. Write refuses to overwrite a file this conversation has not read: the snapshot step’s read satisfies that, and otherwise read the file first |
 | `edit(path, edits, reason)` | Edit, one call per item in order: `old` → `old_string`, `new` → `new_string`, `replace_all` → `replace_all`. All or nothing: before the first call, check every anchor against the text the earlier items would leave; if any is missing or ambiguous, stop with nothing written. If a call still fails partway, write back the content read before the first call. `reason` is not recorded; the snapshot is the history |

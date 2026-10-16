@@ -80,7 +80,7 @@ Resolution reads the open folder’s config through the local binding (`referenc
 
 **What the session remembers:** the binding (its `kind` and document path), the root, and the capabilities line. They stay in the conversation for the rest of the session; later skills use them without resolving again.
 
-**Subagents never resolve.** Every subagent brief carries all three, and because a subagent cannot reach the plugin bundle, it also carries the binding’s realization of each operation the subagent will use **and the clauses below that its work triggers**: the snapshot clause with the snapshot paths it must write, the concurrency guard with the version each target was read at, and the documents it must not write because they are computed. The subagent reaches the store only through that binding.
+**Subagents never resolve.** Every subagent brief carries all three, and because a subagent cannot reach the plugin bundle, it also carries the binding’s realization of each operation the subagent will use **and the clauses below that its work triggers**: the snapshot clause with the snapshot paths it must write, the concurrency guard with the baseline each target was read at (its `version`, or its whole content when it has none), and the documents it must not write because they are computed. The subagent reaches the store only through that binding.
 
 ---
 
@@ -98,7 +98,7 @@ Behaviors the plugin has always had on a local folder are clauses keyed on the c
 
 ## Concurrency guard
 
-Applies on every binding except local, because a connector store can change between calls (another device, the app). The **baseline** is the version of the read the new content was prepared from; later reads (the snapshot’s included) never move it. Before a `write` or `edit` that replaces an existing document, re-read its frontmatter `version` (a document without one is not guarded). If it **differs from the baseline**, stop: show the author both versions (what the store holds now and what this session was about to write) and write nothing until they choose; don’t snapshot the newer version as if it were the one being replaced. After that, last write wins; the backend’s history keeps the losing version.
+Applies on every binding except local, because a connector store can change between calls (another device, the app). The **baseline** is the read the new content was prepared from; later reads (the snapshot’s included) never move it. Before a `write` or `edit` that replaces an existing document, re-read it and compare: its frontmatter `version` with the baseline’s, or, for a document without one (`decisions.md`, `questions.md`, `state.md`), the whole re-read with the whole baseline read, where any difference means it changed (a binding that computes a document names the parts it compares instead). If it **differs from the baseline**, stop: show the author both versions (what the store holds now and what this session was about to write) and write nothing until they choose; don’t snapshot the newer version as if it were the one being replaced. After that, last write wins; the backend’s history keeps the losing version.
 
 ---
 

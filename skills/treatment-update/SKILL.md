@@ -197,7 +197,7 @@ Compute the budget from `target_word_count` per `references/file-schemas.md` § 
 
 Two marker types:
 
-- `[OPEN: Q-###]` — links to a tracked open question in `questions.md`. Use when a specific question has been logged.
+- `[OPEN: Q-###]` — links to a tracked open question in `questions.md`. Use when a specific question has been logged. An ID you propose for a new question is provisional: a store that assigns numbers may use a different one and reports it, and from then on that reported ID is the question's ID, so log it before writing any marker that cites it.
   > *`[OPEN: Q-014] — How does Marlowe discover the time loop? Three plausible directions: A, B, C.`*
 - `[NEEDS DEVELOPMENT: …]` — for narrative gaps that don't yet have a tracked question. Use when story structure implies content that hasn't been brainstormed.
   > *`[NEEDS DEVELOPMENT: Elena's infiltration mechanics. We know she gets into Voss's compound by Act 3 — we don't yet know how.]`*
@@ -224,6 +224,7 @@ Show the new treatment to the user. For long treatments, summarize what changed 
 
 After the user approves the new treatment:
 
+- Log any new questions in `questions.md` first, so every `[OPEN: Q-###]` in the new treatment carries the ID the store reported.
 - Write the snapshot per `store.md` — both the old primer and the old treatment, as a pair.
 - `store.write` the new `primer.md` and `treatment.md`.
 - For each decision consumed by this update, edit its entry in `decisions.md` to set `Integrated into treatment: yes (<date>)`.

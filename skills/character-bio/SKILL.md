@@ -25,12 +25,14 @@ Three tiers (bio depths, not a frontmatter field; the `type` picks the default d
 
 ### 1. Read context
 
-- `treatment.md` — full read. Find every mention of the character. What do they do? Who do they interact with? What's their function in the story?
-- `primer.md` — full read. Are they central to the premise / theme?
-- `manifest.md` — which role section is the character logged under, and at what status? Have they been promoted/demoted?
+- `treatment.md` — full read, if it exists. Find every mention of the character. What do they do? Who do they interact with? What's their function in the story?
+- `primer.md` — full read, if it exists. Are they central to the premise / theme?
+- `manifest.md` — if it exists: which role section is the character logged under, and at what status? Have they been promoted/demoted?
 - `decisions.md` — grep-permitted, but read the relevant decisions in full. Anything about the character's backstory, relationships, or function?
 - Existing bio at `characters/<slug>.md` if there is one (expansion/refresh case).
 - Other character bios (the major characters) — for Voice Fingerprint differentiation (see *Voice well overlap* below).
+
+When `treatment.md`, `primer.md` or `manifest.md` is absent, say so in the plan, work from what exists (decisions, intake, the conversation), and recommend the skill that creates it (`treatment-update` for the primer and treatment, `manifest-sync` for the manifest).
 
 **Operate in substantive mode** for this read — list the files you plan to consult at the top of your next response, full-read each with `store.read` (full read, beginning to end, no grep), and quote at least one passage from each in your output. See `references/reading-discipline.md` § Substantive mode.
 
@@ -109,8 +111,8 @@ Once approved:
 
 - Snapshot any existing bio per `store.md`.
 - `store.write(characters/<slug>.md)` with the new bio.
-- Update `characters/_index.md` per `store.md` (mirror of manifest's character list, with one-line descriptors).
-- Update `manifest.md` if the character is newly added, their role changed, or their manifest status should now read `Canon Asset Created`.
+- Update `characters/_index.md` per `store.md` (one line per bio, `references/file-schemas.md` § `characters/_index.md`).
+- Update `manifest.md`, when it exists, if the character is newly added, their role changed, or their manifest status should now read `Canon Asset Created`; when it doesn't, recommend `manifest-sync` in the report.
 - Update `state.md → What Exists` to reflect the new/updated bio.
 
 ### 9. Report

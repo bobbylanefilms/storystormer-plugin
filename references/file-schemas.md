@@ -476,6 +476,19 @@ treatment_version: 7
 
 A bio may also carry an optional **`## Revelation Log`** as its final section — a chapter-keyed, append-only list of state changes (injuries, deaths, allegiance shifts, reader-facing reveals) that make the character scene-current at a given chapter. See `references/canon-schemas.md` § Revelation Log. The `blueprint` skill reads it, filtered to `chapter ≤ N`, to fuse current state into a chapter's brief.
 
+## `characters/_index.md` — bio index
+
+A one-line-per-bio list of `characters/`, regenerated whenever a bio is written (where the binding computes it, it is rendered instead). No frontmatter. Sorted by `name`:
+
+```markdown
+# Characters
+
+- [Marlowe Reyes](marlowe-reyes.md) — Protagonist · POV character, the bureau
+- [Ada Voss](ada-voss.md) — Antagonist
+```
+
+Each line is the bio's `name` linked to its file, ` — ` and its `type`, then ` · ` and its `tags` comma-separated when it has any.
+
 ## Worldbuilding files (`worldbuilding/<type-slug>/<slug>.md`)
 
 Each entry has a **worldbuilding type** from the project's list. The app's fourteen defaults are in `references/frameworks.md` § Worldbuilding: Organizations, Locations, Geography, Objects, Vehicles, Weapons, Technology, Magic, Creatures, Culture, History, Religion, Languages, Lore. The list is editable per project, so a project may use others.
@@ -1121,7 +1134,7 @@ This is the **book-level** snapshot mechanism. Before any rewrite of `primer.md`
 
 Inside a snapshot folder each file keeps its root-relative path (`books/book-2/treatment.md` in a series), so two books' documents stay distinct.
 
-The folder name encodes both the timestamp and the operation. It uses **per-snapshot folders** because a single operation often archives several files **as a set** — primer and treatment are snapshotted as a pair during treatment updates, since the primer version that built a treatment is meaningless without the treatment it informed.
+The folder name encodes both the timestamp and the operation: `<YYYY-MM-DD>T<HH-MM>-<operation>`, the timestamp in the session's local time and `<operation>` the name of the skill or command that wrote it (`treatment-update`, `init`; `/storystormer:checkpoint` uses its label). A store operation such as `edit` is never the operation name. It uses **per-snapshot folders** because a single operation often archives several files **as a set** — primer and treatment are snapshotted as a pair during treatment updates, since the primer version that built a treatment is meaningless without the treatment it informed.
 
 **Chapter-level artifacts use a different mechanism.** Per-chapter content (outline/blueprint/prose/notes) revises frequently and one file at a time, so its snapshots are co-located in the chapter folder as flat, version+date-named files (`chapters/chapter-NN/.history/ch<NN>-<stage>-v<version>-<date>.md`) — not here, and not in per-snapshot subfolders. See § `chapters/` folder → Per-chapter history. The split is by altitude: book-level docs (which change as a set) snapshot centrally in folders; chapter-level artifacts (which change individually) snapshot locally as flat files. Both key on the frontmatter `version` integer.
 

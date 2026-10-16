@@ -26,12 +26,12 @@ A subagent cannot reach the plugin bundle and never resolves the store (`referen
 - **Realizations:** the binding's realization of each operation this subagent will use (`store.read`, `store.write`, `store.list`, and so on), pasted from the binding document.
 - **Triggered clauses:** the `store.md` clauses its work triggers, **pasted as text, not cited** (the subagent can't open `store.md`):
   - **Snapshot:** for each existing target, read it and write it to the named snapshot path before overwriting it. Reading the target for this is authorized even when the brief otherwise limits what to read.
-  - **Concurrency guard** (non-local bindings): the baseline version of each target; before overwriting, re-read its frontmatter `version`, and if it differs from the baseline, write nothing to that target and return the conflict to the main session.
+  - **Concurrency guard** (non-local bindings): the baseline of each target (its `version`, or for a document without one the whole content it was read at); before overwriting, re-read it and compare the `version`, or the whole content when there is no `version`. If it differs, write nothing to that target and return the conflict to the main session.
   - **Write recovery** (`write: delete-create` or `create-trash`): retry the create with the content in hand; if it still fails, write back the prior content; never end with the path absent; report what happened.
   - **Confirmation:** the main session's plan approval covers every mutation in this brief; don't ask again per file.
   - **Computed documents:** the ones the binding computes, which the subagent must not write.
 
-The subagent reaches the store only through that block. **The main session rejects a report that names a local filesystem path when the session's binding is not local**, and re-dispatches with the store block restated.
+The subagent reaches the store only through that block. **Intake work on a remote store carries two blocks:** a **source** block (the local binding, rooted at the open folder, for reading the intake materials and nothing else) and a **destination** block (the session's binding, for everything written). **The main session rejects a report that names a local filesystem path when the session's binding is not local**, except a source path the source block covers, and re-dispatches with the store blocks restated.
 
 ## The kinds of subagent work
 

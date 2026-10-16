@@ -17,12 +17,12 @@ When the user gives you the go-ahead, you create or update:
 
 - `state.md` — living dashboard (see `references/file-schemas.md`), with `storage_kind` in its frontmatter mirroring the config
 - `.storystormer/config.json` — project metadata, including `project_type`, `target_word_count` (config owns the target; `state.md` mirrors it) and `storage`: a new project gets `"storage": { "kind": "local" }` unless the author asks for another store (§ Where a new project lives); an existing project keeps the `storage` block it has
-- `.storystormer/` — supporting subfolder structure
+- `.storystormer/` — supporting subfolders, each created with its first file (no empty folders)
 - `decisions.md` and `questions.md` — seeded from any materials you found
 - `treatment.md` — only when the user brings in an existing treatment-like document and explicitly agrees to a copy-and-clean-up step. **Never generate a new treatment at init.**
 - `primer.md` — **never at init.** The primer is a five-section structured craft dossier (~4,500w, hard ceiling 5,000) that's always built by `treatment-update`'s Phase 1 (first-run mode handles construction from intake materials). Init leaves `primer.md` absent so the first `treatment-update` run populates it.
 - `manifest.md` — only if there's enough character/world content to seed it
-- `characters/_index.md` and per-character bios — only if the user has named characters
+- Per-character bios and `characters/_index.md` — only for characters the intake already has bio material for, migrated rather than generated; a character the intake only names goes in the manifest
 - The `worldbuilding/` subfolders as appropriate
 - **`voice/README.md`** — always, at every init. The `voice/` folder holds the two author-owned voice inputs the prose stage reads first (`writing-sample.md`, the author's own non-AI prose; `style-guide.md`, the author's craft rules), and a project can otherwise have no voice inputs and nothing warns about it. The README is the warning and the instructions; see § Voice scaffolding. **No stub `style-guide.md` or `writing-sample.md`**: downstream skills key on those files' *existence* (`blueprint` drops general craft when a style guide exists; `prose` skips the craft rulebook), so an empty stub would silently disable behaviour the author hasn't replaced. If intake materials include something that is clearly a style guide or a writing sample, place it (see § Voice scaffolding).
 - `outline/` and its files — **never at init.** The outline directory (the book-level spine: `structure.md` + the `_index.md` outline view) is created lazily by `pre-outline-session`, and the per-chapter outlines (`chapters/chapter-NN/ch<NN>-outline.md`) by `outline-chapters`, when the project is ready for outlining (typically `treatment-refined` or `canon-development` stage). If the user brings in pre-existing outline-shaped materials (chapter outlines, beat sheets, scene lists), note them in the intake survey but **do not migrate them into `outline/` here** — flag them and recommend `pre-outline-session` as the next step, which knows how to integrate them.
@@ -34,9 +34,11 @@ Don't pre-create empty files. Only create files that have meaningful content. Em
 
 By default, in the open folder, through the local binding. When the author asks for the new project to live in Dropbox or Notion (a later release asks during onboarding; for now the author names it), that is init’s own choice of store (`references/store.md` § Resolve, step 2): load that backend’s binding from § Bindings, run its tool check (step 3), and say so in the plan. Intake materials are still read, and cleared after they are re-filed, through the local binding that holds them; everything init creates goes through the chosen binding, and documents that binding computes are written through its realizations or skipped (`store.md` § Local-mode clauses).
 
-- **Dropbox:** the same tree, rooted at `/StoryStormer/<slug>/` (the binding’s § Root), with the stored config’s `storage` = `{"kind": "dropbox", "root": "/StoryStormer/<slug>"}`. If that folder already holds a project, ask rather than scaffold into it. If the author says the folder syncs to this machine, add its absolute path as `local_root` (ask for it; don’t guess).
+- **Dropbox:** the same tree, rooted at `/StoryStormer/<slug>/` (the binding’s § Root), with the stored config’s `storage` = `{"kind": "dropbox", "root": "/StoryStormer/<slug>"}`. If that folder already holds a project, ask rather than scaffold into it. If the author says the folder syncs to this machine, add its absolute path as `local_root` (ask for it; don’t guess). When that synced folder already exists here, scaffold through the local binding rooted at it (`store.md` § Resolve) and record `kind: dropbox`, `root` and `local_root`; the Dropbox connector isn’t needed for that.
 - **Notion:** run the binding’s § Scaffolding a project (hub, tables for a new hub, the Projects row, the pointer), then continue init through the contract; its step 5 governs intake.
-- **Pointer, both backends:** when the session has an open local folder, write `.storystormer/config.json` there through the local binding, holding the `storage` block, so the next session’s resolution finds the project (`store.md` § Resolve, step 1); the full config lives in the store. With no open folder, the report gives the author the way back (the Dropbox path, or the Notion row’s link).
+- **Pointer, both backends:** when the session has an open local folder, write `.storystormer/config.json` there through the local binding as exactly `{"storage": {…}}`, the `storage` block and nothing else, so the next session’s resolution finds the project (`store.md` § Resolve, step 1); the full config lives in the store. When the open folder already holds the project’s full config (it is the synced Dropbox folder, or `local_root`), write no pointer. With no open folder, the report gives the author the way back (the Dropbox path, or the Notion row’s link).
+- **The intake archive** is where init files what it keeps of the intake: this run’s `init` snapshot folder where the binding’s `history` is `snapshots`, else `.storystormer/intake/<timestamp>/` (the snapshot-folder timestamp, so a re-run never overwrites an earlier record). It holds `superseded-prose/<original filename>`, `intake-original-names.md`, and, when the store is not the folder the intake came from, `sources/<original filename>` for each text source init read but didn’t re-file (a brain dump, a deferred legacy outline), so a session that reaches only the store still has the originals.
+- **A normalizing binding:** when the chosen binding says it normalizes markdown on write, keep the local intake originals (never `store.delete` them) and say so in the report.
 
 ## What to do
 
@@ -139,6 +141,8 @@ The main session aggregates the completion logs from each subagent for the final
 
 For decision and question extraction in either mode (subagent-dispatched or main-session-direct), lean on the model — it's a judgment task, not a regex match. The user reviews the proposed entries before they're written. Never auto-write decisions or questions from intake without user review; the user's voice in those logs matters.
 
+The proposed IDs are provisional: a store that assigns numbers may use a different one and reports it, and from then on that reported ID is the entry's ID. Adopt it before writing any marker or cross-reference (a question's `**Dependencies**`, a `resolved (D-###)`, the report).
+
 ### 6. Report
 
 Short summary:
@@ -188,7 +192,7 @@ The fix is to **dispatch reads and executions to subagents**, keeping the main s
 
 **Steps 2, 3, 4 (Triage, Talk, Propose) stay in the main session.** Subagents provide the evidence; the main session decides what to do with it.
 
-The dispatch decision is conditional on intake complexity. Trivial folders (empty, single brain dump, fewer than 4 files) read and execute directly in the main session — subagent overhead exceeds benefit at that scale. The thresholds and decision rule are in `references/subagent-pattern.md` § When to dispatch vs. when to read directly. Every brief carries the store block from `references/subagent-pattern.md` § Mandatory brief fields.
+The dispatch decision is conditional on intake complexity. Trivial folders (empty, single brain dump, fewer than 4 files) read and execute directly in the main session — subagent overhead exceeds benefit at that scale. The thresholds and decision rule are in `references/subagent-pattern.md` § When to dispatch vs. when to read directly. Every brief carries the store block from `references/subagent-pattern.md` § Mandatory brief fields; on a store other than the open folder, intake briefs carry two, a source block (the local binding, for reading the intake) and a destination block (the chosen binding, for everything written).
 
 **Required behavior in subagent returns:** every read subagent's return must include 3–5 verbatim quoted excerpts per file. This is the same anti-confabulation defense as substantive mode applied to the subagent layer. Returns without quotes get rejected and re-dispatched. Silent acceptance of quote-free returns defeats the entire reading-discipline architecture.
 
@@ -233,7 +237,7 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
 
 2. **Confirm the chapter assignments**. For each file, verify:
    - **Which chapter number** it represents. If the filename is ambiguous, ask.
-   - **Which version** if there are duplicates (`ch3.md` + `chapter3-rewrite.md`). Ask the user which is canonical; stash the canonical one, copy the superseded file as is to `superseded-prose/<original filename>` inside this run's `init` snapshot folder (an intake archive, not a per-document snapshot), or to `.storystormer/intake/superseded-prose/<original filename>` where the binding keeps no snapshot folders, then `store.delete` the original per the binding.
+   - **Which version** if there are duplicates (`ch3.md` + `chapter3-rewrite.md`). Ask the user which is canonical; stash the canonical one, copy the superseded file as is to `superseded-prose/<original filename>` in the intake archive (§ Where a new project lives; not a per-document snapshot), then `store.delete` the original per the binding. A superseded original the binding can't store (step 5's fallback) stays in the open folder, never deleted, and the report names it with the archive path it would have had.
 
 3. **Normalize to the chapter-folder convention**: each chapter gets its own folder `chapters/chapter-NN/` (zero-padded to two digits), and the prose lands inside as `ch<NN>-prose.md`. So `ch1.md` becomes `chapters/chapter-01/ch01-prose.md`, `Chapter 17 - The Locket.md` becomes `chapters/chapter-17/ch17-prose.md`. Tell the user about the renames in the report.
 
@@ -245,7 +249,7 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
    - Stash as-is in the chapter folder with the original extension preserved on the prefixed name. Do NOT auto-convert.
    - Flag in the report: *"`chapters/chapter-03/ch03-prose.docx` was preserved in its original format. Prose-writing skills (when added) will require markdown — you can convert it now using a tool of your choice, or convert later when prose-writing functionality is built."*
    - Don't block init on format issues; stash and move on.
-   - A binding that stores only markdown, or only text when the original is binary (a `.docx`), leaves these originals in the open folder, never deleted, and names them in the report with the canonical path they would have had instead of stashing them.
+   - A binding that stores only markdown, or only text when the original is binary (a `.docx`), leaves these originals in the open folder, never deleted, and names them in the report with the canonical path they would have had instead of stashing them. The same holds for a superseded copy (step 2).
 
 6. **Create the chapter folders** — one `chapters/chapter-NN/` per detected chapter (standalone: under the workspace-root `chapters/`; series: under `books/<current_focus>/chapters/`). If series intake is happening at the same time and prose belongs to specific books, sort each chapter folder into the right book's `chapters/` based on user confirmation. Ask if you're unsure which book a given chapter belongs to.
 
@@ -257,7 +261,7 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
 
    The denominator (`/40`) is from the outline structure if it exists, or just `6 written` if no structure has been committed yet.
 
-8. **Snapshot a mapping** of original filenames to canonical filenames as `intake-original-names.md`, written inside this run's `init` snapshot folder (per `store.md`), or to `.storystormer/intake-original-names.md` where the binding keeps no snapshot folders. Example:
+8. **Snapshot a mapping** of original filenames to canonical filenames as `intake-original-names.md` in the intake archive. Example:
 
    ```markdown
    # Intake — Original Filename Mapping
@@ -301,7 +305,7 @@ In series mode:
 For intake of an existing standalone project that the user wants to convert to series:
 - Confirm with the user before restructuring — this is a non-trivial move.
 - Snapshot the current standalone folder per `store.md` before any file moves.
-- `store.move` existing `primer.md`, `treatment.md`, and each document under `outline/` (enumerate with `store.list(outline/**)`) into `books/book-1/`, keeping their relative paths. A document the binding computes is skipped by `move` and follows its rows.
+- `store.move` existing `primer.md`, `treatment.md`, and each document under `outline/` and `chapters/` (enumerate with `store.list(outline/**)` and `store.list(chapters/**)`; chapter content is per-book, `references/series.md`) into `books/book-1/`, keeping their relative paths. A document the binding computes is skipped by `move` and follows its rows.
 - Keep `manifest.md`, `decisions.md`, `questions.md`, `characters/`, `worldbuilding/` at root (they were already shared in spirit).
 - Update each existing decision and question to add `Scope: book-1` (since pre-series, they were all about the one book).
 - Create stubs for book 2 and book 3 (or however many the user is planning).

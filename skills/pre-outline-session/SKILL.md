@@ -180,6 +180,8 @@ If a question surfaces that you can't resolve in the session — *"Does the midp
 
 Lean toward capture. The structural decisions are load-bearing for everything downstream; a missed log here causes outline-to-prose drift later.
 
+The IDs you propose are provisional: a store that assigns numbers may use a different one and reports it, and from then on that reported ID is the entry's ID. Adopt it before writing any `[OPEN: Q-###]` marker in the spine, a `resolved (D-###)`, or any other cross-reference, and use it in the report.
+
 ### 11. Write the files
 
 After the user approves the spine:

@@ -48,7 +48,7 @@ If the user adjusts wording, fold in the changes. If they want details expanded,
 
 ### 4. Append, never overwrite
 
-Append the entry to the end of `decisions.md` through the store (`references/store.md`; where the binding computes the log, its realization adds the entry). The ID you proposed is provisional: a store that assigns numbers may use a different one and reports it, and from then on that reported ID is the decision’s ID, in the confirmation line, in a question’s `resolved (D-###)`, in an earlier entry’s `**Superseded by**`, and in every other cross-reference. Bump `state.md → What Exists → Decisions` count and adjust `unintegrated decisions` count (a store that computes `state.md` keeps the counts itself).
+Append the entry to the end of `decisions.md` with `store.edit`, anchored on the log’s last entry (or `store.write` when the log doesn’t exist yet), so the store’s concurrency guard sees a decision another device added in the meantime (`references/store.md`; where the binding computes the log, its realization adds the entry). The ID you proposed is provisional: a store that assigns numbers may use a different one and reports it, and from then on that reported ID is the decision’s ID, in the confirmation line, in a question’s `resolved (D-###)`, in an earlier entry’s `**Superseded by**`, and in every other cross-reference. Bump `state.md → What Exists → Decisions` count and adjust `unintegrated decisions` count (a store that computes `state.md` keeps the counts itself).
 
 ### 5. Update related questions
 

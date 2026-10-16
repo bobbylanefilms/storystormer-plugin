@@ -124,13 +124,13 @@ A story can live in one of three places. Every skill works the same on all three
 
 - **A local folder:** the folder your session is open in. A Google Drive or OneDrive folder synced to your computer counts (the plugin just sees a folder); those services have no direct backend.
 - **Dropbox:** the story lives in your Dropbox at `/StoryStormer/<your-project>/`, through the Dropbox connector, as the same folder tree a local project has, file for file. If that folder also syncs to your computer, tell init where, and sessions on that machine work on the synced copy directly. Snapshots and `/storystormer:checkpoint` work as they do locally.
-- **Notion:** the story lives in your Notion workspace, through the Notion connector, under a page called `StoryStormer` that holds five databases (Projects, Assets, Chapters, Decisions, Questions). Each document is a row you can open, browse and edit in Notion; the agent reads your edits like anything else. Notion keeps every page’s version history itself, so there are no snapshot folders and `/storystormer:checkpoint` politely declines.
+- **Notion:** the story lives in your Notion workspace, through the Notion connector, under a page called `StoryStormer` that holds five databases (Projects, Assets, Chapters, Decisions, Questions). Most documents are rows you can open, browse and edit in Notion, and the agent reads your edits like anything else. A few are views the agent computes from those rows, not rows you edit directly (the dashboard’s What Exists, the decision and question logs, which are one row per entry, and the character and outline indexes), and anything without a database of its own is a child page of the project. Notion keeps every page’s version history itself, so there are no snapshot folders and `/storystormer:checkpoint` politely declines.
 
 To put a new project in Dropbox or Notion, connect that connector, then tell `/storystormer:init` where you want it (*“set this up in Notion”*). Not here yet: an onboarding question that asks where a new project should live, and moving an existing project from one store to another; both are coming.
 
 ## Install
 
-This folder is **both a plugin and a one-entry marketplace** — `.claude-plugin/` holds the plugin manifest (`plugin.json`) and the marketplace catalog (`marketplace.json`) side by side, and the catalog's single plugin points at the repo root (`"source": "."`). The same bundle installs in Claude Cowork (desktop) and Claude Code; only the install entry point differs.
+This folder is **both a plugin and a one-entry marketplace** — `.claude-plugin/` holds the plugin manifest (`plugin.json`) and the marketplace catalog (`marketplace.json`) side by side, and the catalog's single plugin points at the repo root (`"source": "./"`). The same bundle installs in Claude Cowork (desktop) and Claude Code; only the install entry point differs.
 
 ### Claude Cowork (desktop app)
 
