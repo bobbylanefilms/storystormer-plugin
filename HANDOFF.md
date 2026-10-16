@@ -13,11 +13,11 @@
 |---|---|---|---|---|---|
 | 1 | B: `references/store/dropbox.md`, live-probed | Opus | accepted (verified; cherry-picked) | `d607bb9`, fix `8544ba2` | Sol: 14 found, 13 confirmed, fixed inline |
 | 2 | C: `references/store/notion.md`, live-probed | Opus | accepted (cherry-picked) | `945f863`, fix `be59a10` | Sol: 40 found, 39 confirmed; fresh Opus fix slice fixed all 39 |
-| 3 | D+E: skill touch-points, store.md table, README/guides, version bump | Opus | in progress | — | — |
+| 3 | D+E: skill touch-points, store.md table, README/guides, version bump | Opus | accepted | `7a43dcd` | Sol running |
 
 ## Current position
 
-Slice 1 done (review fixes `8544ba2`). Slice 2 done (fix `be59a10`). Slice 3 running in the main checkout (prompt: scratchpad `impl-sb3-slice3-prompt.md`). Then Sol on slice 3, then Phase 6 live runs. Phase 6 = live success-criteria runs on Dropbox and Notion.
+Slice 1 done (review fixes `8544ba2`). Slice 2 done (fix `be59a10`). Slice 3 accepted (`7a43dcd`, version 0.19.0-poc). Running in parallel: Sol on slice 3 (worktree `review-sb3-s3`), and two fresh-context E2E testers (Dropbox: project `/StoryStormer/lighthouse-ledger/`; Notion: real "StoryStormer" hub + test project). Both leave their test projects in place for Rob to inspect. Next: triage, fix, final commit + push branch, ask Rob about landing on main. Phase 6 = live success-criteria runs on Dropbox and Notion.
 
 ## Decisions and deviations
 
@@ -27,6 +27,7 @@ Slice 1 done (review fixes `8544ba2`). Slice 2 done (fix `be59a10`). Slice 3 run
 - Sol finding not taken (slice 1): chapter `history` doesn't surface checkpoint copies; local.md behaves the same, kept consistent.
 - Notion slice deviations (forced by the live connector): per-project `Number` instead of UNIQUE_ID (prefix needs 2+ chars, counts per database); Type/Category/Tags are text not select (selects reject unknown values); decision/question fields are properties; state.md has three writable sections; Questions Status open/resolved/invalidated; added Logline, Type, Body Words, Markers, decision/question entry fields. AP0 Part B has landed, so the app's enums are used. Truncation recovery is written but unobserved (12.7k words came back whole). A second "StoryStormer" page exists in Rob's workspace (Software Hub), so the locator checks title + root + five databases.
 - Slice 2 send-back went to a fresh Opus agent (the author couldn't resume after its worktree was removed). Rejected Sol finding: create-pages does accept teamspace_id.
+- Slice 3: Dropbox also gets a pointer config in the open folder (same as Notion); added a "Text only" quirk to dropbox.md for binary intake; store.md `confirm: none` definition gained a clause for per-call confirmation flags.
 - Release lands on `main` only with Rob's go-ahead (global rule: never push main; project rule: Cowork reads main).
 
 ## Open questions for Rob
