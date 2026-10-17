@@ -1090,7 +1090,7 @@ The one place the plugin's word budgets come from, matching the app's treatment 
 | `series` (per book) | 120,000 | 3 | 40 |
 
 - **Act budgets (the book):** a three-act structure splits the target **25 / 50 / 25**. Any other act count splits it evenly, unless primer §3's Structural Framework states weighted proportions, which then govern. For 120,000 words in three acts: 30,000 / 60,000 / 30,000.
-- **Treatment budget:** `target_word_count / 6` in total (20,000 for 120,000), split across acts in the same proportions. Each act's treatment stays within ±15% of its share.
+- **Treatment budget:** `target_word_count / 6` in total (20,000 for 120,000), split across acts in the same proportions. No act's treatment runs more than 15% over its share; the share is a ceiling, not a target, so an act with thin decided material sits under it with its gaps marked.
 - **Per-chapter treatment density:** `treatment budget / chapter count` (500 words for a 40-chapter, 120,000-word novel). The chapter count is read, in order, from `outline/structure.md`'s `**Chapter Count:**` header line (the app writes it; its leading number is the count), then the plugin's `target_chapter_count` frontmatter key, then the project type's default above. When the count is zero or unknown (a screenplay with no chapter count), density is `n/a`, as the app shows it; never divide by a missing count. It is a calibration signal for sizing treatment scenes, not a chapter assignment.
 
 These numbers are computed whenever a skill needs them and never stored as a table in the primer. In a series they use the **focused book's** target (`current_focus`): that book's own `target_word_count` when its `books` entry carries one, else the root value.

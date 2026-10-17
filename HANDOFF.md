@@ -32,7 +32,7 @@ Done on the branch. Not on `main`, so Cowork doesn't see it yet. Next for Rob: a
 
 - Land on `main`? (fast-forward `feature/sb3-backend-bindings`, push `main`, delete the branch).
 - Test projects left for inspection: Dropbox `/StoryStormer/lighthouse-ledger/`; Notion hub "StoryStormer" with "The Lighthouse Ledger". Keep the Notion hub (init reuses it) and trash only the project, or trash all?
-- `.plans/ISSUE070-treatment-first-run-budget.md` (Needs Rob): hard act budget vs. no-invention on a thin first run.
+- ISSUE070 decided (budget is a ceiling); plugin done; app prompt alignment pending (handoff in `.plans/ISSUE070-treatment-first-run-budget.md`).
 - Older: delete the private Notion page "StoryStormer Storage Test"; ISSUE068 § A triage (web-app repo).
 
 ## Follow-ups noted

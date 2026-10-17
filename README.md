@@ -191,6 +191,7 @@ These may follow in later versions once the kernel proves out.
 ### What v0.19.0 added over v0.18.0
 
 - **Stories can live in Dropbox or Notion.** Two new store bindings: Dropbox keeps the local folder tree under `/StoryStormer/<slug>/` (with an optional synced copy on your computer), and Notion keeps a project as rows in five linked databases under a `StoryStormer` hub page, with the decision and question logs, indexes and dashboard computed from those rows. `init` scaffolds a new project in either when you ask, and leaves a small pointer config in the open folder so the next session finds it. On Notion, checkpoints decline (Notion keeps version history) and decision and question numbers are assigned by the store; skills use the number it reports.
+- **The treatment's act budget is a ceiling, not a target.** An act whose material is decided lands near its share; an undeveloped act stays short with its gaps marked, and a developed act is never inflated to make up the difference. The report says which acts sit well under their share.
 
 ### What v0.17.2 added over v0.17.1
 

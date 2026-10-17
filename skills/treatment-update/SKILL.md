@@ -188,7 +188,7 @@ For voice preservation when integrating new material into existing prose, see `r
 
 Compute the budget from `target_word_count` per `references/file-schemas.md` § Target word count and the derived budgets: the treatment total is a sixth of the target, split across acts 25/50/25 for three acts (evenly otherwise, or by the weights Section 3 states), with a per-chapter density for sizing scenes. Enforcement:
 
-- **Act-level budget (hard constraint).** Each act's treatment content must stay within ±15% of its computed share. Scenes within an act can vary, but the act total is the constraint.
+- **Act-level ceiling (hard constraint).** No act's treatment content may run more than 15% over its computed share. The share is a ceiling, not a target: an act whose material is fully decided lands near it; an act with thin or no decided material is sized by what the decisions support (Early development, below), with its gaps marked, and can sit far under. Never expand a developed act toward near-prose to make up for an undeveloped one. Scenes within an act can vary, but the act total is the constraint.
 - **Scene sizing.** Use the per-chapter density average to gauge how much treatment each scene warrants. A scene covering ~3 chapters of novel material gets ~3× the per-chapter average; a brief transitional scene covering half a chapter gets ~half.
 - **Early development.** When only part of the story is developed (e.g., just a prologue), size to the per-chapter average. A prologue covering ~2–3 chapters in a 40-chapter novel gets ~1,000–1,500w of treatment, not 5,000.
 - **Discipline.** Never pad to hit a word count — density is a virtue.
@@ -238,7 +238,7 @@ After the user approves the new treatment:
 
 ### 7. Report
 
-> Treatment updated. Primer v4 (five sections, ~4,400w), treatment v8. Snapshot saved. 7 decisions marked integrated. Two open questions still flagged in the treatment (Q-019, Q-021), plus one `[NEEDS DEVELOPMENT]` marker on Elena's Act-3 infiltration mechanics. Recommended next step: resolve Q-019 (Marlowe's relationship to the antagonist) in a brainstorm session — it's the highest-priority unresolved one.
+> Treatment updated. Primer v4 (five sections, ~4,400w), treatment v8. Snapshot saved. 7 decisions marked integrated. Two open questions still flagged in the treatment (Q-019, Q-021), plus one `[NEEDS DEVELOPMENT]` marker on Elena's Act-3 infiltration mechanics. Act 3 is ~1,900 of its ~5,000w share: its back half isn't decided yet. Recommended next step: resolve Q-019 (Marlowe's relationship to the antagonist) in a brainstorm session — it's the highest-priority unresolved one.
 
 #### Outline staleness flag
 
