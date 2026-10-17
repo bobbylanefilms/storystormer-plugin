@@ -113,7 +113,7 @@ A **clean-window consolidation subagent** receives, in order: the behavioral fra
 - Unannotated divergences between drafts resolve in favor of the base.
 - Conflicts (a loved passage that contradicts a strike or the outline) are resolved by judgment and **flagged in the return report** — never silently dropped.
 - Strip all annotation formatting; the output body is prose only.
-- Write the result as a normal `ch<NN>-prose.md` — full frontmatter, `status: drafted`, word count, the ~150–250w synopsis — plus two provenance fields: `kitbash_base: <label>` and `kitbash_drafts: [<labels>]`. Snapshot any existing prose per `store.md` first.
+- Write the result as a normal `ch<NN>-prose.md` — full frontmatter, `status: drafted`, word count, the ~150–250w synopsis — plus two provenance fields: `kitbash_base: <label>` and `kitbash_drafts: [<labels>]`. Snapshot any existing prose per `store.md` first; where the binding's `history` is `snapshots`, write the as-written copy right after (`file-schemas.md` § Per-chapter history).
 
 Return schema: the standard prose report (word count, synopsis, continuity flags) plus `loved_passages_incorporated: <n>/<n>`, `strikes_honored: <n>`, and `conflicts: [...]`. The main session wires `outline/_index.md` + `state.md` exactly as a normal prose generation — the consolidated chapter is the chapter.
 

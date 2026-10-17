@@ -1,6 +1,6 @@
 ---
 name: canon-sync
-description: Reconcile what the manuscript has committed back into canon, over a span of chapters — the return path that keeps bios, worldbuilding, and the manifest describing the book that is actually on the page. Reads each chapter's `ch<NN>-notes.md` (not the prose), classifies what has accumulated (accretion, contradiction, drift, promotion, obsolescence), adjudicates contradictions by authorship, snapshots the full canon set, applies approved canon edits, and produces a manuscript fix list plus the list of Blueprints the canon changes invalidated. Logs every adjudication as a decision. Use when the user says "sync canon," "reconcile chapters 1–10," "catch canon up to the manuscript," or before blueprinting a new act (a precondition `blueprint` checks). Reconciles facts; never improves canon.
+description: Reconcile what the manuscript has committed back into canon, over a span of chapters — the return path that keeps bios, worldbuilding, and the manifest describing the book that is actually on the page. Reads each chapter's `ch<NN>-notes.md` (not the prose), classifies what has accumulated (accretion, contradiction, drift, promotion, obsolescence), adjudicates contradictions by authorship and by where the contested fact came from, snapshots the full canon set, applies approved canon edits, and produces a manuscript fix list plus the list of Blueprints the canon changes invalidated. Logs every adjudication as a decision. Use when the user says "sync canon," "reconcile chapters 1–10," "catch canon up to the manuscript," or before blueprinting a new act (a precondition `blueprint` checks). Reconciles facts; never improves canon.
 ---
 
 # StoryStormer · Canon Sync
@@ -55,7 +55,8 @@ In substantive mode (`references/reading-discipline.md`), full reads:
 - `manifest.md` (full), for what already has an entry and what the harvest says should.
 - `decisions.md`, filtered to prior `canon-sync` rulings and to anything touching the contested facts, so settled conflicts are not re-opened.
 - `primer.md` § 2 Reveal Architecture, for chain closures the notes proposed.
-- The prose's `authorship` frontmatter for each chapter in the span (frontmatter only; the body stays closed).
+- The prose's `authorship` and `status` frontmatter for each chapter in the span (frontmatter only; the body stays closed). A chapter whose prose is `status: retired` is out of the span: its notes describe text the author set aside.
+- **For each contradiction, the upstream sources the page fact could have come from**: that chapter's outline (body and `authorship`), its chapter block in `outline/structure.md`, the treatment passage covering it, and decisions touching the fact. Read only the passages that bear on the contested fact, quoted when they settle it.
 
 **Drop into prose only to adjudicate a specific disputed point.** A ten-chapter span reads ten notes files rather than 35,000 words of fiction; that is what makes this cheap enough to run often, and it is the concrete payoff for having built `notes`. When a contradiction turns on exact wording, read that passage and quote it in the ruling.
 
@@ -79,10 +80,14 @@ Five categories accumulate, and they need different handling. They are the app's
 
 The instinct is *the manuscript wins*. But if the manuscript always wins, an unrevised prose agent's drift becomes canon and model error is laundered into the story bible. So:
 
-- **`author_written` or `ai_generated_author_revised` prose → the manuscript wins by default.** The author made a choice on the page; canon follows.
-- **`ai_generated` prose, or prose with no `authorship` → canon wins by default**, and the item becomes a manuscript fix, not a canon edit. The model deviated. That is a defect, not a decision. (Unknown authorship is not protected, the same rule the app's canon-sync applies.)
+**First, trace the page fact upstream.** Before any default, find where the prose got the contested fact: the chapter's outline, the `structure.md` spine slot, the treatment, a decision (a Blueprint compiles canon and treatment, so trace through it to its source). A prose agent that carried out the author's own plan faithfully has not deviated, whatever its `authorship` says.
 
-Defaults are defaults. **Every contradiction is still surfaced**, with the canon line, the page's line (quoted from the prose if wording matters), the default ruling and why, and the author can rule either way. A prior `canon-sync` decision on the same fact is applied without re-litigating and noted as such.
+- **Traces to author-written upstream material** (the treatment, `outline/structure.md`, an `author_written` or `ai_generated_author_revised` outline, a decision the author made) → **canon against canon, no default.** The conflict is between two things the author owns, typically a bio against the treatment or the spine, and the page simply followed one of them. Quote both sources and the page line, name each source's file and section, and let the author rule, every time. Either ruling can carry a canon edit (the bio follows the treatment) or an upstream fix plus a manuscript fix (the treatment, spine or outline and the page follow the bio); name the owning skill for any upstream fix (`treatment-update`, `pre-outline-session`, `outline-chapters`) rather than editing it here.
+- **Traces to nothing author-written** (it first appears in the prose, or in an `ai_generated` outline or Blueprint that didn't take it from an author source) → the authorship defaults:
+  - **`author_written` or `ai_generated_author_revised` prose → the manuscript wins by default.** The author made a choice on the page; canon follows.
+  - **`ai_generated` prose, or prose with no `authorship` → canon wins by default**, and the item becomes a manuscript fix, not a canon edit. The model deviated. That is a defect, not a decision. (Unknown authorship is not protected, the same rule the app's canon-sync applies.) Before defaulting against `ai_generated` prose, check that the body hasn't been edited since the plugin wrote it (`references/file-schemas.md` § Prose → Detecting an author revision: a comparison where the store keeps the plugin's as-written copy, otherwise one question to the author, asked once per chapter in the findings). An edit found there makes it `ai_generated_author_revised`, set on the prose before ruling, and the manuscript default applies.
+
+Defaults are defaults. **Every contradiction is still surfaced**, with the canon line, the page's line (quoted from the prose if wording matters), the upstream source the trace found (or that it found none), the default ruling and why (or *no default* for canon against canon), and the author can rule either way. A prior `canon-sync` decision on the same fact is applied without re-litigating and noted as such.
 
 **Two outputs per ruling, not one.** If canon wins, the chapter's prose is now wrong at that point and goes on the **manuscript fix list** (chapter, the passage, what it must say). If the manuscript wins, canon changes, and every Blueprint built against the prior version of that entry is stale; the version stamps make that detectable, so the ruling adds those chapters to the **invalidated Blueprints** list. A pass that edits only canon leaves the book inconsistent with its bible in the other direction.
 
@@ -90,7 +95,7 @@ Defaults are defaults. **Every contradiction is still surfaced**, with the canon
 
 Plan first:
 
-> Canon-sync for ch 1–6 (Act 1). All six have current notes; 14 pending proposals across them. I'll full-read the 5 bios and 4 worldbuilding entries the notes touch, plus the manifest and prior canon-sync decisions (none yet). Snapshot the canon set per `store.md` before writing anything. Expect roughly: 8 accretions, 2 contradictions (both in `ai_generated` prose, so canon wins by default), 1 drift candidate (Vinnie's register), 2 promotions to route, 1 obsolete line. Findings next, nothing applied until you rule.
+> Canon-sync for ch 1–6 (Act 1). All six have current notes; 14 pending proposals across them. I'll full-read the 5 bios and 4 worldbuilding entries the notes touch, plus the manifest and prior canon-sync decisions (none yet). Snapshot the canon set per `store.md` before writing anything. Expect roughly: 8 accretions, 2 contradictions (I'll trace each to its source before ruling; if neither came from your treatment or outlines, canon wins by default, since both are in `ai_generated` prose), 1 drift candidate (Vinnie's register), 2 promotions to route, 1 obsolete line. Findings next, nothing applied until you rule.
 
 Then the classified findings, one approve-or-rule list:
 
@@ -101,6 +106,9 @@ Then the classified findings, one approve-or-rule list:
 > **Contradiction (ruling needed)**
 > 3. `vinnie.md` says he gave up cigarettes fifteen years ago. Ch 5 prose (`ai_generated`, unrevised) has him lighting one. **Default: canon wins.** Fix list: ch 5, the grave-edge beat, remove the cigarette or move it to Tommy.
 > 4. `burial-site.md` places the grave fifty yards below the rise. Ch 1 prose (`author_written`) has it at thirty. **Default: manuscript wins.** Canon edit: `burial-site.md` → thirty yards; invalidates ch 1 and ch 3 Blueprints.
+>
+> **Canon against canon (no default; you rule)**
+> 4a. `elfie.md` § Physical says he wears no harness. Ch 3 prose (`ai_generated`) has Tommy haul him up by the harness handle, and that beat is the treatment's, not the model's: `treatment.md` § Act 1 reads *"Tommy grabs the handle of Elfie's harness and hauls him up the bank."* Either the bio gains the harness (canon edit; ch 1–3 Blueprints rebuilt) or the treatment and ch 3 lose it (`treatment-update`, then a ch 3 fix).
 >
 > **Drift (you rule)**
 > 5. `vinnie.md`: never says *why*, explains how. Across ch 1, 3, 5 he gives a reason four times. Either the bio loosens or those lines tighten.
@@ -117,7 +125,7 @@ After the author rules:
 
 1. **Snapshot** `characters/`, `worldbuilding/`, and `manifest.md` per `store.md`. This happens before the first edit, no exceptions.
 2. **Apply canon edits**: append Revelation Log lines (`- **Ch N** — …`); fold accretion into the governing section with the smallest edit that makes the entry accurate; correct or remove obsolete lines; bump each touched file's `version` and `last_updated`. Never restyle, expand, or tidy anything the ruling didn't name.
-3. **Log each adjudication** via `decision-capture`: `Source: canon-sync`, `Category` per the fact, `Summary` stating the ruling, `Details` naming the notes line, the canon line, the authorship that set the default, and whether the author overrode it. Accretions absorbed without dispute do not need a decision; contradictions, drift rulings, and obsolescence removals do.
+3. **Log each adjudication** via `decision-capture`: `Source: canon-sync`, `Category` per the fact, `Summary` stating the ruling, `Details` naming the notes line, the canon line, the upstream source the trace found, the authorship that set the default (or that it was canon against canon with no default), and whether the author overrode it. Accretions absorbed without dispute do not need a decision; contradictions, drift rulings, and obsolescence removals do.
 4. **Mark proposals** in each notes file's § Proposals.
 5. **Write the run record** with `store.write` to `.storystormer/canon-sync/<date>-ch<NN>-<MM>.md`: findings by category with outcomes; the manuscript fix list (chapter · passage · required change); invalidated Blueprints (chapter · entry that changed · version stamp it was built against); promotions routed; chain closures struck from §2 (logged as decisions so `treatment-update` preserves the strike).
 6. **Update `state.md`** and report.

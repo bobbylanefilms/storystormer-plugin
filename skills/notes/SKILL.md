@@ -31,7 +31,7 @@ Four things, and capturing them is the whole job:
 ## Preconditions
 
 - **`ch<NN>-prose.md` must exist.** Otherwise refuse and recommend `prose`.
-- **Gate on prose `status`, not on prose existing.** Notes taken from a first draft describe a chapter about to be rewritten, and every revision pass would invalidate them. Run at `revising` or `revised`. If the user asks for notes on a `drafted` chapter, say so, run if they insist, and say in the report that a re-run is owed once the chapter is revised. (`prose_status` records the app's two stages: `revised` for revised prose, `drafted` otherwise.)
+- **Gate on prose `status`, not on prose existing.** Notes taken from a first draft describe a chapter about to be rewritten, and every revision pass would invalidate them. Run at `revising` or `revised`. If the user asks for notes on a `drafted` chapter, say so, run if they insist, and say in the report that a re-run is owed once the chapter is revised. (`prose_status` records the app's two stages: `revised` for revised prose, `drafted` otherwise.) Prose at `status: retired` gets no notes: the author set it aside, so nothing it committed belongs in canon; say so and skip it in a batch.
 - **The outline and Blueprint should exist.** Notes diffs intent (outline) against page (prose) and checks plants (Blueprint) against what landed. Missing either, run with what exists and say which section is thinner for it.
 - **Staleness.** Compare the notes file's `prose_version` with the prose file's `version` (the rule, including how 0.16.x notes read and when an app-provided `status` wins, is in `references/file-schemas.md` § Notes). If it is lower, the notes are stale; offer to re-run before anything downstream reads them.
 

@@ -165,6 +165,8 @@ Surface failures to the user before writing. Don't fix them silently.
 
 Show batches in halves and let the user approve, request per-chapter edits, or request a global adjustment (then re-show). After approval: snapshot superseded versions per `store.md`, `store.write` the files with full frontmatter (the five app keys filled; `authorship` set; `structure_version`, `treatment_version`, `primer_version` stamped; `word_count` recorded), regenerate `outline/_index.md` per `store.md`, update `state.md`.
 
+When a chapter you just outlined already has prose the new outline no longer describes (typically intake prose from before StoryStormer, which the author's newer plan replaced), **propose retiring that prose** in the report; don't retire it yourself. On the author's yes, set its `status: retired` with a frontmatter-only edit, body untouched (`references/file-schemas.md` § Prose → `status: retired`), so it stops anchoring the voice and feeding the story-so-far.
+
 > Outline-chapters batch complete. Wrote 10 outlines (ch 01–10), ~9,100w total, all `ai_generated`, matched to the style of your ch 1 and ch 2 (`author_written`). ch 3 carries `[OPEN: Q-014]` inline (the inciting mechanism). Chain check: both §2 chains that plant in Act 1 are present (the locket, ch 2; the ledger page, ch 7). Index regenerated. Next: review Act 1, then the first half of Act 2.
 
 ## Style inheritance

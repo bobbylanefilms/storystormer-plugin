@@ -70,7 +70,7 @@ CREATE TABLE ("Name" TITLE, "Project" RELATION('<projects-ds>', DUAL 'Assets'), 
 -- 3 Chapters
 CREATE TABLE ("Name" TITLE, "Project" RELATION('<projects-ds>', DUAL 'Chapters'), "Book" RELATION('<projects-ds>'),
   "Chapter" NUMBER, "Artifact" SELECT('outline','blueprint','prose','notes','scene'), "Scene" NUMBER,
-  "Title" RICH_TEXT, "POV" RICH_TEXT, "Act" RICH_TEXT, "Summary" RICH_TEXT, "Status" SELECT('drafted','revising','revised'),
+  "Title" RICH_TEXT, "POV" RICH_TEXT, "Act" RICH_TEXT, "Summary" RICH_TEXT, "Status" SELECT('drafted','revising','revised','retired'),
   "Authorship" SELECT('author_written','ai_generated','ai_generated_author_revised'), "Version" NUMBER,
   "Word Count" NUMBER, "Last Updated" DATE, "Related Assets" RELATION('<assets-ds>'), "Markers" RICH_TEXT,
   "Open Proposals" NUMBER, "Meta" RICH_TEXT, "Change Note" RICH_TEXT)
@@ -92,6 +92,8 @@ CREATE TABLE ("Name" TITLE, "Number" NUMBER, "Project" RELATION('<projects-ds>',
 ADD COLUMN "Parent" RELATION('<projects-ds>', DUAL 'Books' 'books')
 -- on Decisions
 ADD COLUMN "Supersedes" RELATION('<decisions-ds>', DUAL 'Superseded By' 'superseded_by')
+-- a hub created before prose could be retired: on Chapters, before the first `status: retired` write
+ALTER COLUMN "Status" SET SELECT('drafted','revising','revised','retired')
 ```
 
 The `DUAL` relations to Projects give the Projects row `Assets`, `Chapters`, `Decisions` and `Questions` lists; one fetch of the row returns each list whole (*observed*: 101 entries). Decisions `Type` and Questions `Category` are the app’s enums after AP0 Part B (`recordDecision.ts`, `createQuestion.ts`); map retired values first (`file-schemas.md` § `decisions.md`, § `questions.md`).

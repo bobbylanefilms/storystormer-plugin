@@ -70,7 +70,7 @@ Per-book `state.md` files omit `books` and `current_focus` (those live only on t
 - **Voice** — sample + style guide (or `README only` — the prose stage has no voice anchor until a sample exists)
 - **Structure** — v1 (2026-05-12), based on Primer v3 + Treatment v7, 40 chapters planned, Save the Cat framework
 - **Chapter outlines** — 12/40 drafted (Act 1 complete, Act 2 through ch 12), based on Structure v1
-- **Prose chapters** — 6/40 written (ch 1–6), stashed in `chapters/` (prose-writing functionality pending)
+- **Prose chapters** — 6/40 written (ch 1–6), stashed in `chapters/` (prose-writing functionality pending); prose at `status: retired` is not counted
 - **Decisions** — 18 total, 14 integrated into current treatment
 - **Open questions** — 6 (2 critical, 3 important, 1 nice_to_resolve)
 - **Storage** — this folder syncs through Dropbox (`~/Library/CloudStorage/Dropbox/Novels/the-good-dog`)
@@ -764,7 +764,7 @@ Generated from `outline/structure.md` and the chapter folders under `chapters/`.
 
 Each row shows:
 - Chapter number and title (`title` from the chapter's `ch<NN>-outline.md` frontmatter, or the chapter block's heading in `structure.md` if no outline exists yet).
-- A status cell per stage: a versioned link to the artifact if it exists (`[v2](../chapters/chapter-03/ch03-outline.md)`), or `—` if that stage hasn't started.
+- A status cell per stage: a versioned link to the artifact if it exists (`[v2](../chapters/chapter-03/ch03-outline.md)`), or `—` if that stage hasn't started. Prose at `status: retired` shows `[retired](../chapters/chapter-02/ch02-prose.md)` and is left out of `chapters_drafted` (§ Prose).
 - Inline marker flags (`[OPEN: Q-###]` or `[NEEDS DEVELOPMENT]`) in the relevant stage cell when that artifact carries unresolved markers.
 
 Links are relative from `outline/` into `chapters/` (`../chapters/chapter-NN/...`). Each column fills as its skill runs (`outline-chapters`, `blueprint`, `prose`, `notes`). The index is regenerated on every chapter-stage run. It is not hand-edited.
@@ -869,7 +869,7 @@ outline_version: 1
 blueprint_version: 1        # null on the fallback (no-Blueprint) path
 treatment_version: 8
 primer_version: 4
-status: drafted             # drafted | revising | revised
+status: drafted             # drafted | revising | revised | retired
 authorship: ai_generated     # author_written | ai_generated | ai_generated_author_revised
 word_count: 4127
 synopsis: |
@@ -889,7 +889,16 @@ Values (the `title`, a `pov` name) are quoted per § Frontmatter values; the mul
 - **`blueprint_version`** records which Blueprint this prose was built against, or `null` if generated on the fallback (no-Blueprint) path. A Blueprint regenerated past this value means the prose may be stale w.r.t. current canon.
 - **`synopsis`** is written at generation time and is the chapter's contribution to every later chapter's story-so-far. Regenerate it whenever the prose is rewritten (it must track the prose's actual events).
 - **`status`**: `drafted` (generated, unreviewed) → `revising` (surgical edits in progress) → `revised` (the author has signed off on the revision). `notes` runs at `revising` or `revised`. The app has two of these stages: `revised` is the app's `revised`, and `revising` is still the app's `drafted` (the revision isn't finished). The retired `approved` reads as `revised`. The app never lowers a scene's stage: a `drafted` or `revising` file written over a scene the app holds at `revised` reads back `revised`, so a regeneration of signed-off prose is reported as such rather than relied on to reset the stage.
-- **`authorship`**: `ai_generated` on generation; `author_written` for intake-stashed prose; `ai_generated_author_revised` when the `prose` skill detects the body changed outside a skill run. Older files' hyphenated spellings read as the same values. `canon-sync` reads it to adjudicate contradictions: author-written or author-revised prose wins by default, AI-generated prose (or prose with no `authorship`) yields to canon by default.
+- **`status: retired`** marks prose the author has set aside: it stays on disk (nothing deletes it) but is no longer the book. A chapter becomes retired only when the author says so. A skill may **propose** it, and sets it on approval with a frontmatter-only edit that leaves the body untouched: `outline-chapters` when a regenerated outline no longer describes the chapter's existing prose (intake prose a new outline supersedes, as D-067 did), or any skill that finds the author has said a draft is thrown out. Retired prose is skipped everywhere prose stands for the book: the `prose` voice-anchor lookup and story-so-far (and that chapter's notes, which describe the retired text), Blueprint reconstruction from prior prose, and `notes` (it records no notes for it). It is not counted as drafted: `state.md` What Exists → Prose chapters and `outline/_index.md`'s `chapters_drafted` leave it out, and its Prose cell reads `retired` (linked to the file) instead of a version. Generating prose for the chapter again replaces it (snapshot first) with a normal `drafted` file. `retired` is a plugin value; the app has no such stage.
+- **`word_count`**: the body's word count (body only; a word is a whitespace-separated token holding at least one letter or digit). After every prose write the plugin makes, the main session reads the result back, measures it, and records the measured count with a frontmatter-only edit (that bookkeeping edit needs no snapshot: the as-written copy below already holds the content). It is exact where the host can count and approximate where it can't, so it is informational, the length reports and What Exists show, and **never evidence of an edit**: a count that disagrees with the body says nothing about who changed it.
+- **`authorship`**: `ai_generated` on generation; `author_written` for intake-stashed prose; `ai_generated_author_revised` when the body has changed since the plugin last wrote it (below). Older files' hyphenated spellings read as the same values. Never downgrade `author_written` or `ai_generated_author_revised`. `canon-sync` reads it to adjudicate contradictions (its § 4): a page fact that traces to author-written upstream material is ruled canon against canon with no default; otherwise author-written or author-revised prose wins by default, and AI-generated prose (or prose with no `authorship`) yields to canon by default.
+- **Detecting an author revision.** Before a skill relies on `authorship: ai_generated` (`prose` revise mode before it edits; `canon-sync` before it defaults a contradiction against that prose), it asks one question of the store: has the body changed since the plugin last wrote it? The answer depends on the binding's `history` capability:
+  - `snapshots`: every prose write the plugin makes (generate, surgical edit, Kit Bash consolidation) is followed by an **as-written copy**, the identical content, at `chapters/chapter-NN/.history/ch<NN>-prose-v<version>-as-written.md` (§ Per-chapter history). Compare the current body with the as-written copy for the file's current `version`, bodies only (the frontmatter carries bookkeeping edits). Compare exactly where the host can compare text; otherwise a clean-window subagent reads both and reports whether and where they differ, so the main session never holds two chapters. No as-written copy for that version (prose written before this rule) → ask.
+  - `versions`: compare with the newest version `store.history` returns that the plugin wrote, where the binding says who wrote each version; where it doesn't → ask.
+  - `native`: the backend keeps history the binding can't read, so there is nothing to compare with → ask.
+  - **Ask** means one plain question naming the chapter and the version and date the plugin last wrote (*"Have you edited chapter 8 since StoryStormer wrote v2 on 2026-10-12?"*); the author's answer is the signal. Never infer an edit from `word_count`, file dates, or style.
+
+  Changed → set `authorship: ai_generated_author_revised` (a frontmatter-only edit) before anything else. Unchanged → keep `ai_generated`.
 - **Kit Bash provenance** (only on consolidated chapters): `kitbash_base: <draft label>` and `kitbash_drafts: [<labels>]` record which competing drafts produced this chapter. Draft files live in `chapters/chapter-NN/kitbash/` (`ch<NN>-draft-<label>.md`, plus the `ch<NN>-packet.md` generation packet) — see `references/kitbash-spec.md`.
 
 **Scene-split prose.** When the Blueprint is `scene_split: true`, prose moves into `scenes/` (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`); each scene file carries the same frontmatter scoped to that scene (the chapter-level `synopsis` lives on a stitched `ch<NN>-prose.md` or the first scene — keep one synopsis per chapter for story-so-far). Default to the single `ch<NN>-prose.md`.
@@ -972,10 +981,13 @@ Chapter artifacts revise frequently and locally, so their snapshots are **co-loc
 ```
 chapters/chapter-17/.history/
   ch17-prose-v2-2026-06-21.md     # the draft at v2, archived when a rewrite produced v3
+  ch17-prose-v3-as-written.md     # what the plugin wrote at v3 (the author-revision baseline)
   ch17-outline-v1-2026-06-18.md
 ```
 
 Pattern: `ch<NN>-<stage>-v<version>-<YYYY-MM-DD>.md`. The `version` is the superseded draft's frontmatter version (each version is archived at most once, so it's always unique); the date is chronological context only. Flat files, **not** per-snapshot subfolders — chapter artifacts revise one at a time, so the central log's folder-grouping (which bundles the primer+treatment pair) would be empty ceremony here. The rule: *snapshot granularity matches what-changes-together.* See § `.storystormer/history/` for the book-level mechanism.
+
+**Prose as-written copies.** Prose also keeps `ch<NN>-prose-v<version>-as-written.md`: the content exactly as the plugin wrote that version, written right after the prose write itself by whoever made it (the generation, surgical-edit or consolidation subagent, whose brief carries the path). It is the baseline § Prose → Detecting an author revision compares against, since the replace-time snapshot captures whatever the file holds by then, author edits included. When that check finds the body unchanged, the as-written copy already is that version's snapshot, so the replace-time snapshot may be skipped; when it finds an edit, snapshot as usual, so both the plugin's version and the author's are kept. Scene-split prose keeps one per scene file (`ch<NN>-scene-MM-v<version>-as-written.md`).
 
 ### Intake-stashed prose (`storystormer-init`)
 

@@ -170,7 +170,8 @@ conditioning. Skip this block entirely when the author has a style guide.>
 
 [STORE] binding <kind>; root <root>; capabilities <the binding's capabilities line>;
   operations <the binding's realization of store.read / store.write>;
-  triggered clauses <pasted: snapshot procedure + path for any existing prose; concurrency guard +
+  triggered clauses <pasted: snapshot procedure + path for any existing prose; the as-written copy
+  path where history is `snapshots`; concurrency guard +
   baseline for the target; write recovery where write is not native; confirmation posture;
   documents not to write because the binding computes them (indexes, config)>
 
@@ -182,7 +183,7 @@ sample first for primacy, prior prose last for recency):
   2. voice/style-guide.md               (skip if absent)
   3. <prior chapter synopses — read each prior chapter's ch<NN>-prose.md
       `synopsis` frontmatter via store.read(path, frontmatter only); fall back to its ch<NN>-outline.md Premise where
-      prose doesn't exist. Chapters < NN only.>
+      prose doesn't exist or is `status: retired`. Chapters < NN only.>
   4. chapters/chapter-<NN>/ch<NN>-blueprint.md   (lean path)
        — OR, if no Blueprint: POV-first character bios + worldbuilding the
          chapter touches + primer.md  (fallback path)
@@ -192,7 +193,9 @@ sample first for primacy, prior prose last for recency):
 Then, if the target already exists, apply the triggered clauses to it (snapshot, concurrency
 guard), and `store.write` the chapter's prose to chapters/chapter-<NN>/ch<NN>-prose.md with full
 frontmatter (pov, version stamps, status: drafted, word_count, and a ~150–250w
-synopsis) per the schema the prose spec references.
+synopsis) per the schema the prose spec references. Where the capabilities line says
+`history: snapshots`, then `store.write` the identical content to its as-written copy,
+at the path the triggered clauses name.
 
 What to return (NOT the prose itself — it's on disk):
 {

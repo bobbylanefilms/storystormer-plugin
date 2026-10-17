@@ -76,8 +76,8 @@ The test: read a section aloud. If it sounds like someone reading index cards, r
 Fuse one clean, scene-current image per element, so the prose agent never reconciles a bio that says one thing against a chapter that says something subtly different. Source order:
 
 1. **The canon entry's Revelation Log, filtered to `chapter ≤ N`** (see `canon-schemas.md` § Revelation Log).
-2. **The prior chapter's `ch<NN>-notes.md` end-state block**, when one exists: wardrobe, injuries, objects carried, location, emotional residue, the hour, as the chapter actually left them.
-3. **Reconstruction from prior chapters' prose or outlines** where the log and notes are silent.
+2. **The prior chapter's `ch<NN>-notes.md` end-state block**, when one exists: wardrobe, injuries, objects carried, location, emotional residue, the hour, as the chapter actually left them. Skip it when that chapter's prose is `status: retired`: the notes describe text the author set aside.
+3. **Reconstruction from prior chapters' prose or outlines** where the log and notes are silent (never from prose at `status: retired`; use that chapter's outline).
 
 Then merge bio-level description with scene-specific state into one image. **Clothing, injuries, and accessories follow a hard continuity rule:** established state is preserved *identically*; unestablished state gets specific, concrete choices now, recorded in Continuity as deliberate. Never leave physical state vague; vagueness at Blueprint time becomes inconsistency at prose time. If the bio and the scene-state conflict, resolve in favor of the scene and note it in Continuity.
 
