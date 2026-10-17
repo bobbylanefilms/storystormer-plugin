@@ -30,7 +30,7 @@ Released on `main`. Next for Rob: re-sync Cowork (update marketplace → update 
 
 ## Open for Rob
 
-- Test projects left for inspection: Dropbox `/StoryStormer/lighthouse-ledger/`; Notion hub "StoryStormer" with "The Lighthouse Ledger". Rob chose: keep the Notion hub (init reuses it), trash only the project, once he has looked.
+- Test projects left for inspection: Dropbox `/StoryStormer/lighthouse-ledger/`; Notion hub "StoryStormer" with "The Lighthouse Ledger". Keep both until SB4 and SB5 are done (reuse them as fixtures); then trash the Notion project (keep the hub, init reuses it) and the Dropbox folder.
 - ISSUE070 decided (budget is a ceiling) and released in the plugin; app prompt alignment pending (handoff in `.plans/ISSUE070-treatment-first-run-budget.md`).
 - Older: delete the private Notion page "StoryStormer Storage Test"; ISSUE068 § A triage (web-app repo).
 
