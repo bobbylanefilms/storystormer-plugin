@@ -1,11 +1,11 @@
 <!-- ABOUTME: Session handoff for long-running work in this repo; rewritten whole at each checkpoint -->
-<!-- ABOUTME: Current thread: SB3 (Dropbox + Notion bindings) done on feature/sb3-backend-bindings as 0.19.0-poc; awaiting Rob's go-ahead to land on main -->
+<!-- ABOUTME: Current thread: SB3 (Dropbox + Notion bindings) released as 0.19.0-poc on main; SB4 next -->
 
 # HANDOFF — storystormer-plugin
 
 **Run:** `/implement SB3` · orchestrator Opus 5.5 · effort high · 2026-10-16 · **complete**
-**Branch:** `feature/sb3-backend-bindings` (pushed) off `main` @ `05227d4` · **Plan:** `.plans/SB3-backend-bindings.md` (as-built notes at the end)
-**Version on branch:** `0.19.0-poc` · **main:** `0.18.0-poc`
+**Branch:** `main` @ `6c7c7ce` (fast-forwarded from `feature/sb3-backend-bindings`, now deleted) · **Plan:** `.plans/SB3-backend-bindings.md` (as-built notes at the end)
+**Version:** `0.19.0-poc`
 
 ## Slices
 
@@ -19,7 +19,7 @@ E2E (fresh-context Opus following the docs cold): Dropbox D1–D7 all pass (tree
 
 ## Current position
 
-Done on the branch. Not on `main`, so Cowork doesn't see it yet. Next for Rob: approve landing on `main` (fast-forward + push), then re-sync Cowork.
+Released on `main`. Next for Rob: re-sync Cowork (update marketplace → update plugin → restart session); local Claude Code is still on 0.16.1-poc (`claude plugin marketplace update storystormer-plugin`, then update the plugin). Then SB4.
 
 ## Decisions and deviations
 
@@ -30,9 +30,8 @@ Done on the branch. Not on `main`, so Cowork doesn't see it yet. Next for Rob: a
 
 ## Open for Rob
 
-- Land on `main`? (fast-forward `feature/sb3-backend-bindings`, push `main`, delete the branch).
-- Test projects left for inspection: Dropbox `/StoryStormer/lighthouse-ledger/`; Notion hub "StoryStormer" with "The Lighthouse Ledger". Keep the Notion hub (init reuses it) and trash only the project, or trash all?
-- ISSUE070 decided (budget is a ceiling); plugin done; app prompt alignment pending (handoff in `.plans/ISSUE070-treatment-first-run-budget.md`).
+- Test projects left for inspection: Dropbox `/StoryStormer/lighthouse-ledger/`; Notion hub "StoryStormer" with "The Lighthouse Ledger". Rob chose: keep the Notion hub (init reuses it), trash only the project, once he has looked.
+- ISSUE070 decided (budget is a ceiling) and released in the plugin; app prompt alignment pending (handoff in `.plans/ISSUE070-treatment-first-run-budget.md`).
 - Older: delete the private Notion page "StoryStormer Storage Test"; ISSUE068 § A triage (web-app repo).
 
 ## Follow-ups noted
