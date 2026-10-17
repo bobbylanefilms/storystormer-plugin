@@ -127,6 +127,13 @@ A story can live in one of three places. Every skill works the same on all three
 - **Dropbox:** the story lives in your Dropbox at `/StoryStormer/<your-project>/`, through the Dropbox connector, as the same folder tree a local project has, file for file. If that folder also syncs to your computer, tell init where, and sessions on that machine work on the synced copy directly. Snapshots and `/storystormer:checkpoint` work as they do locally.
 - **Notion:** the story lives in your Notion workspace, through the Notion connector, under a page called `StoryStormer` that holds five databases (Projects, Assets, Chapters, Decisions, Questions). Most documents are rows you can open, browse and edit in Notion, and the agent reads your edits like anything else. A few are views the agent computes from those rows, not rows you edit directly (the dashboard’s What Exists, the decision and question logs, which are one row per entry, and the character and outline indexes), and anything without a database of its own is a child page of the project. Notion keeps every page’s version history itself, so there are no snapshot folders and `/storystormer:checkpoint` politely declines.
 
+How they compare, from a full test on a real project (SB5, October 2026):
+
+- **Local:** the fastest and the reference everything else is measured against.
+- **Dropbox:** every file comes back byte for byte, but sessions run about twice as slow as local, because the connector rewrites a whole file on every change and the decision log and dashboard grow large.
+- **Notion:** a little slower than local, and your text survives a round trip intact, but Notion re-formats some markdown in its own way: emphasis markers, numbered-list numbers, list spacing and raw HTML tables can come back slightly different from what went in. Your words are kept; some formatting isn’t.
+- **Google Drive and OneDrive:** use them as a synced folder; their connectors will be re-tested in November 2026.
+
 When you start a new project, `/storystormer:init` asks once where it should live, offering only the homes this session can reach (connect the Dropbox or Notion connector first to see them). In a session with no folder open, StoryStormer lists the projects it finds in your Dropbox and Notion and works on the one you pick. To move an existing story, run `/storystormer:migrate`: it copies everything the new home can hold, points your folder at the new copy, and leaves the original in place for you to delete when you’re ready. The [installing guide](guides/installing.md#choosing-where-your-story-lives) explains the choices, including the Dropbox hybrid.
 
 ## Install
@@ -188,6 +195,15 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.20.1 fixed over v0.20.0
+
+Fixes from SB5’s live test of every backend on a full project (The Good Dog):
+
+- **Notion keeps what you wrote.** A round trip through Notion used to drop or rewrite author data: question status notes, log front matter and preambles, header suffixes such as ` ✅ RESOLVED`, decision types and question categories outside the database options, extra log fields, `state.md`’s stage note, title and extra sections, front-matter key order, and child-page paths. The binding now keeps the source text alongside each property and renders it back while the property is unchanged; edits made in Notion still win. Existing hubs get the new columns on the next approved write. Notion’s own markdown normalization remains a known limit (see “Where a story can live”).
+- **Notion queries stay inside the project.** Relation filters take the related page’s URL; a bare id silently matched every project.
+- **The chapter pipeline respects the author’s hand.** Before revising prose, the plugin checks whether the author edited it since the agent wrote it (against an as-written copy on snapshot stores, version authorship elsewhere, or by asking on Notion) and never overwrites those edits silently. `canon-sync` traces a contested fact back to the canon it came from and, when both sides are author-written, asks rather than picking. Prose gains a `retired` status, and `word_count` is informational only.
+- **Smaller store fixes.** A document’s final newline no longer counts as a change; Dropbox snapshots use the connector’s server-side copy, and its concurrency check compares a revision stamp instead of re-reading the file; the local binding works on hosts with no file-pattern tool; `migrate` recognizes more half-finished and same-slug cases, and its last target write is always the config.
 
 ### What v0.20.0 added over v0.19.0
 
