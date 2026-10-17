@@ -5,7 +5,7 @@
 
 **Run:** `/implement SB4 and SB5` · orchestrator Opus 5.5 · effort high · deep review Sol · started 2026-10-17
 **Branch:** `feature/sb4-sb5-onboarding-migrate` (from `main` @ `00546cd`) · **Plans:** `.plans/SB4-onboarding-and-migrate.md`, `.plans/SB5-backend-test-matrix.md`
-**Version:** `0.20.0-poc` (bumped in `05c0d90`; not yet on `main`)
+**Version:** `0.20.0-poc` on `main` @ `2968790`; fixes after that go out as `0.20.1-poc`
 
 ## Slices
 
@@ -14,16 +14,19 @@
 | 1 | SB4 A+B: init storage question, locator (store.md § Resolve + Locate per binding) | Opus | accepted | `854ab2a`, fix `0226758` | Sol: 13 found, 10 confirmed, fixed by author |
 | 2 | SB4 C: `skills/migrate/`, `commands/migrate.md` | Opus | accepted | `b4b3536`, fix `9dbec49` | Sol: 17 found, all confirmed, fixed by author; Haiku cold-read passed |
 | 3 | SB4 D: guides, README, version bump, land on `main` | Opus | accepted | `05c0d90`, fix `3194140` | Sol: 9 found, all confirmed, fixed by author |
-| 4a | SB4 live criteria C1, C2, C2a, C3, C5 (`live-s4a-prompt.md`) | Opus | running | | |
-| 4b | Migration ring, one agent per leg (`live-s4b-prompt.md`) | Opus | leg 1 running | | |
-| 5 | SB5 loops (`live-s5-loops-prompt.md`): local running; Notion, Dropbox after ring. 50× overwrite (`live-s5-overwrite-prompt.md`, Sonnet) running | Opus ×3, Sonnet | partly running | | |
-| 6 | CW5 § 12 verdicts (web-app repo), README tiers, small fixes | inline | pending | | |
+| 4a | SB4 live criteria C1, C2, C2a, C3, C5 | Opus | **all pass** | | 10 findings; F1 (Notion relation filter) fixed `d6d4b35` |
+| 4b | Migration ring local → Notion → Dropbox → local (3 agents) | Opus | done: **ring not clean** (86/96 differ, all from Notion legs; Dropbox + local byte-clean) | | ledger `live-findings.md` |
+| 5 | SB5 loops local / Notion / Dropbox + 50× overwrite | Opus ×3, Sonnet | **all 11 steps pass on all 3**; overwrite 50/50 no race | | ISSUE071, ISSUE072 filed `c70e19f` |
+| 6a | Fix A: Notion binding data loss (`fix-a-notion-prompt.md`) | Opus | running (worktree) | | |
+| 6c | Fix C: ISSUE071 authorship signals (`fix-c-issue071-prompt.md`) | Opus | running (worktree) | | |
+| 6b | Fix B: Dropbox/store/migrate/init small findings | Opus | pending (after A, C) | | |
+| 7 | Notion mini round-trip re-verify; CW5 § 12 verdicts (uncommitted, web-app repo); README tiers; as-built notes; 0.20.1-poc to `main` | inline + runner | pending | | |
 
 ## Current position
 
-Running in parallel: Sol review of slice 3 (worktree `scratchpad/review-sb4-s3`), live-s4a, live-ring-leg1, live-s5-local, live-s5-overwrite. All live briefs and the common rules (`live-common.md`) are in the scratchpad; logs land in `scratchpad/live/<run>/log.md`. Next: confirm slice 3 review, fast-forward `main` and push (project release checklist), ring legs 2 and 3, then S5 Notion and Dropbox loops on the ring's copies, then fixes, CW5 § 12 addendum (uncommitted in the web-app repo), README tiers.
+All live runs done. Findings ledger: scratchpad `live-findings.md`; per-run logs under scratchpad `live/<run>/log.md`. Fix A and Fix C running in isolated worktrees (cherry-pick onto the branch when they return); Fix B next. Then a small Notion round-trip re-verify, CW5 addendum, README tiers, as-built notes, release 0.20.1-poc.
 
-Scripted author inputs for the S5 loops (same on every backend): Q-016 Pickle origin, Chester minor bio, chapter 3 loop.
+Rob decisions 2026-10-17: Notion → fix data loss now, document markdown normalization; discuss a **portable markdown profile** (skills write a Notion-safe subset everywhere; migrate-into-Notion normalizes intake once with approval) as its own plan. ISSUE071 item 2 → canon-sync "no default, ask" for author-written upstream.
 
 ## Decisions and deviations
 
@@ -35,7 +38,8 @@ Scripted author inputs for the S5 loops (same on every backend): Q-016 Pickle or
 ## Open for Rob
 
 - SB5 test project: **The Good Dog** (Rob), source `~/Markdown/Bobby's Vault/Claude/creative/the-good-dog`, skip `experiments/`. CW5 edits: leave uncommitted in the web-app repo (Rob).
-- Cowork-only SB5 unknowns (subagents see connectors; widened `allowed-tools` honored) need a Cowork session.
+- Cowork-only SB5 unknowns (subagents see connectors; widened `allowed-tools` honored; Dropbox confirmation nagging in Cowork's UI) need a Cowork session on 0.20.0-poc.
+- Test leftovers to trash after SB5: Notion rows Bottle Weather, The Good Dog (+ The Lighthouse Ledger per SB3 note); Dropbox `/StoryStormer/{sb4-c1-notion,sync-demo,sync-a,sb5-overwrite,the-good-dog}`, `/SB4-tests/`, plus `/StoryStormer/lighthouse-ledger/`.
 - SB3 test projects kept as fixtures: Dropbox `/StoryStormer/lighthouse-ledger/`; Notion hub "StoryStormer" → "The Lighthouse Ledger".
 
 ## Checks
