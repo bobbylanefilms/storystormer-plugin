@@ -13,7 +13,7 @@ identity: path · write: native · edit: native · list: glob · history: snapsh
 
 ## Tools
 
-The host’s file tools **Read**, **Write**, **Edit** and **Glob**, and, optionally, a way to remove a file (`delete`). No connector, and no shell required. Claude Code and Cowork both provide these four under these names, so the binding behaves the same on both; resolution’s tool check passes when all four are present.
+The host’s file tools **Read**, **Write** and **Edit** (required); **Glob** (preferred, for `list`); and, optionally, a way to remove a file (`delete`) and a way to copy one (`copy`, for snapshots). No connector, and no shell required. Resolution’s tool check passes when Read, Write and Edit are present. Cowork provides all four file tools under these names. Some Claude Code builds expose no Glob; there `list` uses the host’s directory listing instead (a shell `find` or `ls`), the same way `delete` falls back, so a missing Glob never stops resolution. The no-shell rule still holds: where a host has no shell (Cowork), it has Glob.
 
 **Verified on:** 2026-10-15.
 
@@ -29,9 +29,9 @@ Everything is **stored** as a real file; nothing is computed. That includes the 
 
 | Operation | Realization |
 |---|---|
-| `list(glob)` | Glob with the pattern from the root; return root-relative paths. Where the host’s Glob skips dot-folders, glob them explicitly (`.storystormer/**`, each chapter folder’s `.history/*`) when the pattern can reach them |
+| `list(glob)` | Glob with the pattern from the root; return root-relative paths. Where the host’s Glob skips dot-folders, glob them explicitly (`.storystormer/**`, each chapter folder’s `.history/*`) when the pattern can reach them. Where the host has no Glob, list the files under the root with its directory listing (a shell `find <root> -type f` in Claude Code), dot-folders included, and filter by the glob in the model; listing only, never a write |
 | `read(path)` | Read the file from beginning to end; if the tool returns only part of it, keep reading from where it stopped until the end. *Frontmatter only:* Read the first lines (a limit of about 60), extending until the closing `---` |
-| `write(path, content)` | Write the full content to the path, which creates the file and any missing folders. Skip the call when the content is identical to what is there. Write refuses to overwrite a file this conversation has not read: the snapshot step’s read satisfies that, and otherwise read the file first |
+| `write(path, content)` | Write the full content to the path, which creates the file and any missing folders. Skip the call when the content is identical to what is there. Write refuses to overwrite a file this conversation has not read: the read the new content was prepared from, or a read-then-write snapshot’s read, satisfies that; otherwise read the file first |
 | `edit(path, edits, reason)` | Edit, one call per item in order: `old` → `old_string`, `new` → `new_string`, `replace_all` → `replace_all`. All or nothing: before the first call, check every anchor against the text the earlier items would leave; if any is missing or ambiguous, stop with nothing written. If a call still fails partway, write back the content read before the first call. `reason` is not recorded; the snapshot is the history |
 | `history(path)` | Book-level documents: Glob `.storystormer/history/*/<path>` (each snapshot folder keeps root-relative paths, so `books/book-2/treatment.md` matches only book 2’s). Chapter artifacts: Glob `<chapter folder>/.history/ch<NN>-<stage>-v*.md`, where the chapter folder is the document’s own (`books/<slug>/chapters/chapter-NN/` in a series). Return them newest first |
 | `open(path)` | Present the file itself in the host’s reading pane (Cowork’s file preview; a send-file or render tool in Claude Code) so the author reads it beside the chat; never paste its contents into the conversation. Where the host has no pane, name the path |
@@ -44,11 +44,11 @@ Nothing to search. This binding has no well-known root: a local project is a fol
 
 ## Snapshots
 
-`history: snapshots`, so every snapshot `store.md` calls for is written here as files, by `read` then `write`, before the overwrite begins. Where they go and how they are named is defined once in `references/file-schemas.md`: § `.storystormer/history/` (book-level documents, one timestamped folder per operation, files that change together snapshotted as a set) and § `chapters/` folder → Per-chapter history (chapter artifacts, flat version-and-date-named files in the chapter’s `.history/`).
+`history: snapshots`, so every snapshot `store.md` calls for is written here as files before the overwrite begins. **`copy`:** where the host can copy a file without the content passing through the model (a shell `cp` in Claude Code, a file-copy tool where the host has one), copy each document of the set to its snapshot path, creating the snapshot folder first; the bytes arrive exact. Where it can’t (Cowork’s folder connection today), `read` then `write`. Either way the read that Write’s read-first rule needs before the overwrite is the skill’s own baseline read, or `read` the file first. Where they go and how they are named is defined once in `references/file-schemas.md`: § `.storystormer/history/` (book-level documents, one timestamped folder per operation, files that change together snapshotted as a set) and § `chapters/` folder → Per-chapter history (chapter artifacts, flat version-and-date-named files in the chapter’s `.history/`).
 
 ## Worked example: `treatment-update` replaces `treatment.md`
 
-1. **Snapshot** (`file-schemas.md` § `.storystormer/history/`: the primer and treatment snapshot as a pair). Read `primer.md` and `treatment.md` in full, then Write each, unchanged, into one new folder, `.storystormer/history/<timestamp>-treatment-update/`.
-2. **Write.** Write the new `treatment.md` over the old one; the read in step 1 satisfies Write’s read-first rule. The skill has already set its frontmatter (`version` bumped) in the content.
+1. **Snapshot** (`file-schemas.md` § `.storystormer/history/`: the primer and treatment snapshot as a pair). Create `.storystormer/history/<timestamp>-treatment-update/` and copy `primer.md` and `treatment.md` into it, unchanged; on a host with no copy, Read each in full and Write it there.
+2. **Write.** Write the new `treatment.md` over the old one; the skill’s read of `treatment.md`, which the new treatment was prepared from, satisfies Write’s read-first rule. The skill has already set its frontmatter (`version` bumped) in the content.
 3. **No guard, no extra confirmation.** The concurrency guard does not apply to local, and `confirm: none` means the plan-first approval was the only confirmation.
 4. **Open.** Present `treatment.md` in the host’s pane if the skill shows the result.
