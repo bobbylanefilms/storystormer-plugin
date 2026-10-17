@@ -38,6 +38,10 @@ Everything is **stored** as a real file; nothing is computed. That includes the 
 | `move(from, to)` | Read `from`, Write it to `to`, then `delete(from)` |
 | `delete(path)` | Remove the file with whatever the host offers for it (a shell’s `rm` in Claude Code, a file-delete tool where the host has one). Where the host offers none (Cowork’s folder connection today), don’t fail: name the path in the report for the author to remove, and say until then that two copies exist. Never required for the binding to work, so the no-shell rule holds |
 
+## Locate
+
+Nothing to search. This binding has no well-known root: a local project is a folder the author opens, and an open folder holding a config never reaches the locator (`store.md` § Resolve, step 1). It contributes no projects, and the locator tells the author to open the story’s folder when they mean a local one.
+
 ## Snapshots
 
 `history: snapshots`, so every snapshot `store.md` calls for is written here as files, by `read` then `write`, before the overwrite begins. Where they go and how they are named is defined once in `references/file-schemas.md`: § `.storystormer/history/` (book-level documents, one timestamped folder per operation, files that change together snapshotted as a set) and § `chapters/` folder → Per-chapter history (chapter artifacts, flat version-and-date-named files in the chapter’s `.history/`).

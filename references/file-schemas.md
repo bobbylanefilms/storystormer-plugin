@@ -73,6 +73,7 @@ Per-book `state.md` files omit `books` and `current_focus` (those live only on t
 - **Prose chapters** — 6/40 written (ch 1–6), stashed in `chapters/` (prose-writing functionality pending)
 - **Decisions** — 18 total, 14 integrated into current treatment
 - **Open questions** — 6 (2 critical, 3 important, 1 nice_to_resolve)
+- **Storage** — this folder syncs through Dropbox (`~/Library/CloudStorage/Dropbox/Novels/the-good-dog`)
 
 ## What's Next
 - **Active focus**: Marlowe's relationship to the antagonist (Q-019, critical)
@@ -86,6 +87,7 @@ Per-book `state.md` files omit `books` and `current_focus` (those live only on t
 ### Update rules
 
 - The counts in **What Exists** are computed from the files on disk (bios in `characters/`, entries under `worldbuilding/`, chapter files under `chapters/`, entries in `decisions.md` and `questions.md`), never carried forward from the last write. Recount whenever the line is rewritten.
+- **Storage** appears only on a local project whose folder sits inside a sync service (`storystormer-init` § Where a new project lives), as the last line of What Exists (the root `state.md` in a series); it names the service and the folder. Keep it when rewriting the section; only a store change (`migrate`) rewrites or drops it. Every other project omits it.
 - Bumping a numbered version (primer / treatment / manifest / bio) → update the corresponding line in **What Exists** and bump `session_count` only if it's a new session.
 - Resolving a question → update **What's Next** to point to the next priority question.
 - Treating the user's `Next Recommended Action` as suggestion — the user can ignore or hand-edit it. Never overwrite a user's hand-edit silently; if it conflicts with what the agent would write, mention the conflict in the next response.

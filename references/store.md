@@ -1,5 +1,5 @@
 <!-- ABOUTME: The store contract: the file operations every skill and command uses instead of host or connector tools -->
-<!-- ABOUTME: Operations, the capabilities line, once-per-session resolution, local-mode clauses, concurrency guard, confirmation posture, bindings -->
+<!-- ABOUTME: Operations, the capabilities line, once-per-session resolution and the locator, local-mode clauses, concurrency guard, confirmation posture, bindings -->
 
 # Store Contract
 
@@ -75,7 +75,14 @@ Resolution reads the open folder’s config through the local binding (`referenc
    - Otherwise → the binding for `kind`, rooted at `root`, if its connector is present. If it is not, tell the author which connector to connect, and stop.
 
    The config lives in the store: a real file where the binding stores it, computed from the project’s record where it does not. `state.md` frontmatter mirrors `kind` as `storage_kind`.
-2. **No open folder holds a config.** The **locator** looks for projects at each present connector’s well-known root, lists them, and binds the one the author picks. The locator’s behavior is specified separately and is not part of this contract. `init` starting a new project is the exception: it chooses the store itself.
+2. **No open folder holds a config.** Run the **locator**. `init` starting a new project is the exception: it chooses the store itself (`storystormer-init` § Where a new project lives).
+   - **Search:** every binding in § Bindings that is not pending and whose tool check passes (step 3) runs its § Locate, which lists the projects at that backend’s well-known root. Each project comes back with its backend, root, slug, and the `title`, `stage` and `last_session` of its `state.md` frontmatter as that binding reads it. A series is one entry, the series, with its `books` named under it.
+   - **Present** them grouped by backend, most recent `last_session` first; the author picks one, and its root becomes the binding’s root. That project’s stored config then decides as in step 1 (a Dropbox project whose `local_root` exists on this machine binds local, rooted there). Go on to step 3.
+   - **Exactly one project** across every backend, with no Locate failed: bind it and say so.
+   - **None:** say which backends were searched (and which weren’t, for want of their connector), that a local project is reached by opening its folder, and offer `init`.
+   - **A Locate that fails** (a connector error, a partial Notion hub) is reported with what is missing, beside the other backends’ results; it never hides them.
+   - **The same slug on two backends** (a copy `migrate` left behind, since it never modifies its source): list both, marked as sharing the slug, and let the author pick; don’t guess which is current.
+   - **After binding,** the first response opens with the bound backend, root and capabilities line, so the author can see where the session is working.
 3. **Load the binding** named in § Bindings. Confirm every tool in its tool list is present; if one is missing, name it and stop before any operation.
 
 **What the session remembers:** the binding (its `kind` and document path), the root, and the capabilities line. They stay in the conversation for the rest of the session; later skills use them without resolving again.
@@ -119,4 +126,4 @@ The plan-first approval (`references/plan-first.md`) is the confirmation for eve
 
 Tier 1 realizes every operation directly; tier 2 needs a load-bearing workaround (Dropbox overwrites by delete and create). A **pending** binding is not written yet: a project whose `kind` names one cannot resolve, and the author is told so.
 
-Every binding opens with its capabilities line; the tools it expects, with connector tools named as “the <Connector> connector’s `<short name>`” and never by prefixed id (ids differ per user and per surface); which documents it stores and which it computes; and its verified-on date. Then it gives one realization per operation, and its quirks.
+Every binding opens with its capabilities line; the tools it expects, with connector tools named as “the <Connector> connector’s `<short name>`” and never by prefixed id (ids differ per user and per surface); which documents it stores and which it computes; and its verified-on date. Then it gives one realization per operation, its § Locate (what it lists at its well-known root, how it reads each project’s fields, what it returns, how it fails and roughly what it costs), and its quirks.

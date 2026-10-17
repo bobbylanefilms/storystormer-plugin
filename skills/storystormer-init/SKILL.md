@@ -1,11 +1,11 @@
 ---
 name: storystormer-init
-description: Scaffold a StoryStormer story workspace in the current folder. Use when the user starts a new story project, drops materials into a folder and wants to set up a structured workspace, or says things like "set up StoryStormer here," "start a new novel," "I have a brain dump / partial treatment / mess of materials — help me organize," or "init this project." Handles any starting state — empty folder, single logline, freeform brain dump, half-finished treatment, or a tangled mid-project mess with some characters bios written and the third act undefined.
+description: Scaffold a StoryStormer story workspace in the open folder, or in Dropbox or Notion when the author chooses one. Use when the user starts a new story project, drops materials into a folder and wants to set up a structured workspace, or says things like "set up StoryStormer here," "start a new novel," "I have a brain dump / partial treatment / mess of materials — help me organize," or "init this project." Handles any starting state — empty folder, single logline, freeform brain dump, half-finished treatment, or a tangled mid-project mess with some characters bios written and the third act undefined.
 ---
 
 # StoryStormer · Init
 
-You are setting up a StoryStormer story workspace in the user's current folder. This may be the first thing the user has done in this folder, or they may already have materials in flight. Your job is to triage what's there, figure out where the project actually is, propose a plan for how to proceed, and then build out the canonical file structure once they say go.
+You are setting up a StoryStormer story workspace from the user's open folder, or from the conversation when there is none. This may be the first thing the user has done in this folder, or they may already have materials in flight. Your job is to triage what's there, figure out where the project actually is, ask where it should live, propose a plan for how to proceed, and then build out the canonical file structure once they say go.
 
 This is the marquee skill of the plugin. **The user can drop in with anything — empty folder, one-line concept, freeform notes, a near-complete treatment, or a messy mid-project state — and you reorganize it into the canonical structure.** Lean on the model's reasoning here. Triage is a judgment task; trust yourself.
 
@@ -16,7 +16,7 @@ Always follow `references/plan-first.md` — load context, propose a plan in pla
 When the user gives you the go-ahead, you create or update:
 
 - `state.md` — living dashboard (see `references/file-schemas.md`), with `storage_kind` in its frontmatter mirroring the config
-- `.storystormer/config.json` — project metadata, including `project_type`, `target_word_count` (config owns the target; `state.md` mirrors it) and `storage`: a new project gets `"storage": { "kind": "local" }` unless the author asks for another store (§ Where a new project lives); an existing project keeps the `storage` block it has
+- `.storystormer/config.json` — project metadata, including `project_type`, `target_word_count` (config owns the target; `state.md` mirrors it) and `storage`: a new project gets the store the author chose (§ Where a new project lives), `"storage": { "kind": "local" }` for the open folder; an existing project keeps the `storage` block it has
 - `.storystormer/` — supporting subfolders, each created with its first file (no empty folders)
 - `decisions.md` and `questions.md` — seeded from any materials you found
 - `treatment.md` — only when the user brings in an existing treatment-like document and explicitly agrees to a copy-and-clean-up step. **Never generate a new treatment at init.**
@@ -32,11 +32,24 @@ Don't pre-create empty files. Only create files that have meaningful content. Em
 
 ## Where a new project lives
 
-By default, in the open folder, through the local binding. When the author asks for the new project to live in Dropbox or Notion (a later release asks during onboarding; for now the author names it), that is init’s own choice of store (`references/store.md` § Resolve, step 2): load that backend’s binding from § Bindings, run its tool check (step 3), and say so in the plan. Intake materials are still read, and cleared after they are re-filed, through the local binding that holds them; everything init creates goes through the chosen binding, and documents that binding computes are written through its realizations or skipped (`store.md` § Local-mode clauses).
+The author chooses, once, at init. This is the one place a store is chosen rather than resolved (`references/store.md` § Resolve, step 2).
 
-- **Dropbox:** the same tree, rooted at `/StoryStormer/<slug>/` (the binding’s § Root), with the stored config’s `storage` = `{"kind": "dropbox", "root": "/StoryStormer/<slug>"}`. If that folder already holds a project, ask rather than scaffold into it. If the author says the folder syncs to this machine, add its absolute path as `local_root` (ask for it; don’t guess). When that synced folder already exists here, scaffold through the local binding rooted at it (`store.md` § Resolve) and record `kind: dropbox`, `root` and `local_root`; the Dropbox connector isn’t needed for that.
-- **Notion:** run the binding’s § Scaffolding a project (hub, tables for a new hub, the Projects row, the pointer), then continue init through the contract; its step 5 governs intake.
-- **Pointer, both backends:** when the session has an open local folder, write `.storystormer/config.json` there through the local binding as exactly `{"storage": {…}}`, the `storage` block and nothing else, so the next session’s resolution finds the project (`store.md` § Resolve, step 1); the full config lives in the store. When the open folder already holds the project’s full config (it is the synced Dropbox folder, or `local_root`), write no pointer. With no open folder, the report gives the author the way back (the Dropbox path, or the Notion row’s link).
+**The question.** After triage (§ 2), alongside the § 3 questions and before the § 4 plan, ask *“Where should this story live?”* Offer only what this session can reach:
+
+- **This folder**, when there is an open folder (the local binding). When the folder syncs (below), label it as also the laptop half of a sync: *“this folder (it syncs through Dropbox, so it’s on your other devices too)”*.
+- **Each other backend in `store.md` § Bindings that is not pending and whose binding’s tool check passes** (§ Resolve, step 3), described in the author’s terms: today Dropbox (a folder at `/StoryStormer/<slug>/` in their Dropbox) and Notion (a row in a `StoryStormer` hub in their workspace). A pending binding is never offered; once it is verified, this rule adds it.
+
+**Defaults:** this folder when there is one (Claude Code always has one); with no open folder, Notion when it is offered; otherwise ask with no default. With only one option, don’t ask; the plan says where the story will live. With none (no folder and no connector), stop and tell the author to open a folder or connect Dropbox or Notion.
+
+**Re-running init on an existing project** never asks: the project keeps the store it has (a config with no `storage` block is local). Moving it is `/storystormer:migrate`.
+
+**Sync folders.** Check the open folder’s absolute path: a segment that is or begins with `Dropbox`, `Google Drive`, `GoogleDrive` or `OneDrive` (`~/Dropbox/`, `~/Dropbox (Personal)/`, `OneDrive-Personal`), or anything under `/Library/CloudStorage/`, where macOS keeps all of them (`~/Library/CloudStorage/Dropbox/`; the segment after it names the service). It is a path check, nothing more. Choosing a syncing folder still yields `kind: local`, plus the **Storage** line in `state.md` → What Exists naming the service (`references/file-schemas.md` § `state.md`). When the service is Dropbox and Dropbox is among the offered backends, the report adds that `/storystormer:migrate dropbox` would make it a true hybrid, reachable from sessions with no folder. Google Drive and OneDrive stay local: they work as synced folders, and no binding reaches them otherwise.
+
+**Scaffolding the chosen store.** Load its binding from § Bindings and say in the plan where the story will live. Intake materials are still read, and cleared after they are re-filed, through the local binding that holds them; everything init creates goes through the chosen binding, and documents that binding computes are written through its realizations or skipped (`store.md` § Local-mode clauses). The backend’s own setup is its binding’s § Scaffolding a project:
+
+- **Dropbox:** the same tree, rooted at `/StoryStormer/<slug>/`, with the stored config’s `storage` = `{"kind": "dropbox", "root": "/StoryStormer/<slug>"}`. The binding’s steps check the slug (a folder there that already holds a project stops init with a question) and create the folders. `local_root` is added only when the open folder **is** the synced copy of that root (its path ends in `StoryStormer/<slug>` under the Dropbox segment), or the author names the synced path and it exists here (ask; don’t guess). In that case init writes through the local binding rooted there (`store.md` § Resolve), and that folder holds the full config.
+- **Notion:** the binding’s steps (hub, tables for a new hub, the Projects row, the pointer), then the rest of init through the contract; its step 5 governs intake.
+- **The pointer:** for a connector backend with an open folder that is not its synced copy, write `.storystormer/config.json` there through the local binding as exactly `{"storage": {"kind": …, "root": …}}` and nothing else, so the next session’s resolution finds the project (`store.md` § Resolve, step 1). Never put `local_root` in a pointer: resolution binds the local binding wherever `local_root` exists, which would bypass the connector. The full config lives in the store. With no open folder there is no pointer, and the report gives the way back.
 - **The intake archive** is where init files what it keeps of the intake: this run’s `init` snapshot folder where the binding’s `history` is `snapshots`, else `.storystormer/intake/<timestamp>/` (the snapshot-folder timestamp, so a re-run never overwrites an earlier record). It holds `superseded-prose/<original filename>`, `intake-original-names.md`, and, when the store is not the folder the intake came from, `sources/<original filename>` for each text source init read but didn’t re-file (a brain dump, a deferred legacy outline), so a session that reaches only the store still has the originals.
 - **A normalizing binding:** when the chosen binding says it normalizes markdown on write, keep the local intake originals (never `store.delete` them) and say so in the report.
 
@@ -87,6 +100,7 @@ Before doing anything else, ask 2–4 questions to fill in what the materials do
 - **Target length** — the book's target word count (for a series, a default for every book plus any book that differs, each written to its `books` entry). If the author has no number, use the type's default from `references/file-schemas.md` § Target word count and the derived budgets (120,000 for a novel) and say so; it becomes `target_word_count`, which every word budget is computed from.
 - **Genre** — confirm or ask. If hybrid, capture both.
 - **The user's intent for this session** — *"what would you like to focus on first?"* lets them redirect from your default plan.
+- **Where the story lives** — a new project only, and only when there is a choice (§ Where a new project lives).
 
 For a mid-project mess (decisions made elsewhere, partial files), also ask:
 - **Sources of truth** — *"if the brain dump and the treatment disagree on Marlowe's backstory, which should I trust?"*
@@ -100,7 +114,7 @@ If the project is a **series**, ask additional intake questions:
 
 ### 4. Propose a plan, in plain language
 
-Tell the user what you're going to do based on the stage and what you found. Examples:
+Tell the user what you're going to do based on the stage and what you found, and where the story will live: this folder, `/StoryStormer/<slug>/` in Dropbox, or the Notion hub, plus the pointer config a connector backend leaves in the open folder. Examples:
 
 > **Stage: `brain-dump`.** Here's what I'm planning:
 >
@@ -147,6 +161,7 @@ The proposed IDs are provisional: a store that assigns numbers may use a differe
 
 Short summary:
 
+- **Where it lives:** the bound backend, its root, and the way back (the folder’s path, the Dropbox path, or the Notion row’s link), plus the sync note or the `migrate dropbox` hint when § Where a new project lives calls for them.
 - What you created.
 - What you extracted (N decisions, M questions).
 - What you stashed — if prose chapters were detected and moved into `chapters/`, list the chapter numbers stashed and any rename/format flags (see § Prose Chapter Stashing).

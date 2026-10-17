@@ -13,7 +13,7 @@ identity: path · write: delete-create · edit: read-modify-write · list: folde
 
 ## Tools
 
-The Dropbox connector’s `list_folder`, `fetch`, `create_file`, `create_folder`, `delete`, `move`, `check_job_status`, `get_file_metadata` and `search`. The operations below use the first seven; `get_file_metadata` and `search` are part of the expected set, kept for the locator (SB4), but no operation depends on them. Resolution’s tool check passes when all nine are present.
+The Dropbox connector’s `list_folder`, `fetch`, `create_file`, `create_folder`, `delete`, `move` and `check_job_status`. Resolution’s tool check passes when all seven are present. The connector also offers `get_file_metadata` and `search`; nothing here uses them (§ Locate lists `/StoryStormer/` and reads each project directly), so their absence fails nothing.
 
 **Verified on:** 2026-10-16.
 
@@ -22,8 +22,6 @@ The Dropbox connector’s `list_folder`, `fetch`, `create_file`, `create_folder`
 `/StoryStormer/<project-slug>/`, named by the config’s `storage.root` (`"/StoryStormer/<slug>"`). A contract path joins onto it: `treatment.md` is `/StoryStormer/<slug>/treatment.md`. Call the connector with that joined path (an fq_path); show the author `path_display`. Where a response carries only `path` (an ns_path, `ns:<id>//…`), pass it on exactly as returned and never strip the prefix to build a call.
 
 When `storage.local_root` names a folder that exists on this machine, resolution picks the local binding instead (`store.md` § Resolve); nothing here applies.
-
-**Locator root** (SB4): `/StoryStormer/`; each child folder holding `.storystormer/config.json` is a project.
 
 ## Stored and computed
 
@@ -64,6 +62,23 @@ Everything is **stored** as a real file; nothing is computed. That includes the 
 The connector’s tool descriptions ask the model to summarize each create, delete and move and get explicit confirmation before calling it. Here **the plan-first approval (`references/plan-first.md`) is that confirmation** for every mutation in the run, snapshot files and the delete half of each overwrite included; don’t re-ask per file or per call. Work outside the approved plan still needs its own approval.
 
 The descriptions also ask, after each mutation, for a note on how to revert it. Give it once per run, in the report, not per file: name the snapshot folder (or chapter `.history/` files) that holds what was replaced, and say that replaced and deleted files are also in Dropbox’s Deleted files (<https://help.dropbox.com/delete-restore/recover-deleted-files-folders>). For files the run created, say they can be deleted; for moves, name the original paths they can go back to.
+
+## Locate
+
+The well-known root is `/StoryStormer/`; each child folder holding `.storystormer/config.json` is a project.
+
+1. **List** `/StoryStormer/` with `list_folder`, **not** recursive, following `cursor` until `has_more` is `false`, and keep the entries whose `object_type` is `folder`. Take each child’s name from `path_display`, or the last segment of `path` when it is absent. A not-found error means no projects here, which is not a failure.
+2. **Config:** `fetch` `/StoryStormer/<child>/.storystormer/config.json`, remove the trailing newline, and parse it. Not found → not a project; skip it. A pointer (a `storage` block and nothing else) isn’t a project here either; skip it. A config that doesn’t parse → list the folder as unreadable, with the error.
+3. **State:** `fetch` `/StoryStormer/<child>/state.md` and keep the frontmatter (§ Operations, `read`). Missing → list the project with its stage and last session unknown.
+
+**Returns**, per project: title (the config’s `title`, else `state.md`’s), slug (the folder name), root `/StoryStormer/<child>`, `stage`, `last_session`, a series’ `books`, and the config’s `local_root` when it has one (resolution checks it, `store.md` § Resolve). **Fails** only when the listing itself errors; one child’s unreadable file is reported against that child. **Cost:** one `list_folder` (plus a page per `cursor`) and up to two `fetch`es per child folder, so about 21 calls for ten projects.
+
+## Scaffolding a project (`init` on Dropbox)
+
+1. **Slug check.** From a § Locate listing of `/StoryStormer/`, a child named the slug (compared case-insensitively) that holds a config stops init: ask the author for another slug or whether they meant that project. A child with that name and no config is someone’s folder; ask before writing into it.
+2. **Folders.** `create_folder` `/StoryStormer/` (when the listing found none) and then `/StoryStormer/<slug>/`; `ALREADY_EXISTS` means it is there.
+3. **Project.** Continue `init` through the contract: the stored config with `storage` = `{"kind": "dropbox", "root": "/StoryStormer/<slug>"}`, `state.md` with `storage_kind: dropbox`, and the rest. Intake keeps this binding’s text-only rule (§ Quirks).
+4. **Pointer.** With an open folder that is not this root’s synced copy, `init` writes the pointer there (`storystormer-init` § Where a new project lives).
 
 ## Quirks
 
