@@ -345,7 +345,7 @@ The status replaces the old file pointers and "(no bio yet)" notes: "Canon Asset
 
 ## `decisions.md` — append-only decision log
 
-Entries are never deleted, only superseded. Each decision has a stable ID (`D-001`, `D-002`, …). When two decisions conflict, the later one wins; the earlier one stays in the file with a `Superseded by` field.
+The file opens with a `# Decisions` heading (optional frontmatter above it, an optional short preamble below it), then the entries. Entries are never deleted, only superseded. Each decision has a stable ID (`D-001`, `D-002`, …). When two decisions conflict, the later one wins; the earlier one stays in the file with a `Superseded by` field.
 
 ```markdown
 ## D-018 · 2026-05-11 · character
@@ -408,6 +408,8 @@ For book-scoped decisions, the format is simpler:
 `Scope` values: `series` (affects multiple books or the arc as a whole) or `book-<slug>` (affects one specific book). In standalone-novel projects, the `Scope` field is omitted — every decision is implicitly project-scoped. In the app, `book-<slug>` is the record's novel and `series` is a record with no novel. See `references/series.md` § Scoping decisions and questions.
 
 ## `questions.md` — open questions, status mutated in place
+
+The file opens with a `# Open Questions` heading (optional frontmatter above it, an optional short preamble below it), then the entries.
 
 ```markdown
 ## Q-014 · critical · Plot
