@@ -181,9 +181,12 @@ Now `store.read` these story files IN THIS ORDER (the order conditions voice —
 sample first for primacy, prior prose last for recency):
   1. voice/writing-sample.md            (skip if absent)
   2. voice/style-guide.md               (skip if absent)
-  3. <prior chapter synopses — read each prior chapter's ch<NN>-prose.md
-      `synopsis` frontmatter via store.read(path, frontmatter only); fall back to its ch<NN>-outline.md Premise where
-      prose doesn't exist or is `status: retired`. Chapters < NN only.>
+  3. <prior chapter synopses, chapters < NN only, each from the first source that exists:
+      its ch<NN>-notes.md As-Written Synopsis; its ch<NN>-prose.md `synopsis` frontmatter
+      (store.read(path, frontmatter only)); its ch<NN>-outline.md `## Synopsis` section, else
+      that outline's `summary` frontmatter; its Blueprint § 3 Chapter Shape premise; the outline
+      body, condensed; its spine entry in outline/structure.md. A chapter whose prose is
+      `status: retired` skips its notes and prose and starts at the outline.>
   4. chapters/chapter-<NN>/ch<NN>-blueprint.md   (lean path)
        — OR, if no Blueprint: POV-first character bios + worldbuilding the
          chapter touches + primer.md  (fallback path)
@@ -195,7 +198,8 @@ guard), and `store.write` the chapter's prose to chapters/chapter-<NN>/ch<NN>-pr
 frontmatter (pov, version stamps, status: drafted, word_count, and a ~150–250w
 synopsis) per the schema the prose spec references. Where the capabilities line says
 `history: snapshots`, then `store.write` the identical content to its as-written copy,
-at the path the triggered clauses name.
+at the path the triggered clauses name. (A Kit Bash draft, written to kitbash/ instead
+of ch<NN>-prose.md, gets no as-written copy.)
 
 What to return (NOT the prose itself — it's on disk):
 {
