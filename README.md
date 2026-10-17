@@ -5,11 +5,11 @@
 
 A conversational story development workspace inside Claude Cowork (or Claude Code). Drop into any folder — empty, a one-line concept, a brain dump, a half-finished treatment, a tangled mid-project mess — and Claude triages what's there, proposes a plan, and develops the story with you.
 
-This is a proof of concept that ports the **brainstorm → canon → treatment → outline** kernel of [StoryStormer](https://storystormer.io)'s web app into the plugin format. It runs locally against markdown files, leans on the model for judgment (with future models making it better), and asks before it acts. Supports both **standalone novels** and **multi-book series** (trilogies, longer series).
+This is a proof of concept that ports the **brainstorm → canon → treatment → outline** kernel of [StoryStormer](https://storystormer.io)'s web app into the plugin format. It runs against markdown files (in a local folder, Dropbox or Notion), leans on the model for judgment (with future models making it better), and asks before it acts. Supports both **standalone novels** and **multi-book series** (trilogies, longer series).
 
 ## What it gives you
 
-Eleven skills that load via progressive disclosure when your intent matches:
+Fourteen skills that load via progressive disclosure when your intent matches:
 
 | Skill | Loads when you… |
 |---|---|
@@ -26,15 +26,16 @@ Eleven skills that load via progressive disclosure when your intent matches:
 | `prose` | write or revise a chapter's actual prose — from its Blueprint, outline, your voice inputs, and the story so far |
 | `notes` | record what a chapter's prose actually committed — as-written synopsis, divergences, harvest, accidental canon, end-state — and propose canon updates |
 | `canon-sync` | reconcile a span of chapters' notes back into canon — absorb accretion, adjudicate contradictions by authorship, surface drift, produce a manuscript fix list and the Blueprints to rebuild |
+| `migrate` | move a story to another home (a local folder, Dropbox, or Notion), leaving the original in place |
 
-Plus seven slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline`, and `/storystormer:switch` (series mode only).
+Plus eight slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline`, `/storystormer:switch` (series mode only), and `/storystormer:migrate`.
 
 ## How-to guides
 
 Step-by-step help for the bigger workflows lives in [`guides/`](guides/):
 
-- **[Installing StoryStormer](guides/installing.md)** — adding the marketplace and installing the plugin in Claude Cowork or Claude Code, connecting a story folder, updating, and troubleshooting.
-- **[Developing Your Story — From Idea to Outline](guides/developing-your-story.md)** — the front half of the pipeline: setting up a workspace from any starting state, the brainstorm → decision → treatment-update development loop, building character and worldbuilding canon, and committing to a chapter structure.
+- **[Installing StoryStormer](guides/installing.md)** — adding the marketplace and installing the plugin in Claude Cowork or Claude Code, connecting a story folder, choosing where a story lives (a folder, Dropbox, or Notion), updating, and troubleshooting.
+- **[Developing Your Story — From Idea to Outline](guides/developing-your-story.md)** — the front half of the pipeline: setting up a workspace from any starting state, the brainstorm → decision → treatment-update development loop, building character and worldbuilding canon, committing to a chapter structure, and moving a story between homes.
 - **[Writing Chapters — Blueprint, Prose & Kit Bash](guides/writing-chapters.md)** — from a chapter outline to finished prose: building the pre-prose Blueprint, generating and refining prose through chat, and Kit Bashing competing multi-model drafts into one chapter.
 
 More guides will follow for other parts of the pipeline.
@@ -107,7 +108,7 @@ my-series/
     └── config.json              # project_type: series, books: [...], current_focus: book-1
 ```
 
-The eleven skills work the same way in series mode — they just resolve per-book file paths through `books/<current_focus>/` instead of the workspace root. Series mode adds:
+The skills work the same way in series mode — they just resolve per-book file paths through `books/<current_focus>/` instead of the workspace root. Series mode adds:
 
 - **Shared character bios** with per-book sub-arcs (Maya grows across all three books; one bio captures the full arc).
 - **A `series.md` arc document** that tracks cross-book setups and payoffs (the locket planted in book 1 ch 2 pays off in book 3 ch 14).
@@ -126,7 +127,7 @@ A story can live in one of three places. Every skill works the same on all three
 - **Dropbox:** the story lives in your Dropbox at `/StoryStormer/<your-project>/`, through the Dropbox connector, as the same folder tree a local project has, file for file. If that folder also syncs to your computer, tell init where, and sessions on that machine work on the synced copy directly. Snapshots and `/storystormer:checkpoint` work as they do locally.
 - **Notion:** the story lives in your Notion workspace, through the Notion connector, under a page called `StoryStormer` that holds five databases (Projects, Assets, Chapters, Decisions, Questions). Most documents are rows you can open, browse and edit in Notion, and the agent reads your edits like anything else. A few are views the agent computes from those rows, not rows you edit directly (the dashboard’s What Exists, the decision and question logs, which are one row per entry, and the character and outline indexes), and anything without a database of its own is a child page of the project. Notion keeps every page’s version history itself, so there are no snapshot folders and `/storystormer:checkpoint` politely declines.
 
-To put a new project in Dropbox or Notion, connect that connector, then tell `/storystormer:init` where you want it (*“set this up in Notion”*). Not here yet: an onboarding question that asks where a new project should live, and moving an existing project from one store to another; both are coming.
+When you start a new project, `/storystormer:init` asks once where it should live, offering only the homes this session can reach (connect the Dropbox or Notion connector first to see them). In a session with no folder open, StoryStormer lists the projects it finds in your Dropbox and Notion and works on the one you pick. To move an existing story, run `/storystormer:migrate`: it copies everything the new home can hold, points your folder at the new copy, and leaves the original in place for you to delete when you’re ready. The [installing guide](guides/installing.md#choosing-where-your-story-lives) explains the choices, including the Dropbox hybrid.
 
 ## Install
 
@@ -188,10 +189,22 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 
 These may follow in later versions once the kernel proves out.
 
+### What v0.20.0 added over v0.19.0
+
+- **Init asks where a new story should live.** One question, once, for a new project: this folder, Dropbox or Notion, offering only what the session can reach (a pending binding is never offered). The open folder is the default; with no folder, Notion when it’s connected. A folder inside Dropbox, Google Drive or OneDrive stays `kind: local` with a **Storage** line in `state.md`; choosing Dropbox with the folder open at `<Dropbox>/StoryStormer/<slug>` makes the Dropbox hybrid (`local_root`). A connector project with an open folder gets a pointer config that is its `storage` block and nothing else.
+- **The project locator.** A session with no story folder searches every connected backend’s well-known root (Dropbox `/StoryStormer/`, Notion `StoryStormer` hubs), lists the projects grouped by backend with title, stage and last session, newest first, and binds the one the author picks (or the only one), opening its first reply with where it’s working. Each binding gains a § Locate.
+- **The `migrate` skill and `/storystormer:migrate`.** Moves a project between any two backends through the store contract. The preflight is the plan: counts by category, what is copied, mapped, computed or skipped, a call estimate, and a same-slug check that refuses and offers a merge (or recognizes and resumes an unfinished run). Canon copies first, then the other categories in parallel subagents; the target is verified before its config is written and the open folder’s config flips to the new home. Snapshots don’t go to Notion, binary files go nowhere, Notion log entries keep their own numbers, and the source is never deleted. Re-running resumes. Handles series and the Dropbox hybrid.
+- **Guides:** installing gains “Choosing where your story lives”; developing gains “Moving a story between homes.”
+
 ### What v0.19.0 added over v0.18.0
 
 - **Stories can live in Dropbox or Notion.** Two new store bindings: Dropbox keeps the local folder tree under `/StoryStormer/<slug>/` (with an optional synced copy on your computer), and Notion keeps a project as rows in five linked databases under a `StoryStormer` hub page, with the decision and question logs, indexes and dashboard computed from those rows. `init` scaffolds a new project in either when you ask, and leaves a small pointer config in the open folder so the next session finds it. On Notion, checkpoints decline (Notion keeps version history) and decision and question numbers are assigned by the store; skills use the number it reports.
 - **The treatment's act budget is a ceiling, not a target.** An act whose material is decided lands near its share; an undeveloped act stays short with its gaps marked, and a developed act is never inflated to make up the difference. The report says which acts sit well under their share.
+
+### What v0.18.0 added over v0.17.2
+
+- **The store contract.** Skills, commands, references and guides now read and write through `references/store.md` (named operations: list, read, write, edit, history, open, move, delete) instead of naming host tools, and `references/store/local.md` is the first binding, realizing them on the open folder. Groundwork for the Dropbox and Notion bindings in v0.19.0; on a local folder, behavior matches v0.17.2 (checked against two baseline runs). `config.json` gains a `storage` block, mirrored as `storage_kind` in `state.md`.
+- **Deliberate behavior changes along the way.** `/storystormer:checkpoint` captures every document the plugin defines (chapters, `kitbash/`, outline, voice, notes, canon-sync records, config, genre reference), copies text only and never reuses a checkpoint folder; every command resolves the store first; `/storystormer:switch` treats `state.md` as owning a series’ book list, with the config mirroring it; worldbuilding entries join the book-level snapshot list.
 
 ### What v0.17.2 added over v0.17.1
 

@@ -1,4 +1,4 @@
-<!-- ABOUTME: User-facing how-to guide for the story-development arc — init, brainstorming, canon, treatment, and outlining -->
+<!-- ABOUTME: User-facing how-to guide for the story-development arc — init, brainstorming, canon, treatment, outlining, and moving a story between homes -->
 <!-- ABOUTME: Second of the help-guide series; written for authors using the plugin, not for the model -->
 
 # How-To: Developing Your Story — From Idea to Outline
@@ -63,7 +63,7 @@ Decisions carry one of five types (plot, character, worldbuilding, structure, th
 
 ## Getting started: init
 
-Run `/storystormer:init` (or just say **"set up StoryStormer here"**) in the story project where your story will live (a folder, or your Dropbox or Notion through their connectors: say *“set this up in Notion”*). Any starting state works:
+Run `/storystormer:init` (or just say **“set up StoryStormer here”**) in the folder where your story will live, or in a session with no folder if it will live in Dropbox or Notion. For a new project, init also asks once where the story should live: this folder, or Dropbox or Notion when their connectors are connected. [Choosing where your story lives](installing.md#choosing-where-your-story-lives) in the installing guide explains the options. Any starting state works:
 
 - **Empty folder** — you'll answer a few questions (title, project type, genre) and get a minimal scaffold.
 - **A one-line concept or a brain dump** — init reads it, extracts the decisions already implicit in it ("protagonist is a forensic accountant" was a decision, even if you never called it one), surfaces the open questions you wrote as "maybe X or Y???", and seeds both logs — showing you the lists for confirmation first.
@@ -200,10 +200,39 @@ A chapter outline with zero unresolved markers is prose-ready — which is exact
 | `/storystormer:decisions` | Browse the decision log (filter, show one, add) |
 | `/storystormer:questions` | The open-question queue by priority |
 | `/storystormer:checkpoint` | Manual snapshot of every document the plugin manages (canon, outline, chapters, voice, config) — take one before anything risky |
+| `/storystormer:migrate` | Move the story to another home (this folder, Dropbox, or Notion); see below |
 
 The plugin is git-agnostic: `/storystormer:checkpoint` is your save point. Skills also snapshot automatically before overwriting anything, so checkpoints are for milestones ("pre-act-3-rework"), not routine safety. (A project stored in Notion doesn’t need checkpoints: Notion keeps every page’s version history, so checkpoint says so and writes nothing. Dropbox projects checkpoint normally.)
 
 **Writing a trilogy?** Series mode gives you shared characters and worldbuilding at the root with per-book treatments and outlines inside `books/` — say "series" during init (or ask to convert an existing project). Everything in this guide works the same; decisions just gain a scope, and `/storystormer:switch book-2` changes focus. The [README](../README.md#series-mode-multi-book-projects) has the details.
+
+---
+
+## Moving a story between homes
+
+Started in a folder and want the story in Notion now? Say **“move this story to Notion”** or run `/storystormer:migrate notion` (or `dropbox`, or `local` for the open folder). With no argument, it lists the homes this session can move the story to, and says why any is missing.
+
+Like every skill, it starts with a plan and waits for your go. The plan counts what’s there, says what will happen to each kind of file and where the story will end up, estimates how big the job is, and checks the destination for a project with the same name.
+
+**What moves:** everything the new home can hold. Canon, primer, treatment, manifest, voice and research files, the outline, every chapter’s files, and the decision and question logs. In Notion each decision and question becomes its own row and keeps its number, so a chapter that cites D-003 still points at D-003. Indexes Notion builds for itself (the character and outline indexes) are rebuilt there rather than copied, and markdown with no natural place in Notion (Kit Bash drafts, init’s intake records) becomes a page inside the project, listed in the report.
+
+**What stays behind**, named in the plan and again in the report:
+
+- **Snapshots, when moving into Notion.** Notion keeps its own version history from the moment each page is created, so the `.history/` snapshots stay with the original as the only record of earlier versions. A move to Dropbox or a folder brings them along.
+- **Files that aren’t text:** Word documents, images, PDFs. No home can take them through StoryStormer. When the new home is a folder, you can copy them over by hand.
+- **Other text files, when moving into Notion:** a `.txt` or `.fountain` file would come back reshaped, so it stays where it is.
+
+**The original is never deleted, and its story files are never changed.** The one thing migrate edits outside the new home is the small settings file in the open folder (`.storystormer/config.json`), so that opening the folder next time takes you to the new home; the report says how to point it back. Delete the original yourself once you’re happy with the copy. Until you do, a session with no folder open lists both, under the same name.
+
+Once the move is done, the session you’re in carries on in the new home, so the next decision you log lands there. Anything changed in the original while the move was running stays in the original only.
+
+**Re-running is safe.** If a move is interrupted, run it again: whatever was already copied is left as it is, and it carries on with the rest.
+
+**A big project takes a while.** Each document is its own step through the connector, and Notion needs two or three per document and per logged decision or question. A 150-document novel with 200 decisions is on the order of a thousand steps into Notion, or a few hundred into Dropbox. The plan gives the estimate for your project before anything starts.
+
+**Same name, different story.** If the new home already holds a project by this story’s name, migrate stops before writing anything, tells you what’s there (its title, stage and last session), and asks whether you meant to merge into it or to give this story a different name. A merge never deletes anything already there; where both sides hold different decisions under the same number, it leaves that one out (with anything that refers to it) and lists it for you to sort out. If what it finds is its own unfinished earlier run, it says so and offers to finish the job instead.
+
+**Making a Dropbox story reachable without the folder.** A story in a folder that Dropbox syncs can become the Dropbox hybrid (one copy, reachable with the folder open or through Dropbox with no folder) with `/storystormer:migrate dropbox`. The [installing guide](installing.md#choosing-where-your-story-lives) explains how the hybrid works.
 
 ---
 
@@ -225,6 +254,7 @@ The plugin is git-agnostic: `/storystormer:checkpoint` is your save point. Skill
 | Fill in an act | "Outline Act 1" |
 | Fix one chapter's outline | "Chapter 17's tension feels low — revise it" |
 | Save a milestone | `/storystormer:checkpoint` |
+| Move the story to another home | “Move this story to Notion” · `/storystormer:migrate dropbox` |
 
 ### Files
 
@@ -258,5 +288,7 @@ chapters/chapter-NN/…        ← per-chapter outlines (then blueprints, prose)
 **Do I have to finish all the canon before outlining?** No — major characters and load-bearing worldbuilding, yes; every minor character, no. Canon keeps growing during and after outlining. The manifest tracks what has depth and what's still just a one-liner.
 
 **Can I edit the files by hand?** Yes, all of them — it's plain markdown. The agent reads your edits like anything else it finds.
+
+**Can I change where my story lives later?** Yes. `/storystormer:migrate` copies it to the new home and points your folder there; the original stays put until you delete it yourself (see [Moving a story between homes](#moving-a-story-between-homes)).
 
 **Something got overwritten and I want it back.** Nothing is ever overwritten silently. In a local or Dropbox folder, book-level documents snapshot to `.storystormer/history/`, chapter files to their own `.history/` folders — all timestamped. (In Notion, open the page, then ••• → Version history.)

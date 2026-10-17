@@ -28,7 +28,8 @@ storystormer-plugin/                 (repo root = marketplace root = plugin root
 │   ├── migrate/                     # move a project between storage backends
 ├── commands/                        # 8 slash commands (/storystormer:*)
 │   ├── init  status  checkpoint  decisions  questions  outline  switch  migrate
-├── references/                      # 14 shared docs the skills cite by relative path
+├── references/                      # 22 shared docs the skills cite by relative path,
+│                                    #   plus store/ (one binding per backend)
 ├── README.md                        # user-facing
 ├── PLUGIN-GUIDE.md                  # this file (maintainer)
 └── CLAUDE.md                        # operating contract for Claude Code sessions in this repo
