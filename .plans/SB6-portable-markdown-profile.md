@@ -114,6 +114,6 @@ A probe construct that comes back changed is excluded from the profile and gains
 
 **Dependencies:** Notion connector in the Claude Code session; a `StoryStormer` hub test project (`sb6-probe`, `sb6-mini`, `sb6-ring` slugs), trashed at the end and listed for Rob; Rob’s The Good Dog source folder readable; 0.20.1-poc on `main`.
 
-**Open questions for Rob:**
-1. **Tidy author files on local when a skill edits them?** (a) No: only the plugin’s own new text is in profile form **(recommended;** your Obsidian files stay yours), (b) yes, normalize the whole file on any plugin edit.
-2. **The Notion write-side safety net:** (a) normalize and report one line **(recommended)**, (b) stop and ask before any normalizing write.
+**Decisions (Rob, 2026-10-18):**
+1. **Author files on local and Dropbox:** a skill edit never tidies them. The profile applies only to the plugin’s own new text, and the author’s surrounding text stays byte-for-byte.
+2. **The Notion write-side safety net:** normalize out-of-profile markup and report it in one line; don’t stop to ask.
