@@ -973,6 +973,263 @@ Ada waits at the dock [OPEN: Q-003] while the tide turns.
 
 **3.** Third step, as a bold number lead-in.
 
+## PB13 heading-trailing-lone-hash
+
+### Issue #
+
+## PB14 heading-trailing-hash-number
+
+### Issue #12
+
+## PB15 hash-no-space-line-start
+
+#heading with no space after the hash.
+
+## PC31 italic-around-strike
+
+Some *~~italic struck~~* text.
+
+## PC32 strike-around-italic
+
+Some ~~*struck italic*~~ text.
+
+## PC33 nested-inside-word
+
+Some **un*believ*able** text.
+
+## PC34 literal-star-no-spaces
+
+Five*three is fifteen.
+
+## PD28 nested-item-lazy-line
+
+- level one
+  - level two that
+wraps onto a lazy line
+- back to one
+
+## PD29 fence-inside-item
+
+- an item
+
+  ```
+  code inside the item
+  ```
+- next item
+
+## PE11 fence-inside-quote
+
+> ```
+> code inside the quote
+> ```
+
+## PG16 cell-numeric-pipe-entity
+
+| Expr | Meaning |
+|---|---|
+| a &#124; b | either |
+
+## PH07 rule-four-spaced-stars
+
+Above.
+
+* * * *
+
+Below.
+
+## PH08 rule-spaced-underscores
+
+Above.
+
+_ _ _
+
+Below.
+
+## PI24 entity-tag
+
+An &lt;b&gt;escaped tag&lt;/b&gt; in text.
+
+## PI25 entity-numeric-star
+
+An &#42;escaped star&#42; pair.
+
+## PI26 entity-amp-lt
+
+A doubly escaped &amp;lt; sign.
+
+## PI27 entity-quot
+
+A &quot;quoted&quot; word.
+
+## PI28 entity-lt-space
+
+If a &lt; b then.
+
+## PJ12 bold-around-link
+
+Some **see [the note](./x.md) here** text.
+
+## PJ13 bold-link-text
+
+Some [**bold link**](./x.md) text.
+
+## PJ14 italic-around-link
+
+Some *[the site](https://example.com)* text.
+
+## PJ15 anchor-link
+
+See [the section](#the-section) above.
+
+## PJ16 image-bare-target
+
+![alt text](image.png)
+
+## PJ17 image-relative-target
+
+![alt text](./img/a.png)
+
+## PL11 fence-js
+
+```js
+const a = 1;
+```
+
+## PL12 fence-json
+
+```json
+{"a": 1}
+```
+
+## PL13 fence-sh
+
+```sh
+echo one
+```
+
+## PL14 fence-bash
+
+```bash
+echo one
+```
+
+## PL15 fence-python
+
+```python
+a = 1
+```
+
+## PL16 fence-md
+
+```md
+# a heading
+```
+
+## PL17 fence-markdown
+
+```markdown
+# a heading
+```
+
+## PL18 fence-html
+
+```html
+<p>a</p>
+```
+
+## PL19 fence-css
+
+```css
+a { color: red; }
+```
+
+## PL20 fence-diff
+
+```diff
+- old
++ new
+```
+
+## PL21 fence-sql
+
+```sql
+SELECT 1;
+```
+
+## PL22 fence-internal-empty-lines
+
+```
+first line
+
+third line after an empty line
+```
+
+## PL23 fence-tilde-lang
+
+~~~yaml
+name: Ada Vale
+~~~
+
+## PL24 code-span-leading-space
+
+Use ` x` here.
+
+## PL25 code-span-both-spaces
+
+Use ` x ` here.
+
+## PL26 code-span-all-space
+
+Use ` ` here.
+
+## PL27 bold-code-only
+
+Use **`x`** here.
+
+## PL28 italic-code-only
+
+Use *`x`* here.
+
+## PM07 html-em
+
+Some <em>emphasised</em> text.
+
+## PM08 html-strong
+
+Some <strong>strong</strong> text.
+
+## PM09 html-del
+
+Some <del>deleted</del> text.
+
+## PM10 html-code
+
+Some <code>coded</code> text.
+
+## PM11 html-sup
+
+E = mc<sup>2</sup> here.
+
+## PM12 html-a-href
+
+See <a href="https://example.com">the site</a> here.
+
+## PM13 html-img
+
+<img src="https://example.com/a.png" alt="a">
+
+## PO15 questions-entry-as-templated
+
+## Q-014 · critical · Plot
+
+**Title**: How the loop is found
+**Question**: How is the loop found?
+**Possible approaches**:
+  - one approach
+  - another approach
+**Dependencies**: Q-007
+**Source**: plugin
+
 ## PZ99 end
 
 Last paragraph of the probe.

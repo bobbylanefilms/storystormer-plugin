@@ -271,3 +271,61 @@ Hidden body.
 ## PR54 PJ10 path-link-with-slash
 
 See [the note](./notes/a_b_c.md) here.
+
+## PR55 PO15 list-set-off-by-empty-lines
+
+## Q-014 · critical · Plot
+
+**Title**: How the loop is found
+**Question**: How is the loop found?
+**Possible approaches**:
+
+- one approach
+- another approach
+
+**Dependencies**: Q-007
+**Source**: plugin
+
+## PR56 PJ12 link-outside-bold
+
+Some **see** [the note](./x.md) **here** text.
+
+## PR57 PJ13 bold-outside-link
+
+Some **[bold link](./x.md)** text.
+
+## PR58 PJ14 italic-inside-link-text
+
+Some [*the site*](https://example.com) text.
+
+## PR59 PC33 nested-inside-word-widened
+
+Some ***unbelievable*** text.
+
+## PR60 PD29 child-block-without-empty-line
+
+- an item
+  ```
+  code inside the item
+  ```
+- next item
+
+## PR61 PJ16 image-bare-target-as-link
+
+[alt text](./image.png)
+
+## PR62 PJ17 image-relative-target-as-link
+
+[alt text](./img/a.png)
+
+## PR63 PL11 fence-javascript
+
+```javascript
+const a = 1;
+```
+
+## PR64 PL15 fence-py
+
+```py
+a = 1
+```
