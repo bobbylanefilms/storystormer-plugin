@@ -50,7 +50,7 @@ const CASES: Array<{ rule: string; pass: string; fail: string }> = [
   { rule: 'emphasis-underscore', pass: 'Some *x* and a snake_case_name.\n', fail: 'Some _x_ text.\n' },
   { rule: 'emphasis-nested', pass: 'Some **a** ***b*** **c** and ***d*** and ~~*e*~~.\n', fail: 'Some **a *b* c** text.\n' },
   { rule: 'emphasis-strike-order', pass: 'Some ~~**x**~~ text.\n', fail: 'Some **~~x~~** text.\n' },
-  { rule: 'emphasis-code', pass: 'Some **a** `x` **b** and **`y`**.\n', fail: 'Some **a `x` b** text.\n' },
+  { rule: 'frontmatter-separation', pass: '---\ntitle: X\n---\n\nText.\n', fail: '---\ntitle: X\n---\nText.\n' },
   { rule: 'emphasis-link', pass: 'Some **see** [x](./x.md) **here** and [*y*](https://example.com).\n', fail: 'Some **see [x](./x.md) here** text.\n' },
   { rule: 'emphasis-adjacent', pass: 'Some **a** *b* text.\n', fail: 'Some **a***b* text.\n' },
   { rule: 'literal-star', pass: 'Five*three.\n\nAnd 5 * 3 * 2.\n', fail: 'Five*three and 5 *3.\n' },
@@ -116,6 +116,31 @@ test('lint final newline and empty files', () => {
   assert.deepEqual(rulesOf('\n\n'), ['final-newline']);
   assert.deepEqual(rulesOf('Text.\n\n\n'), ['final-newline']);
   assert.deepEqual(rulesOf('Text.\n  \n'), ['whitespace-only-line']);
+});
+
+test('lint emphasis nesting: in order (strikethrough, italic, bold, code) is in profile; out of order or repeated is not', () => {
+  for (const ok of ['*italic with **bold** inside*.\n', '***bold first** then italic*.\n', '~~a **b** c~~ and ~~a *b* c~~.\n',
+    '~~*a **b** c*~~.\n', '**bold with `code` inside** and ~~a `x` b~~.\n', '> ~~*“Do you want a **TREAT**?”* Muppy ran.~~\n']) {
+    assert.deepEqual(rulesOf(ok), [], ok);
+  }
+  assert.deepEqual(rulesOf('**a *b* c**.\n'), ['emphasis-nested'], 'italic inside bold');
+  assert.deepEqual(rulesOf('***a* b**.\n'), ['emphasis-nested'], 'italic inside bold, at its start');
+  assert.deepEqual(rulesOf('> ~~*“Do you want a ***TREAT***?”* Muppy ran.~~\n'), ['emphasis-nested'], 'italic inside italic (the ring’s style guide)');
+  assert.deepEqual(rulesOf('*a ~~b~~ c*.\n'), ['emphasis-strike-order']);
+});
+
+test('lint frontmatter separation: exactly one empty line between the closing --- and the body', () => {
+  assert.deepEqual(rulesOf('---\ntitle: X\n---\n\nText.\n'), []);
+  assert.deepEqual(rulesOf('---\ntitle: X\n---\nText.\n'), ['frontmatter-separation']);
+  assert.deepEqual(rulesOf('---\ntitle: X\n---\n\n\nText.\n'), ['frontmatter-separation']);
+  assert.deepEqual(rulesOf('---\ntitle: X\n---\n'), [], 'frontmatter alone has no body to separate');
+});
+
+test('non-breaking spaces: lint flags each (the rewrite table turns it into a space); --words reads it as a space', () => {
+  const found = lintText('Two\u00A0words and\u00A0two.\n');
+  assert.deepEqual(found.map((f) => f.rule), ['nbsp', 'nbsp']);
+  assert.ok(same('Two\u00A0words.\n', 'Two words.\n'), 'nbsp → space is not a word change');
+  assert.ok(!same('Two\u00A0words.\n', 'Two other words.\n'));
 });
 
 test('lint frontmatter boundary: a rule is not frontmatter; a bad close is one finding', () => {
@@ -204,10 +229,6 @@ function verdicts(): Map<string, string> {
 // Kept (K) constructs the profile still leaves out, and changed constructs a linter can't tell from in-profile text.
 const K_EXCEPTIONS: Record<string, string> = {
   PI07: 'x<y: Notion keeps it, but the profile says a < is never directly followed by a letter',
-  PC08: 'kept once the read merges adjacent runs, but the profile rewrites nested emphasis to one form',
-  PC10: 'kept once the read merges adjacent runs, but the profile rewrites nested emphasis to one form',
-  PC13: 'kept once the read merges adjacent runs, but the profile rewrites emphasis around code to one form',
-  PC14: 'kept once the read merges adjacent runs, but the profile rewrites emphasis around code to one form',
 };
 const FLAG_EXCEPTIONS: Record<string, string> = {
   PI04: 'U: unverifiable (it is flagged as nbsp, but the verdict is not a change)',
@@ -235,8 +256,8 @@ const EXPECTED_RULE: Record<string, string> = Object.fromEntries(`
 PA02 block-separation · PA04 blank-lines · PA05 trailing-whitespace · PA06 whitespace-only-line · PA07 block-separation
 PA09 block-separation · PA11 leading-whitespace · PB05 heading-depth · PB06 heading-depth · PB07 heading-closing
 PB08 heading-setext · PB09 heading-setext · PB13 heading-closing · PC02 emphasis-underscore · PC04 emphasis-underscore
-PC07 emphasis-nested · PC08 emphasis-nested · PC09 emphasis-nested · PC10 emphasis-nested · PC11 emphasis-underscore
-PC12 emphasis-underscore · PC13 emphasis-code · PC14 emphasis-code · PC21 emphasis-strike-order · PC26 emphasis-underscore
+PC07 emphasis-nested · PC09 emphasis-nested · PC11 emphasis-underscore
+PC12 emphasis-underscore · PC21 emphasis-strike-order · PC26 emphasis-underscore
 PC31 emphasis-strike-order · PC33 emphasis-nested · PD02 list-marker · PD03 list-marker · PD04 list-marker
 PD06 list-indent · PD11 list-marker · PD12 list-numbering · PD14 list-marker · PD15 list-loose · PD16 list-continuation
 PD17 list-continuation · PD20 todo-case · PD22 list-indent · PD26 list-empty-item · PD29 list-fence-gap
@@ -371,7 +392,7 @@ Some **bold** and *italic* text, a **bold with** ***italic*** **inside** run, an
 Line one
 line two
 See [https://example.com/path](https://example.com/path) and [someone@example.com](mailto:someone@example.com) and [Ada](./ada-vale.md).
-Ampersand & entity, — and a\u00A0space.
+Ampersand & entity, — and a space.
 A claim.[1]
 
 - alpha
@@ -414,7 +435,7 @@ test('--words: identical trees compare clean', () => {
 
 test('--words: a markup-only change passes, and the normalized side lints clean', () => {
   assert.deepEqual(markdownWords(ORIGINAL), markdownWords(NORMALIZED));
-  assert.deepEqual(lintText(NORMALIZED).filter((f) => f.rule !== 'nbsp'), []);
+  assert.deepEqual(lintText(NORMALIZED), []);
   const a = tree({ 'a.md': ORIGINAL });
   const b = tree({ 'a.md': NORMALIZED });
   try {
@@ -498,6 +519,9 @@ test('bare filenames are kept as written: no emphasis or link rewrite applies in
   assert.equal(rulesOf('See a_b.md,c_d.md now.\n').filter((r) => r === 'bare-path').length, 2);
   assert.equal(rulesOf('See x.md→y.md now.\n').filter((r) => r === 'bare-path').length, 2);
   assert.ok(rulesOf('See __notes.md_ now.\n').includes('bare-path'));
+  // `&`, `(` and a matched `)` stay inside a token; an unmatched `)` ends it (`Chapter 1 (Opus 4).docx` has spaces: no token).
+  assert.deepEqual(rulesOf('See Chapter 1 (Opus 4).docx now.\n'), []);
+  assert.deepEqual(rulesOf('See Q&A_(draft).md now.\n'), ['bare-path']);
   // Link targets, tags and wikilinks are not tokens in --words either.
   assert.ok(same('See [x](./a_b.md) now.\n', 'See [x](./a*b.md) now.\n'), 'a link target is dropped, not compared');
   assert.ok(!same('See [[Page_one_.md]] now.\n', 'See [[Page*one*.md]] now.\n'), 'a wikilink is kept as written');

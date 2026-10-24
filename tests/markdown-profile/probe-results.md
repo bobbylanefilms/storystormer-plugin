@@ -358,7 +358,7 @@ Totals: 243 constructs: 124 K, 91 C, 21 L, 4 S, 1 X, 1 U, 1 W.
 | PR63 | PL11 | fence-javascript | 4 | byte-identical |
 | PR64 | PL15 | fence-py | 4 | byte-identical |
 
-Not adopted: PR41 (a non-breaking space as a plain space; Notion now stores U+00A0, so author text keeps it), PR53 (continued numbering as bold lead-ins; continued numbering round-trips as a list, PD08–PD10, and the form stays in the file for a re-probe if the serializer reverts), and PR57 (it changed; PR58’s form replaces it).
+Not adopted at first, adopted after the ring round: PR41 (a non-breaking space as a plain space; Notion stores U+00A0, but every fetch returns a plain space, so it couldn’t come back: § Ring round). Not adopted: PR53 (continued numbering as bold lead-ins; continued numbering round-trips as a list, PD08–PD10, and the form stays in the file for a re-probe if the serializer reverts), and PR57 (it changed; PR58’s form replaces it).
 
 ## Isolation tests
 
@@ -384,6 +384,21 @@ A live local → Notion → local round trip of a 29-document project (`sb6-mini
 - **Probe 6, the mini2 failure re-sent** (row `sb6-probe-6`, `403e980b-9c74-81a9-86ef-d2001f6a70cd`): the second round trip (`sb6-mini2`, written before the underscore escape) failed only at `intake-original-names.md`, where its fetch showed `The\_Good\_Dog\_-<i>Brainstorming</i>&\_Future…` and `Miles\_Corwin\_-<i>Character\_Profile</i>(…)`. That document’s normalized form under the current profile (its `&amp;` filename decoded) was sent in today’s write form, every `_` as `\_`, by a create, which dropped its `# Intake — Original Filename Mapping` H1; an `insert_content` of that one line at `start` put it back. The fetch, read with the binding’s rules, matched the normalized form byte for byte: all 29 filename rows, the code-span `&amp;`, the `<b><code>…</code></b>` list items and the H1.
 
 **Cost:** 16 Notion calls, all synchronous: 4 creates, 2 `replace_content`, 1 `insert_content`, 7 fetches (one a read-only fetch of the `sb6-mini` child page) and 2 rows queries.
+
+## Ring round (2026-10-24, evening)
+
+The 148-file ring (local → Notion → Dropbox → local, slug `sb6-ring`) changed seven files end to end. Each fix was probed on `sb6-probe` with the exact lines from the ring’s normalized tree (`ring/norm/`), in today’s write form (every `\` doubled, every `_` as `\_`), and read back with the binding’s rules, adjacent runs merged.
+
+- **Probe 7** (row `sb6-probe-7`, `403e980b-9c74-81d0-9576-d84014c84fab`, one create, one fetch):
+  - **`voice/style-guide.md:653`**, `~~*“Do you want a ***TREAT***?”* …~~`: came back as `<s><i>“Do you want a </i></s><s><i><b>TREAT</b></i></s><s><i>?”</i></s><s> …</s>`, which merges to `~~*“Do you want a **TREAT**?”* …~~`. **Trigger:** italic inside italic (CommonMark reads `***TREAT***` inside the italic span as a second italic); Notion stores italic once per character. The rewritten line, `**TREAT**`, came back as written.
+  - **`ch01-blueprint.md:284`**, `*no mistakes*` lost its italics. **Trigger:** the same. The unspaced stars in `(*“…just* DIG*.”*)` pair, as CommonMark pairs them, from the `*` after `.”` to the `*` before `“…the Boss`, so `*no mistakes*` is an italic inside that italic. The line with `*no mistakes*`’s delimiters removed came back as written, the two unpaired stars (`DIG*.”`, `tonight.*`) included (`\*` escaped by Notion).
+  - **Nesting order:** `~~a **b** c~~`, `~~a *b* c~~`, `~~*a **b** c*~~` and `~~a `x` b~~` came back as written (split runs, merged by the read); `**a *b* c**`, `***a* b**` and `**GOOD DOG means *this is over*.**` didn’t (`<b>…</b><i><b>…</b></i><b>…</b>`, no merge). `**GOOD DOG means** ***this is over.***` (the punctuation moved into the inner span) came back as written. So Notion nests `<s>` ⊃ `<i>` ⊃ `<b>` ⊃ `<code>`, and nesting in that order survives.
+  - **`notes/methodology/craft-document.md:241`**: the source line, `*~~“Do you want a~~*~~ ***TREAT***\*?”\* …~~`, came back as the italic-around-strikethrough row’s result, `~~*“Do you want a*~~~~ ***TREAT***\*?”\* …~~`, and that result came back as written: the stray `~~` runs are stored as text (`\~\~`).
+  - **A non-breaking space:** `A B and C D.` with U+00A0 came back with plain spaces in the fetch, as the ring found (36 lost in `notes/methodology/legacy-bio-prompt-template.md` and `chapters/chapter-01/kitbash/ch01-draft-sonnet.md` on the way out of Notion). Notion stores U+00A0 (PI04’s anchor test) but no read returns it, so the profile now rewrites it to a plain space (PR41).
+- **Probe 8, `pipeline/lint/fixtures/sample.md`** (child page `403e980b-9c74-8195-b388-df2be67d71f7` under the `sb6-probe` row, one create, one fetch): its normalized form with exactly one empty line after the frontmatter (the new rewrite row), sent as a `yaml` fence then the body, read back byte-identical as `---`, the lines, `---`, one empty line, the body. The source had none and came back with one; `voice/style-guide.md` had one and lost it in the leg-2 rendering, which the read rule now fixes.
+- **Probe 9, `act: 1`** (Chapters row `ch99-outline`, `403e980b-9c74-81d3-b180-f4de9b530358`, one create, one rows query): `Act` = `1` with `Meta` `_as_written: {"act": {"stored": "1", "value": "1"}}` (literal text) came back as `"Act": "1"` and the entry intact, so the read renders `act: 1` as the source wrote it, where the default (text that reads as a number, quoted) gives `act: "1"`.
+
+**Cost:** 6 Notion calls, all synchronous: 3 creates, 2 fetches and 1 rows query (plus one fetch of a mistyped id, which failed).
 
 ## Cost
 

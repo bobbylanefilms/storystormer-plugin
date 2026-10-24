@@ -44,9 +44,8 @@ export const RULES: Readonly<Record<string, string>> = {
   'fence-language': '§ Rewrite table: a fence language of text, txt or plain text; js, sh, python, md',
   'rule-form': '§ Rewrite table: ------, ***, ___, * * * *, - - -, _ _ _ as a rule',
   'emphasis-underscore': '§ Rewrite table: _x_ · __x__ · ___x___',
-  'emphasis-nested': '§ Rewrite table: emphasis nested inside emphasis, or sharing a delimiter with it',
+  'emphasis-nested': '§ Inline: Emphasis (nesting order); § Rewrite table: emphasis nested out of order, italic inside italic',
   'emphasis-strike-order': '§ Rewrite table: *~~x~~* and **~~x~~**',
-  'emphasis-code': '§ Rewrite table: emphasis around a code span and other text',
   'emphasis-link': '§ Rewrite table: emphasis around a link or part of one',
   'emphasis-adjacent': '§ Inline: two emphasis spans never touch',
   'literal-star': '§ Inline: Characters (a literal * has a space on both sides, or is the only * in its paragraph)',
@@ -60,7 +59,8 @@ export const RULES: Readonly<Record<string, string>> = {
   'footnote': '§ Rewrite table: a footnote',
   'bare-path': '§ Inline: Paths and filenames (in code spans)',
   'obsidian-syntax': '§ Kept as written: Obsidian syntax',
-  'nbsp': '§ Inline: Characters (never a non-breaking space)',
+  'nbsp': '§ Rewrite table: a non-breaking space (U+00A0)',
+  'frontmatter-separation': '§ Rewrite table: the body run into the frontmatter, or set off by more than one empty line',
   'html-entity': '§ Inline: Characters (never an HTML entity)',
   'backslash-escape': '§ Inline: Characters (no backslash escape, apart from \\| in a table cell)',
   'html': '§ Inline: Characters (no HTML tag or comment, apart from <br> in a table cell)',
@@ -328,7 +328,7 @@ const FOOTNOTE_REF = /\[\^[^\]\s]+\]/y;
  */
 function isPathLike(s: string): boolean {
   const ext = /\.([A-Za-z0-9]{1,8})$/.exec(s);
-  if (!ext) return false;
+  if (!ext || !/[A-Za-z0-9]/.test(s.slice(0, ext.index))) return false; // a name before the extension (`.docx` alone is none)
   if (s.includes('/')) return /^[A-Za-z]/.test(ext[1]);
   return FILE_EXTS.has(ext[1].toLowerCase());
 }
@@ -338,9 +338,9 @@ const TOKEN_TRAIL = /[.,;:!?)\]}"'”’*_~]/;
 /**
  * A bare path or filename token starting at i (markdown-profile.md § Kept as written: the emphasis, underscore,
  * link and URL rows don't apply inside one; the entity row still does, since Notion decodes entities anyway):
- * the run of characters up to whitespace, a comma, a backslash, [, ] or any symbol (`<`, `>`, `|`, a backtick,
- * `~`, `→`, …), less trailing sentence punctuation, closing brackets, quotes and emphasis markers, when isPathLike
- * accepts it and it holds no `://` (`The_Good_Dog_-_Brainstorming_&amp;_Future.md` is one token; `a.md,b.md` and
+ * the run of characters up to whitespace, a comma, a backslash, [, ], a `)` with no `(` before it in the run, or any
+ * symbol (`<`, `>`, `|`, a backtick, `~`, `→`, …), so `&`, `(` and a matched `)` stay inside it; less trailing
+ * sentence punctuation, closing brackets, quotes and emphasis markers, when isPathLike accepts it and it holds no `://` (`The_Good_Dog_-_Brainstorming_&amp;_Future.md` is one token; `a.md,b.md` and
  * `x.md→y.md` are two). Leading `_`s that trimmed trailing `_`s close are emphasis, not part of the name
  * (`_notes.md_`). Falls back to the narrow PATH match. Lint's bare-path nodes and --words' verbatim spans both come
  * from it (protectPaths skips what lint consumes first: tags, autolinks, wikilinks, entities, link targets).
@@ -348,7 +348,12 @@ const TOKEN_TRAIL = /[.,;:!?)\]}"'”’*_~]/;
 function bareToken(T: string, i: number): { start: number; end: number } | null {
   if (!PATH_START.test(T[i] ?? '') || PATH_PREV.test(T[i - 1] ?? '')) return null;
   let e = i;
-  while (e < T.length && TOKEN_CH.test(T[e])) e++;
+  let depth = 0;
+  while (e < T.length && TOKEN_CH.test(T[e])) {
+    if (T[e] === '(') depth++;
+    else if (T[e] === ')') { if (depth === 0) break; depth--; } // `Chapter 1 (Opus 4).docx`: `4).docx` is no token
+    e++;
+  }
   let end = e;
   while (end > i && TOKEN_TRAIL.test(T[end - 1])) end--;
   let start = i;
@@ -641,28 +646,28 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
       emit(line, 'html', `HTML tag ${tags[0]}${tags.length > 1 ? ` (and ${tags.length - 1} more on the line)` : ''}`);
     }
 
-    // Emphasis shapes: the profile's six forms, nothing nested beyond them.
+    // Emphasis shapes: nesting in one order (strikethrough outermost, then italic, then bold, then code), so a
+    // span holds only spans of a later kind; `***x***` is the one whole-span form CommonMark may parse either way.
     const kindOf = (n: INode): 'strike' | 'strong' | 'em' => (n.ch === '~' ? 'strike' : n.strong ? 'strong' : 'em');
+    const RANK = { strike: 0, em: 1, strong: 2 } as const;
     const nonEmpty = (list: INode[]): INode[] => list.filter((x) => !(x.k === 'text' && x.s === ''));
-    const checkEmph = (n: INode, nested: boolean, parentCh: string): void => {
+    const checkEmph = (n: INode, parentCh: string): void => {
       const kind = kindOf(n);
       if (n.ch === '_' && parentCh !== '_') at(n.pos, 'emphasis-underscore', 'underscore emphasis; use asterisks');
       const kids = nonEmpty(n.children);
       if (kids.some((x) => x.k === 'link')) at(n.pos, 'emphasis-link', 'emphasis wraps a link; close it around the link, or move it inside the link text');
-      if (kids.some((x) => x.k === 'code') && !(kids.length === 1 && kind !== 'strike')) {
-        at(n.pos, 'emphasis-code', 'emphasis wraps a code span and other text; close it before the code and reopen after');
-      }
-      if (!kids.some((x) => x.k === 'emph')) return;
-      if (!nested && kids.length === 1) {
-        const ik = kindOf(kids[0]);
-        if (kind === 'strike' && ik !== 'strike') return; // ~~*x*~~, ~~**x**~~
-        if ((kind === 'em' && ik === 'strong') || (kind === 'strong' && ik === 'em')) return; // ***x***
-        if (kind !== 'strike' && ik === 'strike') {
-          at(n.pos, 'emphasis-strike-order', kind === 'em' ? '*~~x~~*; write ~~*x*~~' : '**~~x~~**; write ~~**x**~~');
+      for (const k of kids) {
+        if (k.k !== 'emph') continue;
+        const ik = kindOf(k);
+        if (RANK[ik] > RANK[kind]) continue; // in order: ~~ > * > **
+        if (kids.length === 1 && kind === 'strong' && ik === 'em') continue; // ***x***
+        if (ik === 'strike') {
+          at(n.pos, 'emphasis-strike-order', kids.length === 1 ? (kind === 'em' ? '*~~x~~*; write ~~*x*~~' : '**~~x~~**; write ~~**x**~~') : 'strikethrough inside emphasis; strikethrough goes outermost');
           return;
         }
+        at(n.pos, 'emphasis-nested', ik === kind ? `${kind === 'em' ? 'italic' : 'bold'} inside ${kind === 'em' ? 'italic' : 'bold'}; drop the inner span's repeated style` : 'italic inside bold; nesting goes strikethrough, then italic, then bold');
+        return;
       }
-      at(n.pos, 'emphasis-nested', 'emphasis nested inside emphasis, or sharing a delimiter with it, beyond the six forms');
     };
     const leftovers: INode[] = [];
     const walk = (list: INode[], inLink: boolean, parent: INode | undefined): void => {
@@ -680,7 +685,7 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
           if (inEmph) at(n.pos, 'emphasis-nested', 'a literal * inside an emphasis span; a span holds no other delimiter');
           else leftovers.push(n);
         }
-        if (n.k === 'emph') { checkEmph(n, inEmph, parent?.ch ?? ''); walk(n.children, inLink, n); }
+        if (n.k === 'emph') { checkEmph(n, parent?.ch ?? ''); walk(n.children, inLink, n); }
         if (n.k === 'link') {
           const kids = nonEmpty(n.children);
           if (!n.image && kids.some((x) => x.k === 'emph') && kids.length > 1) {
@@ -1060,7 +1065,11 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
   let i = start;
   let blank = 0;
   while (i < N && L[i].trim() === '') { blank++; i++; }
-  if (blank > 1) emit(ln(start + 1), 'blank-lines', 'more than one empty line before the first block');
+  if (fm.body > 0 && i < N) {
+    // Exactly one empty line between the frontmatter's closing --- and the body.
+    if (blank === 0) emit(ln(start), 'frontmatter-separation', 'the body runs straight into the frontmatter; put one empty line after the closing ---');
+    else if (blank > 1) emit(ln(start + 1), 'frontmatter-separation', 'more than one empty line after the frontmatter');
+  } else if (blank > 1) emit(ln(start + 1), 'blank-lines', 'more than one empty line before the first block');
   blank = 0;
   let hadBlock = false;
   let suppress = false;
