@@ -3,7 +3,7 @@
 
 # ISSUE073: Whole-file write amplification on connector stores
 
-**Status:** open · **Needs Rob:** yes (the fix is a schema decision)
+**Status:** superseded by SB7 (`.plans/SB7-entry-collections-and-slim-state.md`; Rob chose one file per entry, 2026-10-24) · **Needs Rob:** no
 **Found by:** SB5 live loops, 2026-10-17. The Dropbox loop took 1,190 s for `treatment-update` against 539 s on local, and re-emitted about 315 KB to change about 4 KB of prose.
 
 ## Problem
