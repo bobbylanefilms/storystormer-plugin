@@ -215,7 +215,7 @@ The dispatch decision is conditional on intake complexity. Trivial folders (empt
 
 ## Voice scaffolding
 
-Every init writes `voice/README.md` (if absent) with this content, adapted to the project's name:
+Every init writes `voice/README.md` (if absent) with exactly this content (it names no project, so it is the same in every project):
 
 ```markdown
 # Voice inputs

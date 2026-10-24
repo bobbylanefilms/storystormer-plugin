@@ -332,6 +332,31 @@ function isPathLike(s: string): boolean {
   return FILE_EXTS.has(ext[1].toLowerCase());
 }
 
+const TOKEN_CH = /[^\s`<>[\]|\\\u0000]/;
+const TOKEN_TRAIL = /[.,;:!?)\]}"'”’*_~]/;
+/**
+ * A bare path or filename token starting at i (markdown-profile.md § Kept as written: no rewrite row applies
+ * inside one): the run of characters up to whitespace, a backtick, <, >, [, ], | or \, less trailing sentence
+ * punctuation, closing brackets, quotes and emphasis markers, when isPathLike accepts it and it holds no `://`
+ * (`The_Good_Dog_-_Brainstorming_&amp;_Future.md` is one token). A leading `_` that a trimmed trailing `_`
+ * closes is emphasis, not part of the name (`_notes.md_`). Falls back to the narrow PATH match. Lint and --words
+ * share it, so the linter's bare paths and the words comparison's verbatim tokens are the same spans.
+ */
+function bareToken(T: string, i: number): { start: number; end: number } | null {
+  if (!PATH_START.test(T[i] ?? '') || PATH_PREV.test(T[i - 1] ?? '')) return null;
+  let e = i;
+  while (e < T.length && TOKEN_CH.test(T[e])) e++;
+  let end = e;
+  while (end > i && TOKEN_TRAIL.test(T[end - 1])) end--;
+  let start = i;
+  let closing = (/_+/.exec(T.slice(end, e))?.[0] ?? '').length;
+  while (closing > 0 && T[start] === '_') { start++; closing--; }
+  const tok = T.slice(start, end);
+  if (start < end && !tok.includes('://') && isPathLike(tok)) return { start, end };
+  const m = matchAt(PATH, T, i);
+  return m && isPathLike(m[0]) ? { start: i, end: i + m[0].length } : null;
+}
+
 // ---------------------------------------------------------------------------
 // Lint
 
@@ -460,9 +485,11 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
     };
 
     let i = 0;
+    let pendingPath: { start: number; end: number } | null = null;
     while (i < T.length) {
       const c = T[i];
       let m: RegExpExecArray | null;
+      if (pendingPath && i > pendingPath.start) pendingPath = null;
       if (c === '\\') {
         const nx = T[i + 1];
         if (nx === '\n') { at(i, 'line-break', 'a line break written as a trailing backslash; use a bare newline'); add(c, i); i++; continue; }
@@ -567,9 +594,12 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
       if (EMAIL_CH.test(c) && !EMAIL_CH.test(T[i - 1] ?? '') && (m = matchAt(EMAIL, T, i))) {
         push(mk('email', i, m[0])); i += m[0].length; continue;
       }
-      if (PATH_START.test(c) && !PATH_PREV.test(T[i - 1] ?? '') && (m = matchAt(PATH, T, i)) && isPathLike(m[0])) {
-        push(mk('path', i, m[0])); i += m[0].length; continue;
+      if (pendingPath && i === pendingPath.start) {
+        push(mk('path', i, T.slice(i, pendingPath.end))); i = pendingPath.end; pendingPath = null; continue;
       }
+      const tok = pendingPath ? null : bareToken(T, i);
+      if (tok && tok.start === i) { push(mk('path', i, T.slice(i, tok.end))); i = tok.end; continue; }
+      if (tok) pendingPath = tok; // a leading emphasis `_`: handled below as a delimiter, the path after it
       if (c === '*' || c === '_' || c === '~') {
         let n = 1;
         while (T[i + n] === c) n++;
@@ -1100,6 +1130,21 @@ function protectCode(line: string, tableRow: boolean, codes: string[]): string {
   return out;
 }
 
+/** Replace each bare path or filename token (bareToken) with a placeholder, so no markup stripping reaches inside it. */
+function protectPaths(line: string, codes: string[]): string {
+  let out = '';
+  let i = 0;
+  while (i < line.length) {
+    const tok = bareToken(line, i);
+    if (!tok) { out += line[i]; i++; continue; }
+    out += line.slice(i, tok.start);
+    out += `\u0000${codes.length}\u0000`;
+    codes.push(line.slice(tok.start, tok.end));
+    i = tok.end;
+  }
+  return out;
+}
+
 const LINK_RE = /!?\[((?:[^[\]]|\[[^[\]]*\])*)\]\((?:[^()\n]|\([^()\n]*\))*\)/g;
 
 /** Strip inline markup from a run of non-code markdown text, keeping the words. */
@@ -1108,6 +1153,8 @@ function stripInline(src: string): string {
   s = s.replace(/<((?:https?|mailto):[^\s<>]*)>/gi, ' $1 ');
   s = s.replace(/<([^\s@<>]+@[^\s<>]+)>/g, ' $1 ');
   s = s.replace(/<img\b[^<>]*?\balt\s*=\s*"([^"]*)"[^<>]*>/gi, ' $1 ');
+  // An HTML table becomes a pipe table: every tag inside it is structure (colgroup, col, p, thead, …), not words.
+  s = s.replace(/<table\b[\s\S]*?<\/table\s*>/gi, (t) => t.replace(/<\/?[A-Za-z][A-Za-z0-9-]*(?:\s[^<>]*)?\/?>/g, ' '));
   s = s.replace(LINK_RE, '$1').replace(LINK_RE, '$1');
   s = s.replace(/\[([^[\]]+)\]\[[^[\]]*\]/g, '$1');
   s = s.replace(/\[\^([^\]\s]+)\]/g, '[$1]');
@@ -1176,7 +1223,7 @@ export function markdownWords(src: string): string[] {
     else if (line.includes('|') && i + 1 < lines.length && lines[i + 1].includes('|') && lines[i + 1].includes('-') && GFM_SEP.test(lines[i + 1])) tableRow = 0;
     if (tableRow === 1) continue; // the separator row, and only that row
     const pipeRow = tableRow >= 0 || /^[ \t]*\|/.test(line);
-    let s = protectCode(line, pipeRow, codes);
+    let s = protectPaths(protectCode(line, pipeRow, codes), codes);
     if (THEMATIC.test(s) || (prevText && /^ {0,3}=+[ \t]*$/.test(s))) {
       if (w === 0) listOpen = false;
       prevBlank = false;
@@ -1322,10 +1369,10 @@ fenced code and code spans are not linted. Exit 1 when there are findings, 0 whe
 error or when nothing was checked.
 
 --words strips markup (emphasis, list and quote markers, heading hashes, table pipes and separator
-rows, fence lines, link syntax keeping link text, the HTML the profile rewrites, escaping
-backslashes, entities; nbsp becomes a space) from every .md path present in both trees and compares
-the word sequences; code contents compare verbatim, and frontmatter values count as words (keys
-don't). It reports the first differing word with context, and paths present in only one tree. Exit 1
+rows, fence lines, link syntax keeping link text, the HTML the profile rewrites, every tag inside an
+HTML table, escaping backslashes, entities; nbsp becomes a space) from every .md path present in both
+trees and compares the word sequences; code contents and bare path or filename tokens (the ones lint
+reports as bare-path) compare verbatim, and frontmatter values count as words (keys don't). It reports the first differing word with context, and paths present in only one tree. Exit 1
 on any difference.
 
 --rule     limit lint to these rule ids (repeatable, or comma-separated)

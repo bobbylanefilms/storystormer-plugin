@@ -28,7 +28,7 @@
 
 **What was compared.** Each page was fetched once and its `<content>` rendered back with the binding’s **read rendering**: a backslash before ASCII punctuation removed (R1); `plain text` fences read as bare (R2); blank-line runs collapsed (R3); `<br>` in a block read as a newline, with `> ` on each quote line after it and `<br>` kept in table cells (R4); nesting indentation (R5: the binding reads a tab as two spaces, but that never fired: every nested item was sent with a tab per level, and Notion returned spaces, two under `- `, three under `1.`, four under `10.`); `<table>` rebuilt as a pipe table (R6); `[t](http://t)` and `[t](https://t)` collapsed to `t` (R7); one final newline (R9). Four additions were needed for today’s serializer:
 
-- **E1, inline tags:** `<b>` and `</b>` read as `**`, `<i>` and `</i>` as `*`, `<s>` and `</s>` as `~~`, each tag mapped where it stands with no merging of neighbouring runs; `<code>x</code>` reads as a backtick span whose delimiter is one backtick longer than the longest run inside, padded with one space only when the content starts or ends with a backtick. `<u>` stays `<u>`.
+- **E1, inline tags:** `<b>` and `</b>` read as `**`, `<i>` and `</i>` as `*`, `<s>` and `</s>` as `~~`, each tag mapped where it stands; added after the mini round trip (§ Mini round trip, b2), immediately adjacent identical runs (`</b><b>`, `</i><i>`, `</s><s>` with nothing between) are merged first, and nothing else is; `<code>x</code>` reads as a backtick span whose delimiter is one backtick longer than the longest run inside, padded with one space only when the content starts or ends with a backtick. `<u>` stays `<u>`.
 - **E2, `<br />`:** read the same as `<br>`.
 - **E3, `txt` fences:** Notion now returns a bare or `plain text` fence as `txt`, so `txt` reads as bare too.
 - **E4, Notion’s pipe tables:** Notion returns tables as pipe tables with `| --- |` separators, so the `|---|---|` form is a read-side normalization, not something Notion keeps. The tables are re-rendered in one form: `| a | b |` rows, a `|---|---|` separator, an empty cell as `|  |`, a literal `|` in a cell as `\|`.
@@ -37,7 +37,7 @@ The rendered read was compared byte for byte with the source, section by section
 
 **Verdicts.** **K** kept (byte-identical, stored as the intended block) · **C** changed · **L** byte-identical, but Notion stores the markup as visible text or as a different block · **S** byte-identical, but Notion shows it differently (an autolink the read collapses) · **X** byte-identical, but excluded by design · **U** unverifiable from the fetch · **W** swallowed on page 1 by the unclosed fence, retested in isolation. In the table, `↵` marks a newline; the text starts right after the section’s heading line, so a leading `↵` is the blank line under the heading. “Returned” is Notion’s text inside `<content>`; “Read renders” is that text after the read rendering, shown only when the two differ.
 
-Totals: 243 constructs: 120 K, 95 C, 21 L, 4 S, 1 X, 1 U, 1 W.
+Totals: 243 constructs: 124 K, 91 C, 21 L, 4 S, 1 X, 1 U, 1 W.
 
 ## Per-construct results
 
@@ -73,13 +73,13 @@ Totals: 243 constructs: 120 K, 95 C, 21 L, 4 S, 1 X, 1 U, 1 W.
 | PC05 | strike | 1 | K |  |  |  |
 | PC06 | bold-italic-triple | 1 | K |  |  |  |
 | PC07 | italic-inside-bold | 1 | C | `↵Some <b>bold with </b><i><b>italic</b></i><b> inside</b> text.` | `↵Some **bold with *****italic***** inside** text.` |  |
-| PC08 | bold-inside-italic | 1 | C | `↵Some <i>italic with </i><i><b>bold</b></i><i> inside</i> text.` | `↵Some *italic with ****bold**** inside* text.` |  |
+| PC08 | bold-inside-italic | 1 | K | `↵Some <i>italic with </i><i><b>bold</b></i><i> inside</i> text.` |  | C before the adjacent-run merge (E1), which reads it as written; it read `↵Some *italic with ****bold**** inside* text.` |
 | PC09 | shared-close-boundary | 1 | C | `↵Some <b>bold ending in </b><i><b>italic</b></i> text.` | `↵Some **bold ending in *****italic*** text.` |  |
-| PC10 | shared-open-boundary | 1 | C | `↵Some <i><b>bold first</b></i><i> then italic</i> text.` | `↵Some ***bold first**** then italic* text.` |  |
+| PC10 | shared-open-boundary | 1 | K | `↵Some <i><b>bold first</b></i><i> then italic</i> text.` |  | C before the adjacent-run merge (E1); it read `↵Some ***bold first**** then italic* text.` |
 | PC11 | bold-around-underscore-italic | 1 | C | `↵Some <i><b>mixed</b></i> text.` | `↵Some ***mixed*** text.` |  |
 | PC12 | italic-around-underscore-bold | 1 | C | `↵Some <i><b>mixed</b></i> text.` | `↵Some ***mixed*** text.` |  |
-| PC13 | bold-around-code | 1 | C | `↵Some <b>bold with </b><b><code>code</code></b><b> inside</b> text.` | ``↵Some **bold with ****`code`**** inside** text.`` |  |
-| PC14 | italic-around-code | 1 | C | `↵Some <i>italic with </i><i><code>code</code></i><i> inside</i> text.` | ``↵Some *italic with **`code`** inside* text.`` |  |
+| PC13 | bold-around-code | 1 | K | `↵Some <b>bold with </b><b><code>code</code></b><b> inside</b> text.` |  | C before the adjacent-run merge (E1); it read ``↵Some **bold with ****`code`**** inside** text.`` |
+| PC14 | italic-around-code | 1 | K | `↵Some <i>italic with </i><i><code>code</code></i><i> inside</i> text.` |  | C before the adjacent-run merge (E1); it read ``↵Some *italic with **`code`** inside* text.`` |
 | PC15 | bold-space-code | 1 | K |  |  |  |
 | PC16 | bold-touching-code | 1 | K |  |  |  |
 | PC17 | code-alone | 1 | K |  |  |  |
@@ -369,6 +369,15 @@ Not adopted: PR41 (a non-breaking space as a plain space; Notion now stores U+00
 ## Where today contradicts SB5
 
 The SB5 Known limit list (`references/store/notion.md`, observed 2026-10-17 under the earlier serializer) saw these change; today they round-trip: `***` closes (when the span is whole), ordered lists continued past a heading (`8.` → `1.`), `~~**x**~~` (became `**~~x~~**`), `_` inside words (became `*`), non-breaking spaces (stored now; see PI04). The second round agrees: a nested item’s lazy line (PD28) and a bare `#` word at a line start (PB15) are kept. A serializer that changed once in a week can change again, so re-run this probe before release and whenever a round trip shows new drift.
+
+## Mini round trip (2026-10-24, afternoon)
+
+A live local → Notion → local round trip of a 29-document project (`sb6-mini`) found two failures that the 243-construct probe couldn’t show; both were probed again on `sb6-probe`.
+
+- **b1, leading whitespace in property text.** Notion strips the whitespace at the start of every line of a multi-line rich-text property, on write: the round trip’s `primer.md` frontmatter came back with its `source:` continuation lines unindented, invalid YAML, while an Assets row written 2026-10-17 still holds its indented `Meta`. Probe row `sb6-meta-probe` (`403e980b-9c74-81a9-a101-d0546bba464e`, created synchronously) holds a `Meta` with a one-line key with a quoted value, a `|` block scalar with a nested indent, an empty line and `C:\Users "dock"` in it, a `>-` block scalar, a plain scalar continued onto an indented line, a block list of wikilinks, `_lines`, `_keys`, `_as_written` and `_derived` in flow style, a `_layout` with a blank first line, a bold field label and an indented sub-item, and last, in the old form, a block scalar `old_block: |` with two indented lines. Sent with every `\` doubled (the binding’s property write form); a fetch and a rows query both returned it with each newline as `<br />`, `\_`, `\[`, `\{`, `\|` escapes and `<b>Note</b>`. The read rendering (backslash rule, `<br />` as a newline, inline tags) returned every line of the new form byte-identical, `\n`, `\"` and `\\` escapes inside the double-quoted strings included, while `old_block`’s two lines came back with their indentation gone (`indented old form`, `deeper`). That is the storage form `references/store/notion.md` § Frontmatter ↔ properties now prescribes: no stored line starts with whitespace. The rows query also showed rows mode leaving an empty relation (`Book`) out of a row entirely.
+- **b2, a bold run split at Notion’s own escapes.** The round trip’s `elfie_character_profile.md` (a 2,900-word child page, created synchronously) returned `**Morning Routine (6:00-9:00 AM):**` as `<b>Morning Routine (6</b><b>\:00-9\:</b><b>00 AM):</b>`, three adjacent bold runs, while the same page’s `**Midday (9:00 AM-3:00 PM):**` came back as one run. Written alone, the line came back as one run, `<b>Morning Routine (6\:00-9\:00 AM):</b>`, by `replace_content` on `sb6-meta-probe` and by create on `sb6-split-probe` (`403e980b-9c74-81b1-8be9-fc61085bf329`), with italic, strikethrough and bold-italic variants alike; the trigger was not found. The read now merges immediately adjacent identical runs (E1), which renders the split line as written. In profile-form text two emphasis spans never touch, so the merge only ever undoes a split. Re-checked against this probe’s verdicts, it changes four: PC08, PC10, PC13 and PC14 now read back as written (their rows above say so), and no K verdict changes. The profile keeps its rewrites for them (§ Rewrite table, the nested-emphasis and code-span rows), one form per family.
+
+**Cost:** 9 Notion calls, all synchronous: 2 creates, 1 `replace_content`, 5 fetches (one a read-only fetch of the `sb6-mini` child page) and 1 rows query.
 
 ## Cost
 

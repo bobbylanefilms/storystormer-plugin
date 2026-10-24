@@ -199,6 +199,10 @@ function verdicts(): Map<string, string> {
 // Kept (K) constructs the profile still leaves out, and changed constructs a linter can't tell from in-profile text.
 const K_EXCEPTIONS: Record<string, string> = {
   PI07: 'x<y: Notion keeps it, but the profile says a < is never directly followed by a letter',
+  PC08: 'kept once the read merges adjacent runs, but the profile rewrites nested emphasis to one form',
+  PC10: 'kept once the read merges adjacent runs, but the profile rewrites nested emphasis to one form',
+  PC13: 'kept once the read merges adjacent runs, but the profile rewrites emphasis around code to one form',
+  PC14: 'kept once the read merges adjacent runs, but the profile rewrites emphasis around code to one form',
 };
 const FLAG_EXCEPTIONS: Record<string, string> = {
   PI04: 'U: unverifiable (it is flagged as nbsp, but the verdict is not a change)',
@@ -457,6 +461,32 @@ test('--words: correct rewrites it must accept', () => {
   assert.ok(same('**Possible approaches**:\n- one\n**Dependencies**: Q-007\n', '**Possible approaches**:\n\n- one\n\n**Dependencies**: Q-007\n'), 'the field-label row');
   assert.ok(same('Text.', 'Text.\n'), 'the final-newline row');
   assert.ok(same('Text.\n\n\n', 'Text.\n'), 'the final-newline row, extra empty lines');
+});
+
+// The mini round trip's HTML table (Story_Primer.md), trimmed to two rows.
+const HTML_TABLE = '<table style="min-width: 50px;"><colgroup><col style="min-width: 25px;"><col style="min-width: 25px;"></colgroup><tbody><tr><th colspan="1" rowspan="1"><p>Segment</p></th><th colspan="1" rowspan="1"><p>Novel Share</p></th></tr><tr><td colspan="1" rowspan="1"><p>Act 1 (~6 chapters)</p></td><td colspan="1" rowspan="1"><p>25%</p></td></tr></tbody></table>\n';
+
+test('--words: an HTML table and its pipe-table rewrite have the same words (structure tags stripped)', () => {
+  assert.ok(same(HTML_TABLE, '| Segment | Novel Share |\n|---|---|\n| Act 1 (~6 chapters) | 25% |\n'));
+  assert.ok(!same(HTML_TABLE, '| Segment | Novel Share |\n|---|---|\n| Act 2 (~6 chapters) | 25% |\n'), 'a changed cell still differs');
+  assert.ok(!same('Some <p>kept</p> text.\n', 'Some kept text.\n'), 'a <p> outside an HTML table is kept as written');
+});
+
+const FILE_ROW = '| The_Good_Dog_-_Brainstorming_&amp;_Future_Plot_Points.md | `notes/brainstorming.md` |\n|---|---|\n';
+
+test('bare filenames are kept as written: no rewrite applies inside one, in lint or --words', () => {
+  // The mini round trip's rewrite of `_x_` and the entity inside a filename is a word change.
+  assert.ok(!same(FILE_ROW, FILE_ROW.replace('-_Brainstorming_&amp;_', '-*Brainstorming*&_')));
+  assert.ok(!same('See Miles_Corwin_-_Character_Profile_(Investigative_Journalist).md now.\n', 'See Miles_Corwin_-*Character_Profile*(Investigative_Journalist).md now.\n'));
+  // Lint sees one bare path, not underscore emphasis or an entity.
+  assert.deepEqual(rulesOf(FILE_ROW), ['bare-path']);
+  assert.deepEqual(rulesOf('See Miles_Corwin_-_Character_Profile_(Investigative_Journalist).md now.\n'), ['bare-path']);
+  // Emphasis around a filename is still emphasis, and its rewrite still passes.
+  assert.deepEqual(rulesOf('See _Story_Primer.md_ now.\n'), ['emphasis-underscore', 'bare-path']);
+  assert.ok(same('See _Story_Primer.md_ now.\n', 'See *Story_Primer.md* now.\n'));
+  assert.ok(same('See (notes_a.md), then **b_c.md**.\n', 'See (notes_a.md), then **b_c.md**.\n'));
+  // A URL inside a run is not a filename token: the bare-URL rule still applies.
+  assert.ok(rulesOf('See https://example.com/a_b.md now.\n').includes('bare-url'));
 });
 
 test('--words and lint never crash on symlinks: dangling and looping links are skipped', () => {
