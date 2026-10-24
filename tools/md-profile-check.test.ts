@@ -474,12 +474,14 @@ test('--words: an HTML table and its pipe-table rewrite have the same words (str
 
 const FILE_ROW = '| The_Good_Dog_-_Brainstorming_&amp;_Future_Plot_Points.md | `notes/brainstorming.md` |\n|---|---|\n';
 
-test('bare filenames are kept as written: no rewrite applies inside one, in lint or --words', () => {
-  // The mini round trip's rewrite of `_x_` and the entity inside a filename is a word change.
+test('bare filenames are kept as written: no emphasis or link rewrite applies inside one, in lint or --words', () => {
+  // The mini round trip's rewrite of `_x_` inside a filename is a word change.
   assert.ok(!same(FILE_ROW, FILE_ROW.replace('-_Brainstorming_&amp;_', '-*Brainstorming*&_')));
+  // The entity row still applies inside one (Notion decodes it anyway), so decoding it is not.
+  assert.ok(same(FILE_ROW, FILE_ROW.replace('&amp;', '&')));
   assert.ok(!same('See Miles_Corwin_-_Character_Profile_(Investigative_Journalist).md now.\n', 'See Miles_Corwin_-*Character_Profile*(Investigative_Journalist).md now.\n'));
-  // Lint sees one bare path, not underscore emphasis or an entity.
-  assert.deepEqual(rulesOf(FILE_ROW), ['bare-path']);
+  // Lint sees one bare path and its entity, not underscore emphasis.
+  assert.deepEqual(rulesOf(FILE_ROW).sort(), ['bare-path', 'html-entity']);
   assert.deepEqual(rulesOf('See Miles_Corwin_-_Character_Profile_(Investigative_Journalist).md now.\n'), ['bare-path']);
   // Emphasis around a filename is still emphasis, and its rewrite still passes.
   assert.deepEqual(rulesOf('See _Story_Primer.md_ now.\n'), ['emphasis-underscore', 'bare-path']);
@@ -487,6 +489,19 @@ test('bare filenames are kept as written: no rewrite applies inside one, in lint
   assert.ok(same('See (notes_a.md), then **b_c.md**.\n', 'See (notes_a.md), then **b_c.md**.\n'));
   // A URL inside a run is not a filename token: the bare-URL rule still applies.
   assert.ok(rulesOf('See https://example.com/a_b.md now.\n').includes('bare-url'));
+  // Commas and symbols end a token; a doubled leading underscore keeps the token.
+  assert.equal(rulesOf('See a_b.md,c_d.md now.\n').filter((r) => r === 'bare-path').length, 2);
+  assert.equal(rulesOf('See x.md→y.md now.\n').filter((r) => r === 'bare-path').length, 2);
+  assert.ok(rulesOf('See __notes.md_ now.\n').includes('bare-path'));
+  // Link targets, tags and wikilinks are not tokens in --words either.
+  assert.ok(same('See [x](./a_b.md) now.\n', 'See [x](./a*b.md) now.\n'), 'a link target is dropped, not compared');
+  assert.ok(!same('See [[Page_one_.md]] now.\n', 'See [[Page*one*.md]] now.\n'), 'a wikilink is kept as written');
+});
+
+test('--words: an HTML table indented after an empty line is a table, not indented code', () => {
+  const indented = `Para.\n\n    ${HTML_TABLE}`;
+  assert.ok(same(indented, 'Para.\n\n| Segment | Novel Share |\n|---|---|\n| Act 1 (~6 chapters) | 25% |\n'));
+  assert.ok(!rulesOf(indented).includes('indented-code'));
 });
 
 test('--words and lint never crash on symlinks: dangling and looping links are skipped', () => {

@@ -332,15 +332,17 @@ function isPathLike(s: string): boolean {
   return FILE_EXTS.has(ext[1].toLowerCase());
 }
 
-const TOKEN_CH = /[^\s`<>[\]|\\\u0000]/;
+const TOKEN_CH = /[^\s,\\\u0000[\]\p{S}]/u;
 const TOKEN_TRAIL = /[.,;:!?)\]}"'”’*_~]/;
 /**
- * A bare path or filename token starting at i (markdown-profile.md § Kept as written: no rewrite row applies
- * inside one): the run of characters up to whitespace, a backtick, <, >, [, ], | or \, less trailing sentence
- * punctuation, closing brackets, quotes and emphasis markers, when isPathLike accepts it and it holds no `://`
- * (`The_Good_Dog_-_Brainstorming_&amp;_Future.md` is one token). A leading `_` that a trimmed trailing `_`
- * closes is emphasis, not part of the name (`_notes.md_`). Falls back to the narrow PATH match. Lint and --words
- * share it, so the linter's bare paths and the words comparison's verbatim tokens are the same spans.
+ * A bare path or filename token starting at i (markdown-profile.md § Kept as written: the emphasis, underscore,
+ * link and URL rows don't apply inside one; the entity row still does, since Notion decodes entities anyway):
+ * the run of characters up to whitespace, a comma, a backslash, [, ] or any symbol (`<`, `>`, `|`, a backtick,
+ * `~`, `→`, …), less trailing sentence punctuation, closing brackets, quotes and emphasis markers, when isPathLike
+ * accepts it and it holds no `://` (`The_Good_Dog_-_Brainstorming_&amp;_Future.md` is one token; `a.md,b.md` and
+ * `x.md→y.md` are two). Leading `_`s that trimmed trailing `_`s close are emphasis, not part of the name
+ * (`_notes.md_`). Falls back to the narrow PATH match. Lint's bare-path nodes and --words' verbatim spans both come
+ * from it (protectPaths skips what lint consumes first: tags, autolinks, wikilinks, entities, link targets).
  */
 function bareToken(T: string, i: number): { start: number; end: number } | null {
   if (!PATH_START.test(T[i] ?? '') || PATH_PREV.test(T[i - 1] ?? '')) return null;
@@ -594,15 +596,21 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
       if (EMAIL_CH.test(c) && !EMAIL_CH.test(T[i - 1] ?? '') && (m = matchAt(EMAIL, T, i))) {
         push(mk('email', i, m[0])); i += m[0].length; continue;
       }
-      if (pendingPath && i === pendingPath.start) {
-        push(mk('path', i, T.slice(i, pendingPath.end))); i = pendingPath.end; pendingPath = null; continue;
-      }
+      const pushPath = (end: number): void => {
+        const text = T.slice(i, end);
+        // The entity row applies inside a token (Notion decodes entities regardless): still report them.
+        for (const e of text.matchAll(ENTITY_ALL)) if (entityChar(e[0]) !== undefined) at(i + (e.index ?? 0), 'html-entity', `HTML entity ${e[0]}`);
+        push(mk('path', i, text));
+        i = end;
+      };
+      if (pendingPath && i === pendingPath.start) { const end = pendingPath.end; pendingPath = null; pushPath(end); continue; }
       const tok = pendingPath ? null : bareToken(T, i);
-      if (tok && tok.start === i) { push(mk('path', i, T.slice(i, tok.end))); i = tok.end; continue; }
+      if (tok && tok.start === i) { pushPath(tok.end); continue; }
       if (tok) pendingPath = tok; // a leading emphasis `_`: handled below as a delimiter, the path after it
       if (c === '*' || c === '_' || c === '~') {
         let n = 1;
         while (T[i + n] === c) n++;
+        if (pendingPath && pendingPath.start > i) n = Math.min(n, pendingPath.start - i); // `__notes.md_`: the path keeps its `_`
         if (c === '~' && n !== 2) { add(c.repeat(n), i); i += n; continue; }
         const before = T[i - 1];
         const after = T[i + n];
@@ -976,7 +984,7 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
 
   const parsePara = (i: number, afterBlank: boolean): { end: number; suppress: boolean } => {
     const firstLine = L[i];
-    if (afterBlank && leadWidth(firstLine) >= 4) {
+    if (afterBlank && leadWidth(firstLine) >= 4 && !/^\s*<table\b/i.test(firstLine)) {
       emit(ln(i), 'indented-code', 'an indented code block; use a bare fenced block');
       let j = i;
       while (j < N && L[j].trim() !== '') j++;
@@ -1130,16 +1138,31 @@ function protectCode(line: string, tableRow: boolean, codes: string[]): string {
   return out;
 }
 
-/** Replace each bare path or filename token (bareToken) with a placeholder, so no markup stripping reaches inside it. */
+/**
+ * Replace each bare path or filename token (bareToken) with a placeholder holding its text with entities decoded
+ * (the entity row applies inside a token), so no other markup stripping reaches inside it. What lint consumes before
+ * it looks for a token (an HTML tag, comment or autolink, a wikilink, an entity, a link's target) is copied as it
+ * stands, so the spans are lint's bare-path spans, plus the tokens inside link text, which lint parses without
+ * reporting.
+ */
 function protectPaths(line: string, codes: string[]): string {
   let out = '';
   let i = 0;
   while (i < line.length) {
+    let m: RegExpExecArray | null = null;
+    if (line[i] === '<') m = matchAt(HTML_COMMENT, line, i) ?? matchAt(AUTOLINK_URI, line, i) ?? matchAt(AUTOLINK_EMAIL, line, i) ?? matchAt(HTML_TAG, line, i);
+    else if (line[i] === '[' || (line[i] === '!' && line[i + 1] === '[')) m = matchAt(WIKILINK, line, i);
+    else if (line[i] === '&') m = matchAt(ENTITY_RE, line, i);
+    if (m) { out += m[0]; i += m[0].length; continue; }
+    if (line[i] === ']' && line[i + 1] === '(') {
+      const tail = parseLinkTail(line, i + 1);
+      if (tail) { out += line.slice(i, tail.end); i = tail.end; continue; }
+    }
     const tok = bareToken(line, i);
     if (!tok) { out += line[i]; i++; continue; }
     out += line.slice(i, tok.start);
     out += `\u0000${codes.length}\u0000`;
-    codes.push(line.slice(tok.start, tok.end));
+    codes.push(line.slice(tok.start, tok.end).replace(ENTITY_ALL, (e) => entityChar(e) ?? e));
     i = tok.end;
   }
   return out;
@@ -1198,8 +1221,9 @@ export function markdownWords(src: string): string[] {
     }
     if (line.trim() === '') { md.push(''); tableRow = -1; prevBlank = true; prevText = false; continue; }
     const w = leadWidth(line);
-    if (prevBlank && w >= 4 && !listOpen) {
-      // An indented code block: verbatim, like a fenced one.
+    if (prevBlank && w >= 4 && !listOpen && !/^\s*<table\b/i.test(line)) {
+      // An indented code block: verbatim, like a fenced one. (An indented HTML table is a table: lint and the
+      // rewrite table treat it as one, so its tags are stripped below.)
       flushMd();
       let j = i;
       for (; j < lines.length; j++) {
