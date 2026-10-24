@@ -1,0 +1,312 @@
+<!-- ABOUTME: Evidence for references/markdown-profile.md: what Notion returned for every construct in probe.md and probe-rewrites.md -->
+<!-- ABOUTME: Probe run 2026-10-24 against the sb6-probe project in the StoryStormer hub; method, per-construct results, rewrites, isolation tests -->
+
+# Markdown Profile Probe Results
+
+**Run:** 2026-10-24, through the Notion connector in a Claude Code session, against the test project `sb6-probe` (Projects row `403e980b-9c74-81a6-82b4-e342d7001d87`) in the `StoryStormer` hub at the private root. Everything written is synthetic.
+
+## Headline
+
+1. **Notion’s fetch serializer changed since SB5.** On 2026-10-17 a fetch returned markdown emphasis (`**x**`, `*x*`). On 2026-10-24 every fetch, including a page written during SB5, returns inline HTML tags: `<b>`, `<i>`, `<s>`, `<code>`, `<br />`. Property text changed too: an SB5 `Meta` value now comes back with `\_` escapes, `<br />` and `<code>`. The binding’s read rendering (`references/store/notion.md` § Rendering) has no rule for these tags, so read literally, every bold word in every document comes back changed. The verdicts below assume four additions to the read rendering (§ Method, E1–E4); the binding needs them whether or not the profile ships.
+2. **With those additions, most of the hypothesis holds**, and several SB5 Known limits no longer reproduce: `***bold italic***` round-trips, as do ordered lists that start or continue past 1, intraword underscores, and `~~**x**~~`. What still changes is mostly spacing, alternative marker spellings, nested or boundary-sharing emphasis, links whose target looks like a domain, and anything HTML.
+3. **One write lost most of a page.** On page 1 a four-backtick fence never closed, and the 27 sections after it became the body of one code block, with no warning from the connector. Five isolation writes, by create and by `replace_content`, kept the same fence intact (§ Isolation tests), so the trigger is somewhere in the combination. The profile keeps fences that hold fence lines out of plugin output, and any write path that cares about content should read back and compare.
+4. **Every candidate rewrite came back byte-identical** (54 of 54, § Rewrites).
+
+## Method
+
+**What was written.** `probe.md` holds 193 constructs, one per `## P<group><nn> <name>` section. It went to Notion as Assets rows of `sb6-probe` with `Kind` = research, in the binding’s **write form** (§ Rendering: every `\` outside code doubled; a newline inside a paragraph, quote or list item sent as `<br>`; a tab per nesting level; pipe tables sent as `<table header-row="true">`; a bare fence sent as `plain text`; `* * *` sent as `\* \* \*`):
+
+| Page | Row (page id) | Holds | Written by |
+|---|---|---|---|
+| 1 | `markdown-probe` (`403e980b-9c74-81f5-9341-ffbb7b00b13a`) | the whole probe as of the first write (191 constructs) | create with a placeholder body, then `replace_content` with the body, since the body starts with a `#` heading |
+| 2 | `markdown-probe-2` (`403e980b-9c74-8129-900c-dd598837e64a`) | the 27 sections page 1 lost (PM01–PZ99), PI04 re-sent with an explicit U+00A0, and two new constructs (PD27, PI23) | create |
+| R | `markdown-probe-rewrites` (`403e980b-9c74-81c2-ac21-d9880d72c9fc`) | `probe-rewrites.md` | create |
+| A, B, C | `markdown-probe-fence-a`, `-b`, `-c` (`403e980b-9c74-81b4-9ef2-d58407725b3d`, `…81e9-a024-db01def8c23d`, `…8176-966b-d598b36b1c2a`) | isolation tests for PL10 and PI04 (§ Isolation tests) | create, then `replace_content` |
+
+**What was compared.** Each page was fetched once and its `<content>` rendered back with the binding’s **read rendering**: a backslash before ASCII punctuation removed (R1); `plain text` fences read as bare (R2); blank-line runs collapsed (R3); `<br>` in a block read as a newline, with `> ` on each quote line after it and `<br>` kept in table cells (R4); a tab read as two spaces (R5); `<table>` rebuilt as a pipe table (R6); `[t](http://t)` and `[t](https://t)` collapsed to `t` (R7); one final newline (R9). Four additions were needed for today’s serializer:
+
+- **E1, inline tags:** `<b>` and `</b>` read as `**`, `<i>` and `</i>` as `*`, `<s>` and `</s>` as `~~`, each tag mapped where it stands with no merging of neighbouring runs; `<code>x</code>` reads as a backtick span whose delimiter is one backtick longer than the longest run inside, padded with one space only when the content starts or ends with a backtick. `<u>` stays `<u>`.
+- **E2, `<br />`:** read the same as `<br>`.
+- **E3, `txt` fences:** Notion now returns a bare or `plain text` fence as `txt`, so `txt` reads as bare too.
+- **E4, Notion’s pipe tables:** Notion returns tables as pipe tables with `| --- |` separators; they are re-rendered in one form: `| a | b |` rows, a `|---|---|` separator, an empty cell as `|  |`, a literal `|` in a cell as `\|`.
+
+The rendered read was compared byte for byte with the source, section by section (the text from each `## P…` heading to the next).
+
+**Verdicts.** **K** kept (byte-identical, stored as the intended block) · **C** changed · **L** byte-identical, but Notion stores the markup as visible text or as a different block · **S** byte-identical, but Notion shows it differently (an autolink the read collapses) · **X** byte-identical, but excluded by design · **U** unverifiable from the fetch · **W** swallowed on page 1 by the unclosed fence, retested in isolation. In the table, `↵` marks a newline; the text starts right after the section’s heading line, so a leading `↵` is the blank line under the heading. “Returned” is Notion’s text inside `<content>`; “Read renders” is that text after the read rendering, shown only when the two differ.
+
+Totals: 193 constructs: 101 K, 66 C, 19 L, 4 S, 1 X, 1 U, 1 W.
+
+## Per-construct results
+
+| ID | Construct | Page | Verdict | Returned (when not K) | Read renders (when changed) | Note |
+|---|---|---|---|---|---|---|
+| PA01 | heading-blank-paragraph | 1 | K |  |  |  |
+| PA02 | heading-no-blank-paragraph | 1 | C | `↵This paragraph sits directly under its heading with no blank line.` | (same as returned) |  |
+| PA03 | two-paragraphs-one-blank | 1 | K |  |  |  |
+| PA04 | two-paragraphs-two-blanks | 1 | C | `↵First paragraph.↵↵Second paragraph after two blank lines.` | (same as returned) |  |
+| PA05 | trailing-spaces | 1 | C | `↵This line ends with three spaces.` | (same as returned) |  |
+| PA06 | whitespace-only-line | 1 | C | `↵Paragraph one.↵↵Paragraph two after a whitespace-only line.` | (same as returned) |  |
+| PA07 | label-line-then-list-no-blank | 1 | C | `↵<b>Label line:</b>↵↵- first item↵- second item` | `↵**Label line:**↵↵- first item↵- second item` |  |
+| PA08 | label-line-blank-then-list | 1 | K |  |  |  |
+| PA09 | paragraph-then-heading-no-blank | 1 | C | `↵A paragraph with a heading right under it.↵↵### Sub heading under a paragraph` | (same as returned) |  |
+| PA10 | tab-inside-paragraph | 1 | K |  |  |  |
+| PA11 | leading-spaces-paragraph | 1 | C | `↵This paragraph starts with two spaces.` | (same as returned) |  |
+| PB01 | h1-mid-document | 1 | K |  |  |  |
+| PB02 | h2 | 1 | K |  |  |  |
+| PB03 | h3 | 1 | K |  |  |  |
+| PB04 | h4 | 1 | K |  |  |  |
+| PB05 | h5 | 1 | C | `↵#### Level five heading` | (same as returned) |  |
+| PB06 | h6 | 1 | C | `↵#### Level six heading` | (same as returned) |  |
+| PB07 | closing-hashes | 1 | C | `↵### Closed heading` | (same as returned) |  |
+| PB08 | setext-h1 | 1 | L | `↵Setext level one<br />================` |  | stored as a paragraph with a line break, not a heading |
+| PB09 | setext-h2 | 1 | C | `↵Setext level two↵↵---` | (same as returned) |  |
+| PB10 | heading-italic-code | 1 | K |  |  |  |
+| PB11 | heading-bold | 1 | K |  |  |  |
+| PB12 | heading-number-lead | 1 | K |  |  |  |
+| PC01 | italic-star | 1 | K |  |  |  |
+| PC02 | italic-underscore | 1 | C | `↵Some <i>italic</i> text.` | `↵Some *italic* text.` |  |
+| PC03 | bold-star | 1 | K |  |  |  |
+| PC04 | bold-underscore | 1 | C | `↵Some <b>bold</b> text.` | `↵Some **bold** text.` |  |
+| PC05 | strike | 1 | K |  |  |  |
+| PC06 | bold-italic-triple | 1 | K |  |  |  |
+| PC07 | italic-inside-bold | 1 | C | `↵Some <b>bold with </b><i><b>italic</b></i><b> inside</b> text.` | `↵Some **bold with *****italic***** inside** text.` |  |
+| PC08 | bold-inside-italic | 1 | C | `↵Some <i>italic with </i><i><b>bold</b></i><i> inside</i> text.` | `↵Some *italic with ****bold**** inside* text.` |  |
+| PC09 | shared-close-boundary | 1 | C | `↵Some <b>bold ending in </b><i><b>italic</b></i> text.` | `↵Some **bold ending in *****italic*** text.` |  |
+| PC10 | shared-open-boundary | 1 | C | `↵Some <i><b>bold first</b></i><i> then italic</i> text.` | `↵Some ***bold first**** then italic* text.` |  |
+| PC11 | bold-around-underscore-italic | 1 | C | `↵Some <i><b>mixed</b></i> text.` | `↵Some ***mixed*** text.` |  |
+| PC12 | italic-around-underscore-bold | 1 | C | `↵Some <i><b>mixed</b></i> text.` | `↵Some ***mixed*** text.` |  |
+| PC13 | bold-around-code | 1 | C | `↵Some <b>bold with </b><b><code>code</code></b><b> inside</b> text.` | ``↵Some **bold with ****`code`**** inside** text.`` |  |
+| PC14 | italic-around-code | 1 | C | `↵Some <i>italic with </i><i><code>code</code></i><i> inside</i> text.` | ``↵Some *italic with **`code`** inside* text.`` |  |
+| PC15 | bold-space-code | 1 | K |  |  |  |
+| PC16 | bold-touching-code | 1 | K |  |  |  |
+| PC17 | code-alone | 1 | K |  |  |  |
+| PC18 | intraword-star | 1 | K |  |  |  |
+| PC19 | intraword-underscore | 1 | K |  |  | Notion escapes the underscores |
+| PC20 | strike-around-bold | 1 | K |  |  | SB5 saw `~~**x**~~` come back `**~~x~~**` |
+| PC21 | bold-around-strike | 1 | C | `↵Some <s><b>bold struck</b></s> text.` | `↵Some ~~**bold struck**~~ text.` |  |
+| PC22 | single-tilde | 1 | K |  |  | Notion escapes the tildes |
+| PC23 | italic-across-line-break | 1 | K |  |  |  |
+| PC24 | spaced-stars-literal | 1 | K |  |  |  |
+| PC25 | literal-stars | 1 | K |  |  |  |
+| PC26 | bold-italic-underscore-triple | 1 | C | `↵Some <i><b>bold italic</b></i> text.` | `↵Some ***bold italic*** text.` |  |
+| PC27 | bold-touching-word | 1 | K |  |  |  |
+| PC28 | bold-italic-before-punctuation | 1 | K |  |  |  |
+| PC29 | italic-whole-paragraph | 1 | K |  |  |  |
+| PC30 | bold-whole-paragraph | 1 | K |  |  |  |
+| PD01 | dash-bullets | 1 | K |  |  |  |
+| PD02 | star-bullets | 1 | C | `↵- alpha↵- beta` | (same as returned) |  |
+| PD03 | plus-bullets | 1 | C | `↵- alpha↵- beta` | (same as returned) |  |
+| PD04 | padded-bullets | 1 | C | `↵- alpha↵- beta` | (same as returned) |  |
+| PD05 | nested-two-space | 1 | K |  |  |  |
+| PD06 | nested-four-space | 1 | C | `↵- level one↵  - level two↵    - level three` | (same as returned) |  |
+| PD07 | ordered | 1 | K |  |  |  |
+| PD08 | ordered-start-three | 1 | K |  |  | SB5 (2026-10-17) saw continued numbering restart at 1 |
+| PD09 | ordered-continued-after-heading | 1 | K |  |  | SB5 saw continued numbering restart at 1 |
+| PD10 | ordered-continued-after-paragraph | 1 | K |  |  | SB5 saw continued numbering restart at 1 |
+| PD11 | ordered-paren | 1 | C | `↵1. one↵2. two` | (same as returned) |  |
+| PD12 | ordered-all-ones | 1 | C | `↵1. one↵2. two↵3. three` | (same as returned) |  |
+| PD13 | ordered-ten | 1 | K |  |  |  |
+| PD14 | ordered-padded | 1 | C | `↵1. one↵2. two` | (same as returned) |  |
+| PD15 | loose-bullets | 1 | C | `↵- alpha↵- beta↵- gamma` | (same as returned) |  |
+| PD16 | item-continuation-paragraph | 1 | C | `↵- an item↵  <p>↵  with a second paragraph inside it↵  </p>↵- next item` | (same as returned) |  |
+| PD17 | item-soft-break-indented | 1 | C | `↵- an item that<br />wraps onto an indented line↵- next item` | `↵- an item that↵wraps onto an indented line↵- next item` |  |
+| PD18 | item-soft-break-lazy | 1 | K |  |  |  |
+| PD19 | todos | 1 | K |  |  |  |
+| PD20 | todo-capital-x | 1 | C | `↵- [x] done task with capital X` | (same as returned) |  |
+| PD21 | ordered-in-bullet | 1 | K |  |  |  |
+| PD22 | bullet-in-ordered-two-space | 1 | C | `↵1. ordered↵   - bullet child two spaces↵2. ordered` | (same as returned) |  |
+| PD23 | bullet-in-ordered-three-space | 1 | K |  |  |  |
+| PD24 | nested-todos | 1 | K |  |  |  |
+| PD25 | bold-label-items | 1 | K |  |  |  |
+| PD26 | empty-item | 1 | C | `↵<ul>↵<li>↵alpha↵</li>↵<li></li>↵<li>↵gamma↵</li>↵</ul>` | (same as returned) |  |
+| PD27 | bullet-in-ordered-ten | 2 | K |  |  |  |
+| PE01 | quote-single-line | 1 | K |  |  |  |
+| PE02 | quote-two-lines | 1 | K |  |  |  |
+| PE03 | quote-two-paragraphs | 1 | K |  |  |  |
+| PE04 | quote-lazy-continuation | 1 | C | `↵> First line of the quote.<br />Lazy second line.` | `↵> First line of the quote.↵> Lazy second line.` |  |
+| PE05 | quote-with-list | 1 | L | `↵> Lead line.<br />- quoted item one<br />- quoted item two` |  | the list markers are stored as quote text, not a list |
+| PE06 | quote-nested | 1 | L | `↵> Outer quote.<br /><br />> Inner quote.` |  | the inner `>` is stored as text, not a nested quote |
+| PE07 | quote-emphasis-code | 1 | K |  |  |  |
+| PE08 | two-quotes | 1 | K |  |  |  |
+| PE09 | obsidian-callout | 1 | L | `↵> \[!note\] Callout title<br />Callout body.` |  | the callout marker is stored as text |
+| PE10 | quote-no-space | 1 | C | `↵> No space after the marker.` | (same as returned) |  |
+| PF01 | bare-newline-break | 1 | K |  |  |  |
+| PF02 | two-space-break | 1 | X | `↵Line one  <br />line two` |  | kept, but a line may not end in whitespace (PA05: trailing spaces elsewhere are stripped); a bare newline gives the same break |
+| PF03 | backslash-break | 1 | L | `↵Line one\\<br />line two` |  | Notion stores and shows the backslash before the break |
+| PF04 | html-br | 1 | C | `↵Line one<br />line two` | `↵Line one↵line two` |  |
+| PG01 | pipe-table-canonical | 1 | K |  |  |  |
+| PG02 | pipe-table-spaced-separator | 1 | C | `↵\| Name \| Role \|↵\| --- \| --- \|↵\| Ada \| lead \|` | `↵\| Name \| Role \|↵\|---\|---\|↵\| Ada \| lead \|` |  |
+| PG03 | pipe-table-alignment | 1 | C | `↵\| Left \| Right \|↵\| --- \| --- \|↵\| a \| b \|` | `↵\| Left \| Right \|↵\|---\|---\|↵\| a \| b \|` |  |
+| PG04 | pipe-table-empty-cell-spaced | 1 | K |  |  |  |
+| PG05 | pipe-table-empty-cell-tight | 1 | C | `↵\| Name \| Note \|↵\| --- \| --- \|↵\| Ada \|  \|` | `↵\| Name \| Note \|↵\|---\|---\|↵\| Ada \|  \|` |  |
+| PG06 | pipe-table-escaped-pipe | 1 | K |  |  |  |
+| PG07 | pipe-table-emphasis | 1 | K |  |  |  |
+| PG08 | pipe-table-nested-emphasis | 1 | C | `↵\| Style \| Sample \|↵\| --- \| --- \|↵\| nested \| <b>bold </b><i><b>inner</b></i><b> bold</b> \|↵\| triple \| <i><b>both</b></i> \|` | `↵\| Style \| Sample \|↵\|---\|---\|↵\| nested \| **bold *****inner***** bold** \|↵\| triple \| ***both*** \|` |  |
+| PG09 | pipe-table-code | 1 | K |  |  |  |
+| PG10 | pipe-table-no-outer-pipes | 1 | C | `↵\| Name \| Role \|↵\| --- \| --- \|↵\| Ada \| lead \|` | `↵\| Name \| Role \|↵\|---\|---\|↵\| Ada \| lead \|` |  |
+| PG11 | pipe-table-br | 1 | K |  |  |  |
+| PG12 | html-table | 1 | C | `↵<table>↵<tr>↵<td>↵Name↵</td>↵<td>↵Role↵</td>↵</tr>↵<tr>↵<td>↵Ada↵</td>↵<td>↵lead↵</td>↵</tr>↵</table>` | `↵\| Name \| Role \|↵\|---\|---\|↵\| Ada \| lead \|` |  |
+| PG13 | pipe-table-one-column | 1 | K |  |  |  |
+| PG14 | pipe-table-link-quotes | 1 | K |  |  |  |
+| PG15 | pipe-table-wide-separator | 1 | C | `↵\| Name \| Role \|↵\| --- \| --- \|↵\| Ada \| lead \|` | `↵\| Name \| Role \|↵\|---\|---\|↵\| Ada \| lead \|` |  |
+| PH01 | rule-three-dashes | 1 | K |  |  |  |
+| PH02 | rule-six-dashes | 1 | C | `↵Above.↵↵---↵↵Below.` | (same as returned) |  |
+| PH03 | rule-stars | 1 | C | `↵Above.↵↵---↵↵Below.` | (same as returned) |  |
+| PH04 | rule-underscores | 1 | C | `↵Above.↵↵---↵↵Below.` | (same as returned) |  |
+| PH05 | scene-break | 1 | K |  |  |  |
+| PH06 | rule-spaced-dashes | 1 | C | `↵Above.↵↵---↵↵Below.` | (same as returned) |  |
+| PI01 | curly-quotes | 1 | K |  |  |  |
+| PI02 | dashes-ellipsis | 1 | K |  |  |  |
+| PI03 | straight-quotes-dots | 1 | K |  |  |  |
+| PI04 | nbsp | 2 | U | `↵Two words joined by a non-breaking space.` | (same as returned) | the exact-anchor test shows Notion stores U+00A0; the fetch text can’t show it by eye, and SB5 saw it come back as a space |
+| PI05 | non-ascii | 1 | K |  |  |  |
+| PI06 | entity-text | 1 | C | `↵Ampersand & entity, — and   written as entities.` | (same as returned) |  |
+| PI07 | angle-brackets | 1 | K |  |  |  |
+| PI08 | tag-like-text | 1 | L | `↵A literal \<tag> in prose.` |  | connector warning: `<tag>` “is not a supported tag and was applied as raw text” |
+| PI09 | colons-backslashes | 1 | L | `↵At 6:00, see C:\\Users\\ada and \\\[bracketed\\\] and \\<i>not italic\\</i>.` |  | bytes come back, but the doubled backslashes are stored and shown, and `\*not italic\*` is stored as italics between literal backslashes |
+| PI10 | markers | 1 | K |  |  |  |
+| PI11 | dollars | 1 | K |  |  |  |
+| PI12 | emoji-shortcode | 1 | K |  |  |  |
+| PI13 | hashes | 1 | K |  |  |  |
+| PI14 | at-name | 1 | K |  |  |  |
+| PI15 | symbols | 1 | K |  |  |  |
+| PI16 | tildes | 1 | K |  |  |  |
+| PI17 | caret | 1 | K |  |  |  |
+| PI18 | double-hyphen-arrow | 1 | K |  |  |  |
+| PI19 | log-header-line | 1 | K |  |  |  |
+| PI20 | number-period-start | 1 | L | `↵1984\\. That year began quietly.` |  | Notion stores and shows the backslash |
+| PI21 | ampersand-plain | 1 | K |  |  |  |
+| PI22 | underscore-alone | 1 | K |  |  |  |
+| PI23 | space-runs | 2 | K |  |  |  |
+| PJ01 | inline-link | 1 | K |  |  |  |
+| PJ02 | bare-url | 1 | C | `↵See [https://example.com/path](https://example.com/path) for more.` | (same as returned) |  |
+| PJ03 | angle-autolink | 1 | C | `↵See [https://example.com/path](https://example.com/path) for more.` | (same as returned) |  |
+| PJ04 | domain-and-filename | 1 | S | `↵See [example.com](http://example.com) and [notes.md](http://notes.md) for more.` |  | Notion links both (`http://example.com`, `http://notes.md`); the read collapses them |
+| PJ05 | link-with-title | 1 | C | `↵See [the site](https://example.com/path) for more.` | (same as returned) |  |
+| PJ06 | reference-link | 1 | C | `↵See [the site](https://example.com/path) for more.` | (same as returned) |  |
+| PJ07 | image | 1 | K |  |  | an image block |
+| PJ08 | email | 1 | C | `↵Write to [someone@example.com](mailto:someone@example.com) today.` | (same as returned) |  |
+| PJ09 | relative-links | 1 | C | `↵- [Ada Vale](https://ada-vale.md) — Protagonist↵- [v2](../chapters/chapter-01/ch01-outline.md)` | (same as returned) |  |
+| PJ10 | link-underscore-target | 1 | K |  |  |  |
+| PJ11 | footnote | 1 | C | `↵A claim.[\[1\]](1)↵↵[\[1\]](1): The footnote text.` | `↵A claim.[[1]](1)↵↵[[1]](1): The footnote text.` |  |
+| PK01 | wikilink | 1 | L | `↵See \[\[Some Page\]\] for more.` |  |  |
+| PK02 | wikilink-alias | 1 | L | `↵See \[\[Some Page\\|the alias\]\] for more.` |  |  |
+| PK03 | wikilink-embed | 1 | L | `↵!\[\[Some Page\]\]` |  |  |
+| PK04 | highlight | 1 | L | `↵Some ==highlighted== text.` |  |  |
+| PK05 | obsidian-tag | 1 | L | `↵Filed under #draft/first today.` |  |  |
+| PK06 | obsidian-comment | 1 | L | `↵Visible %%hidden comment%% visible.` |  |  |
+| PK07 | block-id | 1 | L | `↵A paragraph with a block id. \^abc123` |  |  |
+| PL01 | inline-code-specials | 1 | K |  |  |  |
+| PL02 | inline-code-double-backtick | 1 | C | ``↵Use <code>a`b</code> literally.`` | ```↵Use ``a`b`` literally.``` |  |
+| PL03 | fence-bare | 1 | K |  |  |  |
+| PL04 | fence-lang | 1 | K |  |  |  |
+| PL05 | fence-text | 1 | C | ```` ↵```txt↵text fenced code↵``` ```` | ```` ↵```↵text fenced code↵``` ```` |  |
+| PL06 | fence-tilde | 1 | C | ```` ↵```txt↵tilde fenced code↵``` ```` | ```` ↵```↵tilde fenced code↵``` ```` |  |
+| PL07 | indented-code | 1 | C | `↵Paragraph before.↵↵indented code block` | (same as returned) |  |
+| PL08 | fence-yaml | 1 | K |  |  |  |
+| PL09 | fence-markdown-backslash | 1 | K |  |  |  |
+| PL10 | fence-four-backticks | 1 | W |  |  | page 1: the fence never closed and swallowed every later section; five isolation writes kept it (§ Isolation tests) |
+| PM01 | html-comment-inline | 2 | L | `↵Before \<!-- an inline comment --> after.` |  | stored as visible text (binding: HTML comments) |
+| PM02 | html-comment-block | 2 | L | `↵\<!-- a block comment -->` |  | stored as visible text |
+| PM03 | html-comment-multiline | 2 | L | `↵\<!--<br />a comment<br />over lines<br />-->` |  | stored as visible text |
+| PM04 | html-inline-tags | 2 | C | `↵Some <u>underlined</u> and <b>bold</b> text.` | `↵Some <u>underlined</u> and **bold** text.` |  |
+| PM05 | html-mark | 2 | L | `↵Some \<mark>marked\</mark> text.` |  | connector warning: `<mark>` applied as raw text |
+| PM06 | html-details | 2 | C | `↵<toggle>↵Summary↵↵Hidden body.↵</toggle>` | (same as returned) | connector warning: `<details>` converted to `<toggle>` |
+| PN01 | path-code-span | 2 | K |  |  |  |
+| PN02 | path-bare-underscore | 2 | S | `↵See characters/ada\_[vale.md](http://vale.md) for the bio.` |  | Notion links the basename (`ada\_[vale.md](http://vale.md)`); the read collapses it |
+| PN03 | filename-bare-underscores | 2 | S | `↵See Jon\_Example\_-\_[Profile.md](http://Profile.md) for the bio.` |  | Notion links the basename |
+| PN04 | name-bare-underscores-no-ext | 2 | K |  |  |  |
+| PN05 | path-bare-no-underscore | 2 | S | `↵See chapters/chapter-02/[ch02-prose.md](http://ch02-prose.md) for the prose.` |  | Notion links the basename |
+| PN06 | path-code-span-no-underscore | 2 | K |  |  |  |
+| PO01 | log-entry | 2 | K |  |  |  |
+| PO02 | log-entry-blank-fields | 2 | C | `↵<b>Status</b>: resolved (D-012) — the reason in prose.↵↵<b>Why it matters</b>: A sentence.↵↵<b>Possible approaches</b>:↵↵- one approach↵- another approach` | `↵**Status**: resolved (D-012) — the reason in prose.↵↵**Why it matters**: A sentence.↵↵**Possible approaches**:↵↵- one approach↵- another approach` |  |
+| PO03 | what-exists-lines | 2 | K |  |  |  |
+| PO04 | index-lines | 2 | C | `↵- [Ada Vale](https://ada-vale.md) — Protagonist · POV, bureau↵- [Ben Moss](https://ben-moss.md) — Supporting` | (same as returned) |  |
+| PO05 | inline-markers | 2 | K |  |  |  |
+| PO06 | proposals-checklist | 2 | K |  |  |  |
+| PO07 | pov-label-bold-italic | 2 | K |  |  |  |
+| PO08 | pov-label-bold | 2 | K |  |  |  |
+| PO09 | pov-label-h4 | 2 | K |  |  |  |
+| PO10 | dialogue-prose | 2 | K |  |  |  |
+| PO11 | bold-run-in | 2 | K |  |  |  |
+| PO12 | outline-index-row | 2 | K |  |  |  |
+| PO13 | numbered-next-steps | 2 | K |  |  |  |
+| PO14 | heading-bold-number-lead | 2 | K |  |  |  |
+| PZ99 | end | 2 | K |  |  |  |
+
+## Rewrites
+
+`probe-rewrites.md` holds the in-profile form of every construct above that came back changed (C), plus PB08, PF02, PF03 and PI04, whose bytes survive but whose form the profile excludes, each written with the construct’s own words. (PR54 checks that `./` also works on a target that already holds a `/`.) The L and S constructs have no rewrite: they round-trip as written. It went to Notion as page R and came back byte-identical in every section under the same rendering.
+
+| ID | Rewrites | Rewrite | Result |
+|---|---|---|---|
+| PR01 | PA02 | blank-after-heading | byte-identical |
+| PR02 | PA04 | one-blank-between-paragraphs | byte-identical |
+| PR03 | PA05 | no-trailing-spaces | byte-identical |
+| PR04 | PA06 | empty-line-not-whitespace | byte-identical |
+| PR05 | PA07, PO02 | blank-between-label-and-list | byte-identical |
+| PR06 | PA09 | blank-before-heading | byte-identical |
+| PR07 | PA11 | no-leading-spaces | byte-identical |
+| PR08 | PB05 | h5-as-h4 | byte-identical |
+| PR09 | PB06 | h6-as-h4 | byte-identical |
+| PR10 | PB07 | no-closing-hashes | byte-identical |
+| PR11 | PB08 | setext-h1-as-atx | byte-identical |
+| PR12 | PB09 | setext-h2-as-atx | byte-identical |
+| PR13 | PC02 | italic-star | byte-identical |
+| PR14 | PC04 | bold-star | byte-identical |
+| PR15 | PC07 | italic-inside-bold-split | byte-identical |
+| PR16 | PC08 | bold-inside-italic-split | byte-identical |
+| PR17 | PC09 | shared-close-split | byte-identical |
+| PR18 | PC10 | shared-open-split | byte-identical |
+| PR19 | PC11, PC12, PC26 | bold-italic-triple-star | byte-identical |
+| PR20 | PC13 | code-outside-bold | byte-identical |
+| PR21 | PC14 | code-outside-italic | byte-identical |
+| PR22 | PC21 | strike-outside-bold | byte-identical |
+| PR23 | PD02, PD03, PD04 | dash-bullets | byte-identical |
+| PR24 | PD06 | nested-two-space | byte-identical |
+| PR25 | PD11, PD14 | ordered-dot-one-space | byte-identical |
+| PR26 | PD12 | ordered-consecutive | byte-identical |
+| PR27 | PD15 | tight-bullets | byte-identical |
+| PR28 | PD16 | item-paragraph-as-lazy-line | byte-identical |
+| PR29 | PD17 | item-continuation-lazy | byte-identical |
+| PR30 | PD20 | todo-lowercase-x | byte-identical |
+| PR31 | PD22 | child-at-content-column | byte-identical |
+| PR32 | PD26 | no-empty-item | byte-identical |
+| PR33 | PE04 | quote-marker-every-line | byte-identical |
+| PR34 | PE10 | quote-marker-space | byte-identical |
+| PR35 | PF02, PF03, PF04 | bare-newline-break | byte-identical |
+| PR36 | PG02, PG03, PG10, PG15 | pipe-table-canonical | byte-identical |
+| PR37 | PG05 | empty-cell-two-spaces | byte-identical |
+| PR38 | PG08 | cell-emphasis-split | byte-identical |
+| PR39 | PG12 | html-table-as-pipe | byte-identical |
+| PR40 | PH02, PH03, PH04, PH06 | rule-three-dashes | byte-identical |
+| PR41 | PI04 | ordinary-space | byte-identical |
+| PR42 | PI06 | entities-as-characters | byte-identical |
+| PR43 | PJ02, PJ03 | url-as-link | byte-identical |
+| PR44 | PJ05, PJ06 | inline-link-no-title | byte-identical |
+| PR45 | PJ08 | email-as-mailto-link | byte-identical |
+| PR46 | PJ09, PO04 | dot-slash-relative-link | byte-identical |
+| PR47 | PJ11 | footnote-as-bracket-number | byte-identical |
+| PR48 | PL02 | code-backtick-no-padding | byte-identical |
+| PR49 | PL05, PL06 | bare-backtick-fence | byte-identical |
+| PR50 | PL07 | indented-code-as-fence | byte-identical |
+| PR51 | PM04 | html-bold-as-stars | byte-identical |
+| PR52 | PM06 | details-as-bold-label | byte-identical |
+| PR53 | PD08, PD09, PD10 | numbers-as-bold-lead-ins | byte-identical |
+| PR54 | PJ10 | path-link-with-slash | byte-identical |
+
+PR53 (continued numbering as bold lead-ins) was tested but not adopted: today continued numbering round-trips as a list (PD08–PD10). It stays in the file for a re-probe if the serializer reverts.
+
+## Isolation tests
+
+- **PI04, non-breaking space.** The fetch text can’t show U+00A0 by eye. An `update_content` on page 2 with an anchor containing U+00A0 matched with no warning; a second edit whose anchor had a plain space in the same place matched only after the connector reported “Content was automatically corrected in 1 place(s) to match the page”. So Notion now **stores** the U+00A0 (SB5 recorded nbsp becoming a plain space). Whether the fetch returns it can’t be confirmed here, so the profile keeps ordinary spaces only.
+- **PL10, four-backtick fence.** On page 1 (`replace_content`, about 14 KB) the closing ```` ```` ```` was taken as content, the fence came back as five backticks with `txt`, and every later section became its body. Isolated, the same fence came back intact under `plain text`, `markdown` and `txt` info strings (pages A, B, C by create); under `plain text` through `replace_content` (page A); after the whole code group PL01–PL10 (page B); after a subset of PA–PF (page A); and after a subset of PG–PK (page C). The trigger was not found.
+- **The connector itself.** Both `allow_async: true` creates failed with 503 “Async Public API operation could not be queued”; the synchronous retries succeeded. The write warned on `<tag>` and `<mark>` (applied as raw text) and converted `<details>` to `<toggle>`.
+
+## Where today contradicts SB5
+
+The SB5 Known limit list (`references/store/notion.md`, observed 2026-10-17 under the earlier serializer) saw these change; today they round-trip: `***` closes (when the span is whole), ordered lists continued past a heading (`8.` → `1.`), `~~**x**~~` (became `**~~x~~**`), `_` inside words (became `*`), non-breaking spaces (stored now; see PI04). A serializer that changed once in a week can change again, so re-run this probe before release and whenever a round trip shows new drift.
+
+## Cost
+
+30 Notion calls: 7 creates (2 of them the async failures), 5 `replace_content`, 2 `update_content`, 13 fetches (one of them the connector’s markdown spec, one a read-only fetch of an SB5-era page to confirm the serializer change), 2 searches and 1 rows query. They ran from 07:35 to 07:54 Pacific, 19 minutes of wall time including transcription.
