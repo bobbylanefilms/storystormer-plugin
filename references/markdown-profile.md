@@ -159,8 +159,9 @@ How out-of-profile markup becomes profile form. **Normalization applies this tab
 | Out of profile | In profile | Evidence |
 |---|---|---|
 | CRLF line endings | `\n` (Notion stores blocks, not line endings) | n/a |
+| a document that ends without a newline, or with empty lines after its last block | exactly one `\n` at the end (Notion stores no final newline, and the read ends every document with exactly one) | n/a; SB5’s ring: 31 files without one |
 | a heading, table, quote or paragraph run into the block above or below it, or a list run on directly under a paragraph line | one empty line between them | PA02, PA07, PA09, PO02 → PR01, PR05, PR06 |
-| a list indented under a non-list line (`**Possible approaches**:`, then `  - one`) | the list unindented, with an empty line before it. A line directly under its last item stays that item’s continuation, as markdown reads it | PO15 → PR55 |
+| a list indented under a non-list line (`**Possible approaches**:`, then `  - one`), or a list directly under a field label line (a line starting `**<Label>**:`, the form log entries use) | the list unindented, with an empty line before it and, when a field label line follows its last item, an empty line after it too. A line directly under the last item that starts `**<Label>**:` (bold text ending in a colon at the line start) is the next field and gets that empty line; any other line there stays the item’s continuation, as markdown reads it | PO15 → PR55 |
 | two or more empty lines between blocks | one | PA04 → PR02 |
 | spaces or tabs at the end of a line | removed | PA05 → PR03 |
 | a whitespace-only line | an empty line | PA06 → PR04 |
