@@ -129,11 +129,38 @@ test('lint emphasis nesting: in order (strikethrough, italic, bold, code) is in 
   assert.deepEqual(rulesOf('*a ~~b~~ c*.\n'), ['emphasis-strike-order']);
 });
 
+test('lint repeated styles and the split rows: sources flagged, their rewrites clean', () => {
+  const pairs: Array<[string, string, string]> = [
+    ['**a **b** c** end.\n', '**a b c** end.\n', 'emphasis-nested'], // bold inside bold
+    ['~~a ~~b~~ c~~ end.\n', '~~a b c~~ end.\n', 'emphasis-nested'], // strikethrough inside strikethrough
+    ['*a ***b*** c* end.\n', '*a **b** c* end.\n', 'emphasis-nested'], // italic inside italic
+    ['***a* b** end.\n', '***a*** **b** end.\n', 'emphasis-nested'], // inner span at the outer start: split
+    ['**(*a*) b** end.\n', '***(a)*** **b** end.\n', 'emphasis-nested'], // edge punctuation joins the inner span
+    ['**(*over* now)** end.\n', '***(over*** **now)** end.\n', 'emphasis-nested'], // the start variant
+    ['**GOOD DOG means *this is over*.**\n', '**GOOD DOG means** ***this is over.***\n', 'emphasis-nested'],
+  ];
+  for (const [src, out, rule] of pairs) {
+    assert.ok(rulesOf(src).includes(rule), `${src} is flagged ${rule}`);
+    assert.deepEqual(rulesOf(out), [], `${out} lints clean`);
+    assert.ok(same(src, out), `${src} → ${out} keeps the words`);
+  }
+  assert.deepEqual(rulesOf('~~a ~~b~~ c~~.\n'), ['emphasis-nested']);
+  assert.match(lintText('~~a ~~b~~ c~~.\n')[0].message, /strikethrough inside strikethrough/);
+});
+
+test('lint the italic-around-strikethrough row’s abutting case: left as written, and its would-be result is flagged', () => {
+  assert.deepEqual(rulesOf('> *~~a~~*~~ b.~~\n'), ['emphasis-strike-order']);
+  assert.deepEqual(rulesOf('> ~~*a*~~~~ b.~~\n'), ['emphasis-adjacent']);
+  assert.deepEqual(rulesOf('> *~~a~~* b.\n'), ['emphasis-strike-order']);
+  assert.deepEqual(rulesOf('> ~~*a*~~ b.\n'), []);
+});
+
 test('lint frontmatter separation: exactly one empty line between the closing --- and the body', () => {
   assert.deepEqual(rulesOf('---\ntitle: X\n---\n\nText.\n'), []);
   assert.deepEqual(rulesOf('---\ntitle: X\n---\nText.\n'), ['frontmatter-separation']);
   assert.deepEqual(rulesOf('---\ntitle: X\n---\n\n\nText.\n'), ['frontmatter-separation']);
   assert.deepEqual(rulesOf('---\ntitle: X\n---\n'), [], 'frontmatter alone has no body to separate');
+  assert.deepEqual(rulesOf('---\ntitle: X\n---\n\n'), ['final-newline'], 'frontmatter alone ends with the closing ---');
 });
 
 test('non-breaking spaces: lint flags each (the rewrite table turns it into a space); --words reads it as a space', () => {
@@ -231,7 +258,6 @@ const K_EXCEPTIONS: Record<string, string> = {
   PI07: 'x<y: Notion keeps it, but the profile says a < is never directly followed by a letter',
 };
 const FLAG_EXCEPTIONS: Record<string, string> = {
-  PI04: 'U: unverifiable (it is flagged as nbsp, but the verdict is not a change)',
   PK05: '#tag: indistinguishable from in-profile text like “#hashtag” (PI13, kept)',
   PK07: '^block-id: indistinguishable from in-profile text like “x^2” (PI17, kept)',
 };
@@ -265,7 +291,7 @@ PE04 quote-marker · PE05 quote-content · PE06 quote-content · PE09 quote-cont
 PF02 trailing-whitespace · PF03 line-break · PF04 line-break · PG02 table-form · PG03 table-form · PG05 table-form
 PG08 emphasis-nested · PG10 table-form · PG12 html · PG15 table-form · PG16 html-entity · PH02 rule-form · PH03 rule-form
 PH04 rule-form · PH06 rule-form · PH07 rule-form · PH08 rule-form · PI06 html-entity · PI08 html · PI09 backslash-escape
-PI20 backslash-escape · PI24 html-entity · PI25 html-entity · PI26 html-entity · PI27 html-entity · PI28 html-entity
+PI04 nbsp · PI20 backslash-escape · PI24 html-entity · PI25 html-entity · PI26 html-entity · PI27 html-entity · PI28 html-entity
 PJ02 bare-url · PJ03 bare-url · PJ04 bare-path · PJ05 link-title · PJ06 link-reference · PJ08 bare-email · PJ09 link-target
 PJ11 footnote · PJ12 emphasis-link · PJ14 emphasis-link · PJ16 image-target · PJ17 image-target · PK01 obsidian-syntax
 PK02 obsidian-syntax · PK03 obsidian-syntax · PK04 obsidian-syntax · PK06 obsidian-syntax · PL02 code-span-padding

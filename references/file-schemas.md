@@ -20,7 +20,7 @@ One quoting rule for every YAML frontmatter value the plugin writes: outlines, n
 - starts with a YAML-special character: `-`, `?`, `[`, `]`, `{`, `}`, `*`, `&`, `!`, `|`, `>`, `%`, `@`, or a backtick;
 - or would read as something other than text: `null`, `~`, `true`, `false`, `yes`, `no`, `on`, `off` (any case), or a number (`1984`, `3.5`, `1e3`, `0x1F`, `.inf`).
 
-So *Ten: Countdown* is `title: "Ten: Countdown"`, *The Answer #7* is `title: "The Answer #7"`, and *1984* is `title: "1984"`. Values that are meant as numbers (`chapter: 17`, `version: 2`, `word_count: 1140`) and lists (`tags: [the bureau]`) are written as such. Read a double-quoted value by undoing exactly those two escapes. The app writes and reads its chapter notes with this rule and parses outline frontmatter the same way. Leading and trailing spaces are not part of a value: the app trims them on read and never quotes a value to keep them, so a value that needs edge whitespace cannot round-trip and is not written.
+So *Ten: Countdown* is `title: "Ten: Countdown"`, *The Answer #7* is `title: "The Answer #7"`, and *1984* is `title: "1984"`. Values that are meant as numbers (`chapter: 17`, `version: 2`, `word_count: 1140`) and lists (`tags: [the bureau]`) are written as such; a text value that reads as a number is written quoted, so an outline's `act` alone is `act: "2"`, never `act: 2`. Read a double-quoted value by undoing exactly those two escapes. The app writes and reads its chapter notes with this rule and parses outline frontmatter the same way. Leading and trailing spaces are not part of a value: the app trims them on read and never quotes a value to keep them, so a value that needs edge whitespace cannot round-trip and is not written.
 
 ## `state.md` — living project dashboard
 
@@ -707,7 +707,7 @@ primer_version: 4
 [150–250 words, generated outlines only: see below]
 ```
 
-**The first five keys are the app's outline contract**, in its order: `chapter` (a whole number), `title`, `pov` (the POV character's name, blank for a book without one), `act` (same form as the structure document's `**Act:**` line: `2 — Fun and Games`, or `2`; never `2A`), and `summary` (one or two sentences: the chapter's core event and turning point). All five are present on every write; `chapter`, `title`, and `summary` must have values, and `chapter` is a whole number from 1 to 1000 (the app's outline parser rejects anything outside that range). Values are quoted per § Frontmatter values.
+**The first five keys are the app's outline contract**, in its order: `chapter` (a whole number), `title`, `pov` (the POV character's name, blank for a book without one), `act` (text, in the same form as the structure document's `**Act:**` line: `act: 2 — Fun and Games`, or the number alone written quoted, `act: "2"`, per § Frontmatter values; never `2A`), and `summary` (one or two sentences: the chapter's core event and turning point). All five are present on every write; `chapter`, `title`, and `summary` must have values, and `chapter` is a whole number from 1 to 1000 (the app's outline parser rejects anything outside that range). Values are quoted per § Frontmatter values.
 
 The rest are plugin keys the app ignores:
 

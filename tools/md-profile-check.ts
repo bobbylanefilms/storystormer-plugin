@@ -617,7 +617,11 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
         let n = 1;
         while (T[i + n] === c) n++;
         if (pendingPath && pendingPath.start > i) n = Math.min(n, pendingPath.start - i); // `__notes.md_`: the path keeps its `_`
-        if (c === '~' && n !== 2) { add(c.repeat(n), i); i += n; continue; }
+        if (c === '~' && n !== 2) {
+          // `~~*a*~~~~ b~~`: a run of four reads as two strikethrough spans touching (the first `~~` pairs with the last).
+          if (n >= 3) at(i, 'emphasis-adjacent', `a run of ${n} tildes: strikethrough spans touch, or a stray run abuts one`);
+          add(c.repeat(n), i); i += n; continue;
+        }
         const before = T[i - 1];
         const after = T[i + n];
         const left = !isWs(after) && (!isPunct(after) || isWs(before) || isPunct(before));
@@ -661,11 +665,16 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
         const ik = kindOf(k);
         if (RANK[ik] > RANK[kind]) continue; // in order: ~~ > * > **
         if (kids.length === 1 && kind === 'strong' && ik === 'em') continue; // ***x***
+        if (ik === kind) {
+          const name = { strike: 'strikethrough', em: 'italic', strong: 'bold' }[kind];
+          at(n.pos, 'emphasis-nested', `${name} inside ${name}; drop the inner span’s repeated style`);
+          return;
+        }
         if (ik === 'strike') {
           at(n.pos, 'emphasis-strike-order', kids.length === 1 ? (kind === 'em' ? '*~~x~~*; write ~~*x*~~' : '**~~x~~**; write ~~**x**~~') : 'strikethrough inside emphasis; strikethrough goes outermost');
           return;
         }
-        at(n.pos, 'emphasis-nested', ik === kind ? `${kind === 'em' ? 'italic' : 'bold'} inside ${kind === 'em' ? 'italic' : 'bold'}; drop the inner span's repeated style` : 'italic inside bold; nesting goes strikethrough, then italic, then bold');
+        at(n.pos, 'emphasis-nested', 'italic inside bold; nesting goes strikethrough, then italic, then bold');
         return;
       }
     };
