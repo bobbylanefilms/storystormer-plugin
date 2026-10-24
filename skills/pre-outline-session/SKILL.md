@@ -144,6 +144,7 @@ Each spine entry is a block in the app's pre-outline format: the heading, three 
 
 ```
 ### Chapter 17: The Locket
+
 **Status:** new
 **POV:** Marlowe Reyes
 **Act:** 2 — Fun and Games

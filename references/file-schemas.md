@@ -9,6 +9,8 @@ This document is the canonical spec. If a skill wants a field that isn't here, a
 
 **The formats match the StoryStormer web app's.** Enum values, frontmatter keys, and section headings below are the app's own, so a project can move between the plugin and the app without translation. Where a key is plugin-only (version stamps, provenance), the app ignores it. When this file and the app disagree, the app's format wins and this file is the one to fix.
 
+**Markup.** Every document the plugin writes is in the markdown profile, `references/markdown-profile.md`, on every backend (its body; frontmatter follows § Frontmatter values below), while text an author wrote stays as written except where it enters Notion, which normalizes it once on the way in (the profile’s § Scope).
+
 ## Frontmatter values (every file)
 
 One quoting rule for every YAML frontmatter value the plugin writes: outlines, notes, prose, bios, worldbuilding entries, and the rest. A single-line value is written bare unless a YAML reader would misread it, in which case it is wrapped in double quotes, with `"` written `\"` and `\` written `\\`. Quote a value when it:
@@ -59,9 +61,11 @@ Per-book `state.md` files omit `books` and `current_focus` (those live only on t
 
 ```markdown
 ## Summary
+
 [3–5 sentences on where the project stands — what exists, what's strong, what's missing]
 
 ## What Exists
+
 - **Primer** — v3 (2026-05-09), built from D-001..D-018
 - **Treatment** — v7 (2026-05-10), built from D-001..D-018
 - **Manifest** — v2 (2026-05-10), 4 characters, 2 locations, 1 organization
@@ -76,11 +80,13 @@ Per-book `state.md` files omit `books` and `current_focus` (those live only on t
 - **Storage** — this folder syncs through Dropbox (`~/Library/CloudStorage/Dropbox/Novels/the-good-dog`)
 
 ## What's Next
+
 - **Active focus**: Marlowe's relationship to the antagonist (Q-019, critical)
 - **Recommended next action**: Resolve Q-019 in a brainstorm session, then refresh treatment
 - **Unintegrated decisions**: 4 new since last treatment update — propose `/storystormer:treatment-update` once Q-019 is decided
 
 ## Last Session
+
 [2–3 sentences on what was worked on most recently — fresh context for the agent on resume]
 ```
 
@@ -98,9 +104,11 @@ In series mode, the **series-level state.md** at `<root>/state.md` has a `What E
 
 ```markdown
 ## Summary
+
 A political thriller trilogy. Book 1 is in late outlining (40/50 chapters drafted) and early prose (ch 1–6 written). Books 2 and 3 are in brainstorming — the trilogy's arc is being mapped to inform book 1's final 10 chapters and the planted setups in books 1–2.
 
 ## What Exists
+
 - **Series document** — `series.md` v2 (2026-05-24), 6 cross-book setup/payoff chains tracked.
 - **Shared manifest** — v4 (2026-05-22), 12 characters and 8 worldbuilding entries across all books.
 - **Shared character bios** — 4 major-tier, 5 supporting, 3 minor.
@@ -110,6 +118,7 @@ A political thriller trilogy. Book 1 is in late outlining (40/50 chapters drafte
 - **Book 3: [TBD title]** — primer v0 (not yet drafted), brainstorming stage.
 
 ## What's Next
+
 - **Active focus**: book-2 (currently brainstorming the act-1 shape).
 - **Recommended next action**: continue brainstorming book 2's premise; once Q-052 (book 2's central thematic question) is resolved, run `treatment-update` for book 2 in first-run mode.
 - **Cross-book watch**: D-038 (Inauguration scene foreshadowing) is integrated into book 1 but pending for book 3 — revisit when book 3 brainstorming starts.
@@ -389,6 +398,7 @@ In series mode, every decision entry gains a `Scope` field and `Affects books` f
 **Details**: ...
 **Source**: brainstorm
 **Integrated into**:
+
 - book-1 treatment: yes (2026-05-24)
 - book-3 treatment: no (book 3 not yet drafted)
 ```
@@ -418,9 +428,11 @@ The file opens with a `# Open Questions` heading (optional frontmatter above it,
 **Question**: How does Marlowe discover the time loop?
 **Why it matters**: The inciting incident hinges on this. Without clarity, Act 1 beat 3 can't be written and the protagonist's agency in Act 1 is undefined.
 **Possible approaches**:
-  - Accidental activation by Voss's prototype during a break-in
-  - Deliberate experiment by her mentor in the bureau
-  - Inherited device from her father, activated when she opens the locket
+
+- Accidental activation by Voss's prototype during a break-in
+- Deliberate experiment by her mentor in the bureau
+- Inherited device from her father, activated when she opens the locket
+
 **Dependencies**: Marlowe's background, the rules of the time loop (Q-007), setting constraints
 **Source**: plugin
 **Status**: open | resolved (D-023) | invalidated (Marlowe doesn't actually time-loop, see D-031)
@@ -487,11 +499,11 @@ A one-line-per-bio list of `characters/`, regenerated whenever a bio is written 
 ```markdown
 # Characters
 
-- [Marlowe Reyes](marlowe-reyes.md) — Protagonist · POV character, the bureau
-- [Ada Voss](ada-voss.md) — Antagonist
+- [Marlowe Reyes](./marlowe-reyes.md) — Protagonist · POV character, the bureau
+- [Ada Voss](./ada-voss.md) — Antagonist
 ```
 
-Each line is the bio's `name` linked to its file, ` — ` and its `type`, then ` · ` and its `tags` comma-separated when it has any.
+Each line is the bio's `name` linked to its file as `./<slug>.md` (a bare filename target reads as a web domain in Notion), ` — ` and its `type`, then ` · ` and its `tags` comma-separated when it has any.
 
 ## Worldbuilding files (`worldbuilding/<type-slug>/<slug>.md`)
 
@@ -597,6 +609,7 @@ The frontmatter is plugin bookkeeping. The body:
 ## Structure Notes
 
 ### Framework Choice
+
 [~150–300w: which framework, *why this story uses it* (drawing from primer Section 3 if it commits to one), and any deviations from the canonical beat positions. If the primer's Structural Framework section already commits to a framework, preserve that choice and explain how the spine implements it; don't second-guess the primer.]
 
 ### Act Structure
@@ -610,18 +623,22 @@ The frontmatter is plugin bookkeeping. The body:
 [Target Words come from § Target word count and the derived budgets: the act's share of `target_word_count`. Chapter ranges are inclusive on both ends. A two-half middle act (the old 2A / 2B) is described in Beat Anchors, not given its own act number.]
 
 ### POV Strategy
+
 [~100–200w: who has POV, how often, special rules. If the primer specifies POV strategy, mirror it. Note any chapter-level POV assignments that diverge from the default.]
 
 ### Pacing Notes
+
 [~100–200w: where the story accelerates, where it breathes, rhythmic patterns. Anchor to specific chapter ranges.]
 
 ### Open Structural Questions
+
 - Q-014 unresolved — affects ch3 (inciting incident mechanism) and ch18 (midpoint payoff).
 - Q-019 unresolved — affects all Act 3 chapter outlines.
 
 ---
 
 ### Chapter 1: The Auditing Room
+
 **Status:** new
 **POV:** Marlowe Reyes
 **Act:** 1 — Setup
@@ -630,6 +647,7 @@ Marlowe arrives late to her own swearing-in at the county courthouse, and the re
 ---
 
 ### Chapter 2: The First Crack
+
 **Status:** new
 **POV:** Marlowe Reyes
 **Act:** 1 — Setup
@@ -638,6 +656,7 @@ Marlowe arrives late to her own swearing-in at the county courthouse, and the re
 ---
 
 ### Chapter 40: Final Image
+
 …
 ```
 
@@ -746,7 +765,7 @@ Generated from `outline/structure.md` and the chapter folders under `chapters/`.
 ## Act 1: Setup (chapters 1–10)
 
 | Ch | Title / Spine concept | Outline | Blueprint | Prose | Notes |
-|----|------------------------|---------|-----------|-------|-------|
+|---|---|---|---|---|---|
 | 01 | *The Auditing Room* — late for her swearing-in | [v1](../chapters/chapter-01/ch01-outline.md) | — | — | — |
 | 02 | *The First Crack* — a receipt that doesn't reconcile | [v1](../chapters/chapter-02/ch02-outline.md) | — | — | — |
 | 03 | *The Body in the River* — inciting incident | [v2](../chapters/chapter-03/ch03-outline.md) `[OPEN: Q-014]` | — | — | — |
@@ -756,11 +775,12 @@ Generated from `outline/structure.md` and the chapter folders under `chapters/`.
 ## Act 2: Fun and Games (chapters 11–30)
 
 | Ch | Title / Spine concept | Outline | Blueprint | Prose | Notes |
-|----|------------------------|---------|-----------|-------|-------|
+|---|---|---|---|---|---|
 | 11 | *Surveillance Begins* | [v1](../chapters/chapter-11/ch11-outline.md) | — | — | — |
 | … |  |  |  |  |  |
 
 ## Act 3: Resolution (chapters 31–40)
+
 …
 ```
 
@@ -834,16 +854,27 @@ Body — the twelve sections (full formats in `references/blueprint-spec.md`):
 [the header block: the five bold-labeled lines in `references/blueprint-spec.md` § Header]
 
 ## 1. Scene Function
+
 ## 2. Story Context
+
 ## 3. Chapter Shape
+
 ## 4. Characters
+
 ## 5. Setting
+
 ## 6. Main Source of Conflict
+
 ## 7. Symbolism and Thematic Layer
+
 ## 8. Continuity
+
 ## 9. Worldbuilding
+
 ## 10. Dialogue Anchors
+
 ## 11. Chapter-Specific Craft
+
 ## 12. Other Notes
 ```
 
@@ -939,18 +970,23 @@ The body is exactly these six sections, in this order. A section with nothing to
 
 ```markdown
 ## As-Written Synopsis
+
 [what is on the page, distinct from the outline's intent; downstream consumers prefer this over the prose frontmatter synopsis when it exists]
 
 ## Divergences from the Outline
+
 - [each, flagged deliberate or drift]
 
 ## Harvest
+
 [concrete particulars the chapter committed — named objects, throwaway facts, minor characters, specific places. Nouns, not themes. Searchable across chapters via `chapters/*/ch*-notes.md`.]
 
 ## Accidental Canon
+
 [details invented in the prose that no canon file holds — proposed for promotion, never promoted silently]
 
 ## End State
+
 - **Hour:** …
 - **Location:** …
 - **Wardrobe:** …
@@ -959,13 +995,14 @@ The body is exactly these six sections, in this order. A section with nothing to
 - **Emotional residue:** …
 
 ## Proposals
+
 - [ ] **Revelation Log** · `characters/muppy.md` · Ch 1 — awn in the webbing of a forepaw, still in at chapter's end.
 - [ ] **Promote** · the Hartleys' mudroom → `worldbuilding-entry` (appears ch 1, 4, 6 with consistent detail, no entry).
 - [ ] **Manifest** · the rooster three properties over (minor element).
 - [ ] **Chain closure** · §2 jacket chain (plant ch 1, pay ch 3) — paid here as registered.
 - [x] **Revelation Log** · … — applied (D-041)
 - [x] **Promote** · … — routed (worldbuilding-entry)
-- [x] **Manifest** · … — declined (already covered by golden-valley.md)
+- [x] **Manifest** · … — declined (already covered by `golden-valley.md`)
 ```
 
 The **End State** block is what the next chapter's Blueprint reads for carried-forward state instead of re-reading 3,500 words of prior prose. The **Proposals** section is the queue `canon-sync` consumes: `notes` writes each item unchecked; `canon-sync` checks it off with its outcome (`applied (D-###)`, `routed (<skill>)`, `declined (<reason>)`). The count of unchecked items across `chapters/*/ch*-notes.md` is the project's unintegrated-proposal count in `state.md`, leaving out chapters whose prose is `status: retired`.
@@ -1017,20 +1054,25 @@ last_updated: 2026-05-24
 
 ```markdown
 ## Series Arc
+
 [~400–600w on the protagonist's full trajectory across all books, framed at the series scale. Names major thematic shifts, identity transformations, and the series-level dramatic question. The series equivalent of primer Section 2 (Premise & Moral Argument), scaled to the full series.]
 
 ## Series Theme
+
 [~200–400w on the central thematic question the series asks. This is often distinct from any single book's premise — a series may ask "what does power cost?" while book 1 asks "can integrity survive complicity?" and book 3 asks "is reform from within possible at all?" Both Egri's premise format ("[Quality] leads to [consequence]") and McKee's controlling idea format ("[Value] is achieved/lost when [cause]") apply here, scaled to the series.]
 
 ## Per-Book Synopses
 
 ### Book 1: [Title]
+
 [~150–300w paragraph summary of book 1's arc, integrated into the series flow. Read all three synopses together and the shape of the series should be clear.]
 
 ### Book 2: [Title]
+
 [~150–300w]
 
 ### Book 3: [Title]
+
 [~150–300w]
 
 ## Cross-Book Setups and Payoffs

@@ -55,29 +55,37 @@ this document. Output the complete chapter prose ONLY — no commentary, no
 markdown formatting, no headers.">
 
 ## Behavioral frame
+
 <identity · POV mode rule · tense directive · target length · output rules ·
 language variant. No spoiler-firewall instruction — the packet already
 contains only chapter ≤ NN material, which IS the firewall.>
 
 ## Writing sample — the voice north star
+
 <voice/writing-sample.md verbatim>
 
 ## Craft rules
+
 <voice/style-guide.md — or the selected craft rulebook when no style guide>
 
 ## Project
+
 <genre · logline · position in the book>
 
 ## Story so far
+
 <prior-chapter synopses, chronological>
 
 ## Chapter context
+
 <the Blueprint — or, fallback path: POV-first bios + worldbuilding + primer + manifest>
 
 ## Chapter outline — the task
+
 <ch<NN>-outline.md>
 
 ## Prior chapter prose — voice and continuity anchor
+
 <the POV-matched prior chapter, full text, LAST>
 
 Write the complete prose for chapter <NN> now. Output prose only.

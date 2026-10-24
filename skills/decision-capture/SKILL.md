@@ -125,6 +125,7 @@ The capture flow gains two steps in series mode:
 
    ```markdown
    **Integrated into**:
+
    - book-1 treatment: no
    - book-3 treatment: no (book 3 not yet drafted)
    ```

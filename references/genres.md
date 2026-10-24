@@ -39,18 +39,23 @@ Synthesize into `.storystormer/genre-reference.md` with these sections:
 **Sources**: [URL], [URL], [URL]
 
 ## Obligatory scenes
+
 - [Scene]: [why it's expected, how it's typically done]
 
 ## Core tropes
+
 - [Trope]: [what it is, when it works, when it's tired]
 
 ## Common pitfalls
+
 - [Pitfall]: [why it kills stories]
 
 ## Subgenre notes (if applicable)
+
 - [Subgenre]: [specific craft problems]
 
 ## Hybrid notes (if applicable)
+
 - [Primary]/[Secondary] tension: [where the conventions conflict]
 ```
 

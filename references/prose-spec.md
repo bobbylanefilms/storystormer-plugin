@@ -134,6 +134,7 @@ Surgical edits preserve the existing prose's length — no target in revise mode
 - **No meta-commentary** — no author's notes, no explanation of craft choices.
 - **Bracketed instructions** in the outline/Blueprint (e.g. `[describe the setting]`) are *guidance* — execute them naturally in prose, never reproduce the brackets.
 - **Scene breaks** within the chapter use a single blank line. Paragraphs separated by a single blank line. Dialogue uses standard quotation marks; attribution follows natural patterns.
+- **Markup:** what the body does carry (its paragraphs, the one empty line between them, curly quotes and dashes, ordinary spaces) is in the markdown profile, `references/markdown-profile.md`, so the chapter reads the same on every backend.
 - **A complete, self-contained chapter** that begins where the outline says and ends where the outline's beats end — don't continue past the chapter's scope, don't conclude the story.
 - **Match the language variant** if the project specifies one (British English, etc.).
 

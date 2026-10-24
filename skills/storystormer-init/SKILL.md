@@ -51,7 +51,8 @@ The author chooses, once, at init. This is the one place a store is chosen rathe
 - **Notion:** the binding’s steps (hub, tables for a new hub, the Projects row, the pointer), then the rest of init through the contract; its step 5 governs intake.
 - **The pointer:** for a connector backend with an open folder that is not its synced copy, write `.storystormer/config.json` there through the local binding as exactly `{"storage": {"kind": …, "root": …}}` and nothing else, so the next session’s resolution finds the project (`store.md` § Resolve, step 1). Init never puts `local_root` in a pointer: resolution binds the local binding wherever `local_root` exists, so it may name only the synced copy of the block’s own Dropbox root, which a pointer has only after `/storystormer:migrate` moves a synced folder there (`store.md` § Resolve). The full config lives in the store. With no open folder there is no pointer, and the report gives the way back.
 - **The intake archive** is where init files what it keeps of the intake: this run’s `init` snapshot folder where the binding’s `history` is `snapshots`, else `.storystormer/intake/<timestamp>/` (the snapshot-folder timestamp, so a re-run never overwrites an earlier record). It holds `superseded-prose/<original filename>`, `intake-original-names.md`, and, when the store is not the folder the intake came from, `sources/<original filename>` for each text source init read but didn’t re-file (a brain dump, a deferred legacy outline), so a session that reaches only the store still has the originals.
-- **A normalizing binding:** when the chosen binding says it normalizes markdown on write, keep the local intake originals (never `store.delete` them) and say so in the report.
+- **Markup.** Markdown init produces itself (a document built from intake, a `.docx` source’s text carried into one, a brain dump turned into decisions and questions) is plugin text, in profile form on every backend (`references/file-schemas.md`). Author files it stashes verbatim (prose, a placed writing sample or style guide, the archive’s originals) stay byte for byte on a folder or Dropbox; a binding that normalizes author markup on the way in rewrites their markup, never their words, in flight, and the report carries its one line.
+- **A normalizing binding:** when the chosen binding says it normalizes author markup on write, keep the local intake originals (never `store.delete` them) and say so in the report.
 
 ## What to do
 
@@ -256,7 +257,7 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
 
 3. **Normalize to the chapter-folder convention**: each chapter gets its own folder `chapters/chapter-NN/` (zero-padded to two digits), and the prose lands inside as `ch<NN>-prose.md`. So `ch1.md` becomes `chapters/chapter-01/ch01-prose.md`, `Chapter 17 - The Locket.md` becomes `chapters/chapter-17/ch17-prose.md`. Tell the user about the renames in the report.
 
-4. **Preserve the prose content verbatim**. Do not edit, normalize whitespace, fix typos, or restructure the prose. The intake-stashed file is the user's content, untouched. The only init-applied changes are:
+4. **Preserve the prose content verbatim**. Do not edit, normalize whitespace, fix typos, or restructure the prose. The intake-stashed file is the user's content, untouched (on a binding that normalizes author markup on the way in, its write does that and reports it, and the local original is kept: § Where a new project lives). The only init-applied changes are:
    - Filename normalization.
    - Adding minimal YAML frontmatter (`chapter`, `title`, `version: 1`, `last_updated`, `authorship: author_written`) if the file doesn't already have frontmatter. Title is extracted from an H1 heading if present, or from the filename's slug portion if discoverable, or left as `TBD` if neither.
 
@@ -280,14 +281,15 @@ If a file is genuinely ambiguous (a single "chapter.md" with story-like content 
 
    ```markdown
    # Intake — Original Filename Mapping
+
    2026-05-24
 
    | Original | Canonical | Notes |
    |---|---|---|
-   | ch1.md | chapters/chapter-01/ch01-prose.md | Renamed for convention. |
-   | Chapter 3 - The Locket.docx | chapters/chapter-03/ch03-prose.docx | Format preserved (not markdown); rename only. |
-   | chapter3-rewrite.md | chapters/chapter-03/ch03-prose.md (canonical) | User confirmed this is the canonical v2; original `ch3.md` snapshotted to superseded-prose/. |
-   | ch6.md | chapters/chapter-06/ch06-prose.md | Renamed. |
+   | `ch1.md` | `chapters/chapter-01/ch01-prose.md` | Renamed for convention. |
+   | `Chapter 3 - The Locket.docx` | `chapters/chapter-03/ch03-prose.docx` | Format preserved (not markdown); rename only. |
+   | `chapter3-rewrite.md` | `chapters/chapter-03/ch03-prose.md` (canonical) | User confirmed this is the canonical v2; original `ch3.md` snapshotted to `superseded-prose/`. |
+   | `ch6.md` | `chapters/chapter-06/ch06-prose.md` | Renamed. |
    ```
 
    This mapping is the audit trail — the user can always see what init did with their files.

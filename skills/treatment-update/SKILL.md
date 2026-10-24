@@ -263,6 +263,7 @@ The `Integrated into` field on consumed decisions becomes book-aware. For a seri
 
 ```markdown
 **Integrated into**:
+
 - book-1 treatment: yes (2026-05-24)
 - book-2 treatment: pending
 - book-3 treatment: no

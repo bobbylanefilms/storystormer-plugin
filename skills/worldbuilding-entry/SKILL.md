@@ -145,6 +145,7 @@ For elements that change meaningfully across books, the entry's body can use lig
 
 ```markdown
 ## Status Over the Series
+
 - **Book 1**: Mercer Foundation is publicly a respected NGO; private fraud operation underneath.
 - **Book 2**: Foundation is dissolved after the book-1 exposure; remnants regroup as the Mercer Trust.
 - **Book 3**: Trust assets are seized by federal investigators; the network goes underground.

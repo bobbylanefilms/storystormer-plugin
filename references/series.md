@@ -157,6 +157,7 @@ A series-scoped decision typically has integration pending across multiple books
 
 ```markdown
 **Integrated into**:
+
 - book-1 treatment: yes (2026-05-24)
 - book-2 treatment: pending (waiting on Q-031 to resolve)
 - book-3 treatment: no
@@ -176,6 +177,7 @@ The character bio schema gets one additional section in series mode:
 [Section 7 of the bio schema (`references/canon-schemas.md`), written for the whole series.]
 
 ### Series Arc
+
 [~150–250w on the character's full arc across all books — where they start in book 1, what they become by the end of book 3.]
 
 ### Per-Book Sub-Arcs
@@ -189,6 +191,7 @@ The Quick Reference block also gains an `Appears in:` line in series mode:
 
 ```markdown
 ## Quick Reference
+
 - **Name:** Maya Vance
 - **Appears in:** books 1, 2, 3
 - **Age:** 28 (book 1) → 32 (book 3)
