@@ -11,15 +11,15 @@
 
 | # | Tasks | Tier | Status | Commits | Review |
 |---|---|---|---|---|---|
-| 1 | Probe through Notion (`sb6-probe`) + `references/markdown-profile.md` | Opus | done, under review | `8fa54d9` | Fable: running (worktree `scratchpad/review-sb6-s1`) |
-| 2 | `tools/md-profile-check.ts` + tests (lint, `--words`) | Opus | pending (parallel with 3) | | |
-| 3 | Citations, output-spec fixes, Notion write-side normalization, migrate preflight + exact matching, init intake | Opus | pending (parallel with 2) | | |
+| 1 | Probe through Notion (`sb6-probe`) + `references/markdown-profile.md` | Opus | accepted | `8fa54d9`, fix `e02b09d` | Fable: 26 found, all confirmed, fixed by author in one round (re-probe: 243 constructs) |
+| 2 | `tools/md-profile-check.ts` + tests (lint, `--words`) | Opus | in progress (worktree) | | |
+| 3 | Citations, output-spec fixes, Notion write-side normalization, migrate preflight + exact matching, init intake | Opus | in progress (worktree) | | |
 | 4 | Verify: plugin-output lint run; `sb6-mini` idempotence, words, round trip; full Good Dog ring (`sb6-ring`) | Opus runners | pending | | |
 | 5 | Release 0.21.0-poc: README, guide, manifests, validate, `main` | inline | pending | | |
 
 ## Current position
 
-Slice 1 committed (`8fa54d9`); Fable review running. Slices 2 and 3 dispatch in parallel worktrees after the review (prompts in scratchpad `sb6/slice2-prompt.md`, `slice3-prompt.md`; runner briefs `sb6/runner-*.md`, common rules `sb6/live-common.md`). Fixtures rebuilt and locked: `sb6/fixtures/{the-good-dog (148), notion-mini (30)}`, recipe in `sb6/fixtures/RECIPE.md`.
+Slices 2 and 3 running in parallel worktrees (prompts in scratchpad `sb6/slice2-prompt.md`, `slice3-prompt.md`); cherry-pick each onto the branch after verification. Then the slice 4 runners (briefs `sb6/runner-{lint,mini,ring}.md`, rules `sb6/live-common.md`). Fixtures rebuilt and locked: `sb6/fixtures/{the-good-dog (148), notion-mini (30)}`, recipe `sb6/fixtures/RECIPE.md`.
 
 ## Decisions and deviations
 
