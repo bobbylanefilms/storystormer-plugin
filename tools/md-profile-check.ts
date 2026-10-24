@@ -124,7 +124,8 @@ const ITEM_PARTS = /^([ \t]*)([-*+]|\d{1,9}[.)])([ \t]*)(.*)$/;
 const GFM_SEP = /^ {0,3}\|?[ \t]*:?-+:?[ \t]*(?:\|[ \t]*:?-+:?[ \t]*)*\|?[ \t]*$/;
 // A CommonMark link reference definition: a label, a destination, an optional title, and nothing else.
 const REFDEF = /^ {0,3}\[([^\]^\n][^\]\n]*)\]:[ \t]*(?:<[^>\n]*>|[^\s<>]+)(?:[ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^)\n]*\)))?[ \t]*$/;
-const FIELD_LABEL = /^\*\*[^*\n]+\*\*:/;
+// A field label: `**Label**:` (the log form) or `**Label:**` (colon inside the bold, as authors also write it).
+const FIELD_LABEL = /^\*\*[^*\n]+(?:\*\*:|:\*\*)/;
 const FOOTDEF = /^ {0,3}\[\^[^\]]+\]:/;
 
 type Kind = 'fence' | 'heading' | 'rule' | 'quote' | 'item' | 'table' | 'footdef' | 'refdef' | 'para';

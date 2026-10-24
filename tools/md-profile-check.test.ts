@@ -149,6 +149,11 @@ test('lint profile rules the first version missed', () => {
   assert.deepEqual(rulesOf('Para.\n\n    ```\n    code\n    ```\n'), ['indented-code']);
 });
 
+test('lint a list under a field label with the colon inside the bold: the next label line is not a continuation', () => {
+  assert.deepEqual(rulesOf('**Possible approaches:**\n\n- one\n\n**Dependencies:** Q-007\n'), []);
+  assert.ok(rulesOf('**Possible approaches:**\n\n- one\n**Dependencies:** Q-007\n').includes('block-separation'));
+});
+
 test('lint a list under a field label: the next field label line is not a continuation', () => {
   assert.deepEqual(lintText('**Possible approaches**:\n\n- one\n- two\n**Dependencies**: Q-007\n').map((f) => [f.line, f.rule]), [[5, 'block-separation']]);
   assert.deepEqual(lintText('**Possible approaches**:\n- one\n').map((f) => [f.line, f.rule]), [[2, 'block-separation']]);
