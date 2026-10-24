@@ -117,3 +117,34 @@ A probe construct that comes back changed is excluded from the profile and gains
 **Decisions (Rob, 2026-10-18):**
 1. **Author files on local and Dropbox:** a skill edit never tidies them. The profile applies only to the plugin’s own new text, and the author’s surrounding text stays byte-for-byte.
 2. **The Notion write-side safety net:** normalize out-of-profile markup and report it in one line; don’t stop to ask.
+
+---
+
+**Implementation notes (as built):** 2026-10-24, `/implement SB6` (Anthropic-only), branch `feature/sb6-sb7-markdown-profile-entry-collections`. Opus authors, Fable reviewing every slice. Fixtures were rebuilt in the session scratchpad from Rob’s The Good Dog source (`experiments/` skipped): a 148-file copy and a 30-file cut (recipe in `sb6/fixtures/RECIPE.md`), never committed.
+
+- **Slices:**
+  - **1, probe and profile:** `8fa54d9`, fix `e02b09d`.
+  - **2, checker:** `5315dc4`, fix `99901e0`.
+  - **3, citations, binding, migrate and init:** `784b67c`, fix `1dfb173`, plus an inline `5103283`.
+  - **Lint-run fixes:** `d7a8777`.
+  - **Live-run fix rounds:** `85d8391`, `885c1af`, `c2420dd`, `2a0781b`, and the final review's `7cfe89d`.
+  - **Reviews:** every review’s findings were confirmed and fixed by the author, each in one round.
+- **The probe’s headline:** Notion’s fetch serializer changed between 2026-10-17 and 2026-10-24. It now returns inline emphasis as `<b>`/`<i>`/`<s>`/`<code>`, `<br />`, `txt` fences and `| --- |` tables; it splits bold runs around its own escapes; and it strips leading spaces from multi-line rich-text properties. The binding needed new read rules (E1–E4, the merge of adjacent identical runs) and a new `Meta` storage form (`_lines`, JSON `_` keys, every punctuation character escaped in property text) whether or not the profile shipped.
+- **The profile** (`references/markdown-profile.md`): evidence from 243 probe constructs plus nine follow-up probe rows under `sb6-probe`, results in `tests/markdown-profile/probe-results.md`.
+  - **Wider than hypothesized:** bold italic, ordered lists continuing past a heading, and nested emphasis in Notion’s own nesting order (strike outside italic outside bold outside code) all round-trip.
+  - **Excluded,** each with a markup-only rewrite: underscores, out-of-order or boundary-sharing nesting, padded or alternative markers, HTML, bare URLs, non-breaking spaces, and similar.
+  - **No final hold-outs:** the 2026-10-24 decision to keep emphasis around code as a rewrite was superseded when probe 7 showed in-order nesting survives; it is now allowed.
+- **Verification:**
+  - **Lint run:** a fresh project taken from `init` to `notes` on local had one finding in plugin text (fixed) and four near-misses (fixed).
+  - **30-file round trip, three runs:** run 1 found two defects (`Meta` indentation, split bold); run 2 found one (paired-underscore filenames, fixed by escaping `_` on write); **run 3 passed with an empty (b) list.** 28 of 28 documents came back byte-identical, the return path and archive re-filing were exact, and the resume and left-behind checks matched exactly with no fuzzy match.
+  - **Full 148-file ring, local → Notion → Dropbox → local:** completed, with leg 3 byte-clean and every file accounted for. It found three out-of-Notion defects (a number-looking `act` rendered quoted, the empty line after the frontmatter, non-breaking spaces lost on fetch) and two nested-italic constructs Notion changed. All were fixed in `2a0781b` and proven by targeted probes (rows `sb6-probe-7`, `-8`, `-9`). The final review's findings (`7cfe89d`) were proven by `sb6-probe-10`. **The full ring was not re-run after that round.**
+- **Deviations:**
+  - `migrate` cites the profile directly, because its subagent briefs paste the rewrite table; this is a deliberate exception to “no skill gains a citation”.
+  - The What Exists recompute now keeps carried lines (Research, Handoff, Methodology) and drops only stray prose, named in the preflight. This is a small schema change made in the fix rounds.
+  - The plan’s `blueprint-spec.md` POV-label change wasn’t needed, since bold italic round-trips.
+  - The Cowork test (Rob, 2026-10-24) found the Notion `list` missing child pages, with verification balancing on the short list; it was fixed in slice 3 along with the inventory cross-check.
+- **Cost seen:** a move into Notion runs about 40 minutes for 30 files and 84 minutes for 148, because Notion’s background queue failed every time (503) and the run went synchronous.
+- **Follow-ups:**
+  - **App side:** the web app’s MCP renderers must emit profile form (AP5 § 5, web-app `b6b09414`).
+  - **ISSUE072:** items 13–18, from the lint run.
+  - **Test projects:** `sb6-probe`, `sb6-mini`, `sb6-mini2`, `sb6-mini3`, `sb6-ring` in Notion, and Dropbox `/StoryStormer/sb6-ring/`, are left for Rob to trash.

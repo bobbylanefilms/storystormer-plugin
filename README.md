@@ -131,7 +131,7 @@ How they compare, from a full test on a real project (SB5, October 2026):
 
 - **Local:** the fastest and the reference everything else is measured against.
 - **Dropbox:** every file comes back byte for byte, but sessions run about twice as slow as local, because the connector rewrites a whole file on every change and the decision log and dashboard grow large.
-- **Notion:** a little slower than local, and your text survives a round trip intact, but Notion re-formats some markdown in its own way: emphasis markers, numbered-list numbers, list spacing and raw HTML tables can come back slightly different from what went in. Your words are kept; some formatting isn’t.
+- **Notion:** a little slower than local. Everything the plugin writes uses a set of markdown Notion keeps exactly, so it comes back from Notion as it went in. When you move an existing project into Notion, your own files are tidied once on the way in (spacing, list markers, underscores used for emphasis, raw HTML tables, non-breaking spaces): `/storystormer:migrate` shows what will change before it starts, your words never change, and your original files stay where they were. Text you type directly in Notion keeps whatever form Notion gives it.
 - **Google Drive and OneDrive:** use them as a synced folder; their connectors will be re-tested in November 2026.
 
 When you start a new project, `/storystormer:init` asks once where it should live, offering only the homes this session can reach (connect the Dropbox or Notion connector first to see them). In a session with no folder open, StoryStormer lists the projects it finds in your Dropbox and Notion and works on the one you pick. To move an existing story, run `/storystormer:migrate`: it copies everything the new home can hold, points your folder at the new copy, and leaves the original in place for you to delete when you’re ready. The [installing guide](guides/installing.md#choosing-where-your-story-lives) explains the choices, including the Dropbox hybrid.
@@ -195,6 +195,14 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.21.0 added over v0.20.1
+
+- **A portable markdown profile.** The plugin now writes one kind of markdown on every backend: the subset that comes back from Notion byte for byte, found by writing 243 constructs to Notion and reading them back, plus follow-up probes from three live migrations (`references/markdown-profile.md`; the evidence is in `tests/markdown-profile/`). Your own files in a folder or in Dropbox are never reformatted; only the plugin’s own text follows the profile.
+- **Moving into Notion is exact.** `migrate` into Notion tidies your files’ markup once, on the way in, and its plan lists every change by file and kind before you approve it. Each document is read back and compared exactly, so a move, a resume after an interruption and a move back to the copy you left behind compare byte for byte instead of “close enough”. Moving out of Notion now checks every document’s front matter against what Notion holds.
+- **Notion changed how it returns pages, and the binding follows.** Notion now returns formatting as HTML-style tags, splits bold text around some punctuation and strips indentation from stored properties; the binding reads all of it back correctly, stores its bookkeeping in a form Notion can’t disturb, and switches to synchronous calls when Notion’s background queue is unavailable.
+- **`migrate` sees everything it moves.** It counts every category, zero included, cross-checks its inventory (a Cowork test found a Notion project’s init archive left behind while the run reported success), waits for the canon copy before starting the rest, and on a folder target checks every file’s size against the source listing.
+- **A dev-only checker,** `tools/md-profile-check.ts`, lints files against the profile and compares the words of two folders; no skill depends on it.
 
 ### What v0.20.1 fixed over v0.20.0
 

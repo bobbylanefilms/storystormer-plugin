@@ -3,7 +3,7 @@
 
 # HANDOFF: storystormer-plugin
 
-**Run:** `/implement SB6` (anthropic-skills, Anthropic-only) · local · orchestrator Opus 5.5 · effort high · deep review on (Fable reviews Opus) · started 2026-10-24
+**Run (complete):** `/implement SB6` (anthropic-skills, Anthropic-only) · local · orchestrator Opus 5.5 · effort high · deep review on (Fable reviews Opus) · started 2026-10-24
 **Branch:** `feature/sb6-sb7-markdown-profile-entry-collections` (from `main` @ `9497274`) · **Plan:** `.plans/SB6-portable-markdown-profile.md`
 **Scratch:** session scratchpad `sb6/` (fixtures rebuilt from Rob's The Good Dog source, skipping `experiments/`; never committed)
 
@@ -14,12 +14,12 @@
 | 1 | Probe through Notion (`sb6-probe`) + `references/markdown-profile.md` | Opus | accepted | `8fa54d9`, fix `e02b09d` | Fable: 26 found, all confirmed, fixed by author in one round (re-probe: 243 constructs) |
 | 2 | `tools/md-profile-check.ts` + tests (lint, `--words`) | Opus | accepted | `5315dc4`, fix `99901e0` (83 tests pass) | Fable: 10 groups found (3 P1: symlink crash, `--words` blind inside code spans, false diffs on correct rewrites), all confirmed |
 | 3 | Citations, output-spec fixes, Notion write-side normalization, migrate preflight + exact matching, init intake, Cowork child-page gap, new Notion read rules | Opus | accepted | `784b67c`, fix `1dfb173` (+ inline `5103283`) | Fable: 14 found, all confirmed, fixed by author in one round |
-| 4 | Verify: plugin-output lint run; `sb6-mini` idempotence, words, round trip; full Good Dog ring (`sb6-ring`) | Opus runners | lint done (fixed `d7a8777`); mini run 1: 2 (b) → fix `85d8391` (+ review fix `885c1af`); mini run 2: 1 (b), paired-underscore filenames, covered by `885c1af`, wording `c2420dd`; **mini run 3 (`sb6-mini3`) and the ring (`sb6-ring`) running in parallel at `c2420dd`** | | Fable reviewed `85d8391`: 13 found, all fixed |
-| 5 | Release 0.21.0-poc: README, guide, manifests, validate, `main` | inline | pending | | |
+| 4 | Verify: plugin-output lint run; `sb6-mini` idempotence, words, round trip; full Good Dog ring (`sb6-ring`) | Opus runners | done. lint done (fixed `d7a8777`); mini run 1: 2 (b) → fix `85d8391` (+ review fix `885c1af`); mini run 2: 1 (b), paired-underscore filenames, covered by `885c1af`, wording `c2420dd`; **mini run 3 (`sb6-mini3`) and the ring (`sb6-ring`) running in parallel at `c2420dd`** | | Fable reviewed `85d8391`: 13 found, all fixed |
+| 5 | Release 0.21.0-poc: README, guide, manifests, validate, `main` | inline | done | release commit | |
 
 ## Current position
 
-Runners `live-sb6-mini3` (briefs `sb6/runner-mini3.md`) and `live-sb6-ring` (`sb6/runner-ring.md`) running at `c2420dd`. After both pass: release 0.21.0-poc (README Notion bullet + v0.21 changelog, `guides/installing.md`, both manifests, validate, push branch, fast-forward and push `main`), SB6 as-built notes, CW5 note, final report.
+SB6 released as 0.21.0-poc on `main`. All slices accepted. mini run 3 passed with an empty (b) list; the full ring ran once, and its findings were fixed and probed (not re-run). Next: SB7 (entry collections, slim `state.md`), AP5 in the web-app repo, ISSUE072.
 
 ## Decisions and deviations
 
