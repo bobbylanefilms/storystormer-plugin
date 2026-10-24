@@ -89,8 +89,8 @@ Rob’s rule (2026-10-24): whatever runs on local and Dropbox must also run on N
 
 **Open decisions** (recommendations marked; take them unless Rob says otherwise):
 1. **Journal granularity:** one entry per session (**decided**, Rob, 2026-10-24). The app writes entries from its own chat sessions too (AP5 § 5).
-2. **A computed whole-log view** (`decisions.md` as a read-only rendering) on Notion and the app: **no (recommended)**, for parity; the index is the overview everywhere.
-3. **An Obsidian Bases view** (`decisions.base`) shipped by `init` on local: follow-up, not this plan.
+2. **A computed whole-log view** (`decisions.md` as a read-only rendering) on Notion and the app: **no** (**decided**, Rob, 2026-10-24), for parity; the index is the overview everywhere.
+3. **An Obsidian Bases view** shipped by `init` and the layout upgrade on local: a small follow-up after SB7 (**decided**, Rob, 2026-10-24). It filters on two entry fields rather than folder paths, so SB7’s entry frontmatter carries them from the start: `storystormer_project` (the slug) and `storystormer_kind` (`decision`, `question`, `journal`). Skills rebuild a stored `_index.md` whenever an entry is newer than it, since an edit made in Bases changes an entry’s frontmatter directly.
 
 ---
 
