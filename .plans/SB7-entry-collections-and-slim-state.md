@@ -18,7 +18,7 @@
 3. **All three bindings:** realize the collections. On Notion, this replaces most of SB5’s log-entry preservation machinery with the ordinary frontmatter ↔ properties rule.
 4. **The skills that read or write the logs or `state.md`:** they address entries, not log text.
 5. **`migrate`:** gains the in-place layout upgrade.
-6. **The web app:** a companion change, **CL100** (`~/Git/storystormer/.plans/CL100-project-journal-and-entry-paths.md`), gives the app a journal and has the MCP serve the same per-entry paths, so the future StoryStormer binding (AP4) sees the same layout.
+6. **The web app:** a companion change, **AP5 piece 5** (`~/Git/storystormer/.plans/AP5-app-side-finish.md` § 5; folded in from CL100), gives the app a journal and has the MCP serve the same per-entry paths, so the future StoryStormer binding (AP4) sees the same layout.
 
 **Why it matters:**
 - **Parity:** the same layout on all four backends.
@@ -88,7 +88,7 @@ Rob’s rule (2026-10-24): whatever runs on local and Dropbox must also run on N
 - **Field-ownership trace first.** Before changing ownership, list every key in both `state.md` and `config.json` and every skill or binding that reads each one. The SB5 re-verify found the title in both and Notion able to keep only one. Decide each owner from what reads it and when, and record the table in the as-built notes.
 
 **Open decisions** (recommendations marked; take them unless Rob says otherwise):
-1. **Journal granularity:** one entry per session **(recommended)** vs one per skill run.
+1. **Journal granularity:** one entry per session (**decided**, Rob, 2026-10-24). The app writes entries from its own chat sessions too (AP5 § 5).
 2. **A computed whole-log view** (`decisions.md` as a read-only rendering) on Notion and the app: **no (recommended)**, for parity; the index is the overview everywhere.
 3. **An Obsidian Bases view** (`decisions.base`) shipped by `init` on local: follow-up, not this plan.
 
@@ -107,7 +107,7 @@ Rob’s rule (2026-10-24): whatever runs on local and Dropbox must also run on N
 
 **Out of scope:**
 - **The StoryStormer binding itself:** AP4 (still pending).
-- **The app side:** CL100.
+- **The app side:** AP5 § 5 in the web-app repo.
 - **Retention rules for the journal:** it grows forever, but nothing reads it by default.
 - **Obsidian Bases.**
 
@@ -128,4 +128,4 @@ Rob’s rule (2026-10-24): whatever runs on local and Dropbox must also run on N
 - **SB6** on `main`.
 - **Connectors:** Dropbox and Notion connected in the Claude Code session.
 - **A fresh copy of The Good Dog** (the SB5 scratch fixture was partly cleaned up).
-- **CL100,** for app parity (not needed to ship SB7 on the three plugin backends).
+- **AP5 piece 5,** for app parity (not needed to ship SB7 on the three plugin backends).
