@@ -39,6 +39,7 @@ Show the composed entry. Ask:
 >
 > ```
 > ## D-019 · 2026-05-11 · character
+>
 > **Topic**: Marlowe's relationship to Voss
 > **Summary**: Marlowe and Voss are estranged siblings, not strangers.
 > **Details**: …

@@ -194,7 +194,7 @@ Bullet list, one element per bullet, tier and scene trigger named, prominence-ti
 The exchanges that must land, at beat level: who speaks, what the line must accomplish, register constraints from the speakers' fingerprints (*he never asks a question, so the objection lands as a statement*). Not drafted dialogue; where the outline already carries the author's dialogue, the anchor says that line is the author's and is preserved in substance.
 
 ### 11. Chapter-Specific Craft
-Only placements unique to this chapter: a locked term set and its order of introduction, a register the chapter may not use, a lexicon bar, a sequence that must carry no vocabulary lesson. Opens with a one-line pointer to the style guide for everything general. If there is no style guide, this section carries the transcribed craft rules and the skill has warned the author.
+Only placements unique to this chapter: a locked term set and its order of introduction, a register the chapter may not use, a lexicon bar, a sequence that must carry no vocabulary lesson. Opens with a one-line pointer to the style guide for everything general. If there is no style guide, this section carries the transcribed craft rules and the skill has warned the author. A placement never asks for markup in the prose (italics for a letter, bold, headings): the plugin’s fiction carries none (`prose-spec.md` § Output rules), so render emphasis in words and rhythm instead.
 
 ### 12. Other Notes
 Bullet list: what this chapter must not do (and it must never anticipate); what is unresolved at the last line; tonal target; POV reminders.

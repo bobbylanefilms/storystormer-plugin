@@ -152,7 +152,7 @@ Every primer rewrite is snapshotted (per `references/store.md`), so ejected cont
 
 ### Section 1 — Story Identity (800–1,200w)
 
-Logline (1–3 sentences capturing the hook), primary genre and subgenre, 3–5 comparable works with brief explanations of the comparison, target word count and what that implies for pacing/structure.
+Logline (1–3 sentences capturing the hook), primary genre and subgenre, 3–5 comparable works with brief explanations of the comparison (one bullet each, title in italics and no bold around it: `- *Olive Kitteridge* (Elizabeth Strout): linked lives in one small town`), target word count and what that implies for pacing/structure.
 
 **Does NOT contain**: premise or moral argument (Section 2), character descriptions (Manifest), plot summary (treatment).
 

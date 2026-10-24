@@ -30,6 +30,7 @@ A subagent cannot reach the plugin bundle and never resolves the store (`referen
   - **Write recovery** (`write: delete-create` or `create-trash`): retry the create with the content in hand; if it still fails, write back the prior content; never end with the path absent; report what happened.
   - **Confirmation:** the main session's plan approval covers every mutation in this brief; don't ask again per file.
   - **Computed documents:** the ones the binding computes, which the subagent must not write.
+- **Markup:** a subagent that writes plugin text gets `references/markdown-profile.md`’s § Document, § Blocks and § Inline pasted as text (it can’t open the bundle), so what it writes is in the profile; one that carries author text into a binding that normalizes it also gets § Rewrite table, § Kept as written and § No in-profile form.
 
 The subagent reaches the store only through that block. **Intake work on a remote store carries two blocks:** a **source** block (the local binding, rooted at the open folder, for reading the intake materials and nothing else) and a **destination** block (the session's binding, for everything written). **The main session rejects a report that names a local filesystem path when the session's binding is not local**, except a source path the source block covers, and re-dispatches with the store blocks restated.
 

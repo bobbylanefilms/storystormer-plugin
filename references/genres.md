@@ -36,7 +36,7 @@ Synthesize into `.storystormer/genre-reference.md` with these sections:
 # [Genre] reference
 
 **Synthesized**: 2026-05-11
-**Sources**: [URL], [URL], [URL]
+**Sources**: [title](https://…), [title](https://…), [title](https://…)
 
 ## Obligatory scenes
 

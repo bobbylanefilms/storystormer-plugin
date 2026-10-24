@@ -20,6 +20,15 @@
 11. **Entries without a Revelation Log.** `jon-hartley.md` and the location entries have none, so canon-sync proposals aimed there had to create one or be declined (F-D23). Say in `canon-schemas.md` that canon-sync creates the section on first use (it did, inconsistently).
 12. **canon-sync reader subagents double reads on delete-create stores** (F-D19): one reader per entry, then the main session re-reads to edit. On a `write: delete-create` binding, let the main session read the entries itself when the span is small.
 
+Items 13–18 come from SB6's lint run (a fresh synthetic project taken through init → notes on local, 2026-10-24; scratchpad log `sb6/live/lint/log.md`):
+
+13. **A spine shorter than its Chapter Count.** The structure schema wants one block per chapter “with no gaps” and a Chapter Count header, but doesn't say whether a spine may commit only the first act (24 declared, 6 written). Say whether a partial spine is allowed and how it's marked.
+14. **Reading a binary intake source.** The local binding's `read` can't open a `.docx`, and nothing says how init gets its text (the run used `textutil`, a Bash route). Name the route, keeping the no-Bash constraint: the host's document reader, or ask the author to export.
+15. **`notes` section order.** § 4 lists Proposals before End State; `file-schemas.md` § Notes has the opposite order, and the skill says never to reorder. Make them agree.
+16. **Multi-paragraph decision fields.** A `**Details**:` value that runs to several paragraphs pulls the next `**Affects**:` line into its last paragraph unless an empty line separates them. Say in `file-schemas.md` § `decisions.md` that a multi-paragraph field ends with an empty line.
+17. **Bio heading levels.** `canon-schemas.md` gives no heading levels for a bio file.
+18. **“Integrated into structure”** is used but not in the decisions schema's field list; `treatment-update` and `pre-outline-session` both write it.
+
 ## Files
 
 `skills/storystormer-init/SKILL.md` · `skills/blueprint/SKILL.md` § 5, § 8, § 9 · `references/blueprint-spec.md` · `skills/notes/SKILL.md` § Preconditions · `references/canon-schemas.md` § Revelation Log · `skills/canon-sync/SKILL.md`
