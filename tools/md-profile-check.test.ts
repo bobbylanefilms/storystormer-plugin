@@ -3,7 +3,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -18,6 +18,7 @@ const rulesOf = (src: string): string[] => lintText(src).map((f) => f.rule);
 
 // One passing and one failing document per rule. Every `pass` must lint fully clean.
 const CASES: Array<{ rule: string; pass: string; fail: string }> = [
+  { rule: 'frontmatter-unclosed', pass: '---\ntitle: X\n---\n\nText.\n', fail: '---\ntitle: X\n\nText.\n' },
   { rule: 'line-ending', pass: 'One.\nTwo.\n', fail: 'One.\r\nTwo.\r\n' },
   { rule: 'final-newline', pass: 'Text.\n', fail: 'Text.' },
   { rule: 'trailing-whitespace', pass: 'Text.\n', fail: 'Text.   \n' },
@@ -32,7 +33,7 @@ const CASES: Array<{ rule: string; pass: string; fail: string }> = [
   { rule: 'heading-form', pass: '## Two\n', fail: '##  Two spaces\n' },
   { rule: 'list-marker', pass: '- alpha\n- beta\n', fail: '* alpha\n* beta\n' },
   { rule: 'todo-case', pass: '- [x] done\n- [ ] open\n', fail: '- [X] done\n' },
-  { rule: 'list-indent', pass: '- one\n  - two\n1. three\n   - four\n', fail: '- one\n    - two\n' },
+  { rule: 'list-indent', pass: '- one\n  - two\n\n1. three\n   - four\n', fail: '- one\n    - two\n' },
   { rule: 'list-under-text', pass: '**Label:**\n\n- one\n', fail: '**Label**:\n  - one\n  - two\n' },
   { rule: 'list-numbering', pass: '3. three\n4. four\n', fail: '1. one\n1. two\n' },
   { rule: 'list-loose', pass: '- a\n- b\n', fail: '- a\n\n- b\n' },
@@ -110,6 +111,54 @@ test('lint lists: a second paragraph may belong to an outer item; a quote after 
   assert.deepEqual(rulesOf('1. Step\n\n   > A quote.\n'), ['list-item-block']);
 });
 
+test('lint final newline and empty files', () => {
+  assert.deepEqual(rulesOf(''), ['final-newline']);
+  assert.deepEqual(rulesOf('\n\n'), ['final-newline']);
+  assert.deepEqual(rulesOf('Text.\n\n\n'), ['final-newline']);
+  assert.deepEqual(rulesOf('Text.\n  \n'), ['whitespace-only-line']);
+});
+
+test('lint frontmatter boundary: a rule is not frontmatter; a bad close is one finding', () => {
+  // A body that opens with a rule and has another later: both rules are linted as body.
+  assert.deepEqual(rulesOf('---\n\nSome _x_ text.\n\n---\n'), ['emphasis-underscore']);
+  assert.deepEqual(lintText('---\ntitle: X\n**a *b* c**\n'), [{ line: 1, rule: 'frontmatter-unclosed', message: 'frontmatter never closes: no closing --- line, so nothing after it was linted' }]);
+  assert.deepEqual(rulesOf('---\ntitle: X\n---  \n\nText.\n'), ['frontmatter-unclosed']);
+});
+
+test('lint CommonMark paragraph continuations are not new blocks', () => {
+  assert.deepEqual(rulesOf('She counted to ten.\n2. Then she left.\n'), []);
+  assert.deepEqual(rulesOf('It began in\n1984. Everything changed.\n'), []);
+  assert.deepEqual(rulesOf('Right\n| and left.\n'), []);
+  assert.deepEqual(rulesOf('[Ada]: She waits at the dock.\n'), []);
+  assert.deepEqual(rulesOf('Text.\n1. one\n'), ['block-separation']);
+  assert.deepEqual(rulesOf('- a\n2. b\n'), []);
+});
+
+test('lint profile rules the first version missed', () => {
+  assert.ok(rulesOf('Some *a * b* text.\n').includes('emphasis-nested'));
+  assert.ok(rulesOf('See [**x** y](./x.md).\n').includes('emphasis-link'));
+  for (const target of ['ftp://example.com/a', 'file:///tmp/a.md', '/abs/a.md', 'tel:5551234']) {
+    assert.deepEqual(rulesOf(`See [x](${target}).\n`), ['link-target'], target);
+  }
+  assert.match(lintText('Call [me](tel:5551234).\n')[0].message, /only https:\/\/, http:\/\/ and mailto:/);
+  assert.deepEqual(rulesOf('- [ ]\n- [x] done\n'), ['list-empty-item']);
+  assert.deepEqual(rulesOf('| a | b |\n|---|---|\n| c |\n'), ['table-form']);
+  assert.deepEqual(rulesOf('- a\n1. b\n'), ['block-separation']);
+  assert.deepEqual(rulesOf('A.\n\n * * *\n\nB.\n'), ['leading-whitespace']);
+  assert.deepEqual(rulesOf('> ```\n> - code\n> ```\n'), ['quote-content']);
+  assert.deepEqual(rulesOf('Para.\n\n    ```\n    code\n    ```\n'), ['indented-code']);
+});
+
+test('lint a list under a field label: the next field label line is not a continuation', () => {
+  assert.deepEqual(lintText('**Possible approaches**:\n\n- one\n- two\n**Dependencies**: Q-007\n').map((f) => [f.line, f.rule]), [[5, 'block-separation']]);
+  assert.deepEqual(lintText('**Possible approaches**:\n- one\n').map((f) => [f.line, f.rule]), [[2, 'block-separation']]);
+  assert.deepEqual(rulesOf('**Possible approaches**:\n\n- one\n- two\n\n**Dependencies**: Q-007\n'), []);
+});
+
+test('lint CRLF files report the right line numbers', () => {
+  assert.deepEqual(lintText('# T\r\n\r\nSome _x_.\r\n').map((f) => [f.line, f.rule]), [[1, 'line-ending'], [3, 'emphasis-underscore']]);
+});
+
 test('lint --rule limits the run', () => {
   const src = 'Some _x_ text.   \n';
   assert.deepEqual(lintText(src, new Set(['trailing-whitespace'])).map((f) => f.rule), ['trailing-whitespace']);
@@ -172,16 +221,42 @@ test('probe.md: every kept (K) section lints clean, as its own document', () => 
   assert.deepEqual(failures, []);
 });
 
-test('probe.md: every changed or literal (C, L, S, X, W) section is flagged', () => {
+// The rule each changed or literal probe section must be flagged by.
+const EXPECTED_RULE: Record<string, string> = Object.fromEntries(`
+PA02 block-separation · PA04 blank-lines · PA05 trailing-whitespace · PA06 whitespace-only-line · PA07 block-separation
+PA09 block-separation · PA11 leading-whitespace · PB05 heading-depth · PB06 heading-depth · PB07 heading-closing
+PB08 heading-setext · PB09 heading-setext · PB13 heading-closing · PC02 emphasis-underscore · PC04 emphasis-underscore
+PC07 emphasis-nested · PC08 emphasis-nested · PC09 emphasis-nested · PC10 emphasis-nested · PC11 emphasis-underscore
+PC12 emphasis-underscore · PC13 emphasis-code · PC14 emphasis-code · PC21 emphasis-strike-order · PC26 emphasis-underscore
+PC31 emphasis-strike-order · PC33 emphasis-nested · PD02 list-marker · PD03 list-marker · PD04 list-marker
+PD06 list-indent · PD11 list-marker · PD12 list-numbering · PD14 list-marker · PD15 list-loose · PD16 list-continuation
+PD17 list-continuation · PD20 todo-case · PD22 list-indent · PD26 list-empty-item · PD29 list-fence-gap
+PE04 quote-marker · PE05 quote-content · PE06 quote-content · PE09 quote-content · PE10 quote-marker · PE11 quote-content
+PF02 trailing-whitespace · PF03 line-break · PF04 line-break · PG02 table-form · PG03 table-form · PG05 table-form
+PG08 emphasis-nested · PG10 table-form · PG12 html · PG15 table-form · PG16 html-entity · PH02 rule-form · PH03 rule-form
+PH04 rule-form · PH06 rule-form · PH07 rule-form · PH08 rule-form · PI06 html-entity · PI08 html · PI09 backslash-escape
+PI20 backslash-escape · PI24 html-entity · PI25 html-entity · PI26 html-entity · PI27 html-entity · PI28 html-entity
+PJ02 bare-url · PJ03 bare-url · PJ04 bare-path · PJ05 link-title · PJ06 link-reference · PJ08 bare-email · PJ09 link-target
+PJ11 footnote · PJ12 emphasis-link · PJ14 emphasis-link · PJ16 image-target · PJ17 image-target · PK01 obsidian-syntax
+PK02 obsidian-syntax · PK03 obsidian-syntax · PK04 obsidian-syntax · PK06 obsidian-syntax · PL02 code-span-padding
+PL05 fence-language · PL06 fence-form · PL07 indented-code · PL10 fence-form · PL11 fence-language · PL13 fence-language
+PL15 fence-language · PL16 fence-language · PL23 fence-form · PL25 code-span-padding · PM01 html · PM02 html · PM03 html
+PM04 html · PM05 html · PM06 html · PM07 html · PM08 html · PM09 html · PM10 html · PM11 html · PM12 html · PM13 html
+PN02 bare-path · PN03 bare-path · PN05 bare-path · PO02 block-separation · PO04 link-target · PO15 list-under-text
+`.trim().split(/\s*[·\n]\s*/).map((pair) => pair.split(' ') as [string, string]));
+
+test('probe.md: every changed or literal (C, L, S, X, W) section is flagged by its expected rule', () => {
   const v = verdicts();
   const secs = sections(join(probeDir, 'probe.md'), /^## (P[A-Z]\d\d) /);
-  const silent: string[] = [];
+  const wrong: string[] = [];
   for (const [id, s] of secs) {
     const verdict = v.get(id);
     if (verdict === undefined || verdict === 'K' || FLAG_EXCEPTIONS[id]) continue;
-    if (lintText(s.whole).length === 0) silent.push(`${id} (${verdict})`);
+    const want = EXPECTED_RULE[id];
+    const got = [...new Set(lintText(s.whole).map((f) => f.rule))];
+    if (want === undefined || !got.includes(want)) wrong.push(`${id} (${verdict}): want ${want ?? '(no expectation)'}, got ${got.join(', ') || 'nothing'}`);
   }
-  assert.deepEqual(silent, []);
+  assert.deepEqual(wrong, []);
 });
 
 test('probe.md: every K exception is actually flagged (so the list stays honest)', () => {
@@ -354,6 +429,65 @@ test('--words: frontmatter values count as words', () => {
   assert.notDeepEqual(markdownWords('---\ntitle: One\n---\n\nText.\n'), markdownWords('---\ntitle: Two\n---\n\nText.\n'));
 });
 
+const same = (a: string, b: string): boolean => markdownWords(a).join(' ') === markdownWords(b).join(' ');
+
+test('--words: changes it must catch', () => {
+  assert.ok(!same('Ada met Ben.\n', 'Ben met Ada.\n'), 'word order');
+  assert.ok(!same('```\none\ntwo\n```\n', '```\none\n```\n'), 'a dropped fence line');
+  assert.ok(!same('| a |\n|---|\n| b |\n| c |\n', '| a |\n|---|\n| b |\n'), 'a dropped table row');
+  assert.ok(!same('Use `&amp;` here.\n', 'Use `&` here.\n'), 'code-span contents are verbatim');
+  assert.ok(!same('Call `__init__` now.\n', 'Call `init` now.\n'), 'code-span underscores are verbatim');
+  assert.ok(!same('[D-001]: Ada is the lead.\n', '[D-001]: Ada is the star.\n'), 'a line that only looks like a reference definition');
+  assert.ok(!same('It began in\n1984. Everything changed.\n', 'It began in\n1985. Everything changed.\n'), 'a number continuing a paragraph');
+  assert.ok(!same('Two plus two\n+\n', 'Two plus two\n*\n'), 'a lone + or * continuing a paragraph');
+  assert.ok(!same('---\nsummary: |\n  word: one\n---\n\nX.\n', '---\nsummary: |\n  word: two\n---\n\nX.\n'), 'a block scalar holding a colon');
+  assert.ok(!same('---\nsummary: |\n  word: one\n---\n\nX.\n', '---\nsummary: |\n  other: one\n---\n\nX.\n'), 'a word before a colon in a block scalar');
+  assert.ok(!same('| a |\n|---|\n| - |\n', '| a |\n|---|\n| -- |\n'), 'a body row of dashes');
+  assert.ok(!same('A <tag> here.\n', 'A here.\n'), 'tag-like text is kept as written');
+  assert.ok(!same('Some <mark>x</mark> and <sup>2</sup>.\n', 'Some x and 2.\n'), 'kept-as-written HTML');
+  assert.ok(!same('It is 5 * 3.\n', 'It is 5 3.\n'), 'a literal spaced star');
+  assert.ok(!same('---\ntitle: X\nBody text.\n', '---\ntitle: X\nBody words.\n'), 'a malformed (unclosed) frontmatter still counts');
+  assert.ok(!same('---\n\nNote: the harbor.\n\n---\n', '---\n\nNotes: the harbor.\n\n---\n'), 'a rule mistaken for frontmatter');
+});
+
+test('--words: correct rewrites it must accept', () => {
+  assert.ok(same('Para.\n\n    a **b** _c_\n', 'Para.\n\n```\na **b** _c_\n```\n'), 'PR50: an indented code block is verbatim, like its fence');
+  assert.ok(same('| `a|b` | c |\n|---|---|\n', '| `a\\|b` | c |\n|---|---|\n'), 'a pipe in a code span in a cell');
+  assert.ok(same('See [x](./my file.md).\n', 'See [x](./my%20file.md).\n'), 'an encoded link target');
+  assert.ok(same('**Possible approaches**:\n- one\n**Dependencies**: Q-007\n', '**Possible approaches**:\n\n- one\n\n**Dependencies**: Q-007\n'), 'the field-label row');
+  assert.ok(same('Text.', 'Text.\n'), 'the final-newline row');
+  assert.ok(same('Text.\n\n\n', 'Text.\n'), 'the final-newline row, extra empty lines');
+});
+
+test('--words and lint never crash on symlinks: dangling and looping links are skipped', () => {
+  const a = tree({ 'a.md': 'Same.\n', 'sub/b.md': 'B.\n' });
+  const b = tree({ 'a.md': 'Same.\n', 'sub/b.md': 'B.\n' });
+  try {
+    symlinkSync(join(a, 'missing.md'), join(a, 'dangling.md'));
+    symlinkSync(a, join(a, 'sub', 'up'));
+    symlinkSync(join(a, 'a.md'), join(b, 'link.md'));
+    const r = compareTrees(a, b);
+    assert.equal(r.compared, 2);
+    assert.equal(r.differing, 0);
+    assert.deepEqual([...r.onlyA, ...r.onlyB], []);
+    const lint = run(a);
+    assert.equal(lint.status, 0);
+    assert.equal(lint.stdout, '0 findings in 0 of 2 files\n');
+  } finally { rmSync(a, { recursive: true }); rmSync(b, { recursive: true }); }
+});
+
+test('--words: paths match across NFC and NFD spellings', () => {
+  const nfc = 'café.md';
+  const nfd = 'café.md';
+  const a = tree({ [nfc]: 'Same.\n' });
+  const b = tree({ [nfd]: 'Same.\n' });
+  try {
+    const r = compareTrees(a, b);
+    assert.equal(r.compared, 1);
+    assert.deepEqual([...r.onlyA, ...r.onlyB], []);
+  } finally { rmSync(a, { recursive: true }); rmSync(b, { recursive: true }); }
+});
+
 test('--words: a path missing from one side is reported; --ignore skips paths', () => {
   const a = tree({ 'a.md': 'Same.\n', 'only-a.md': 'X.\n', 'x/_index.md': 'One.\n', 'b.docx': 'not markdown' });
   const b = tree({ 'a.md': 'Same.\n', 'x/_index.md': 'Two.\n' });
@@ -413,6 +547,21 @@ test('CLI words: exits 1 on a difference and 0 when the words match', () => {
   } finally { rmSync(a, { recursive: true }); rmSync(b, { recursive: true }); rmSync(c, { recursive: true }); }
 });
 
+test('CLI lint: .MD files count, --ignore applies, a lone non-.md file is reported and exits 2', () => {
+  const root = tree({ 'UPPER.MD': 'Some _x_ text.\n', 'skip/_index.md': 'Some _y_ text.\n', 'notes.txt': 'x' });
+  try {
+    const all = run(root);
+    assert.equal(all.status, 1);
+    assert.match(all.stdout, /2 findings in 2 of 2 files\n$/);
+    const ignored = run('--ignore', '**/_index.md', root);
+    assert.match(ignored.stdout, /UPPER\.MD:1: emphasis-underscore/);
+    assert.match(ignored.stdout, /1 finding in 1 of 1 file\n$/);
+    const txt = run(join(root, 'notes.txt'));
+    assert.equal(txt.status, 2);
+    assert.equal(txt.stderr, `skipped ${join(root, 'notes.txt')}: not a .md file\nnothing to check: no .md files\n`);
+  } finally { rmSync(root, { recursive: true }); }
+});
+
 test('CLI: --help prints usage; bad input exits 2 with a message', () => {
   const out: string[] = [];
   const err: string[] = [];
@@ -420,11 +569,13 @@ test('CLI: --help prints usage; bad input exits 2 with a message', () => {
   assert.match(out.join('\n'), /Usage:/);
   assert.match(out.join('\n'), /emphasis-nested: /);
   assert.equal(main(['--rule', 'no-such-rule', '.'], (s) => out.push(s), (s) => err.push(s)), 2);
+  assert.equal(main(['--rule=', '.'], (s) => out.push(s), (s) => err.push(s)), 2);
   assert.equal(main(['--words', 'only-one'], (s) => out.push(s), (s) => err.push(s)), 2);
   assert.equal(main(['/no/such/path.md'], (s) => out.push(s), (s) => err.push(s)), 2);
   assert.equal(main([], (s) => out.push(s), (s) => err.push(s)), 2);
   assert.deepEqual(err.map((e) => e.split('\n')[0]), [
     'unknown rule id: no-such-rule; see --help',
+    '--rule needs a rule id; see --help',
     '--words takes exactly two directories',
     'no such file or directory: /no/such/path.md',
     'md-profile-check: lint markdown against references/markdown-profile.md, or compare the words of two trees.',

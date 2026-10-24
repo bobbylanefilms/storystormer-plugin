@@ -21,4 +21,8 @@ node tools/md-profile-check.ts path/to/story-folder
 node tools/md-profile-check.ts --words before/ after/ --ignore '**/_index.md'
 ```
 
+What the comparison can't see, by design: frontmatter keys (only values count as words, so a renamed key compares equal) and anything that is only markup. Code contents, in fences, indented blocks and code spans, compare verbatim.
+
+Both modes walk directories skipping `.git`, `node_modules` and symlinks (a link is never followed, so a dangling or looping one can’t stop a run). Paths are matched after Unicode NFC normalization, so a file named in NFD on one side still pairs with its NFC twin.
+
 Tests: `node --test 'tools/*.test.ts'`. (`node --test tools/` doesn’t work on Node 24: a directory argument is read as a module, not searched.) `tools/package.json` only marks the folder as ES modules, so `tsc` type-checks it the way Node runs it.
