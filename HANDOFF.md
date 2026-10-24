@@ -12,9 +12,9 @@
 | # | Tasks | Tier | Status | Commits | Review |
 |---|---|---|---|---|---|
 | 1 | Probe through Notion (`sb6-probe`) + `references/markdown-profile.md` | Opus | accepted | `8fa54d9`, fix `e02b09d` | Fable: 26 found, all confirmed, fixed by author in one round (re-probe: 243 constructs) |
-| 2 | `tools/md-profile-check.ts` + tests (lint, `--words`) | Opus | done, under review | `5315dc4` (worktree `6043497`) | Fable: running (worktree `scratchpad/review-sb6-s2`) |
+| 2 | `tools/md-profile-check.ts` + tests (lint, `--words`) | Opus | sent back (fix round in its worktree) | `5315dc4` (worktree `6043497`) | Fable: 10 groups found (3 P1: symlink crash, `--words` blind inside code spans, false diffs on correct rewrites), all confirmed |
 | 3 | Citations, output-spec fixes, Notion write-side normalization, migrate preflight + exact matching, init intake, Cowork child-page gap, new Notion read rules | Opus | accepted | `784b67c`, fix `1dfb173` (+ inline `5103283`) | Fable: 14 found, all confirmed, fixed by author in one round |
-| 4 | Verify: plugin-output lint run; `sb6-mini` idempotence, words, round trip; full Good Dog ring (`sb6-ring`) | Opus runners | pending | | |
+| 4 | Verify: plugin-output lint run; `sb6-mini` idempotence, words, round trip; full Good Dog ring (`sb6-ring`) | Opus runners | lint + mini running (checker steps deferred to the end); ring after mini | | |
 | 5 | Release 0.21.0-poc: README, guide, manifests, validate, `main` | inline | pending | | |
 
 ## Current position
