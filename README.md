@@ -137,7 +137,7 @@ A story can live in one of three places. Every skill works the same on all three
 How they compare, from a full test on a real project (SB5, October 2026):
 
 - **Local:** the fastest and the reference everything else is measured against.
-- **Dropbox:** every file comes back byte for byte, but sessions run about twice as slow as local, because the connector rewrites a whole file on every change. (v0.22.0 makes each decision, question and journal entry its own small file, which should shrink those rewrites; the speed hasn’t been re-measured yet.)
+- **Dropbox:** every file comes back byte for byte, but sessions run slower than local, because the connector rewrites a whole file on every change. Since v0.22.0 each decision, question and journal entry is its own small file: a treatment refresh measured about 1.5× local’s time, down from about 2.2×. Large documents (the treatment, a Blueprint) still rewrite whole.
 - **Notion:** a little slower than local. Everything the plugin writes uses a set of markdown Notion keeps exactly, so it comes back from Notion as it went in. When you move an existing project into Notion, your own files are tidied once on the way in (spacing, list markers, underscores used for emphasis, raw HTML tables, non-breaking spaces): `/storystormer:migrate` shows what will change before it starts, your words never change, and your original files stay where they were. Text you type directly in Notion keeps whatever form Notion gives it.
 - **Google Drive and OneDrive:** use them as a synced folder; their connectors will be re-tested in November 2026.
 

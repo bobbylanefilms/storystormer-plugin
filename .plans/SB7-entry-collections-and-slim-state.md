@@ -41,25 +41,25 @@
 Rob’s rule (2026-10-24): whatever runs on local and Dropbox must also run on Notion and the StoryStormer MCP, with as much parity as possible.
 
 **Success criteria** (each independently verifiable):
-- [ ] **Decision entries:** `file-schemas.md` defines `decisions/D-###.md`. The frontmatter holds the structured fields (`id`, `date`, `type`, `scope`, `topic`, `source`, `integrated`, `superseded_by`, plus `affects_books` in a series); the body holds Summary, Details, Affects and any free text, in the SB6 profile.
-- [ ] **Question entries:** `questions/Q-###.md`, the same way (`id`, `priority`, `category`, `scope`, `title`, `status`, `resolved_by`, `source`, `date`; the body holds Question, Why it matters, Possible approaches, Dependencies, Resolution).
-- [ ] **Indexes:** `decisions/_index.md` and `questions/_index.md`, one table row per entry (ID, date or priority, type or category, topic or title, integrated or status, superseded or resolved-by). About 9 KB for The Good Dog’s decisions.
-- [ ] **Journal:** `journal/<YYYY-MM-DD>-s<NN>.md`, one entry per session. Frontmatter: `date`, `session`, `skills`, `decisions` (IDs logged), `questions` (IDs opened or resolved). The body narrates what was done and why. Created by the session’s first write, edited (never rewritten whole) by later steps in the same session.
-- [ ] **Slim `state.md`:**
+- [x] **Decision entries:** `file-schemas.md` defines `decisions/D-###.md`. The frontmatter holds the structured fields (`id`, `date`, `type`, `scope`, `topic`, `source`, `integrated`, `superseded_by`, plus `affects_books` in a series); the body holds Summary, Details, Affects and any free text, in the SB6 profile.
+- [x] **Question entries:** `questions/Q-###.md`, the same way (`id`, `priority`, `category`, `scope`, `title`, `status`, `resolved_by`, `source`, `date`; the body holds Question, Why it matters, Possible approaches, Dependencies, Resolution).
+- [x] **Indexes:** `decisions/_index.md` and `questions/_index.md`, one table row per entry (ID, date or priority, type or category, topic or title, integrated or status, superseded or resolved-by). About 9 KB for The Good Dog’s decisions.
+- [x] **Journal:** `journal/<YYYY-MM-DD>-s<NN>.md`, one entry per session. Frontmatter: `date`, `session`, `skills`, `decisions` (IDs logged), `questions` (IDs opened or resolved). The body narrates what was done and why. Created by the session’s first write, edited (never rewritten whole) by later steps in the same session.
+- [x] **Slim `state.md`:**
   - **Sections:** frontmatter, Summary, What Exists (one line per artifact: version, date, count; no narrative), What’s Next (forward items only, at most about five), and Last Session (two or three sentences plus the journal entry’s path).
   - **No other sections.** A finished item leaves What’s Next for that session’s journal entry.
   - **Size:** under about 4 KB after a full development loop on The Good Dog.
-- [ ] **Field ownership:** each field duplicated between `state.md` and `config.json` has one owner, and the mirror is gone. Rule: `config.json` owns only what resolution needs before the store is known (`storage`), plus whatever the trace in § 2 shows has to be read before `state.md`; `state.md` owns what the author sees.
-- [ ] **New entries:** `store.write(path, content, new)` fails when the path exists; each binding realizes it; the store reports the number it assigned (§ IDs on Notion, display numbers in the app), and skills use the reported number.
-- [ ] **Readers:** no skill reads a whole log to find something the index answers. Reads go index first, then the entries needed (the last ten decisions, open questions, cited IDs). Full-collection reads stay with `migrate` and audits, fanned out to subagents.
-- [ ] **Upgrade:** `migrate` upgrades an old-layout project in place on any backend, with the preflight as the plan:
+- [x] **Field ownership:** each field duplicated between `state.md` and `config.json` has one owner, and the mirror is gone. Rule: `config.json` owns only what resolution needs before the store is known (`storage`), plus whatever the trace in § 2 shows has to be read before `state.md`; `state.md` owns what the author sees.
+- [x] **New entries:** `store.write(path, content, new)` fails when the path exists; each binding realizes it; the store reports the number it assigned (§ IDs on Notion, display numbers in the app), and skills use the reported number.
+- [x] **Readers:** no skill reads a whole log to find something the index answers. Reads go index first, then the entries needed (the last ten decisions, open questions, cited IDs). Full-collection reads stay with `migrate` and audits, fanned out to subagents.
+- [x] **Upgrade:** `migrate` upgrades an old-layout project in place on any backend, with the preflight as the plan:
   - **Logs:** split each log into entry files with every entry’s text kept.
   - **History:** move `## Previous Session` and finished What’s Next / What Exists narrative into journal entries.
   - **Indexes:** write them.
   - **Old files:** snapshot the old monolithic files to `.storystormer/history/<timestamp>-layout-upgrade/` and remove them from the root.
   - **Marker:** set `layout: 2` in config. Resolution offers the upgrade when it finds an old layout.
-- [ ] **Live:** The Good Dog copy, upgraded, passes the development and chapter loops on local, Dropbox and Notion. Dropbox `treatment-update` lands within about 1.3× local’s time. The ring local → Notion → Dropbox → local diffs clean apart from migrate’s expected changes.
-- [ ] **Release:** version bumped, validated, on `main`; guides and README updated.
+- [ ] **Live:** The Good Dog copy, upgraded, passes the development and chapter loops on local, Dropbox and Notion (**met**). Dropbox `treatment-update` lands within about 1.3× local’s time (**not met: 1.5×**, see § Live verification). The ring local → Notion → Dropbox → local diffs clean apart from migrate’s expected changes.
+- [x] **Release:** version bumped, validated, on `main`; guides and README updated.
 
 ---
 
@@ -192,3 +192,13 @@ Rob’s rule (2026-10-24): whatever runs on local and Dropbox must also run on N
 - **Completed moves (R1):** `migrate` § Same slug has a **Complete** case: a target with its own config and `state.md` and nothing to flip is already there; the skill offers to bind it or do nothing, and never re-verifies unasked.
 - **Flip-pending re-verification (R2):** by listing, sizes and (on Notion) counts; a document is compared whole only on evidence of a change, and the preflight plan says so.
 - **Dropbox reads (L3-2, L3-3):** a fetch of about 65 KB or more may come back as a saved result rather than inline; its content is read from there, never retyped. Listed paths are used exactly as listed; `&amp;` in a filename is never decoded.
+
+### Live verification (2026-10-25, at 56788bb, then c34df20 and 834ed55)
+
+- **Upgrade:** the old-layout Good Dog upgraded in place on local, Dropbox and Notion. `upgrade-check` clean on all three (68 decisions, 41 questions), journal backfilled s01–s12. Notion's interruption test (stopped at 36/109 rows, resumed) kept every converted row and converted the rest.
+- **Loops:** the development and chapter loops passed on all three backends. `treatment-update`: local 446 s (SB5 539 s), Dropbox 669 s (1.5×, SB5 2.2×; **misses the 1.3× target**, measured before Dropbox's batched small-file deletes landed, so not re-measured), Notion 1,714 s wall with author review. Notion's `state.md` row fetch went from about 70 KB to about 30 KB. Final `state.md` on the mature project: 3.9 KB local, 4.1 KB Notion, 5.2 KB Dropbox (author-approved forward text), carried lines excluded.
+- **Numbering races:** the Dropbox and Notion `new` writes renumbered and reported correctly. Local's first realization let the Write tool overwrite another session's D-080; fixed (Glob immediately before Write, then read back) and re-tested: the other device's file survived. Notion's journal-collision cleanup now withdraws the losing row instead of trashing it (the connector trashes only on the author's explicit ask).
+- **Ring** local → Notion → Dropbox → local (`sb7-ring`, 216 documents): every entry kept its number on every leg; leg 3 byte-identical to leg 2. (b) list: the questions index's `./D-###` links (fixed), an autolinked `state.md` inside bold (fixed: profile row), `craft-document.md:241` (named, no in-profile form), and two What Exists author lines Notion computed (fixed: Blueprints and Chapter notes are computed labels). Leg times 4,532 / 3,853 / 1,549 s.
+- **Resume:** an interrupted local → Dropbox move was detected and resumed (identical files no-ops, a changed one shown and rewritten); its findings (slug-change allowance, configless-folder search) are fixed.
+- **Fix commits after the slices:** be0ca8b, 8168de8, 8e870c4 (live-run findings, reviewed by Fable), 834ed55 and 8f3ae2b (ring and resume findings, reviewed by Fable).
+- **Left open:** the 1.3× Dropbox target (re-measure with batched deletes); ISSUE072 items 19–25 (chapter pipeline); the untested autolink extensions in `probe-results.md`.
