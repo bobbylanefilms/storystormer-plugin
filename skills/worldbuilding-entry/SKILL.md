@@ -137,6 +137,8 @@ See `references/reading-discipline.md` § Substantive mode.
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. **Worldbuilding entries are shared across the series** — one entry per element at `<root>/worldbuilding/<type-slug>/<slug>.md`. The Senate is the Senate regardless of which book is using it.
 
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
+
 One behavioral change in series mode:
 
 - **Read all relevant books' treatments** when generating or expanding an entry. The element's behavior may evolve across books (a corporation grows, a faction splits, a city is rebuilt after damage in book 1), and the entry should capture that evolution rather than the single-book snapshot.

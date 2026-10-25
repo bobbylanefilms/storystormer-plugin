@@ -121,6 +121,8 @@ For **standalone-novel manifest syncs**, direct main-session reads are usually f
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. **The manifest is shared across the series** — one `manifest.md` at workspace root, inventorying the full cast and worldbuilding across all books.
 
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
+
 Two behavioral changes in series mode:
 
 1. **Read ALL books' treatments** during the substantive read, not just the focused book's. The manifest's `Appears in:` field per entry depends on cross-book treatment scanning. If a book's treatment doesn't exist yet (e.g., book 3 is undrafted), use `series.md`'s Per-Book Synopses as a lighter source for that book's named entities.

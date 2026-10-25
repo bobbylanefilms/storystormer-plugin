@@ -125,6 +125,8 @@ In series mode, every decision and every question carries a `scope` field. Value
 
 In the StoryStormer app the same scope is the record's novel: `book-<slug>` is the novel that book is, and `series` is a record with no novel (series-wide).
 
+**The rule for every new entry:** any skill or command that creates a decision or a question in a series sets `scope`, and `affects_books` naming the books it touches (for `book-<slug>`, that one book), defaulting to the focused book and asking when the reach is unclear. A decision's `integrated` is then the per-book list, a one-item list for a `book-<slug>` scope.
+
 The scope is entry frontmatter (`references/file-schemas.md` § `decisions/`), and both indexes gain a Scope column, so a skill picks out one book's decisions or questions from the index alone. Examples:
 
 ```markdown
@@ -294,12 +296,12 @@ There is no dedicated `series-update` skill in v0.3. The series-level document i
 
 The current focus changes via:
 
-- **`/storystormer:switch <book-slug>`** — explicit slash command. Validates the slug exists in `books/`, updates `current_focus` in the root `state.md`, reports the new book's state.
+- **`/storystormer:switch <book-slug>`** — explicit slash command. Validates the slug exists in `books/`, updates `current_focus` in the root `state.md`, records the session (below), reports the new book's state.
 - **Inline in a skill's plan-first proposal** — if the user signals a focus change conversationally and a skill is about to fire, the skill switches focus as the first step of execution.
 
-The switch is a small operation — one frontmatter edit and a state report. Don't ceremony it.
+The switch is a small operation — the focus edit, the session record, and a state report. It changes no other content. Don't ceremony it.
 
-## Series-level state.md vs per-book state.md
+## Series-level `state.md` vs per-book `state.md`
 
 **Series-level state.md** (at `<root>/state.md`):
 
@@ -317,7 +319,9 @@ The switch is a small operation — one frontmatter edit and a state report. Don
 - The standalone schema for one book — the book's `title`, `stage`, `target_word_count` only when the book has its own (absent means the series default), `What Exists` for *this book's* artifacts, `What's Next` for *this book's* work, and a `Last Session` naming the same root journal entry. No `slug`, `session_count` or `last_session`: sessions are the series'.
 - `parent_series: <series-title>` field in frontmatter, pointing back to the root.
 
-A skill working on book 2 reads `books/book-2/state.md` for its primary state, and may also read `<root>/state.md` for series context. Updates to per-book state.md don't automatically update series-level state.md — the series-level dashboard is refreshed periodically (e.g., by `brainstorm-session`'s closing protocol) rather than on every per-book write.
+A skill working on book 2 reads `books/book-2/state.md` for its primary state, and may also read `<root>/state.md` for series context.
+
+**Session bookkeeping goes to the root.** Every skill or command that writes `state.md` in a series follows one rule. The book's `state.md` takes the book's Summary, What Exists, What's Next and Last Session, and never carries `session_count` or `last_session`. The root `state.md` takes the session: on the session's first write, after the journal entry is created, its `session_count` and `last_session` are set (`references/file-schemas.md` § `journal/`), and its Last Session names that entry. The root's Summary, What Exists and What's Next are the series view, refreshed when the series-level picture changes (a book's stage moves, a cross-book decision lands, a closing protocol such as `brainstorm-session`'s), not on every per-book write.
 
 ## How the existing skills behave in series mode
 

@@ -27,7 +27,7 @@ Lean hard on `references/philosophy.md` — character and theme matter as much a
 
 5. **Capture decisions aggressively as they surface.** Lean toward capturing rather than deferring — the decisions are the story's spine, and gaps in them cost more than overcapture does. When something is settled — *"OK, Marlowe and Voss are estranged siblings, not strangers"* — invoke the `decision-capture` skill (or just write the entry yourself if it's clear-cut, the way `decision-capture` does: a `new` entry, its index row, the journal). Always tell the user *"capturing that as decision D-019"* so they see the decisions forming. See `skills/decision-capture/SKILL.md` § "When to capture" for the full trigger list — character Lies and Ghosts, thematic articulations, worldbuilding rules with constraints, relationship dynamics, faction definitions, and "let's move on" transitions all warrant capture.
 
-6. **Update question status.** When a question is resolved by a decision, set its entry's `status: resolved` and `resolved_by` to the decision’s ID as the store reported it, and replace its row in `questions/_index.md`.
+6. **Update question status.** When a question is resolved by a decision, edit its entry once: set `status: resolved` and `resolved_by` to the decision’s ID as the store reported it, add a `**Resolution**:` line, and update or remove any old `**Status**:` body line so the two agree. Then replace its row in `questions/_index.md`. A new question you log goes in as a `new` entry with its index row (in a series, with `scope` and `affects_books` per `references/series.md` § Scoping decisions and questions).
 
 7. **Offer step-back moments — light, then structured.** Every 4–6 substantive decisions, or at natural conversational pauses, pause to take stock. The light version is just *"That's been a productive run. Want me to summarize what we've decided, or keep pushing?"* The user can also ask any time.
 
@@ -129,6 +129,8 @@ If the conversation spans the whole story (a treatment-quality review, a sweepin
 ## Series Mode
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. Brainstorm sessions in series mode operate on the **focused book** (per `current_focus` in the root `state.md`), but with two important additions:
+
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 
 1. **Also load `series.md`** alongside the per-book primer/treatment/manifest. The series arc, cross-book setups, and continuity concerns are first-class context for any brainstorm session in series mode — even when working on just one book.
 2. **Capture decisions with `scope`**. Every decision logged in a series-mode session carries a `scope` field — `series` (affects the arc or multiple books) or `book-<focus>` (affects only the focused book). Default to the focused book's scope; ask the user when the decision's reach is ambiguous (*"this affects book 2 directly — does it also affect book 1's planted setups or book 3's payoffs?"*). See `references/series.md` § Scoping decisions and questions.

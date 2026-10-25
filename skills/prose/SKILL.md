@@ -142,6 +142,8 @@ The generation subagent operates in **substantive mode** — it full-reads every
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. Prose operates on the **focused book's** chapters — reads `books/<current_focus>/chapters/chapter-NN/ch<NN>-{blueprint,outline}.md`, the **shared** canon and **shared** `voice/` assets (voice is series-wide), and writes `books/<current_focus>/chapters/chapter-NN/ch<NN>-prose.md`. POV-matched prior prose and story-so-far are scoped to the focused book. The spoiler firewall still applies within the book; cross-book future events are firewalled the same way.
 
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
+
 ## What this skill does not do
 
 - **Post-prose refinement passes** — dialogue / editorial / de-AI / style-polish. Those are the `notes` stage (post-POC). This skill does generation and surgical *revision*, not the full refinement suite.

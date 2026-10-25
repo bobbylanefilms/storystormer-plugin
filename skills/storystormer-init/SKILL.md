@@ -15,12 +15,12 @@ Always follow `references/plan-first.md` — load context, propose a plan in pla
 
 When the user gives you the go-ahead, you create or update:
 
-- `state.md` — the slim dashboard (`references/file-schemas.md` § `state.md`): its four sections, and the frontmatter that owns every field the author sees: `title`, `slug` (the kebab-case of the title, set now and never changed), `project_type`, `target_word_count`, `genre`, `logline`, `stage`, `initial_maturity`, `created`, `last_session`, `session_count: 1`, `surfacing_mode`
+- `state.md` — the slim dashboard (`references/file-schemas.md` § `state.md`): its four sections, and the frontmatter that owns every field the author sees: `title`, `slug` (the kebab-case of the title, set now and never changed), `project_type`, `target_word_count`, `genre`, `logline`, `stage`, `initial_maturity`, `created`, `last_session`, `session_count` (the journal entry's number: `1` for a brand-new project), `surfacing_mode`
 - `.storystormer/config.json` — exactly two keys, `layout: 2` and `storage` (`references/file-schemas.md` § `.storystormer/config.json`): a new project gets the store the author chose (§ Where a new project lives), `"storage": { "kind": "local" }` for the open folder; an existing project keeps the `storage` block it has. Nothing in it mirrors `state.md`
 - `.storystormer/` — supporting subfolders, each created with its first file (no empty folders)
 - `decisions/_index.md` and `questions/_index.md` — always for a new project (a re-run keeps the ones it has), with their heading and table header and no rows (`references/file-schemas.md` § `decisions/_index.md`, § `questions/_index.md`), so every layout-2 project has them; where the binding computes them, they are skipped
 - Decision and question entries — `decisions/D-###.md` and `questions/Q-###.md`, one per item the author approved from the intake, each created with `new` and given its index row
-- `journal/<date>-s01.md` — the session's journal entry: what init found, how it triaged, what it created and extracted, and why (`references/file-schemas.md` § `journal/`)
+- `journal/<date>-s<NN>.md` — the session's journal entry: what init found, how it triaged, what it created and extracted, and why. Its number follows `references/file-schemas.md` § `journal/` (one more than the higher of `session_count` and the highest `sNN` listed), which gives `s01` only for a brand-new project; a re-run continues the existing count
 - `treatment.md` — only when the user brings in an existing treatment-like document and explicitly agrees to a copy-and-clean-up step. **Never generate a new treatment at init.**
 - `primer.md` — **never at init.** The primer is a five-section structured craft dossier (~4,500w, hard ceiling 5,000) that's always built by `treatment-update`'s Phase 1 (first-run mode handles construction from intake materials). Init leaves `primer.md` absent so the first `treatment-update` run populates it.
 - `manifest.md` — only if there's enough character/world content to seed it
@@ -43,7 +43,7 @@ The author chooses, once, at init. This is the one place a store is chosen rathe
 
 **Defaults:** this folder when there is one (Claude Code always has one); with no open folder, Notion when it is offered; otherwise ask with no default. With only one option, don’t ask; the plan says where the story will live. With none (no folder and no connector), stop and tell the author to open a folder or connect Dropbox or Notion.
 
-**Re-running init on an existing project** never asks: the project keeps the store it has (a config with no `storage` block is local). Moving it is `/storystormer:migrate`.
+**Re-running init on an existing project** never asks: the project keeps the store it has (a config with no `storage` block is local). Moving it is `/storystormer:migrate`. **A project in the old layout** (its config has no `layout`, `references/file-schemas.md` § The old layout) stops init before it writes anything: say the project is in the old layout and offer `migrate`’s in-place upgrade (`references/store.md` § Resolve, step 4). Init never stamps `layout: 2` over old logs.
 
 **Sync folders.** Check the open folder’s absolute path: a segment that is or begins with `Dropbox`, `Google Drive`, `GoogleDrive` or `OneDrive` (`~/Dropbox/`, `~/Dropbox (Personal)/`, `OneDrive-Personal`), or anything under `/Library/CloudStorage/`, where macOS keeps all of them (`~/Library/CloudStorage/Dropbox/`; the segment after it names the service). It is a path check, nothing more. Choosing a syncing folder still yields `kind: local`, plus the **Storage** line in `state.md` → What Exists naming the service (`references/file-schemas.md` § `state.md`). When the service is Dropbox and Dropbox is among the offered backends, the report adds that `/storystormer:migrate dropbox` would make it a true hybrid, reachable from sessions with no folder. Google Drive and OneDrive stay local: they work as synced folders, and no binding reaches them otherwise.
 
@@ -152,7 +152,7 @@ For non-trivial migrations (more than a handful of files to move, write, or stam
 
 The main session aggregates the completion logs from each subagent for the final § Report step.
 
-**First, before any subagent writes:** the config (`layout: 2`, `storage`), the two header-only indexes, and the session's journal entry, `journal/<date>-s01.md`, created with `new`. The journal entry starts with what init found and how it triaged it, and each later step extends it.
+**First, before any subagent writes:** the config (`layout: 2`, `storage`), the two header-only indexes, and the session's journal entry, created with `new` (`journal/<date>-s01.md` for a brand-new project; on a re-run, the next number per `references/file-schemas.md` § `journal/`). The journal entry starts with what init found and how it triaged it, and each later step extends it.
 
 **Sequential after aggregation.** After all parallel subagents complete, the main session does the writes that depend on aggregated state: the decision and question entries (only after the main session has reviewed and approved the proposed entries from the extraction subagents; each a `new` write, then its index row), `manifest.md` (depends on what bios and worldbuilding subagents migrated), `series.md` stub (in series mode), the journal entry extended with what was created and the IDs logged, and `state.md` last (the dashboard reflects everything the subagents did; Last Session is two or three sentences and the journal entry's path).
 
@@ -317,6 +317,8 @@ In the init report, note prose presence and recommend a next step that's *aware 
 
 If the user is starting (or has) a multi-book series, init builds the **series folder structure** instead of the standalone-novel one. The two structures coexist — the standalone shape is unchanged for standalone projects, series adds folders without breaking anything. See `references/series.md` for the full doctrine.
 
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
+
 In series mode:
 
 - The root `state.md` carries `project_type: series`, the `books: [...]` list, `current_focus`, and the series-level `target_word_count`. The config is the same two keys as a standalone project's.
@@ -329,7 +331,7 @@ For intake of an existing standalone project that the user wants to convert to s
 - Snapshot the current standalone folder per `store.md` before any file moves.
 - `store.move` existing `primer.md`, `treatment.md`, and each document under `outline/` and `chapters/` (enumerate with `store.list(outline/**)` and `store.list(chapters/**)`; chapter content is per-book, `references/series.md`) into `books/book-1/`, keeping their relative paths. A document the binding computes is skipped by `move` and follows its rows.
 - Keep `manifest.md`, `decisions/`, `questions/`, `journal/`, `characters/`, `worldbuilding/` at root (they were already shared in spirit).
-- Update each existing decision and question entry to add `scope: book-1` (since pre-series, they were all about the one book), and give both indexes their Scope column.
+- Update each existing decision and question entry to add `scope: book-1` (since pre-series, they were all about the one book), turning a decision's `integrated` into its one-item list (`- book-1 treatment <state>`), then give both indexes their Scope column. This touches every entry, so it fans out to subagents doing frontmatter-only edits (the whole-collection rule, `references/file-schemas.md` § Entry collections), never through the main window; each brief carries the store block and layout (`references/subagent-pattern.md` § Mandatory brief fields).
 - The project's `target_word_count` becomes the series default in the root `state.md`, whose `title` becomes the series' title; book 1's own title goes in `books/book-1/state.md`. The `slug` never changes.
 - Create stubs for book 2 and book 3 (or however many the user is planning).
 - Scaffold `series.md` from the existing book-1 content plus any new series-arc decisions the user volunteers.

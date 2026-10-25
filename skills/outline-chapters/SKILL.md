@@ -209,6 +209,8 @@ Craft Constraints that were general belong in `voice/style-guide.md`; chapter-sp
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. Operate on the **focused book's** chapters: read `books/<current_focus>/outline/structure.md`, write `books/<current_focus>/chapters/chapter-NN/ch<NN>-outline.md`.
 
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
+
 Two additions:
 
 1. **Cross-book chains.** When a spine entry references a cross-book setup or payoff (*"Ch 38 · protocol deviation planted (pays off book 3 ch 22)"*), the planted or paid event must be present in the outline body as narrative. The chain itself is registered in `series.md`; the outline shows the event, never the chain. If the receiving book is not yet drafted, note it in the report, not in the outline.

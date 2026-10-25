@@ -55,7 +55,7 @@ For each chapter, the judgment-free context, read directly:
 - **The primer**, harvested for § 2 Story Context and **filtered to this chapter**, plus its **§2 Reveal Architecture**, consulted only to learn *what this chapter must plant*. Nothing about where a reveal lands may reach the file.
 - **`treatment.md`, the spine-slot passage for this chapter only.** Never seed the full treatment.
 - **`voice/style-guide.md`** if it exists: not to copy from, but to know what general craft the Blueprint may omit.
-- **`questions/_index.md`**: the IDs of open questions touching this chapter (the chapter's own `[OPEN: Q-###]` markers, plus any open entry whose title or text names it), for the frontmatter pointer list. Read an entry only when the index row doesn't settle whether it touches the chapter.
+- **`questions/_index.md`**: the IDs of open questions touching this chapter, for the frontmatter pointer list: the chapter's own `[OPEN: Q-###]` markers, plus any open row whose index title names the chapter. Read an entry only when its row is ambiguous.
 
 ### 3. Identify the surfacing cast and elements
 
@@ -144,6 +144,8 @@ Substantive mode is mandatory: full reads of every canon entry in the surfacing 
 ## Series Mode
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. Operate on the **focused book's** chapters with the shared canon at the series root. Filter Revelation Logs by the focused book's numbering; a cross-book entry (`Ch B2-07`) in a later book is future state. A cross-book chain that plants here is rendered, like every plant, as an imperative without rationale; the chain itself lives in `series.md`.
+
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 
 ## What this skill does not do
 

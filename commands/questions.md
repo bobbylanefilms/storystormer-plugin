@@ -32,16 +32,17 @@ Walk the user through composing a new question. Fields (see `references/file-sch
 - **Possible approaches** — 2–4 plausible answers. (You may propose some based on what's in the materials; the user picks/edits.)
 - **Dependencies** — other questions that need to be answered first, if any.
 - **Source** — `manual` (the user is adding it here).
+- **Scope** and **affects books** — in a series only, per `references/series.md` § Scoping decisions and questions.
 
 Show the composed entry; confirm; create it with `store.write(questions/Q-###.md, content, new)`, proposing the next number after the index's highest (`Q-019`). That ID is provisional: the store assigns the number and reports it (`references/store.md` § New entries), and that reported ID is the one used in the confirmation, the index row, and everywhere the question is referenced. Then add its row to `questions/_index.md`.
 
 ### `/storystormer:questions resolve Q-019`
 
-Mark a question as resolved. Ask which decision resolves it (or invoke `decision-capture` first if the resolution hasn't been logged yet). Set the entry's `status: resolved` and `resolved_by: D-NNN`, add a `**Resolution**:` line with the answer, and replace its index row. Don't delete the question — the history matters.
+Mark a question as resolved. Ask which decision resolves it (or invoke `decision-capture` first if the resolution hasn't been logged yet). In one edit of the entry, set `status: resolved` and `resolved_by: D-NNN`, add a `**Resolution**:` line with the answer, and update or remove any old `**Status**:` body line so the two agree; then replace its index row. Don't delete the question — the history matters.
 
 ### `/storystormer:questions invalidate Q-019`
 
-Mark a question as no longer applicable (e.g., the story has shifted such that the question is moot). Ask for the reason. Set `status: invalidated` (with `resolved_by` when a decision is what invalidated it), put the reason in a `**Resolution**:` line, and replace its index row. Don't delete.
+Mark a question as no longer applicable (e.g., the story has shifted such that the question is moot). Ask for the reason. Set `status: invalidated` (with `resolved_by` when a decision is what invalidated it), put the reason in a `**Resolution**:` line, update or remove any old `**Status**:` body line, and replace its index row. Don't delete.
 
 ### `/storystormer:questions focus`
 
@@ -57,6 +58,6 @@ Re-triage all open questions: walk through each, ask if the priority is still ri
 
 ## Behavior
 
-Default and `show` / `focus` are read-only. Other sub-actions change entries in place — they preserve question IDs (never reused), update statuses without deleting entries, keep each changed entry's index row in step (and any old `**Status**:` body line it carries, so the two agree), bump `state.md` counts after any change, and note the change in the session's journal entry (created first if this is the session's first write; `references/file-schemas.md` § `journal/`).
+Default and `show` / `focus` are read-only. Other sub-actions change entries in place — they preserve question IDs (never reused), update statuses without deleting entries, and keep each changed entry's index row in step (and any old `**Status**:` body line it carries, so the two agree). The writes go in order: the journal entry (created with `new` if this is the session's first write, per `references/file-schemas.md` § `journal/`, otherwise extended; its line names each question by the ID the store reported) → the entry and its index row → `state.md`'s counts.
 
 `add` and `triage` follow the plan-first protocol — show the user what will be written before locking it in.

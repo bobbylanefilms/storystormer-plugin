@@ -225,11 +225,12 @@ Show the new treatment to the user. For long treatments, summarize what changed 
 
 After the user approves the new treatment:
 
-- Create any new question entries first (`new`, each with its row in `questions/_index.md`), so every `[OPEN: Q-###]` in the new treatment carries the ID the store reported.
+- Create or extend the session's journal entry first (created with `new` if this is the session's first write; `references/file-schemas.md` § `journal/`).
+- Create any new question entries (`new`, each with its row in `questions/_index.md`; in a series, with `scope` and `affects_books` per `references/series.md` § Scoping decisions and questions), so every `[OPEN: Q-###]` in the new treatment carries the ID the store reported.
 - Write the snapshot per `store.md` — both the old primer and the old treatment, as a pair.
 - `store.write` the new `primer.md` and `treatment.md`.
 - For each decision consumed by this update, edit its entry to set `integrated: "yes (<date>)"` (removing or updating an old `**Integrated into treatment**:` body line it carries, so the two agree), and replace its row in `decisions/_index.md`.
-- Record the update in the session's journal entry (created first if this is the session's first write; `references/file-schemas.md` § `journal/`): the decisions integrated, the questions opened, what changed in the primer and the treatment and why.
+- Extend the journal entry with the update, using the IDs the store reported: the decisions integrated, the questions opened, what changed in the primer and the treatment and why.
 - Update `state.md`:
   - `What Exists → Primer` and `Treatment` lines bumped to new versions and the new `built_from_decisions` list.
   - `Summary` refreshed.
@@ -255,10 +256,12 @@ Include the staleness call in the report so the user knows the downstream impact
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. Treatment updates in series mode operate on the **focused book's** primer and treatment (`books/<current_focus>/primer.md` and `books/<current_focus>/treatment.md`). The two-phase pipeline is unchanged — primer first, treatment second — but the file paths route through the focused book.
 
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
+
 Three additions in series mode:
 
 1. **Also load `series.md`** during the pre-flight read. The series arc, cross-book setups, and continuity concerns inform the focused book's treatment refresh — especially primer §2's Reveal Architecture, whose load-bearing reveals must respect cross-book chains (tracked in `series.md`) that span beyond this book.
-2. **Filter decisions by scope.** Only integrate decisions whose `scope` is the focused book OR is `series` with the focused book in `affects_books`; the index's Scope column picks them out before any entry is read. Decisions scoped to other books are not consumed by this update — they stay pending for their book's treatment.
+2. **Filter decisions by scope.** Only integrate decisions whose `scope` is the focused book OR is `series` with the focused book in `affects_books`; the index's Scope column narrows the candidates, and each `series`-scoped candidate still needs its `affects_books` checked: read that entry's frontmatter (or parse its Integrated cell, which names each book it touches) before counting it in. Decisions scoped to other books are not consumed by this update — they stay pending for their book's treatment.
 3. **Surface series-level impact in the report.** When the treatment refresh affects cross-book chains (a setup that pays off in a later book, a character state that book N+1 starts from), call it out explicitly: *"This treatment change moves Maya's confrontation with Senator Vance from ch 35 to ch 38. Book 2's opening currently assumes Maya leaves Washington after ch 35 — recommend a brainstorm session on book 2's opening, or a series.md patch to update the Continuity Concerns section."*
 
 The `integrated` field on consumed decisions becomes book-aware. For a series-scoped decision integrated into the focused book's treatment, set the book's item to `yes (date)` and leave other books' items untouched:

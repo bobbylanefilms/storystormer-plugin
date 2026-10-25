@@ -54,7 +54,7 @@ In substantive mode (`references/reading-discipline.md`), full reads:
 - Every `ch<NN>-notes.md` in the span: § Proposals, § Accidental Canon, § Divergences from the Outline, § Harvest, § End State. Find each by its exact heading; the notes file is the app's chapter notes document (`references/file-schemas.md` § Notes), so notes the app wrote read the same way.
 - Every canon entry any notes file references, in full, including its Revelation Log. **Read the entry, not the line**: drift is only visible against the whole bio.
 - `manifest.md` (full), for what already has an entry and what the harvest says should.
-- `decisions/_index.md`, then the entries it points to: prior `canon-sync` rulings (the index's topics name them; a `source` read from frontmatter confirms) and anything touching the contested facts, so settled conflicts are not re-opened.
+- `decisions/_index.md`, then only the entries it points to: prior rulings, found by their topic's `Canon ruling:` prefix (the form `decision-capture` gives every `canon-sync` ruling), and other decisions whose topics touch the contested facts, so settled conflicts are not re-opened.
 - `primer.md` § 2 Reveal Architecture, for chain closures the notes proposed.
 - The prose's `authorship` and `status` frontmatter for each chapter in the span (frontmatter only; the body stays closed). A chapter whose prose is `status: retired` is out of the span: its notes describe text the author set aside.
 - **For each contradiction, the upstream sources the page fact could have come from**: that chapter's outline (body and `authorship`), its chapter block in `outline/structure.md`, the treatment passage covering it, and decisions touching the fact. Read them **as the prose saw them**: the prose stamps `outline_version`, `treatment_version`, `blueprint_version` and `primer_version`, so where a source's current `version` is past its stamp, read the stamped version from `store.history` (snapshot files or the backend's versions). Read only the passages that bear on the contested fact, quoted when they settle it.
@@ -128,7 +128,7 @@ After the author rules:
 
 1. **Snapshot** the canon documents the approved plan will edit (bios, worldbuilding entries, `manifest.md`), as one set per `store.md`, not the whole canon set unless the author asks for a full checkpoint (`/storystormer:checkpoint` exists for that). This happens before the first edit, no exceptions.
 2. **Apply canon edits**: append Revelation Log lines (`- **Ch N** — …`); fold accretion into the governing section with the smallest edit that makes the entry accurate; correct or remove obsolete lines; bump each touched file's `version` and `last_updated`. Never restyle, expand, or tidy anything the ruling didn't name.
-3. **Log each adjudication** via `decision-capture`, as a new decision entry: `source: canon-sync`, `type` per the fact, `Summary` stating the ruling, `Details` naming the notes line, the canon line, the upstream source the trace found, the authorship that set the default (or that it was canon against canon with no default), and whether the author overrode it. Accretions absorbed without dispute do not need a decision; contradictions, drift rulings, and obsolescence removals do.
+3. **Log each adjudication** via `decision-capture`, as a new decision entry: `source: canon-sync`, `topic: Canon ruling: <subject>`, `type` per the fact, `Summary` stating the ruling, `Details` naming the notes line, the canon line, the upstream source the trace found, the authorship that set the default (or that it was canon against canon with no default), and whether the author overrode it. Accretions absorbed without dispute do not need a decision; contradictions, drift rulings, and obsolescence removals do.
 4. **Mark proposals** in each notes file's § Proposals.
 5. **Write the run record** with `store.write` to `.storystormer/canon-sync/<date>-ch<NN>-<MM>.md`: findings by category with outcomes; the manuscript fix list (chapter · passage · required change); invalidated Blueprints (chapter · entry that changed · version stamp it was built against); promotions routed; chain closures struck from §2 (logged as decisions so `treatment-update` preserves the strike).
 6. **Extend the session's journal entry, update `state.md`**, and report.
@@ -138,6 +138,8 @@ After the author rules:
 ## Series Mode
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. Notes are book-local; canon is shared at the series root. Revelation Log lines are book-qualified (`Ch B2-07`). A contradiction between this book's page and a fact another book's prose already established is surfaced with both chapters cited and is not ruled by default; the author decides which book bends. Chain closures that span books strike from `series.md` as well as primer §2.
+
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 
 ## What this skill does not do
 

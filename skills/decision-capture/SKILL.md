@@ -24,9 +24,9 @@ Follow `references/file-schemas.md` § `decisions/`. The frontmatter:
 - **`id`** — the next number after the highest in the index, zero-padded (`D-019`). A proposal: the store assigns the number (step 4).
 - **`date`** — today (ISO format `YYYY-MM-DD`).
 - **`type`** — one of the app's five: `plot`, `character`, `worldbuilding`, `structure`, `theme`. Setting and speculative-mechanism rules are `worldbuilding`; voice, POV, tone, and genre choices are `theme` (`references/file-schemas.md` § `decisions/` maps the retired types).
-- **`topic`** — short noun phrase. *"Marlowe's relationship to Voss"*, *"the time loop's rules"*. It is the label the index lists.
-- **`source`** — one of: `intake` (extracted at init), `brainstorm` (surfaced in conversation), `treatment-update` (clarified during a treatment refresh), `canon-sync` (a ruling on a manuscript-versus-canon conflict; the Details name the notes line, the canon line, the prose authorship that set the default, and whether the author overrode it), `user-declared` (the user stated it directly).
-- **`integrated`** — `"no"`. (Becomes `"yes (<date>)"` after the next `treatment-update` that includes this decision.)
+- **`topic`** — short noun phrase. *"Marlowe's relationship to Voss"*, *"the time loop's rules"*. It is the label the index lists. A `canon-sync` ruling's topic is always `Canon ruling: <subject>` (*"Canon ruling: Vinnie's cigarettes"*), so later runs find prior rulings from the index alone.
+- **`source`** — one of: `intake` (extracted at init), `brainstorm` (surfaced in conversation), `treatment-update` (clarified during a treatment refresh), `canon-sync` (a ruling on a manuscript-versus-canon conflict; the topic takes the `Canon ruling:` form above, and the Details name the notes line, the canon line, the prose authorship that set the default, and whether the author overrode it), `user-declared` (the user stated it directly).
+- **`integrated`** — `"no"`. (Becomes `"yes (<date>)"` after the next `treatment-update` that includes this decision.) In a series it is always the per-book list, a one-item list for a `book-<slug>` scope (§ Series Mode below).
 - **`storystormer_project`** — the root `state.md`’s `slug`; **`storystormer_kind`** — `decision`.
 
 The body:
@@ -52,17 +52,22 @@ If the user adjusts wording, fold in the changes. If they want details expanded,
 
 ### 4. Create the entry, never overwrite
 
-Write the entry with `store.write(decisions/D-###.md, content, new)`. The ID you proposed is provisional: the store assigns the number and reports it (`references/store.md` § New entries), and from then on that reported ID is the decision’s ID, in the confirmation line, the index row, a question’s `resolved_by`, an earlier entry’s `superseded_by`, the journal entry, and every other cross-reference.
+The writes go in this order:
 
-Then add the decision’s one row to `decisions/_index.md` (`references/file-schemas.md` § Who rebuilds an index; a store that computes the index keeps it itself). Bump `state.md → What Exists → Decisions` count and adjust the unintegrated count (a store that computes `state.md` keeps the counts itself), and record the decision in the session’s journal entry: its ID in the `decisions` list and a line on what was settled. If this is the session’s first write, the journal entry is created first (`references/file-schemas.md` § `journal/`).
+1. **The journal entry:** created now with `new` if this is the session’s first write (`references/file-schemas.md` § `journal/`); otherwise the session’s existing entry is the one extended below.
+2. **The decision entry and its index row:** write the entry with `store.write(decisions/D-###.md, content, new)`. The ID you proposed is provisional: the store assigns the number and reports it (`references/store.md` § New entries), and from then on that reported ID is the decision’s ID, in the confirmation line, the index row, a question’s `resolved_by`, an earlier entry’s `superseded_by`, the journal, and every other cross-reference. Then add the decision’s one row to `decisions/_index.md` (`references/file-schemas.md` § Who rebuilds an index; a store that computes the index keeps it itself).
+3. **The journal line:** extend the journal entry with the reported ID in its `decisions` list and a line on what was settled. (This follows the entry only because the line carries the number the store assigned.)
+4. **`state.md`:** bump `What Exists → Decisions` count and adjust the unintegrated count (a store that computes `state.md` keeps the counts itself).
+
+Step 5's question and supersession edits land between 2 and 4, each entry with its index row.
 
 ### 5. Update related questions
 
-If the conversation surfaced a new open question rather than a decision, create it as a question entry (`questions/Q-###.md`, written with `new`, per § `questions/`: a 3–7 word `title`, one of the seven Title Case categories, `source: plugin`) and add its row to `questions/_index.md`.
+If the conversation surfaced a new open question rather than a decision, create it as a question entry (`questions/Q-###.md`, written with `new`, per § `questions/`: a 3–7 word `title`, one of the seven Title Case categories, `source: plugin`; in a series, `scope` and `affects_books` per `references/series.md` § Scoping decisions and questions) and add its row to `questions/_index.md`.
 
 If this decision resolves a question:
 
-- Set the question entry's `status: resolved` and `resolved_by` to the decision's ID, add a `**Resolution**:` line saying how, and replace its row in `questions/_index.md`.
+- In one edit of the question entry: set `status: resolved` and `resolved_by` to the decision's ID, add a `**Resolution**:` line saying how, and update or remove any old `**Status**:` body line it carries so the two agree (`references/file-schemas.md` § Entry collections, frontmatter is authoritative). Then replace its row in `questions/_index.md`.
 - Don't delete the question. The history matters.
 
 If this decision *changes* (supersedes) an earlier decision:
@@ -116,6 +121,8 @@ Sometimes a single conversational moment produces three or four linked decisions
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. In series mode, **every decision carries a `scope` field** — either `series` (affects the arc or multiple books) or `book-<slug>` (affects one specific book). See `references/file-schemas.md` § `decisions/` → Series mode for the entry format; the index gains a Scope column.
 
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
+
 The capture flow gains three steps in series mode:
 
 1. **Determine scope.** Look at the decision content. If it's purely a per-book matter (Maya confronts her father in book 1 ch 35 — that's book 1's plot), use `scope: book-<slug>`, where `<slug>` is the focused book's entry in the root `state.md`’s `books` list (a slug that already starts with `book-`, such as `book-1`, is written as it is: `scope: book-1`, never `book-book-1`). If it affects the arc, plants a setup that pays off in a later book, or has implications for multiple books, use `scope: series`. **When ambiguous, ask the user**: *"Is this just about book 1, or does it affect what books 2 and 3 do? I want to scope it right so we know which treatments to refresh."*
@@ -127,15 +134,22 @@ The capture flow gains three steps in series mode:
    affects_books: [book-1 (ch 38 plants setup), book-3 (ch 22 pays off)]
    ```
 
-3. **Make `integrated` a per-book list:**
+3. **Make `integrated` a per-book list, whatever the scope:** one item per book in `affects_books` for a `series` scope, and one item for a `book-<slug>` scope:
 
    ```yaml
+   # scope: series
    integrated:
      - book-1 treatment no
      - book-3 treatment no (book 3 not yet drafted)
+
+   # scope: book-1
+   integrated:
+     - book-1 treatment no
    ```
 
    Each book's item updates independently as that book's `treatment-update` integrates the decision.
+
+A question this skill creates in a series carries `scope` and `affects_books` the same way (`references/series.md` § Scoping decisions and questions).
 
 When in doubt about scope, default to the user's current focus — most decisions in a brainstorm session are about the book being discussed. Series scope is the exception, not the default, and should be deliberate.
 

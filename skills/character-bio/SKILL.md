@@ -148,6 +148,8 @@ For **standalone-novel bios**, dispatch only when the treatment is large (15,000
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. **Character bios are shared across the series** — one bio per character, living at `<root>/characters/<slug>.md`. The bio reflects the character's full series arc, not just one book.
 
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
+
 Three behavioral changes in series mode:
 
 1. **Read all relevant books' treatments**, not just the focused book's. To know what Maya does and how she changes, you need book 1's treatment, book 2's treatment, and book 3's treatment — wherever they exist. If a book's treatment doesn't exist yet (e.g., book 3 hasn't been drafted), use whatever is available — `series.md`'s Per-Book Synopses section is the lightest source of book-level arc material when treatments are absent. Also read `series.md` for the character's role in the series arc.

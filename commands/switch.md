@@ -20,7 +20,8 @@ Resolve the store first per `references/store.md` if the session hasn't.
 
 2. **Verify the book folder exists.** Check that `books/<slug>/` exists (`store.list`). If it doesn't (e.g., user added the book to the list but never scaffolded the folder), offer to scaffold it via a recommended `/storystormer:init` re-run rather than silently creating an empty folder.
 
-3. **Update the focus.** It lives in one place, the root `state.md`'s frontmatter: set `current_focus: <slug>` and update the `last_session` date, with `store.edit` (or `store.write`). Where the binding computes `state.md`, go through the writable realization the binding names for `current_focus` (`references/store.md` § Local-mode clauses); if it names none, say so in the report rather than skip it silently. The config holds no focus. If this is the session's first write, its journal entry is created first (`references/file-schemas.md` § `journal/`); either way the switch gets a line in it.
+3. **Update the focus.** It lives in one place, the root `state.md`'s frontmatter: set `current_focus: <slug>` with `store.edit` (or `store.write`). Where the binding computes `state.md`, go through the writable realization the binding names for `current_focus` (`references/store.md` § Local-mode clauses); if it names none, say so in the report rather than skip it silently. The config holds no focus.
+**Record the session**, in order: the journal entry (created with `new` if this is the session's first write, per `references/file-schemas.md` § `journal/`; otherwise extended) gets a line on the switch; then, on a first write, the root `state.md` takes that entry's number as `session_count` and today as `last_session`, in the same edit as the focus (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 
 4. **Read the newly-focused book's `state.md`.** `store.read` `books/<slug>/state.md` and pull out its `Summary`, `What Exists`, `What's Next`, and `Last Session` sections.
 
@@ -37,7 +38,7 @@ Resolve the store first per `references/store.md` if the session hasn't.
 
 ## Behavior notes
 
-- The switch is **non-destructive**. It changes only the focus pointer; no per-book files are modified.
+- The switch is **non-destructive**. It changes the focus pointer and records the session (step 3), nothing else; no per-book files are modified.
 - The previously-focused book's state remains exactly as it was — work in progress is preserved. Switching is cheap and reversible.
 - If the user invokes `/storystormer:switch` without an argument, list the available books with their slugs and titles and ask which one to switch to.
 - If `current_focus` already matches the argument (user switched to the book they're already on), report the current state without making any edits.
@@ -48,4 +49,4 @@ Resolve the store first per `references/store.md` if the session hasn't.
 - **The user wants to switch but is mid-conversation in another skill.** Surface the request to the user: *"You're mid-`brainstorm-session` for book 1. Switch focus to book 2 now, or finish this thread first?"* Don't switch silently if a skill is actively running.
 - **The user adds a book name that isn't in the list yet.** Don't auto-create — refuse and explain that adding books to a series is an `/storystormer:init` operation (or future `add-book` skill, post-POC).
 
-This command does not generate or modify any content. It only flips the focus pointer and reports the new state.
+This command generates no story content and changes no other document. It flips the focus pointer, records the session, and reports the new state.

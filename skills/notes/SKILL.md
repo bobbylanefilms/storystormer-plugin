@@ -98,6 +98,8 @@ Proposals are not applied here; they wait in § Proposals for `canon-sync`, whic
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. Operate on the focused book's chapters; the harvest and end-state are book-local, but accidental canon and proposed Revelation Log lines target the shared canon at the series root and are book-qualified (`Ch B2-07`). A cross-book chain paid in this book proposes its closure in `series.md` as well as primer §2.
 
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
+
 ## What this skill does not do
 
 - **Evaluate the prose.** No craft judgments, no pacing opinions, no quality adjectives.

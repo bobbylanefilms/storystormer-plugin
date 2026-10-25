@@ -178,11 +178,11 @@ As the conversation lands commitments, capture them:
 - POV strategy → `theme` decision (the app has no `voice` type).
 - Specific spine slot commitments that aren't already in the treatment (a chapter the user is inventing at the outline level) → `plot` decision.
 
-If a question surfaces that you can't resolve in the session — *"Does the midpoint shift land at ch 18 or ch 20?"* — create it as a question entry (`questions/Q-###.md`) with category `Story Structure`, priority `critical`, a 3–7 word title, and `source: plugin` (blocks chapter outlining for the affected range).
+If a question surfaces that you can't resolve in the session — *"Does the midpoint shift land at ch 18 or ch 20?"* — create it as a question entry (`questions/Q-###.md`) with category `Story Structure`, priority `critical`, a 3–7 word title, and `source: plugin` (blocks chapter outlining for the affected range); in a series, also `scope` and `affects_books` (`references/series.md` § Scoping decisions and questions).
 
 Lean toward capture. The structural decisions are load-bearing for everything downstream; a missed log here causes outline-to-prose drift later.
 
-Each entry is created with `store.write(path, content, new)`, and its row goes into its index (`references/file-schemas.md` § Who rebuilds an index). The IDs you propose are provisional: the store assigns the number and reports it (`references/store.md` § New entries), and from then on that reported ID is the entry's ID. Adopt it before writing any `[OPEN: Q-###]` marker in the spine, a `resolved_by`, or any other cross-reference, and use it in the journal and the report.
+The write order is journal → entry and index row → `state.md`: before the session's first entry, create its journal entry with `new` if nothing this session has written yet (`references/file-schemas.md` § `journal/`). Each entry is created with `store.write(path, content, new)`, and its row goes into its index (`references/file-schemas.md` § Who rebuilds an index). The IDs you propose are provisional: the store assigns the number and reports it (`references/store.md` § New entries), and from then on that reported ID is the entry's ID. Adopt it before writing any `[OPEN: Q-###]` marker in the spine, a `resolved_by`, or any other cross-reference, and use it in the journal and the report.
 
 ### 11. Write the files
 
@@ -192,7 +192,7 @@ After the user approves the spine:
 - `store.write(outline/structure.md)` v1 (or bumped version) per the schema: header lines, `## Structure Notes` (Framework Choice, Act Structure, POV Strategy, Pacing Notes, Open Structural Questions) before the first chapter block, then every chapter block in order with no gaps. No `### Chapter …` heading inside the Structure Notes, and no `##` heading between chapter blocks: the app's parser reads either as the end of, or an error in, the spine.
 - Regenerate `outline/_index.md` per `store.md` — the chapter × stage matrix, organized by act, every chapter row with all stage cells `—` (no chapter content exists yet).
 - Mark consumed decisions with an `**Integrated into structure**: yes (<date>)` line in the entry's body (a body field, `references/file-schemas.md` § `decisions/`; the frontmatter's `integrated` is the treatment's alone, so the index row doesn't change).
-- Record the session in its journal entry (created first if nothing this session has written yet; `references/file-schemas.md` § `journal/`): the framework, act and chapter-count choices and why, the decisions and questions logged.
+- Extend the session's journal entry (created now if nothing this session has written yet; `references/file-schemas.md` § `journal/`): the framework, act and chapter-count choices and why, the decisions and questions logged.
 - Update `state.md`:
   - `What Exists → Structure` line added with version, frameworks, chapter count.
   - `What Exists → Chapter outlines` line added showing `0/N drafted, Structure v1`.
@@ -224,6 +224,8 @@ Log them as you go; don't batch-capture at the end. The plan-first protocol appl
 ## Series Mode
 
 If `state.md` shows `project_type: series`, read `references/series.md` first. Pre-outline sessions in series mode operate on the **focused book** — produce `books/<current_focus>/outline/structure.md`. Each book has its own structure (framework, act table, chapter spine); structures are not shared across books.
+
+Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 
 Two additions in series mode:
 
