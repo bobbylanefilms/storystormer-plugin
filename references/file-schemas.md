@@ -31,6 +31,7 @@ The agent’s dashboard of what the project is, where it stands, and what to wor
 ```yaml
 ---
 title: [working title]
+slug: the-pattern-recognition               # set once at init; never changes with the title
 genre: [primary]
 genre_secondary: [optional, omit if not applicable]
 project_type: novel | novella | short_story | screenplay | series
@@ -48,11 +49,13 @@ current_focus: book-1                       # which book the user is currently w
 ---
 ```
 
+`slug` is the project’s stable name: set once by `init` (or by the layout upgrade), the kebab-case of the title at that moment, and never changed when the title changes. On Dropbox it equals the root folder name, on Notion the row’s `Slug`. Every entry copies it into `storystormer_project`. Only the root `state.md` carries it.
+
 `project_type` is one of the app's values: `novel`, `novella`, `short_story`, `screenplay`, or `series` (an older `short-story` reads as `short_story`).
 
 The `books` and `current_focus` fields are **only present in series-mode projects**, on the series-level `state.md`. Standalone-novel projects omit them. See `references/series.md` for the full series workflow.
 
-For a per-book `state.md` (at `books/<slug>/state.md` in series mode), the frontmatter is the standalone schema above, without `books` and `current_focus`, plus one field:
+For a per-book `state.md` (at `books/<slug>/state.md` in series mode), the frontmatter is the standalone schema above, without `slug`, `books`, `current_focus`, `session_count` and `last_session` (sessions are the series’: the root `state.md` counts them and numbers the journal), plus one field:
 
 ```yaml
 parent_series: Inauguration Day            # title of the parent series
@@ -62,7 +65,7 @@ A per-book `title` is that book’s title. A per-book `target_word_count` is pre
 
 ### Sections (in order)
 
-Frontmatter, then exactly these four sections, and nothing else: no `## Previous Session`, no session log, no narrative that a journal entry or a document already holds. The whole file stays under about **4 KB**.
+Frontmatter, then exactly these four sections, and nothing else: no H1, no `## Previous Session`, no session log, no narrative that a journal entry or a document already holds. The whole file stays under about **4 KB**, not counting What Exists’ carried lines (below), which are the author’s.
 
 ```markdown
 ## Summary
@@ -102,12 +105,13 @@ Frontmatter, then exactly these four sections, and nothing else: no `## Previous
 ### Update rules
 
 - **Carried lines:** a `- **<Label>** — …` line in What Exists whose label isn’t one of those above but names documents the project holds (`**Research**`, `**Handoff**`, `**Methodology**`) is the author’s: it is kept as written, after the computed lines, whenever What Exists is rewritten. A free paragraph or a sub-bullet in What Exists is not carried: a store or skill that recomputes the section (`migrate`, the Notion binding) drops it.
-- The counts in **What Exists** are computed from the store (bios in `characters/`, entries under `worldbuilding/`, chapter files under `chapters/`, decisions and questions from `decisions/_index.md` and `questions/_index.md`), never carried forward from the last write. Recount whenever the line is rewritten.
+- The counts in **What Exists** are computed from the store (bios in `characters/`, entries under `worldbuilding/`, chapter files under `chapters/`, decisions and questions from `decisions/_index.md` and `questions/_index.md`, which always exist in layout 2), never carried forward from the last write. Recount whenever the line is rewritten.
 - **Storage** appears in two cases, as the last line of What Exists (the root `state.md` in a series): a local project whose folder sits inside a sync service (`storystormer-init` § Where a new project lives), where it names the service and the folder; and the Dropbox hybrid, a Dropbox project with a `local_root` (`migrate` § The hybrid), where it says the folder is the synced copy of the Dropbox root (**Storage** — this folder is the synced copy of `/StoryStormer/the-good-dog` in Dropbox, at `~/Dropbox/StoryStormer/the-good-dog`). Whenever What Exists is rewritten in a session bound to the folder, recompute it from the folder’s current absolute path with the same check, so a folder moved out of a sync service drops the line; a session bound through the connector keeps the line as it stands; `migrate` sets it. Every other project omits it.
-- **A new session** is the first write of a conversation: it bumps `session_count`, sets `last_session`, and creates that session’s journal entry (§ `journal/`). Every later write in the same session that changes Last Session also extends the same journal entry, so the two never disagree.
+- **A new session** is the first write of a conversation. It creates that session’s journal entry first (§ `journal/`, which says how the number is chosen), then writes `state.md` with that number as `session_count` and today as `last_session` (the root `state.md` in a series). Every later write in the same session that changes Last Session also extends the same journal entry, so the two never disagree.
 - Bumping a numbered version (primer / treatment / manifest / bio) → update the corresponding line in **What Exists**.
 - Resolving a question → update **What's Next** to point to the next priority question.
-- **Size:** when a write would take `state.md` past about 4 KB, the excess is history: move it to the session’s journal entry rather than trimming What Exists.
+- **Size:** when a write would take `state.md` past about 4 KB (carried lines not counted), the excess is history: move it to the session’s journal entry rather than trimming What Exists.
+- **Dropped keys:** a skill rewriting an old-layout `state.md`, and the layout upgrade, drop `storage_kind` from the frontmatter and any H1 above `## Summary`; the upgrade’s preflight names both (§ The old layout).
 - Treating the user's What’s Next as suggestion — the user can ignore or hand-edit it. Never overwrite a user's hand-edit silently; if it conflicts with what the agent would write, mention the conflict in the next response.
 
 ### Series-level state.md
@@ -407,10 +411,13 @@ journal/
 Rules for all three:
 
 - **Frontmatter is the structured part; the body is everything else.** The fields below are the frontmatter, quoted per § Frontmatter values. The body is in the markdown profile. Real logs carry more than any template (status prose, extra bold fields such as `**Resolves**:` or `**Note**:`, run-in bold paragraphs, free paragraphs, sub-lists, a second copy of a field): all of it stays in the body as written, in the order written. Nothing about an entry needs to fit the template to be kept.
-- **Every entry carries two fields for views across the project**, such as an Obsidian Bases table: `storystormer_project`, the project’s slug (its Dropbox root folder name or Notion `Slug`; on a local folder, the kebab-case of the root `state.md` `title`), set when the entry is created and not rewritten if the title changes; and `storystormer_kind`, one of `decision`, `question`, `journal`.
+- **Every entry carries two fields for views across the project**, such as an Obsidian Bases table: `storystormer_project`, copied from the root `state.md`’s `slug` when the entry is created; and `storystormer_kind`, one of `decision`, `question`, `journal`.
 - **Entries are never deleted.** A decision is superseded or retracted; a question is resolved or invalidated. Its file stays, its number stays reserved, and citations to it keep resolving (the app numbers entries by creation order and depends on this).
-- **Numbers come from the store.** A new decision or question is written with `store.write(path, content, new)`, and the store reports the number it assigned, which may not be the one the skill proposed (`references/store.md` § Operations, New entries). The skill uses the reported number everywhere after: the index row, the journal entry, a question’s `resolved_by`, prose that cites it.
-- **One small read per need.** Skills read an index to find entries and then read only the entries they need (the last ten decisions, the open questions, the IDs a document cites). Reading every entry is for `migrate` and audits, fanned out to subagents.
+- **Numbers come from the store.** A new decision or question is written with `store.write(path, content, new)`, and the store reports the number it assigned, which may not be the one the skill proposed (`references/store.md` § Operations, New entries). An empty collection starts at `D-001` and `Q-001`. The skill uses the reported number everywhere after: the index row, the journal entry, a question’s `resolved_by`, prose that cites it.
+- **Numbers compare numerically,** never as text: `D-1000` is higher than `D-999`, and `s100` than `s99`. That holds for “the highest number” and for the order of an index’s rows.
+- **Frontmatter is authoritative.** `status`, `resolved_by`, `superseded_by` and `integrated` are the entry’s truth. An entry carried over from an old log may also hold the prose those fields came from (an old `**Status**:` line): a skill that changes one of them updates or removes the matching body line in the same edit, so the two never disagree.
+- **One small read per need.** Skills read an index to find entries and then read only the entries they need (the last ten decisions, the open questions, the IDs a document cites). Reading every entry is for `migrate`, audits and an index rebuild (§ Who rebuilds an index), with frontmatter-only reads fanned out to subagents for a large collection.
+- **Created empty:** `init` writes both indexes with their heading and table header and no rows, so in layout 2 they always exist.
 
 ### `decisions/` — one decision per entry
 
@@ -423,7 +430,7 @@ date: 2026-05-11
 type: character
 topic: Marlowe's relationship to her father
 source: brainstorm
-integrated: no
+integrated: "no"
 storystormer_project: the-pattern-recognition
 storystormer_kind: decision
 ---
@@ -440,7 +447,7 @@ storystormer_kind: decision
 - **`type`:** one of the app's five: `plot`, `character`, `worldbuilding`, `structure`, `theme`. New entries write only these. An entry carried over from an older log keeps the word it was written with; readers take a retired word as its mapped type (the table after this list), and any other word (`premise`, `process`, `methodology`) as the closest of the five.
 - **`topic`:** a short name for the decision, the label the index lists it under.
 - **`source`:** what produced it. The plugin writes its workflow (`brainstorm`, `intake`, `treatment-update`, `user-declared`, `canon-sync`); the app writes its own values (`agent_tool`, `manual`, `decision_capture`, `sweep`, `canon_sync`), and a decision the plugin added to a connected project reads back as `plugin` because the app records the channel, not the workflow. Read every value in this list as valid, and keep any value an entry already has, qualifier included (`user-declared (init session)`). `canon-sync` (plugin) and `canon_sync` (app) are the same provenance.
-- **`integrated`:** whether the current treatment reflects it. It starts with `yes`, `no`, `partially` or `n/a`, and may go on with a date or a short qualifier as written (`yes (2026-05-24)`, `n/a — governs future work`). Integration into anything else (`Integrated into structure: yes`) is a body field. In a series it is a list, one item per book the decision touches, in the form `<slug> treatment <state>` (below).
+- **`integrated`:** whether the current treatment reflects it. It starts with `yes`, `no`, `partially` or `n/a`, and may go on with a date or a short qualifier as written (`yes (2026-05-24)`, `n/a — governs future work`). Quote it per § Frontmatter values: a bare `yes` or `no` would read as a boolean, so it is written `"yes"` or `"no"`. A carried-over decision whose log never recorded integration omits it; readers treat a missing `integrated` as not integrated, and `treatment-update` sets it when it integrates the decision. Integration into anything else (`Integrated into structure: yes`) is a body field. In a series it is a list, one item per book the decision touches, in the form `<slug> treatment <state>` (below).
 - **`superseded_by`:** the `D-###` of the later decision that replaces this one; omitted until one does. Prose about the supersession (`narrowed by D-052 for Act 3 only`) goes in the body.
 - **`retracted`:** the date the author withdrew the decision with nothing replacing it; omitted otherwise. A retracted entry keeps its file and number (the app’s tombstone).
 
@@ -450,6 +457,8 @@ storystormer_kind: decision
 | `mechanics` | `worldbuilding` | the rules of a speculative mechanism are worldbuilding |
 | `voice` | `theme` | voice, POV and tone choices; primer §4 still owns them (see `treatment-update`'s routing) |
 | `genre` | `theme` | |
+
+**May be absent on a carried-over entry:** `integrated` (above), and `source` when the old log never recorded one. Every other field is required.
 
 **Body:** `**Summary**:`, `**Details**:` (optional) and `**Affects**:` as bold-label fields, then anything else the entry carries, as written.
 
@@ -478,7 +487,7 @@ storystormer_kind: decision
 
 ### `decisions/_index.md` — the decision index
 
-One table row per decision, every entry included (superseded and retracted ones too), sorted by ID. No frontmatter.
+One table row per decision, every entry included (superseded and retracted ones too), sorted by ID numerically. No frontmatter.
 
 ```markdown
 # Decisions
@@ -531,10 +540,12 @@ storystormer_kind: question
   - `important`: affects multiple downstream elements; should be answered before the next treatment update.
   - `nice_to_resolve`: would improve the story but isn't blocking.
 - **`category`:** one of the app's seven, in Title Case: `Story Structure`, `Character`, `Plot`, `Worldbuilding`, `Theme`, `Setting`, `Pacing`. Older plugin categories read as theirs: `structure` → `Story Structure`, `voice` and `genre` → `Theme`, `mechanics` → `Worldbuilding`, the rest the same word capitalized; any other word (`process`) as the closest. New entries write only the seven.
-- **`title`:** required, 3–7 words naming the question, the label the app and the index list it under.
+- **`title`:** required, 3–7 words naming the question, the label the app and the index list it under. Old logs often have none; the layout upgrade then writes a short label taken from the question’s own words. It is the only author-facing text the upgrade composes, and its preflight says so.
 - **`status`:** `open`, `resolved` or `invalidated`. Any other wording an older log used (`half-resolved`, `open, but no longer unmechanised`) is read as the closest of the three, and its words stay in the body as written.
 - **`resolved_by`:** the `D-###` that resolved it, set with `status: resolved`; also allowed on an invalidated question when a decision is what invalidated it. Omitted while it is open. This field is the one link between a question and the decision that settled it; a decision’s `**Resolves**:` line, where an older entry has one, stays in its body as written.
 - **`source`:** one of the app's values (`decision_capture`, `treatment_update`, `manual`, `ai_marker`, `question_triage`, `agent_tool`, `ingestion`) or `plugin`. The plugin writes `treatment_update` for a question `treatment-update` logs, `ingestion` for one `storystormer-init` extracts from intake materials, `manual` for one the user dictates through `/storystormer:questions add`, and `plugin` for any other skill (`brainstorm-session`, `pre-outline-session`, `outline-chapters`, and so on). A question that came from the app keeps its value.
+
+**May be absent on a carried-over entry:** `date` and `source`, when the old log never recorded them. `title` is always present (the upgrade writes one).
 
 **Body:** `**Question**:`, `**Why it matters**:`, `**Possible approaches**:` (a list), `**Dependencies**:`, and, once there is something to say about where it stands, `**Resolution**:`: the answer (for a resolved question), the reason (invalidated), or the progress so far (`midpoint candidate identified, act climax undecided`). Then anything else the entry carries, as written.
 
@@ -549,10 +560,10 @@ In standalone-novel projects both are omitted. As with decisions, `book-<slug>` 
 
 ### `questions/_index.md` — the question index
 
-One table row per question, every status included, sorted by ID. No frontmatter. A skill looking for open questions filters this table and reads only those entries.
+One table row per question, every status included, sorted by ID numerically. No frontmatter. A skill looking for open questions filters this table and reads only those entries.
 
 ```markdown
-# Open Questions
+# Questions
 
 | ID | Priority | Category | Title | Status | Resolved by |
 |---|---|---|---|---|---|
@@ -564,14 +575,15 @@ One table row per question, every status included, sorted by ID. No frontmatter.
 
 ### Who rebuilds an index
 
-`decisions/_index.md` and `questions/_index.md` are **stored** on file stores and **computed** where the binding says so (`references/store.md` § Local-mode clauses). A stored index is regenerated whole from the entries, never patched by hand:
+`decisions/_index.md` and `questions/_index.md` are **stored** on file stores and **computed** where the binding says so (`references/store.md` § Local-mode clauses). A stored index is kept current one row at a time:
 
-- **By the writing skill,** after every entry it creates or changes, in the same run.
-- **By any skill that finds the index behind its entries:** a listing that shows an entry the index lacks, or an entry whose frontmatter disagrees with its row. An author editing entries directly (in Obsidian, in a Bases view) changes the entry and not the index, so the entry is always the truth and the index is rebuilt from it.
+- **The writing skill** adds or replaces only its own entry’s row, in the same run: an anchored `store.edit` on the index (`write` when the index is new). It never reads the other entries to do so.
+- **A cheap check** whenever a skill lists the collection anyway: the listing’s IDs and the index’s IDs should be the same set. When they disagree (an entry the index lacks, a row with no entry), rebuild the index from the entries with frontmatter-only reads, fanned out to subagents for a large collection.
+- **A skill reading an entry anyway** that finds its frontmatter disagrees with its row fixes that one row. An author editing entries directly (in Obsidian, in a Bases view) changes the entry and not the index, so the entry is always the truth.
 
 ### `journal/` — one entry per session
 
-`journal/<YYYY-MM-DD>-s<NN>.md`: the session’s date and its number (`session_count` in `state.md` after this session’s bump), zero-padded to 2 digits (3 past 99). It records what a session did and why, so `state.md` doesn’t have to.
+`journal/<YYYY-MM-DD>-s<NN>.md`: the session’s date and its number, zero-padded to 2 digits (3 past 99). In a series the root `state.md`’s `session_count` numbers it; per-book `state.md` files count no sessions. It records what a session did and why, so `state.md` doesn’t have to.
 
 ```markdown
 ---
@@ -592,14 +604,14 @@ Refreshed the treatment to v7 with D-001..D-018. Act 2's reveal now turns on the
 
 - **Frontmatter:** `date`; `session` (the number in the filename); `skills`, the skills that wrote during the session; `decisions`, the IDs logged or changed; `questions`, the IDs opened, resolved or invalidated; `source`, `plugin` for an entry the plugin writes and `app` for one the app writes from its own chat sessions; and the two `storystormer_*` fields. Lists are empty (`[]`) when nothing applies.
 - **Body:** a short narrative, in the profile, of what was done and why: the choices made and the reasons, what changed in which documents, what was left open. It is where a finished What’s Next item goes, and where the detail that `state.md` no longer carries lives.
-- **Created by the session’s first write,** with `store.write(path, content, new)`. If the path already exists (another surface already holds that session number), re-read `state.md` and take the next number.
+- **Created by the session’s first write,** before `state.md` is written. Its number is one more than the higher of `state.md`’s `session_count` and the highest `sNN` in the `journal/` listing, compared numerically (the app writes entries too, so the counter can lag the listing). It is created with `store.write(path, content, new)`; on a collision, take the next number and try again. Then `state.md` is written with that number as `session_count`. An empty `journal/` with `session_count` absent gives `s01`, which `init` creates for its own session.
 - **Extended, never rewritten whole,** by every later step in the same session: `store.edit` adds the step’s paragraph after the last one and adds its IDs and skill to the frontmatter lists. An entry from an earlier session is never changed.
 - **No index.** Filenames sort by date and session, so the listing is the index. A skill wanting recent history lists `journal/` and reads the newest few entries. Nothing reads the journal by default, and it is never pruned.
 - **Series mode:** one journal at the root, like the decisions; a per-book `state.md`’s Last Session names the root entry.
 
 ### The old layout
 
-A project whose config has no `layout` key (§ `.storystormer/config.json`) predates the collections. It keeps the decisions in one `decisions.md` and the questions in one `questions.md` at the root (in a series, the root too): each opens with a heading (`# Decisions`, `# Open Questions`; optional frontmatter and preamble), then entries headed `## D-### · <date> · <type>` or `## Q-### · <priority> · <category>`, sometimes with a suffix (` ✅ RESOLVED`), each followed by `**<Label>**:` fields (`Topic`, `Summary`, `Details`, `Affects`, `Source`, `Integrated into treatment`, `Superseded by`; `Title`, `Question`, `Why it matters`, `Possible approaches`, `Dependencies`, `Source`, `Status`) and whatever else its author wrote. Its `state.md` may carry session history (a `## Previous Session`, narrative in What Exists and What’s Next), and its config mirrors `state.md` fields. `migrate`’s layout upgrade converts it in place (`references/store.md` § Resolve, The layout).
+A project whose config has no `layout` key (§ `.storystormer/config.json`) predates the collections. It keeps the decisions in one `decisions.md` and the questions in one `questions.md` at the root (in a series, the root too): each opens with a heading (`# Decisions`, `# Open Questions`; optional frontmatter and preamble), then entries headed `## D-### · <date> · <type>` or `## Q-### · <priority> · <category>`, sometimes with a suffix (` ✅ RESOLVED`), each followed by `**<Label>**:` fields (`Topic`, `Summary`, `Details`, `Affects`, `Source`, `Integrated into treatment`, `Superseded by`; `Title`, `Question`, `Why it matters`, `Possible approaches`, `Dependencies`, `Source`, `Status`) and whatever else its author wrote. Its `state.md` may carry session history (a `## Previous Session`, narrative in What Exists and What’s Next), and its config mirrors `state.md` fields. `migrate`’s layout upgrade converts it in place (`references/store.md` § Resolve, step 4); its preflight names what it drops (`storage_kind`, the `state.md` H1, the config’s mirrored fields) and the question titles it composes. Until then a session only reads it: a skill that would write any layout-dependent document stops before writing anything, explains, and offers the upgrade. A cross-backend `migrate` from an old-layout source writes the target in layout 2 and leaves the source as it is.
 
 ## Character bio files (`characters/<slug>.md`)
 

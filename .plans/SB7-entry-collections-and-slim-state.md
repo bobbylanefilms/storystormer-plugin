@@ -170,4 +170,16 @@ Rob’s rule (2026-10-24): whatever runs on local and Dropbox must also run on N
 - **No H1 in `state.md`.** The four sections and nothing else; the title is in the frontmatter.
 - **Index staleness is detected from content, not timestamps:** a listing showing an entry the index lacks, or an entry whose frontmatter disagrees with its row. The contract has no modification-time operation, and this catches Bases edits.
 
+**Review fixes (Fable review of 4f4b66c, coordinator’s decisions, 2026-10-25):**
+- **Index upkeep is per row:** the writing skill edits only its own row; a full rebuild (frontmatter-only reads) happens only when the listing’s and the index’s ID sets disagree, and a skill reading an entry anyway fixes a disagreeing row.
+- **Sessions belong to the root:** the root `state.md`’s `session_count` numbers the journal; per-book `state.md` carries neither `session_count` nor `last_session` (my call: `last_session` is the same session record, and Locate reads the root’s).
+- **Journal number:** one more than the higher of `session_count` and the highest `sNN` listed; the entry is created with `new` first, then `state.md` takes that number.
+- **`slug`** added to the root `state.md`, set once; entries copy it into `storystormer_project`.
+- **Empty and ordering rules:** empty collections start at `001`; `init` writes header-only indexes and `journal/<date>-s01.md`; numbers compare numerically.
+- **Carried-over entries:** `integrated` and `source` may be absent on decisions (missing `integrated` means not integrated); `date` and `source` on questions; the upgrade composes question titles from the question’s words and says so.
+- **Frontmatter is authoritative:** a skill changing `status`, `resolved_by`, `superseded_by` or `integrated` updates or removes the matching kept body line in the same edit.
+- **Old layout:** a would-be writer stops before any write; a cross-backend `migrate` writes the target in layout 2 and leaves the source alone; `storage_kind` and the `state.md` H1 are dropped and named in the preflight.
+- **Smaller fixes:** `integrated: "no"` quoted; the 4 KB budget excludes carried lines; subagent briefs carry the layout; the questions index is `# Questions`.
+- **Deferred to the binding slice:** Dropbox `ALREADY_EXISTS` retry, Notion’s effective-target rendering.
+
 **Follow-ups for later slices** (other files that must change): see the slice 1 report in the session; the main ones are the three bindings (`new` realization, collections in the Notion path map, the Journal database, retiring computed logs and `storage_kind`, the computed config down to two keys and a layout marker), `migrate` (layout upgrade, config flip keeps only `storage` plus `layout`), `init` (writes `layout: 2`, no mirrors, no `storage_kind`), `switch` (writes `state.md` only), `decision-capture` (book slugs from `state.md`, entries with `new`), `pre-outline-session` and `treatment-update` (target from `state.md`), and `series.md` (config is no longer a mirror; per-book targets in per-book `state.md`; the log rows in its tables).
