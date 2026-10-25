@@ -26,8 +26,11 @@ Done. Released 0.22.0-poc on `main`.
 ## Decisions by Rob
 - 2026-10-25: old-layout projects stay read-only until `/storystormer:migrate upgrade` (kept).
 
-## Test leftovers (Rob to trash)
-Notion: `sb6-ring2` (incl. duplicate journal row `404e980b9c7481818e8ff763ab9634d5`), `sb7-ring`, `sb7-init-notion`, probe pages under `sb6-probe`, plus the earlier SB4–SB6 list. Dropbox: `/StoryStormer/{sb6-ring2,sb7-ring,sb7-init-dropbox,sb7-resume,sb7-probe}` plus the earlier list. The shared hub gained a Journal database and `Layout`/`Retracted` columns (keep them).
+## Test projects
+Deleted 2026-10-25 at Rob's request (Notion: 10 projects, 762 pages, in Trash; Dropbox: 12 folders plus `/SB4-tests`, in Deleted files). Kept as fixtures: The Lighthouse Ledger (Notion and Dropbox) and the Notion `sb6-probe` sandbox. The hub keeps its Journal database and `Layout`/`Retracted` columns.
+
+## Next
+AP4 and AP5 in the web-app repo; read `~/Git/storystormer/plan/_cowork/CW6-mcp-lessons-from-plugin-backends.md` first.
 
 ## Last checks
 8f3ae2b + release: tests 118/118, `claude plugin validate .` passes.
