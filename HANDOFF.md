@@ -10,21 +10,24 @@
 
 | # | Slice | Tier | Status | Commit | Review |
 |---|---|---|---|---|---|
-| 1 | Schema + store contract (ownership trace, file-schemas, store.md) | Opus | in progress | | |
-| 2 | Bindings local/dropbox/notion | Opus | pending (parallel with 3) | | |
-| 3 | Skills, commands, references | Opus | pending (parallel with 2) | | |
+| 1 | Schema + store contract (ownership trace, file-schemas, store.md) | Opus | accepted | 4f4b66c, fad453a | Fable: 16 confirmed, sent back, fixed in fad453a |
+| 2 | Bindings local/dropbox/notion | Opus | in progress (worktree) | | |
+| 3 | Skills, commands, references | Opus | in progress (worktree) | | |
 | 4 | migrate layout upgrade + dev check | Opus | pending | | |
 | 5 | Guides + README | Sonnet | pending (parallel with 4) | | |
 | 6 | Live verification + release | Opus runners + inline | pending | | |
 
 ## Current position
-Slice 1 dispatched.
+Slices 2 and 3 running in parallel worktrees off fad453a; integrate by cherry-pick.
 
 ## Decisions and deviations
 - Dropbox `create_file` already returns ALREADY_EXISTS on an existing path: the natural realization of `write(..., new)`.
 
 ## Open questions for Rob
-None yet.
+- Slice 1 made an old-layout project read-only until `migrate` upgrades it (no skill has to handle both layouts). Recommended: keep.
+
+## Slice 1 decisions
+- config.json is `layout` + `storage` only; `target_word_count` moves to state.md; `storage_kind` dropped; `retracted` on decisions, `source` on journal entries for app parity; no `resolves` field (the question's `resolved_by` owns the link).
 
 ## Last checks
 Tools tests: 92/92 at b7bdb7b. `claude plugin validate .` passes at b7bdb7b.
