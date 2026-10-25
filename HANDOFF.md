@@ -19,7 +19,11 @@
 
 ## Current position
 
-SB6 released as 0.21.0-poc on `main`. All slices accepted. mini run 3 passed with an empty (b) list; the full ring ran once, and its findings were fixed and probed (not re-run). Next: SB7 (entry collections, slim `state.md`), AP5 in the web-app repo, ISSUE072.
+SB6 released as 0.21.0-poc on `main`. All slices accepted. mini run 3 passed with an empty (b) list; the first full ring ran at `c2420dd`, and its findings were fixed in `2a0781b` and `7cfe89d` and probed.
+
+**In flight (Rob asked 2026-10-24):** a second full ring at `d91e507` (0.21.0-poc). An Opus runner is working from the brief `sb6/runner-ring2.md` in the session scratchpad, with slug `sb6-ring2` and scratch `sb6/live/ring2/` (log at `log.md`). The deliverable is the (b) list. On completion: verify against the log, fix any (b) items (a patch release if they're functional), then report.
+
+Next after the ring: SB7 (entry collections, slim `state.md`), AP5 in the web-app repo, ISSUE072.
 
 ## Decisions and deviations
 
@@ -33,7 +37,7 @@ SB6 released as 0.21.0-poc on `main`. All slices accepted. mini run 3 passed wit
 
 ## Open for Rob
 
-- Test leftovers to trash: Notion Bottle Weather, The Good Dog (2 rows), good-dog-mini; Dropbox `/StoryStormer/{sb4-c1-notion,sync-demo,sync-a,sb5-overwrite,the-good-dog,cowork-test}`, `/SB4-tests/`, plus synced copies. Keep the SB3 Lighthouse Ledger fixtures. SB6 adds `sb6-probe`, `sb6-mini`, `sb6-ring` (listed at the end).
+- Test leftovers to trash: Notion Bottle Weather, The Good Dog (2 rows), good-dog-mini; Dropbox `/StoryStormer/{sb4-c1-notion,sync-demo,sync-a,sb5-overwrite,the-good-dog,cowork-test}`, `/SB4-tests/`, plus synced copies. Keep the SB3 Lighthouse Ledger fixtures. SB6 adds `sb6-probe`, `sb6-mini`, `sb6-mini2`, `sb6-mini3`, `sb6-ring`, `sb6-ring2` (Notion), plus Dropbox `/StoryStormer/{sb6-ring,sb6-ring2}`.
 
 ## Checks
 
