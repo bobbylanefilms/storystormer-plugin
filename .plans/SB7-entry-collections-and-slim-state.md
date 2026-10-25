@@ -129,3 +129,45 @@ Rob’s rule (2026-10-24): whatever runs on local and Dropbox must also run on N
 - **Connectors:** Dropbox and Notion connected in the Claude Code session.
 - **A fresh copy of The Good Dog** (the SB5 scratch fixture was partly cleaned up).
 - **AP5 piece 5,** for app parity (not needed to ship SB7 on the three plugin backends).
+
+---
+
+## Implementation notes (as built)
+
+### Slice 1: the schema and the store contract (2026-10-25)
+
+**Files:** `references/file-schemas.md`, `references/store.md`.
+
+- **`file-schemas.md`:** § `decisions.md` and § `questions.md` are replaced by § Entry collections (shared rules), § `decisions/`, § `decisions/_index.md`, § `questions/`, § `questions/_index.md`, § Who rebuilds an index, § `journal/` and § The old layout. § `state.md` is slimmed (four sections, about 4 KB, the journal rule in the update rules, the series-level example cut to match) and now holds § Target word count, moved from the config section because `state.md` owns the target. § `.storystormer/config.json` is down to `layout` and `storage`.
+- **`store.md`:** `store.write(path, content, new)` and § New entries (create-only, the number the store assigns and reports); § Resolve step 4, the layout check; both indexes in the Local-mode clauses; the concurrency guard’s whole-document list is now `state.md` and entries, and a `new` write needs no guard; the `storage_kind` mirror sentence is gone.
+
+**Field-ownership trace.** Every key in `state.md` frontmatter and `config.json`, with who reads it (grep over `skills/`, `commands/`, `references/`, 2026-10-25). Only `storage` and `layout` must be known before `state.md` can be read: resolution needs `storage` to bind the store at all, and `layout` says what shape `state.md` and the logs are in. Nothing else is read before `state.md`: every skill that reads the target, the series fields or the title reads `state.md` in the same step or earlier.
+
+| Key | Readers | When read | Owner | What the other file does now |
+|---|---|---|---|---|
+| `storage` (`kind`, `root`, `local_root`) | `store.md` § Resolve and the locator; every binding’s root; `migrate` (flip, hybrid); `init` (pointer); Dropbox § Locate | before the store is bound | `config.json` | `state.md`’s `storage_kind` mirror is dropped (no reader found; only `init`, `migrate`, Dropbox and Notion wrote it). The What Exists **Storage** line stays: it is author prose, not a mirror |
+| `layout` (new) | `store.md` § Resolve step 4; `migrate`’s layout upgrade | right after binding, before `state.md` | `config.json` | not in `state.md` |
+| `title` | Dropbox and Notion § Locate (`state.md` first, config as fallback); `migrate` preflight (named the title disagreement; Notion keeps `state.md`’s); `switch`; outline skills | with or after `state.md` | `state.md` | removed from the config. The SB5 re-verify’s double title is gone |
+| `project_type` | every skill’s series check (“if `state.md` shows `project_type: series`”); `series.md`; Notion | with `state.md` | `state.md` | removed from the config |
+| `target_word_count` | `treatment-update`, `pre-outline-session` (read from the config today), `migrate`, `init`, `series.md`, Notion | after `state.md` (the same read step) | `state.md` (moved from the config) | removed from the config. In a series, a book’s own target lives in `books/<slug>/state.md`, absent meaning the series-level value |
+| `genre`, `genre_secondary` | `genres.md`, skills choosing craft references, Notion | with `state.md` | `state.md` | removed from the config |
+| `created` | `init` writes; Notion | with `state.md` | `state.md` | removed from the config |
+| `surfacing_mode` | `philosophy.md`, `genres.md` (both cite `state.md`) | with `state.md` | `state.md` | removed from the config |
+| `books` | `switch` (already treats `state.md` as owner), `decision-capture` (reads the config’s list for the scope slug), `brainstorm-session`, `series.md`, every series path resolution, Locate | after the root `state.md` | root `state.md` | the config’s `books` array is removed; each book’s title and own target move to `books/<slug>/state.md` |
+| `current_focus` | `switch`, `brainstorm-session` (both files), `pre-outline-session`, `outline-chapters`, `prose`, `treatment-update`, `series.md` | after the root `state.md` | root `state.md` | removed from the config; `switch` no longer writes two files |
+| `logline`, `stage`, `initial_maturity`, `last_session`, `session_count`, `parent_series` | Locate (`stage`, `last_session`), `treatment-update`, `init`, `switch`, `series.md`, Notion | with `state.md` | `state.md` | never in the config; unchanged |
+
+**Decisions made in this slice** (the plan left these open):
+- **The config is two keys** (`layout`, `storage`), not a smaller mirror. The trace found no field outside those two read before `state.md`, and the plan’s rule says the mirror goes.
+- **The target moves to `state.md`.** It was config-owned for no reason the trace could find; per book, presence means the book’s own target and absence means it inherits.
+- **An old-layout project is read-only until upgraded.** Resolution offers the upgrade; until it runs, a session reads but writes nothing the layout changes. No skill needs to understand both layouts.
+- **`integrated`** is text starting with `yes`, `no`, `partially` or `n/a`, so real values with qualifiers (`n/a — governs future work`) keep their words; in a series it is a block list of `<slug> treatment <state>` items (a block list, since items may hold commas).
+- **No `resolves` field on decisions.** A question’s `resolved_by` is the one owner of that link; an older decision’s `**Resolves**:` line stays in its body as written.
+- **`retracted`** (a date) added to decisions for parity with the app’s tombstones (ISSUE067 in the web-app repo).
+- **Journal entries carry `source`** (`plugin` or `app`) for parity with AP5 § 5’s `projectJournal.source`. The app’s `title` was not added: the body’s first sentence serves.
+- **Retired types and categories are kept as written** in carried-over entries (`premise`, `process`, `methodology` included) and read as the closest of the current set, rather than rewritten by the upgrade.
+- **`questions` `date` may be absent** on a carried-over entry whose log never recorded one; the upgrade doesn’t invent dates.
+- **No H1 in `state.md`.** The four sections and nothing else; the title is in the frontmatter.
+- **Index staleness is detected from content, not timestamps:** a listing showing an entry the index lacks, or an entry whose frontmatter disagrees with its row. The contract has no modification-time operation, and this catches Bases edits.
+
+**Follow-ups for later slices** (other files that must change): see the slice 1 report in the session; the main ones are the three bindings (`new` realization, collections in the Notion path map, the Journal database, retiring computed logs and `storage_kind`, the computed config down to two keys and a layout marker), `migrate` (layout upgrade, config flip keeps only `storage` plus `layout`), `init` (writes `layout: 2`, no mirrors, no `storage_kind`), `switch` (writes `state.md` only), `decision-capture` (book slugs from `state.md`, entries with `new`), `pre-outline-session` and `treatment-update` (target from `state.md`), and `series.md` (config is no longer a mirror; per-book targets in per-book `state.md`; the log rows in its tables).

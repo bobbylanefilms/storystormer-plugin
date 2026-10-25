@@ -1,5 +1,5 @@
 <!-- ABOUTME: Canonical schemas for every file the plugin reads or writes -->
-<!-- ABOUTME: state.md, primer.md, treatment.md, manifest.md, decisions.md, questions.md, character bios -->
+<!-- ABOUTME: state.md, primer.md, treatment.md, manifest.md, the decisions/questions/journal entry collections, character bios, config -->
 
 # File Schemas
 
@@ -24,7 +24,9 @@ So *Ten: Countdown* is `title: "Ten: Countdown"`, *The Answer #7* is `title: "Th
 
 ## `state.md` — living project dashboard
 
-The agent's record of what the project is, where it stands, and what to work on next. Updated after every significant action. The user can read this any time to see the current state, and can hand-edit `Next Recommended Action` if they want to redirect.
+The agent’s dashboard of what the project is, where it stands, and what to work on next: now, just did, next. It is not a history. What happened in a session goes to that session’s journal entry (§ `journal/`), so `state.md` stays small enough to read whole at the start of every session. Updated after every significant action. The user can read this any time to see the current state, and can hand-edit What’s Next if they want to redirect.
+
+`state.md` owns every project field the author sees (§ `.storystormer/config.json` keeps only what resolution needs).
 
 ```yaml
 ---
@@ -32,8 +34,7 @@ title: [working title]
 genre: [primary]
 genre_secondary: [optional, omit if not applicable]
 project_type: novel | novella | short_story | screenplay | series
-target_word_count: 120000                   # mirrors .storystormer/config.json; see § Target word count
-storage_kind: local | dropbox | notion | storystormer   # mirrors .storystormer/config.json storage.kind
+target_word_count: 120000                   # see § Target word count
 logline: [one sentence, or null if not yet written]
 stage: concept | brain-dump | brainstorming | treatment-drafted | treatment-refined | canon-development | outlining | outline-drafted
 initial_maturity: concept | brain-dump | brainstorming | treatment-drafted | treatment-refined  # set once on intake, never changed
@@ -47,17 +48,21 @@ current_focus: book-1                       # which book the user is currently w
 ---
 ```
 
-The `books` and `current_focus` fields are **only present in series-mode projects**. Standalone-novel projects omit them. See `references/series.md` for the full series workflow.
+`project_type` is one of the app's values: `novel`, `novella`, `short_story`, `screenplay`, or `series` (an older `short-story` reads as `short_story`).
 
-For a per-book `state.md` (at `books/<slug>/state.md` in series mode), the frontmatter looks like the standalone schema above plus one additional field:
+The `books` and `current_focus` fields are **only present in series-mode projects**, on the series-level `state.md`. Standalone-novel projects omit them. See `references/series.md` for the full series workflow.
+
+For a per-book `state.md` (at `books/<slug>/state.md` in series mode), the frontmatter is the standalone schema above, without `books` and `current_focus`, plus one field:
 
 ```yaml
 parent_series: Inauguration Day            # title of the parent series
 ```
 
-Per-book `state.md` files omit `books` and `current_focus` (those live only on the series-level state.md).
+A per-book `title` is that book’s title. A per-book `target_word_count` is present only when the book has a target of its own; without one, the book uses the series-level `state.md`’s value (§ Target word count).
 
 ### Sections (in order)
+
+Frontmatter, then exactly these four sections, and nothing else: no `## Previous Session`, no session log, no narrative that a journal entry or a document already holds. The whole file stays under about **4 KB**.
 
 ```markdown
 ## Summary
@@ -74,7 +79,7 @@ Per-book `state.md` files omit `books` and `current_focus` (those live only on t
 - **Voice** — sample + style guide (or `README only` — the prose stage has no voice anchor until a sample exists)
 - **Structure** — v1 (2026-05-12), based on Primer v3 + Treatment v7, 40 chapters planned, Save the Cat framework
 - **Chapter outlines** — 12/40 drafted (Act 1 complete, Act 2 through ch 12), based on Structure v1
-- **Prose chapters** — 6/40 written (ch 1–6), stashed in `chapters/` (prose-writing functionality pending); prose at `status: retired` is not counted
+- **Prose chapters** — 6/40 written (ch 1–6); prose at `status: retired` is not counted
 - **Decisions** — 18 total, 14 integrated into current treatment
 - **Open questions** — 6 (2 critical, 3 important, 1 nice_to_resolve)
 - **Storage** — this folder syncs through Dropbox (`~/Library/CloudStorage/Dropbox/Novels/the-good-dog`)
@@ -87,21 +92,27 @@ Per-book `state.md` files omit `books` and `current_focus` (those live only on t
 
 ## Last Session
 
-[2–3 sentences on what was worked on most recently — fresh context for the agent on resume]
+[2–3 sentences on what was worked on most recently — fresh context for the agent on resume.] Journal: `journal/2026-05-11-s07.md`.
 ```
+
+- **What Exists** is one line per artifact: its version, date and counts, and nothing more. A line never explains what changed or why; that is the journal’s job.
+- **What’s Next** holds forward items only, at most about five. An item that is done leaves the section; what was done goes into that session’s journal entry.
+- **Last Session** is two or three sentences and the path of the session’s journal entry.
 
 ### Update rules
 
 - **Carried lines:** a `- **<Label>** — …` line in What Exists whose label isn’t one of those above but names documents the project holds (`**Research**`, `**Handoff**`, `**Methodology**`) is the author’s: it is kept as written, after the computed lines, whenever What Exists is rewritten. A free paragraph or a sub-bullet in What Exists is not carried: a store or skill that recomputes the section (`migrate`, the Notion binding) drops it.
-- The counts in **What Exists** are computed from the files on disk (bios in `characters/`, entries under `worldbuilding/`, chapter files under `chapters/`, entries in `decisions.md` and `questions.md`), never carried forward from the last write. Recount whenever the line is rewritten.
+- The counts in **What Exists** are computed from the store (bios in `characters/`, entries under `worldbuilding/`, chapter files under `chapters/`, decisions and questions from `decisions/_index.md` and `questions/_index.md`), never carried forward from the last write. Recount whenever the line is rewritten.
 - **Storage** appears in two cases, as the last line of What Exists (the root `state.md` in a series): a local project whose folder sits inside a sync service (`storystormer-init` § Where a new project lives), where it names the service and the folder; and the Dropbox hybrid, a Dropbox project with a `local_root` (`migrate` § The hybrid), where it says the folder is the synced copy of the Dropbox root (**Storage** — this folder is the synced copy of `/StoryStormer/the-good-dog` in Dropbox, at `~/Dropbox/StoryStormer/the-good-dog`). Whenever What Exists is rewritten in a session bound to the folder, recompute it from the folder’s current absolute path with the same check, so a folder moved out of a sync service drops the line; a session bound through the connector keeps the line as it stands; `migrate` sets it. Every other project omits it.
-- Bumping a numbered version (primer / treatment / manifest / bio) → update the corresponding line in **What Exists** and bump `session_count` only if it's a new session.
+- **A new session** is the first write of a conversation: it bumps `session_count`, sets `last_session`, and creates that session’s journal entry (§ `journal/`). Every later write in the same session that changes Last Session also extends the same journal entry, so the two never disagree.
+- Bumping a numbered version (primer / treatment / manifest / bio) → update the corresponding line in **What Exists**.
 - Resolving a question → update **What's Next** to point to the next priority question.
-- Treating the user's `Next Recommended Action` as suggestion — the user can ignore or hand-edit it. Never overwrite a user's hand-edit silently; if it conflicts with what the agent would write, mention the conflict in the next response.
+- **Size:** when a write would take `state.md` past about 4 KB, the excess is history: move it to the session’s journal entry rather than trimming What Exists.
+- Treating the user's What’s Next as suggestion — the user can ignore or hand-edit it. Never overwrite a user's hand-edit silently; if it conflicts with what the agent would write, mention the conflict in the next response.
 
 ### Series-level state.md
 
-In series mode, the **series-level state.md** at `<root>/state.md` has a `What Exists` section that summarizes the *series*, not any single book. Example:
+In series mode, the **series-level state.md** at `<root>/state.md` has the same four sections and the same budget, and its `What Exists` summarizes the *series*, not any single book. Example:
 
 ```markdown
 ## Summary
@@ -110,22 +121,46 @@ A political thriller trilogy. Book 1 is in late outlining (40/50 chapters drafte
 
 ## What Exists
 
-- **Series document** — `series.md` v2 (2026-05-24), 6 cross-book setup/payoff chains tracked.
-- **Shared manifest** — v4 (2026-05-22), 12 characters and 8 worldbuilding entries across all books.
-- **Shared character bios** — 4 major-tier, 5 supporting, 3 minor.
-- **Shared decisions** — 47 total (32 series-scoped, 15 book-1-scoped, 0 book-2/3-scoped).
-- **Book 1: Inauguration Day** — primer v6, treatment v9, outline 40/50 chapters drafted, prose ch 1–6 (post-POC).
-- **Book 2: [TBD title]** — primer v1 (stub), treatment v0 (not yet drafted), brainstorming stage.
-- **Book 3: [TBD title]** — primer v0 (not yet drafted), brainstorming stage.
+- **Series document** — `series.md` v2 (2026-05-24), 6 cross-book setup/payoff chains
+- **Shared manifest** — v4 (2026-05-22), 12 characters, 8 worldbuilding entries
+- **Shared character bios** — 4 major-tier, 5 supporting, 3 minor
+- **Shared decisions** — 47 total (32 series-scoped, 15 book-1-scoped, 0 book-2/3-scoped)
+- **Book 1: Inauguration Day** — primer v6, treatment v9, outline 40/50 chapters, prose ch 1–6
+- **Book 2: [TBD title]** — primer v1 (stub), no treatment, brainstorming
+- **Book 3: [TBD title]** — no primer, brainstorming
 
 ## What's Next
 
 - **Active focus**: book-2 (currently brainstorming the act-1 shape).
 - **Recommended next action**: continue brainstorming book 2's premise; once Q-052 (book 2's central thematic question) is resolved, run `treatment-update` for book 2 in first-run mode.
 - **Cross-book watch**: D-038 (Inauguration scene foreshadowing) is integrated into book 1 but pending for book 3 — revisit when book 3 brainstorming starts.
+
+## Last Session
+
+Brainstormed book 2's opening and logged D-046–D-048. Journal: `journal/2026-05-24-s12.md`.
 ```
 
-Per-book state.md files at `books/<slug>/state.md` carry the standalone-novel "What Exists" structure, scoped to that one book.
+Per-book state.md files at `books/<slug>/state.md` carry the standalone-novel sections, scoped to that one book; their Last Session names the same journal entry, since the journal is the series’ (§ `journal/`).
+
+### Target word count and the derived budgets
+
+`target_word_count` is the book's target length in words, owned by `state.md`. Set at init from the author's answer, or from the type's default below; change it whenever the author does. Every word budget in the workspace is computed from it. In a series the series-level value is the default for every book, and a book's own `state.md` may carry its own.
+
+The one place the plugin's word budgets come from, matching the app's treatment pipeline:
+
+| Project type | Default `target_word_count` | Default acts | Default chapters |
+|---|---|---|---|
+| `novel` | 120,000 | 3 | 40 |
+| `novella` | 40,000 | 3 | 15 |
+| `short_story` | 8,000 | 1 | 1 |
+| `screenplay` | 30,000 | 3 | — |
+| `series` (per book) | 120,000 | 3 | 40 |
+
+- **Act budgets (the book):** a three-act structure splits the target **25 / 50 / 25**. Any other act count splits it evenly, unless primer §3's Structural Framework states weighted proportions, which then govern. For 120,000 words in three acts: 30,000 / 60,000 / 30,000.
+- **Treatment budget:** `target_word_count / 6` in total (20,000 for 120,000), split across acts in the same proportions. No act's treatment runs more than 15% over its share; the share is a ceiling, not a target, so an act with thin decided material sits under it with its gaps marked.
+- **Per-chapter treatment density:** `treatment budget / chapter count` (500 words for a 40-chapter, 120,000-word novel). The chapter count is read, in order, from `outline/structure.md`'s `**Chapter Count:**` header line (the app writes it; its leading number is the count), then the plugin's `target_chapter_count` frontmatter key, then the project type's default above. When the count is zero or unknown (a screenplay with no chapter count), density is `n/a`, as the app shows it; never divide by a missing count. It is a calibration signal for sizing treatment scenes, not a chapter assignment.
+
+These numbers are computed whenever a skill needs them and never stored as a table in the primer. In a series they use the **focused book's** target (`current_focus`): that book's own `target_word_count` when its `books/<slug>/state.md` carries one, else the series-level value. Switching focus changes which book's target the budgets use and never rewrites the series-level value.
 
 ## `primer.md` — story craft dossier (five sections)
 
@@ -145,7 +180,7 @@ The Primer has **exactly five standard sections** — no more, no fewer. Every p
 
 The primer holds only material with **no other home** in the workspace. Content that belongs elsewhere is dropped from the primer, not folded into a section:
 
-- **Open questions** (unresolved story problems, "needs deciding" items) → `questions.md`, not the primer.
+- **Open questions** (unresolved story problems, "needs deciding" items) → an entry in `questions/`, not the primer.
 - **Project-specific plot machinery** (named operations, invented technologies, faction charters, worldbuilding apparatus) → canon (`characters/`, `worldbuilding/`), not the primer.
 - **Scene-level detail** (beat sheets, choreography, what-happens-next narrative) → `treatment.md`, not the primer.
 
@@ -161,7 +196,7 @@ Logline (1–3 sentences capturing the hook), primary genre and subgenre, 3–5 
 
 The central dramatic question the story asks, the premise/moral argument (what the story proves through events), core conflict architecture (the levels of conflict operating simultaneously), character thematic positions (how each major character embodies a different answer to the central question), thematic parallels and structural echoes between characters, and the load-bearing **Reveal Architecture** (subsection below).
 
-**Reveal Architecture (subsection).** The story's *load-bearing* reveals — the central mysteries, secrets, and revelations whose timing is structural, the ones that reframe the story when they land. For each, state four things tightly: **what is hidden**, **where it plants** (the chapter, once a spine exists; `plant: TBD` before that), **when it is revealed** (which act / turning point, and the chapter once known), and **why it matters** (what the revelation reframes or proves). The plant chapter is what turns this subsection into the book's **chain register**: `outline-chapters` checks that every registered plant is present in its chapter's outline, and `blueprint` renders it as an imperative instruction. Admission requires all three of: **load-bearing** (the payoff fails without the setup), **long-range** (spans more than about two chapters), and **not self-evident** (would not be caught by reading adjacent chapters). A chain that has been planted *and* paid is **struck**, not archived; an unpaid chain at end of draft is a bug report, not a row. This is deliberately **not** a ledger of every planted setup and payoff — capture only the handful of reveals the architecture depends on; a story usually has **two to five**, and rarely more than fifteen. Ordinary foreshadowing and minor callbacks are the treatment's and the prose stage's job, and the per-chapter harvest in `ch<NN>-notes.md` is where found-not-foreseen payoffs get searched for. If a reveal's payoff is genuinely undecided, that is an **open question** — route it to `questions.md`, do not park an unresolved item here. Plant chapters should be sourced from decisions and the spine, not re-inferred on each `treatment-update`, so they survive primer regeneration.
+**Reveal Architecture (subsection).** The story's *load-bearing* reveals — the central mysteries, secrets, and revelations whose timing is structural, the ones that reframe the story when they land. For each, state four things tightly: **what is hidden**, **where it plants** (the chapter, once a spine exists; `plant: TBD` before that), **when it is revealed** (which act / turning point, and the chapter once known), and **why it matters** (what the revelation reframes or proves). The plant chapter is what turns this subsection into the book's **chain register**: `outline-chapters` checks that every registered plant is present in its chapter's outline, and `blueprint` renders it as an imperative instruction. Admission requires all three of: **load-bearing** (the payoff fails without the setup), **long-range** (spans more than about two chapters), and **not self-evident** (would not be caught by reading adjacent chapters). A chain that has been planted *and* paid is **struck**, not archived; an unpaid chain at end of draft is a bug report, not a row. This is deliberately **not** a ledger of every planted setup and payoff — capture only the handful of reveals the architecture depends on; a story usually has **two to five**, and rarely more than fifteen. Ordinary foreshadowing and minor callbacks are the treatment's and the prose stage's job, and the per-chapter harvest in `ch<NN>-notes.md` is where found-not-foreseen payoffs get searched for. If a reveal's payoff is genuinely undecided, that is an **open question** — route it to `questions/`, do not park an unresolved item here. Plant chapters should be sourced from decisions and the spine, not re-inferred on each `treatment-update`, so they survive primer regeneration.
 
 **Does NOT contain**: detailed character bios (Manifest), scene-by-scene narrative (treatment), writing technique specifications (Section 4), a running ledger of every setup and payoff (retired — capture only load-bearing reveals, above).
 
@@ -242,7 +277,7 @@ Use descriptive, evocative scene headings:
 
 Two marker types — both signal pending work and are replaced with developed content when subsequent decisions address the gap. Don't fake material to fill them.
 
-- `[OPEN: Q-###]` — links to a tracked open question in `questions.md`. Use when a specific question is logged and the treatment can't be written until it's resolved.
+- `[OPEN: Q-###]` — links to a tracked open question, `questions/Q-###.md`. Use when a specific question is logged and the treatment can't be written until it's resolved.
 
   ```markdown
   [OPEN: Q-014] — How does Marlowe discover the time loop? Possible: accidental activation by Voss's prototype; deliberate experiment by mentor; inherited device from her father.
@@ -353,79 +388,129 @@ The status replaces the old file pointers and "(no bio yet)" notes: "Canon Asset
 
 **Series projects** add one line under every entry's Status line, characters and worldbuilding alike: `*Appears in: books 1, 2*`, naming books by their number in the series' `books` list. Standalone novels never carry it. See `references/series.md`.
 
-## `decisions.md` — append-only decision log
+## Entry collections — `decisions/`, `questions/`, `journal/`
 
-The file opens with a `# Decisions` heading (optional frontmatter above it, an optional short preamble below it), then the entries. Entries are never deleted, only superseded. Each decision has a stable ID (`D-001`, `D-002`, …). When two decisions conflict, the later one wins; the earlier one stays in the file with a `Superseded by` field.
+Three records grow for the life of a project: the decisions, the open questions, and the history of sessions. Each is a **collection**: a folder holding one small document per **entry**. On a file store an entry is a file and its frontmatter is the columns; on Notion it is a row; in the app, a record. Every backend serves the same paths.
+
+```
+decisions/
+  _index.md          # one table row per decision
+  D-001.md
+  D-002.md
+questions/
+  _index.md          # one table row per question
+  Q-001.md
+journal/
+  2026-05-11-s01.md  # one entry per session; no index
+```
+
+Rules for all three:
+
+- **Frontmatter is the structured part; the body is everything else.** The fields below are the frontmatter, quoted per § Frontmatter values. The body is in the markdown profile. Real logs carry more than any template (status prose, extra bold fields such as `**Resolves**:` or `**Note**:`, run-in bold paragraphs, free paragraphs, sub-lists, a second copy of a field): all of it stays in the body as written, in the order written. Nothing about an entry needs to fit the template to be kept.
+- **Every entry carries two fields for views across the project**, such as an Obsidian Bases table: `storystormer_project`, the project’s slug (its Dropbox root folder name or Notion `Slug`; on a local folder, the kebab-case of the root `state.md` `title`), set when the entry is created and not rewritten if the title changes; and `storystormer_kind`, one of `decision`, `question`, `journal`.
+- **Entries are never deleted.** A decision is superseded or retracted; a question is resolved or invalidated. Its file stays, its number stays reserved, and citations to it keep resolving (the app numbers entries by creation order and depends on this).
+- **Numbers come from the store.** A new decision or question is written with `store.write(path, content, new)`, and the store reports the number it assigned, which may not be the one the skill proposed (`references/store.md` § Operations, New entries). The skill uses the reported number everywhere after: the index row, the journal entry, a question’s `resolved_by`, prose that cites it.
+- **One small read per need.** Skills read an index to find entries and then read only the entries they need (the last ten decisions, the open questions, the IDs a document cites). Reading every entry is for `migrate` and audits, fanned out to subagents.
+
+### `decisions/` — one decision per entry
+
+`decisions/D-###.md`, one per settled choice. When two decisions conflict, the later one wins; the earlier one stays, with `superseded_by` naming the later one.
 
 ```markdown
-## D-018 · 2026-05-11 · character
+---
+id: D-018
+date: 2026-05-11
+type: character
+topic: Marlowe's relationship to her father
+source: brainstorm
+integrated: no
+storystormer_project: the-pattern-recognition
+storystormer_kind: decision
+---
 
-**Topic**: Marlowe's relationship to her father
 **Summary**: Marlowe's father was an accountant murdered when she was 14; this is her unresolved Ghost.
 **Details**: He had uncovered the early version of the Voss fraud and was killed for it. Marlowe was raised by her mother in the Heights, became a forensic accountant herself, and missed the same fraud years later when Voss had grown sophisticated enough to hide it. She doesn't yet know about her father's involvement at the start of the story.
 **Affects**: Marlowe (protagonist), Voss (antagonist), the locket, Act 2 reveal
-**Source**: brainstorm | intake | treatment-update | user-declared | canon-sync | plugin | agent_tool | manual | decision_capture | sweep | canon_sync
-**Integrated into treatment**: no
-**Superseded by**: (only set if a later decision invalidates this one)
 ```
 
-The header's last field is the decision **type**, one of the app's five: `plot`, `character`, `worldbuilding`, `structure`, `theme`. The plugin's older types are retired; read them in existing logs as their mapped type, and write only the five:
+**Frontmatter:**
 
-| Retired type | Write it as | Note |
+- **`id`:** `D-` and the number, zero-padded to 3 digits (`D-001`, `D-099`, `D-100`; 4 past 999). It matches the filename. Never reused. It is the plugin’s **display number**: the app and Notion keep their own record ids, and the number is the label.
+- **`date`:** the day it was decided.
+- **`type`:** one of the app's five: `plot`, `character`, `worldbuilding`, `structure`, `theme`. New entries write only these. An entry carried over from an older log keeps the word it was written with; readers take a retired word as its mapped type (the table after this list), and any other word (`premise`, `process`, `methodology`) as the closest of the five.
+- **`topic`:** a short name for the decision, the label the index lists it under.
+- **`source`:** what produced it. The plugin writes its workflow (`brainstorm`, `intake`, `treatment-update`, `user-declared`, `canon-sync`); the app writes its own values (`agent_tool`, `manual`, `decision_capture`, `sweep`, `canon_sync`), and a decision the plugin added to a connected project reads back as `plugin` because the app records the channel, not the workflow. Read every value in this list as valid, and keep any value an entry already has, qualifier included (`user-declared (init session)`). `canon-sync` (plugin) and `canon_sync` (app) are the same provenance.
+- **`integrated`:** whether the current treatment reflects it. It starts with `yes`, `no`, `partially` or `n/a`, and may go on with a date or a short qualifier as written (`yes (2026-05-24)`, `n/a — governs future work`). Integration into anything else (`Integrated into structure: yes`) is a body field. In a series it is a list, one item per book the decision touches, in the form `<slug> treatment <state>` (below).
+- **`superseded_by`:** the `D-###` of the later decision that replaces this one; omitted until one does. Prose about the supersession (`narrowed by D-052 for Act 3 only`) goes in the body.
+- **`retracted`:** the date the author withdrew the decision with nothing replacing it; omitted otherwise. A retracted entry keeps its file and number (the app’s tombstone).
+
+| Retired type | Read it as | Note |
 |---|---|---|
 | `setting` | `worldbuilding` | also retired in the app |
 | `mechanics` | `worldbuilding` | the rules of a speculative mechanism are worldbuilding |
 | `voice` | `theme` | voice, POV and tone choices; primer §4 still owns them (see `treatment-update`'s routing) |
 | `genre` | `theme` | |
 
-`Source` names what produced the decision. The plugin writes its workflow (`brainstorm`, `intake`, `treatment-update`, `user-declared`, `canon-sync`); the app writes its own values (`agent_tool`, `manual`, `decision_capture`, `sweep`, `canon_sync`), and a decision the plugin appended to a connected project reads back as `plugin` because the app records the channel, not the workflow. Read every value in this list as valid; a decision that came from the app keeps its value. `canon-sync` (plugin) and `canon_sync` (app) are the same provenance.
+**Body:** `**Summary**:`, `**Details**:` (optional) and `**Affects**:` as bold-label fields, then anything else the entry carries, as written.
 
-ID rules:
-- Sequential, zero-padded to 3 digits (`D-001`, `D-099`, `D-100`). Pad to 4 if you cross 1000.
-- Never reused. A superseded decision keeps its ID.
-- `D-###` is the plugin's **local display number**. When a decision moves to the app, the app keeps its own record id; the number survives only as the label in this file.
-
-### Series-mode additions
-
-In series mode, every decision entry gains a `Scope` field and `Affects books` field, and the `Integrated into` field becomes book-aware:
+**Series mode** adds two fields, and `integrated` becomes book-aware:
 
 ```markdown
-## D-024 · 2026-05-24 · plot
+---
+id: D-024
+date: 2026-05-24
+type: plot
+scope: series
+affects_books: [book-1 (ch 38), book-3 (ch 22)]
+topic: Inauguration scene foreshadowing
+source: brainstorm
+integrated:
+  - book-1 treatment yes (2026-05-24)
+  - book-3 treatment no (book 3 not yet drafted)
+storystormer_project: inauguration-day
+storystormer_kind: decision
+---
 
-**Scope**: series
-**Affects books**: book-1 (ch 38), book-3 (ch 22)
-**Topic**: Inauguration scene foreshadowing
 **Summary**: The inauguration scene in book 1 chapter 38 plants visual elements that pay off as the assassination attempt in book 3 chapter 22.
-**Details**: ...
-**Source**: brainstorm
-**Integrated into**:
-
-- book-1 treatment: yes (2026-05-24)
-- book-3 treatment: no (book 3 not yet drafted)
 ```
 
-For book-scoped decisions, the format is simpler:
+`scope` is `series` (affects multiple books or the arc as a whole) or `book-<slug>` (one book; `integrated` then has the one item for that book). `affects_books` names the books, each optionally with where. In standalone-novel projects both are omitted and every decision is project-scoped. In the app, `book-<slug>` is the record's novel and `series` is a record with no novel. See `references/series.md` § Scoping decisions and questions.
+
+### `decisions/_index.md` — the decision index
+
+One table row per decision, every entry included (superseded and retracted ones too), sorted by ID. No frontmatter.
 
 ```markdown
-## D-025 · 2026-05-24 · character
+# Decisions
 
-**Scope**: book-1
-**Topic**: Maya's confrontation with her father
-**Summary**: Maya confronts Senator Vance in book 1 chapter 35.
-**Source**: brainstorm
-**Integrated into**: book-1 treatment yes (2026-05-24)
+| ID | Date | Type | Topic | Integrated | Superseded by |
+|---|---|---|---|---|---|
+| [D-017](./D-017.md) | 2026-05-10 | plot | The locket's origin | yes | [D-018](./D-018.md) |
+| [D-018](./D-018.md) | 2026-05-11 | character | Marlowe's relationship to her father | no |  |
 ```
 
-`Scope` values: `series` (affects multiple books or the arc as a whole) or `book-<slug>` (affects one specific book). In standalone-novel projects, the `Scope` field is omitted — every decision is implicitly project-scoped. In the app, `book-<slug>` is the record's novel and `series` is a record with no novel. See `references/series.md` § Scoping decisions and questions.
+- **Integrated** shows the leading word of `integrated` (`yes`, `no`, `partially`, `n/a`); in a series, each book’s state as `book-1 yes; book-3 no`.
+- **Superseded by** links the later decision, `retracted` for a retracted one, or is empty.
+- **Series mode** adds a **Scope** column after **Type**.
+- A topic holding a `|` writes it `\|` (the profile’s table cell rule).
 
-## `questions.md` — open questions, status mutated in place
+### `questions/` — one question per entry
 
-The file opens with a `# Open Questions` heading (optional frontmatter above it, an optional short preamble below it), then the entries.
+`questions/Q-###.md`, one per unresolved story problem. Its status changes in place; the entry is never removed.
 
 ```markdown
-## Q-014 · critical · Plot
+---
+id: Q-014
+date: 2026-05-11
+priority: critical
+category: Plot
+title: How Marlowe finds the loop
+status: open
+source: plugin
+storystormer_project: the-pattern-recognition
+storystormer_kind: question
+---
 
-**Title**: How Marlowe finds the loop
 **Question**: How does Marlowe discover the time loop?
 **Why it matters**: The inciting incident hinges on this. Without clarity, Act 1 beat 3 can't be written and the protagonist's agency in Act 1 is undefined.
 **Possible approaches**:
@@ -435,36 +520,86 @@ The file opens with a `# Open Questions` heading (optional frontmatter above it,
 - Inherited device from her father, activated when she opens the locket
 
 **Dependencies**: Marlowe's background, the rules of the time loop (Q-007), setting constraints
-**Source**: plugin
-**Status**: open | resolved (D-023) | invalidated (Marlowe doesn't actually time-loop, see D-031)
 ```
 
-- **`Title`** is required: 3–7 words naming the question, the label the app lists it under.
-- **`Q-###`** is the plugin's local display number, like `D-###`; the app keeps its own record id.
+**Frontmatter:**
 
-Priority levels:
-- `critical` — blocks treatment progress; downstream work can't proceed without an answer.
-- `important` — affects multiple downstream elements; should be answered before the next treatment update.
-- `nice_to_resolve` — would improve the story but isn't blocking.
+- **`id`:** `Q-` and the number, under the same rules as a decision’s.
+- **`date`:** the day it was opened. An entry carried over from a log that never recorded one omits it rather than guessing.
+- **`priority`:**
+  - `critical`: blocks treatment progress; downstream work can't proceed without an answer.
+  - `important`: affects multiple downstream elements; should be answered before the next treatment update.
+  - `nice_to_resolve`: would improve the story but isn't blocking.
+- **`category`:** one of the app's seven, in Title Case: `Story Structure`, `Character`, `Plot`, `Worldbuilding`, `Theme`, `Setting`, `Pacing`. Older plugin categories read as theirs: `structure` → `Story Structure`, `voice` and `genre` → `Theme`, `mechanics` → `Worldbuilding`, the rest the same word capitalized; any other word (`process`) as the closest. New entries write only the seven.
+- **`title`:** required, 3–7 words naming the question, the label the app and the index list it under.
+- **`status`:** `open`, `resolved` or `invalidated`. Any other wording an older log used (`half-resolved`, `open, but no longer unmechanised`) is read as the closest of the three, and its words stay in the body as written.
+- **`resolved_by`:** the `D-###` that resolved it, set with `status: resolved`; also allowed on an invalidated question when a decision is what invalidated it. Omitted while it is open. This field is the one link between a question and the decision that settled it; a decision’s `**Resolves**:` line, where an older entry has one, stays in its body as written.
+- **`source`:** one of the app's values (`decision_capture`, `treatment_update`, `manual`, `ai_marker`, `question_triage`, `agent_tool`, `ingestion`) or `plugin`. The plugin writes `treatment_update` for a question `treatment-update` logs, `ingestion` for one `storystormer-init` extracts from intake materials, `manual` for one the user dictates through `/storystormer:questions add`, and `plugin` for any other skill (`brainstorm-session`, `pre-outline-session`, `outline-chapters`, and so on). A question that came from the app keeps its value.
 
-Question categories are the app's seven, written in Title Case: `Story Structure`, `Character`, `Plot`, `Worldbuilding`, `Theme`, `Setting`, `Pacing`. Older plugin categories map to them: `structure` → `Story Structure`, `voice` and `genre` → `Theme`, `mechanics` → `Worldbuilding`; the rest are the same word capitalized.
+**Body:** `**Question**:`, `**Why it matters**:`, `**Possible approaches**:` (a list), `**Dependencies**:`, and, once there is something to say about where it stands, `**Resolution**:`: the answer (for a resolved question), the reason (invalidated), or the progress so far (`midpoint candidate identified, act climax undecided`). Then anything else the entry carries, as written.
 
-`Source` is one of the app's values (`decision_capture`, `treatment_update`, `manual`, `ai_marker`, `question_triage`, `agent_tool`, `ingestion`) or `plugin`. The plugin writes `treatment_update` for a question `treatment-update` logs, `ingestion` for one `storystormer-init` extracts from intake materials, `manual` for one the user dictates through `/storystormer:questions add`, and `plugin` for any other skill (`brainstorm-session`, `pre-outline-session`, `outline-chapters`, and so on). A question that came from the app keeps its value.
+**Series mode** adds `scope` (`series` or `book-<slug>`) and `affects_books` to the frontmatter, as for decisions:
 
-In series-mode projects, each question also carries a `Scope` field (`series` or `book-<slug>`), placed below the priority/category header:
+```yaml
+scope: series
+affects_books: [book-1 (ending), book-2 (opening)]
+```
+
+In standalone-novel projects both are omitted. As with decisions, `book-<slug>` is the app record's novel and `series` is a record with no novel.
+
+### `questions/_index.md` — the question index
+
+One table row per question, every status included, sorted by ID. No frontmatter. A skill looking for open questions filters this table and reads only those entries.
 
 ```markdown
-## Q-031 · critical · Plot
+# Open Questions
 
-**Scope**: series
-**Affects books**: book-1 (ending), book-2 (opening)
-**Title**: Maya's choice at book one's end
-**Question**: Does Maya leave Washington at the end of book 1, or stay?
-**Why it matters**: The answer determines book 2's setting — a Washington-bound book 2 means Maya is the insider trying to reform from within; a depart-and-return arc means she comes back in book 2 with outsider's eyes. These produce very different book 2 treatments.
-...
+| ID | Priority | Category | Title | Status | Resolved by |
+|---|---|---|---|---|---|
+| [Q-007](./Q-007.md) | important | Worldbuilding | The rules of the loop | resolved | [D-023](./D-023.md) |
+| [Q-014](./Q-014.md) | critical | Plot | How Marlowe finds the loop | open |  |
 ```
 
-In standalone-novel projects, `Scope` is omitted. As with decisions, `book-<slug>` is the app record's novel and `series` is a record with no novel.
+**Series mode** adds a **Scope** column after **Category**.
+
+### Who rebuilds an index
+
+`decisions/_index.md` and `questions/_index.md` are **stored** on file stores and **computed** where the binding says so (`references/store.md` § Local-mode clauses). A stored index is regenerated whole from the entries, never patched by hand:
+
+- **By the writing skill,** after every entry it creates or changes, in the same run.
+- **By any skill that finds the index behind its entries:** a listing that shows an entry the index lacks, or an entry whose frontmatter disagrees with its row. An author editing entries directly (in Obsidian, in a Bases view) changes the entry and not the index, so the entry is always the truth and the index is rebuilt from it.
+
+### `journal/` — one entry per session
+
+`journal/<YYYY-MM-DD>-s<NN>.md`: the session’s date and its number (`session_count` in `state.md` after this session’s bump), zero-padded to 2 digits (3 past 99). It records what a session did and why, so `state.md` doesn’t have to.
+
+```markdown
+---
+date: 2026-05-11
+session: 7
+skills: [brainstorm-session, decision-capture, treatment-update]
+decisions: [D-017, D-018]
+questions: [Q-014, Q-019]
+source: plugin
+storystormer_project: the-pattern-recognition
+storystormer_kind: journal
+---
+
+Worked through Marlowe's backstory. The author settled that her father was murdered for uncovering the early Voss fraud (D-018), which superseded the locket's origin in D-017 and opened Q-019, how much Marlowe knows at the start.
+
+Refreshed the treatment to v7 with D-001..D-018. Act 2's reveal now turns on the father; Q-014 is still open and blocks Act 1 beat 3.
+```
+
+- **Frontmatter:** `date`; `session` (the number in the filename); `skills`, the skills that wrote during the session; `decisions`, the IDs logged or changed; `questions`, the IDs opened, resolved or invalidated; `source`, `plugin` for an entry the plugin writes and `app` for one the app writes from its own chat sessions; and the two `storystormer_*` fields. Lists are empty (`[]`) when nothing applies.
+- **Body:** a short narrative, in the profile, of what was done and why: the choices made and the reasons, what changed in which documents, what was left open. It is where a finished What’s Next item goes, and where the detail that `state.md` no longer carries lives.
+- **Created by the session’s first write,** with `store.write(path, content, new)`. If the path already exists (another surface already holds that session number), re-read `state.md` and take the next number.
+- **Extended, never rewritten whole,** by every later step in the same session: `store.edit` adds the step’s paragraph after the last one and adds its IDs and skill to the frontmatter lists. An entry from an earlier session is never changed.
+- **No index.** Filenames sort by date and session, so the listing is the index. A skill wanting recent history lists `journal/` and reads the newest few entries. Nothing reads the journal by default, and it is never pruned.
+- **Series mode:** one journal at the root, like the decisions; a per-book `state.md`’s Last Session names the root entry.
+
+### The old layout
+
+A project whose config has no `layout` key (§ `.storystormer/config.json`) predates the collections. It keeps the decisions in one `decisions.md` and the questions in one `questions.md` at the root (in a series, the root too): each opens with a heading (`# Decisions`, `# Open Questions`; optional frontmatter and preamble), then entries headed `## D-### · <date> · <type>` or `## Q-### · <priority> · <category>`, sometimes with a suffix (` ✅ RESOLVED`), each followed by `**<Label>**:` fields (`Topic`, `Summary`, `Details`, `Affects`, `Source`, `Integrated into treatment`, `Superseded by`; `Title`, `Question`, `Why it matters`, `Possible approaches`, `Dependencies`, `Source`, `Status`) and whatever else its author wrote. Its `state.md` may carry session history (a `## Previous Session`, narrative in What Exists and What’s Next), and its config mirrors `state.md` fields. `migrate`’s layout upgrade converts it in place (`references/store.md` § Resolve, The layout).
 
 ## Character bio files (`characters/<slug>.md`)
 
@@ -1100,7 +1235,7 @@ Ongoing concerns the author is tracking across books — items that need vigilan
 
 ## Open Cross-Book Questions
 
-Series-scoped open questions from `questions.md`, surfaced here for quick reference. Linked by Q-ID.
+Series-scoped open questions from `questions/`, surfaced here for quick reference. Linked by Q-ID.
 
 - Q-031 (critical, plot) — Does Maya leave Washington at the end of book 1?
 - Q-032 (important, character) — Does Reyes ally with Maya in book 3, or remain adversarial?
@@ -1119,63 +1254,17 @@ For light updates (a new cross-book chain identified, a continuity concern logge
 
 ```json
 {
-  "title": "The Pattern Recognition",
-  "project_type": "novel",
-  "target_word_count": 120000,
-  "genre": "literary thriller",
-  "genre_secondary": null,
-  "created": "2026-05-11",
-  "surfacing_mode": "active",
+  "layout": 2,
   "storage": { "kind": "local" }
 }
 ```
 
-Mirrors a subset of `state.md` frontmatter, in JSON for any tooling that wants to read it programmatically. For most fields `state.md` is the source of truth and `config.json` a convenience mirror; **`target_word_count` and `storage` are the exceptions: `config.json` owns them** and `state.md` mirrors them (`storage.kind` as `storage_kind`); never repair the config's `storage` from `state.md`, since resolution reads the config. The two must agree, and any skill that reads the target and finds them different repairs the mirror from its owner and says so. The one exception is a folder whose config points elsewhere (a pointer, or a folder `migrate` flipped to another home, `local_root` included): its `state.md` is no longer the project’s, nothing reads it, and it is left as it was (`migrate` § Verify, then flip).
+The config holds only what has to be known before the store is bound or before `state.md` can be read: where the project lives and which layout its documents are in. Every field the author sees (title, genre, type, target, the series’ `books` and `current_focus`) is owned by `state.md`, and the config never mirrors one; a series has the same two keys.
 
-- **`project_type`**: `novel`, `novella`, `short_story`, `screenplay`, or `series` (the app's values; an older `short-story` reads as `short_story`).
-- **`storage`**: where the story lives, resolved once per session (`references/store.md` § Resolve). Full shape: `"storage": { "kind": "dropbox", "root": "<backend root>", "local_root": "<absolute path of the synced folder on this machine>" }`. `kind` is `local | dropbox | notion | storystormer`; `root` is the backend's project root (a Dropbox folder path, a Notion project page id, a StoryStormer project id); `local_root` is optional. A config without `storage` is local. `state.md` mirrors `kind` as `storage_kind`.
-- **`target_word_count`**: the book's target length in words. Set at init from the author's answer, or from the type's default below; change it (here first, then the `state.md` mirror) whenever the author does. Every word budget in the workspace is computed from it. In a series the root value is the default for every book, and a book may carry its own (see the series example below).
-
-### Target word count and the derived budgets
-
-The one place the plugin's word budgets come from, matching the app's treatment pipeline:
-
-| Project type | Default `target_word_count` | Default acts | Default chapters |
-|---|---|---|---|
-| `novel` | 120,000 | 3 | 40 |
-| `novella` | 40,000 | 3 | 15 |
-| `short_story` | 8,000 | 1 | 1 |
-| `screenplay` | 30,000 | 3 | — |
-| `series` (per book) | 120,000 | 3 | 40 |
-
-- **Act budgets (the book):** a three-act structure splits the target **25 / 50 / 25**. Any other act count splits it evenly, unless primer §3's Structural Framework states weighted proportions, which then govern. For 120,000 words in three acts: 30,000 / 60,000 / 30,000.
-- **Treatment budget:** `target_word_count / 6` in total (20,000 for 120,000), split across acts in the same proportions. No act's treatment runs more than 15% over its share; the share is a ceiling, not a target, so an act with thin decided material sits under it with its gaps marked.
-- **Per-chapter treatment density:** `treatment budget / chapter count` (500 words for a 40-chapter, 120,000-word novel). The chapter count is read, in order, from `outline/structure.md`'s `**Chapter Count:**` header line (the app writes it; its leading number is the count), then the plugin's `target_chapter_count` frontmatter key, then the project type's default above. When the count is zero or unknown (a screenplay with no chapter count), density is `n/a`, as the app shows it; never divide by a missing count. It is a calibration signal for sizing treatment scenes, not a chapter assignment.
-
-These numbers are computed whenever a skill needs them and never stored as a table in the primer. In a series they use the **focused book's** target (`current_focus`): that book's own `target_word_count` when its `books` entry carries one, else the root value.
-
-For series-mode projects, `config.json` carries the series fields:
-
-```json
-{
-  "title": "Inauguration Day",
-  "project_type": "series",
-  "target_word_count": 110000,
-  "genre": "political thriller",
-  "genre_secondary": null,
-  "created": "2026-05-24",
-  "surfacing_mode": "active",
-  "books": [
-    { "slug": "book-1", "title": "Inauguration Day", "target_word_count": 120000 },
-    { "slug": "book-2", "title": "The Aftermath" },
-    { "slug": "book-3", "title": "Reckoning", "target_word_count": 95000 }
-  ],
-  "current_focus": "book-1",
-  "storage": { "kind": "local" }
-}
-```
-
-The `books` array preserves both slug (for filesystem paths) and human-readable title (for display). Each entry may carry its own **`target_word_count`** (the app stores the target per novel); an entry without one uses the root `target_word_count` (110,000 for book 2 above). Switching `current_focus` changes which book's target the budgets use and never rewrites the root value. A book's per-book `state.md` mirrors that book's effective target. Adding a book is a config + folder operation; renaming a book updates only the title (slug stays stable to avoid breaking paths).
+- **`storage`**: where the story lives, resolved once per session (`references/store.md` § Resolve). Full shape: `"storage": { "kind": "dropbox", "root": "<backend root>", "local_root": "<absolute path of the synced folder on this machine>" }`. `kind` is `local | dropbox | notion | storystormer`; `root` is the backend's project root (a Dropbox folder path, a Notion project page id, a StoryStormer project id); `local_root` is optional. A config without `storage` is local. Never repair it from anything else: resolution reads it before any other document.
+- **`layout`**: the version of the project’s file layout. `2` is the layout this document describes: decisions, questions and the journal as entry collections (§ Entry collections) and a slim `state.md`. **Absent means the old layout** (§ The old layout), which resolution finds and offers to upgrade. Only `init` (writing `2` for a new project) and `migrate`’s layout upgrade set it.
+- **A pointer** is a config holding `storage` and nothing else (no `layout`): what `init` and `migrate` leave in an open folder whose project lives on a connector backend. Resolution reads it only for `storage`; the layout is read from the project’s own config in the bound store.
+- **An old-layout config** also carries the fields it used to mirror (`title`, `project_type`, `target_word_count`, `genre`, `genre_secondary`, `created`, `surfacing_mode`, and in a series `books` with titles and per-book targets, and `current_focus`). Nothing reads them once `state.md` exists; the layout upgrade moves any value `state.md` lacks (a book’s own target, a book’s title) into the `state.md` that owns it, then removes them.
 
 ## `.storystormer/history/` — book-level history
 
