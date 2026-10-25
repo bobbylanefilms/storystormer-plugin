@@ -193,6 +193,8 @@ Rob’s rule (2026-10-24): whatever runs on local and Dropbox must also run on N
 - **Flip-pending re-verification (R2):** by listing, sizes and (on Notion) counts; a document is compared whole only on evidence of a change, and the preflight plan says so.
 - **Dropbox reads (L3-2, L3-3):** a fetch of about 65 KB or more may come back as a saved result rather than inline; its content is read from there, never retyped. Listed paths are used exactly as listed; `&amp;` in a filename is never decoded.
 
+- **Old layout read-only until upgraded:** confirmed by Rob, 2026-10-25.
+
 ### Live verification (2026-10-25, at 56788bb, then c34df20 and 834ed55)
 
 - **Upgrade:** the old-layout Good Dog upgraded in place on local, Dropbox and Notion. `upgrade-check` clean on all three (68 decisions, 41 questions), journal backfilled s01–s12. Notion's interruption test (stopped at 36/109 rows, resumed) kept every converted row and converted the rest.

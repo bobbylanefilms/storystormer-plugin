@@ -21,8 +21,10 @@
 Done. Released 0.22.0-poc on `main`.
 
 ## Open questions for Rob
-- Old-layout projects are read-only until `/storystormer:migrate upgrade`: keep? (recommended yes)
 - Dropbox `treatment-update` is 1.5× local (target 1.3×), measured before batched small-file deletes landed: re-measure, or accept?
+
+## Decisions by Rob
+- 2026-10-25: old-layout projects stay read-only until `/storystormer:migrate upgrade` (kept).
 
 ## Test leftovers (Rob to trash)
 Notion: `sb6-ring2` (incl. duplicate journal row `404e980b9c7481818e8ff763ab9634d5`), `sb7-ring`, `sb7-init-notion`, probe pages under `sb6-probe`, plus the earlier SB4–SB6 list. Dropbox: `/StoryStormer/{sb6-ring2,sb7-ring,sb7-init-dropbox,sb7-resume,sb7-probe}` plus the earlier list. The shared hub gained a Journal database and `Layout`/`Retracted` columns (keep them).
