@@ -26,7 +26,7 @@ storystormer-plugin/                 (repo root = marketplace root = plugin root
 │   ├── blueprint/  prose/  notes/   # outline → blueprint → prose → notes
 │   ├── canon-sync/                  # notes back into canon
 │   ├── migrate/                     # move a project between storage backends
-├── commands/                        # 8 slash commands (/storystormer:*)
+├── commands/                        # 7 slash commands (/storystormer:*)
 │   ├── init  status  checkpoint  decisions  questions  outline  switch  migrate
 ├── references/                      # 22 shared docs the skills cite by relative path,
 │                                    #   plus store/ (one binding per backend)

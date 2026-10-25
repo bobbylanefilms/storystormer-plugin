@@ -28,7 +28,7 @@ Fourteen skills that load via progressive disclosure when your intent matches:
 | `canon-sync` | reconcile a span of chapters' notes back into canon — absorb accretion, adjudicate contradictions by authorship, surface drift, produce a manuscript fix list and the Blueprints to rebuild |
 | `migrate` | move a story to another home (a local folder, Dropbox, or Notion), leaving the original in place; or upgrade an older project in place |
 
-Plus eight slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline`, `/storystormer:switch` (series mode only), and `/storystormer:migrate`.
+Plus seven slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline` and `/storystormer:switch` (series mode only). `/storystormer:migrate` is the `migrate` skill’s own invocation.
 
 ## How-to guides
 
@@ -202,6 +202,11 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.22.1 fixed over v0.22.0
+
+- **Skill descriptions claude.ai can store whole.** Four skills named their files with angle brackets (`ch<NN>-outline.md`), which claude.ai strips as if they were tags, and the `prose` description ran past its 1,024-character limit. Both are fixed, so Cowork sees the same descriptions as Claude Code.
+- **`/storystormer:migrate` works in Cowork.** The command shared its name with the `migrate` skill, and Cowork skipped the command. Its options now live in the skill, which answers to the same name.
 
 ### What v0.22.0 added over v0.21.1
 

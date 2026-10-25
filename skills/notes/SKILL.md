@@ -1,6 +1,6 @@
 ---
 name: notes
-description: Record what a chapter's prose actually committed — the post-prose stage of the chapter pipeline (`outline → blueprint → prose → notes`). Writes `chapters/chapter-NN/ch<NN>-notes.md` with the as-written synopsis, divergences from the outline, the harvest of concrete particulars the chapter put on the page, accidental canon the prose invented, and a structured end-state block the next chapter's Blueprint inherits. Proposes canon changes and chain closures; writes none without approval. Single-chapter ("take notes on chapter 17," "record what ch 3 committed") and batch ("notes for Act 1," "catch up the notes") modes. Runs on prose at `revising` or `revised` status; warns when run on a first draft. Records; never evaluates.
+description: Record what a chapter's prose actually committed — the post-prose stage of the chapter pipeline (`outline → blueprint → prose → notes`). Writes `chapters/chapter-NN/chNN-notes.md` with the as-written synopsis, divergences from the outline, the harvest of concrete particulars the chapter put on the page, accidental canon the prose invented, and a structured end-state block the next chapter's Blueprint inherits. Proposes canon changes and chain closures; writes none without approval. Single-chapter ("take notes on chapter 17," "record what ch 3 committed") and batch ("notes for Act 1," "catch up the notes") modes. Runs on prose at `revising` or `revised` status; warns when run on a first draft. Records; never evaluates.
 ---
 
 # StoryStormer · Notes

@@ -14,6 +14,24 @@ The skill’s other mode is the **layout upgrade** (§ The layout upgrade): an o
 
 Always follow `references/plan-first.md`. The **preflight is the plan**: nothing is created on the target, and nothing in an upgrade is written, until the author has seen it and said go.
 
+## How it is invoked
+
+`/storystormer:migrate notion`, `/storystormer:migrate dropbox` or `/storystormer:migrate local` (this open folder; `folder` means the same) moves the project; `/storystormer:migrate upgrade` upgrades it in place; plain `/storystormer:migrate`, or asking to move or upgrade the story, lists the choices. Resolve the store first per `references/store.md` if the session hasn’t; the resolved binding is the source.
+
+### `upgrade`
+
+`/storystormer:migrate upgrade` runs the skill’s layout upgrade (§ The layout upgrade, below): an old-layout project, one whose config has no `layout`, converted to the current layout in place, in the store it already lives in. Resolution offers the same thing when it finds the old layout, and accepting that offer is the same as running this. The skill’s preflight is the plan: entry counts per log, what moves into the journal, the question titles it will compose, what leaves `state.md`, the slug, the snapshot path (or, on Notion, the version-history note), and the new config. It waits for the author’s go before writing anything. On a layout-2 project, say there is nothing to upgrade, unless an earlier upgrade left the old logs at the root, in which case offer to finish removing them, or, on Notion, any Decisions or Questions row of the project still lacks its entry mark (`_entry`), in which case the upgrade may run again to convert those rows.
+
+### With a target
+
+Hand the target to the skill (`upgrade` is not a target: see above). If it isn’t one the session can reach (the source’s own kind, a pending binding, a connector that isn’t present, `local` with no open folder), say which and why, list the targets that are available, and stop. Otherwise the skill runs its preflight, which is the plan: what will be copied, mapped, computed or skipped, the estimated call volume, the same-slug check, and the config change in the open folder. It waits for the author’s go before writing anything.
+
+### With no argument
+
+List the targets this session can reach, each in the author’s terms (this folder; a folder at `/StoryStormer/<slug>/` in Dropbox, noting when this folder already syncs through Dropbox and the move would make it a hybrid; a row in the Notion `StoryStormer` hub), and every backend in `store.md` § Bindings that isn’t listed, with the reason: it is where the story lives now, its binding is pending, its connector isn’t connected (name it), or there is no open folder. When the project is in the old layout, say so too: a move writes the target in the current layout and leaves this copy as it is, and `/storystormer:migrate upgrade` converts it in place instead. Ask which one; write nothing.
+
+A move’s source is never deleted, and no source document changes: the one write outside the target repoints the open folder’s config. The report says where the source is and how to go back.
+
 ## What you produce
 
 - The project on the target: every document the target can hold, written through its binding in canonical order, in layout 2, with a config of `layout` and the target’s own `storage` block and nothing else (`file-schemas.md` § `.storystormer/config.json`).

@@ -32,7 +32,7 @@ Doc-only changes (README, this file, PLUGIN-GUIDE.md) do **not** need a version 
 ## Layout
 
 - `skills/<name>/SKILL.md` — 14 progressive-disclosure skills.
-- `commands/<name>.md` — 8 `/storystormer:*` slash commands.
+- `commands/<name>.md` — 7 `/storystormer:*` slash commands (a command never shares a skill’s name: Cowork skips the command when it does, so `/storystormer:migrate` is the `migrate` skill itself).
 - `references/*.md` — shared docs cited by skills (single-edit-propagates; don't inline-duplicate into skills).
 - `references/store.md` — the store contract (file operations, capabilities line, resolution); `references/store/*.md` — one binding per backend.
 - `guides/*.md` — user-facing how-to guides (help docs for authors, not model-facing). Keep them synced when the skills they document change behavior.
