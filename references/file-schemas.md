@@ -82,7 +82,9 @@ Frontmatter, then exactly these four sections, and nothing else: no H1, no `## P
 - **Voice** — sample + style guide (or `README only` — the prose stage has no voice anchor until a sample exists)
 - **Structure** — v1 (2026-05-12), based on Primer v3 + Treatment v7, 40 chapters planned, Save the Cat framework
 - **Chapter outlines** — 12/40 drafted (Act 1 complete, Act 2 through ch 12), based on Structure v1
+- **Blueprints** — 8/40 built (ch 1–8)
 - **Prose chapters** — 6/40 written (ch 1–6); prose at `status: retired` is not counted
+- **Chapter notes** — 4/40 recorded (ch 1–4), 1 stale, 3 open proposals
 - **Decisions** — 18 total, 14 integrated into current treatment
 - **Open questions** — 6 (2 critical, 3 important, 1 nice_to_resolve)
 - **Storage** — this folder syncs through Dropbox (`~/Library/CloudStorage/Dropbox/Novels/the-good-dog`)
@@ -104,7 +106,8 @@ Frontmatter, then exactly these four sections, and nothing else: no H1, no `## P
 
 ### Update rules
 
-- **Carried lines:** a `- **<Label>** — …` line in What Exists whose label isn’t one of those above but names documents the project holds (`**Research**`, `**Handoff**`, `**Methodology**`) is the author’s: it is kept as written, after the computed lines, whenever What Exists is rewritten. A free paragraph or a sub-bullet in What Exists is not carried: a store or skill that recomputes the section (`migrate`, the Notion binding) drops it.
+- **Computed labels:** the lines above, in that order: Primer, Treatment, Manifest, Character bios, Worldbuilding, Voice, Structure, Chapter outlines, Blueprints, Prose chapters, Chapter notes, Decisions, Open questions, and Storage (the series form has its own, § Series-level `state.md`). A store or skill that rewrites What Exists computes these and nothing else.
+- **Carried lines:** a `- **<Label>** — …` line in What Exists whose label isn’t a computed one but names documents the project holds (`**Research**`, `**Handoff**`, `**Methodology**`, or a `**Notes**` line about the project’s `notes/` folder) is the author’s: it is kept as written, after the computed lines, whenever What Exists is rewritten. A free paragraph or a sub-bullet in What Exists is not carried: a store or skill that recomputes the section (`migrate`, the Notion binding) drops it.
 - The counts in **What Exists** are computed from the store (bios in `characters/`, entries under `worldbuilding/`, chapter files under `chapters/`, decisions and questions from `decisions/_index.md` and `questions/_index.md`, which always exist in layout 2), never carried forward from the last write. Recount whenever the line is rewritten.
 - **Storage** appears in two cases, as the last line of What Exists (the root `state.md` in a series): a local project whose folder sits inside a sync service (`storystormer-init` § Where a new project lives), where it names the service and the folder; and the Dropbox hybrid, a Dropbox project with a `local_root` (`migrate` § The hybrid), where it says the folder is the synced copy of the Dropbox root (**Storage** — this folder is the synced copy of `/StoryStormer/the-good-dog` in Dropbox, at `~/Dropbox/StoryStormer/the-good-dog`). Whenever What Exists is rewritten in a session bound to the folder, recompute it from the folder’s current absolute path with the same check, so a folder moved out of a sync service drops the line; a session bound through the connector keeps the line as it stands; `migrate` sets it. Every other project omits it.
 - **A new session** is the first write of a conversation. It creates that session’s journal entry first (§ `journal/`, which says how the number is chosen), then writes `state.md` with that number as `session_count` and today as `last_session` (the root `state.md` in a series). Every later write in the same session that changes Last Session also extends the same journal entry, so the two never disagree.

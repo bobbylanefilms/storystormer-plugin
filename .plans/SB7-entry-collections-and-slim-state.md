@@ -183,3 +183,12 @@ Rob’s rule (2026-10-24): whatever runs on local and Dropbox must also run on N
 - **Deferred to the binding slice:** Dropbox `ALREADY_EXISTS` retry, Notion’s effective-target rendering.
 
 **Follow-ups for later slices** (other files that must change): see the slice 1 report in the session; the main ones are the three bindings (`new` realization, collections in the Notion path map, the Journal database, retiring computed logs and `storage_kind`, the computed config down to two keys and a layout marker), `migrate` (layout upgrade, config flip keeps only `storage` plus `layout`), `init` (writes `layout: 2`, no mirrors, no `storage_kind`), `switch` (writes `state.md` only), `decision-capture` (book slugs from `state.md`, entries with `new`), `pre-outline-session` and `treatment-update` (target from `state.md`), and `series.md` (config is no longer a mirror; per-book targets in per-book `state.md`; the log rows in its tables).
+
+### Ring findings fix (2026-10-25)
+
+**Files:** `references/file-schemas.md`, `references/store/notion.md`, `references/store/dropbox.md`, `skills/notes/SKILL.md`, `skills/migrate/SKILL.md`.
+
+- **What Exists labels (D8):** `file-schemas.md` § `state.md` now lists **Blueprints** and **Chapter notes** in its example and names every computed label, in Notion’s line order. The notes skill’s line is renamed **Chapter notes**, so an author’s **Notes** line (about `notes/`) is a carried line. `migrate`’s preflight reads an old-form **Notes** line that counts chapter notes as the computed line, by its content.
+- **Completed moves (R1):** `migrate` § Same slug has a **Complete** case: a target with its own config and `state.md` and nothing to flip is already there; the skill offers to bind it or do nothing, and never re-verifies unasked.
+- **Flip-pending re-verification (R2):** by listing, sizes and (on Notion) counts; a document is compared whole only on evidence of a change, and the preflight plan says so.
+- **Dropbox reads (L3-2, L3-3):** a fetch of about 65 KB or more may come back as a saved result rather than inline; its content is read from there, never retyped. Listed paths are used exactly as listed; `&amp;` in a filename is never decoded.
