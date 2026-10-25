@@ -5,7 +5,7 @@ allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Task", "mcp__*"]
 
 # /storystormer:status
 
-Resolve the store first per `references/store.md` if the session hasn't. `store.read` `state.md` and present its contents to the user in a scannable summary. Also surface any document the plugin manages (one `references/file-schemas.md` defines) that exists in the project but `state.md` doesn't mention (a drift check). Snapshot and history folders, `journal/`, the entries in `decisions/` and `questions/` (counted from their indexes, not listed one by one), `research/`, and the author's own folders aren't inventory; don't report them as drift.
+Resolve the store first per `references/store.md` if the session hasn't. `store.read` `state.md` and present its contents to the user in a scannable summary. Also surface any document the plugin manages (one `references/file-schemas.md` defines) that exists in the project but `state.md` doesn't mention (a drift check). A `decisions.md` or `questions.md` at the root of a layout-2 project is a layout upgrade’s leftover (a host that couldn’t delete it): name it as safe to remove when the latest `.storystormer/history/*-layout-upgrade/` folder holds an identical copy, and say plainly when it doesn’t. Snapshot and history folders, `journal/`, the entries in `decisions/` and `questions/` (counted from their indexes, not listed one by one), `research/`, and the author's own folders aren't inventory; don't report them as drift.
 
 What to report:
 

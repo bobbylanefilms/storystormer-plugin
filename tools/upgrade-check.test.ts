@@ -203,8 +203,9 @@ function run(log: string, folder: 'decisions' | 'questions', files: Record<strin
   }
 }
 
-test('parseLog splits entries at their headings and leaves the preamble outside', () => {
-  const { entries, outside } = parseLog(DECISIONS_LOG);
+test('parseLog splits entries at their headings and keeps the preamble apart', () => {
+  const { entries, preamble: outside, strays } = parseLog(DECISIONS_LOG);
+  assert.deepEqual(strays, []);
   assert.deepEqual(entries.map((e) => e.id), ['D-001', 'D-002', 'D-004']);
   assert.equal(entries[0].header, 'D-001 · 2026-08-15 · premise');
   assert.match(outside, /Append-only/);
@@ -213,10 +214,19 @@ test('parseLog splits entries at their headings and leaves the preamble outside'
 
 test('parseLog ends an entry at a non-entry heading and ignores headings inside fences', () => {
   const src = '## D-001 · 2026-01-01 · plot\n**Topic**: A\n```\n## D-009 · not an entry\n```\n\n## Appendix\n\nLoose text.\n';
-  const { entries, outside } = parseLog(src);
+  const { entries, preamble, strays } = parseLog(src);
   assert.deepEqual(entries.map((e) => e.id), ['D-001']);
   assert.match(entries[0].body, /D-009/);
-  assert.match(outside, /Loose text/);
+  assert.equal(preamble, '');
+  assert.deepEqual(strays.map((x) => x.heading), ['## Appendix']);
+  assert.match(strays[0].text, /Loose text/);
+});
+
+test('text under a non-entry heading after the first entry is a finding; the preamble is only counted', () => {
+  const log = DECISIONS_LOG.replace('## D-004 ·', '## Superseded notes\n\nThe earlier ending is gone.\n\n## D-004 ·');
+  assert.deepEqual(run(log, 'decisions', decisions()), ['outside-entry 7 words under “## Superseded notes”, after the first entry, in no entry']);
+  // An empty non-entry heading carries no words, so nothing is lost.
+  assert.deepEqual(run(DECISIONS_LOG.replace('## D-004 ·', '---\n\n## D-004 ·'), 'decisions', decisions()), []);
 });
 
 test('parseFrontmatter reads scalars, quoted values, flow lists and block lists', () => {
@@ -265,6 +275,28 @@ test('a status suffix restated by status, and a status line kept beside status a
   // Without status the suffix's word is lost.
   const out = run(QUESTIONS_LOG, 'questions', questions({ 'Q-002.md': Q002.replace('status: resolved\n', '') }));
   assert.deepEqual(out, ['entry words missing: RESOLVED']);
+});
+
+test('a restating field invented with no source in the old entry is added words', () => {
+  // status: resolved on a question whose log says open.
+  const resolved = run(QUESTIONS_LOG, 'questions', questions({ 'Q-001.md': Q001.replace('status: open', 'status: resolved\nresolved_by: D-004') }));
+  assert.deepEqual(resolved, ['entry words added (not in the old entry): status: resolved, resolved_by: D-004', 'entry words missing: open']);
+  // superseded_by invented on a decision that names no later one.
+  const superseded = run(DECISIONS_LOG, 'decisions', decisions({ 'D-001.md': D001.replace('integrated: "yes"', 'integrated: "yes"\nsuperseded_by: D-009') }));
+  assert.deepEqual(superseded, ['entry words added (not in the old entry): superseded_by: D-009']);
+  // integrated: "yes" on a decision whose log has no integration line.
+  const integrated = run(DECISIONS_LOG, 'decisions', decisions({ 'D-004.md': D004.replace('source: user-declared', 'source: user-declared\nintegrated: "yes"') }));
+  assert.deepEqual(integrated, ['entry words added (not in the old entry): integrated: yes']);
+  // resolved_by naming a decision the entry never cites.
+  const by = run(QUESTIONS_LOG, 'questions', questions({ 'Q-002.md': Q002.replace('resolved_by: D-004', 'resolved_by: D-007') }));
+  assert.deepEqual(by, ['entry words added (not in the old entry): resolved_by: D-007']);
+});
+
+test('status: open is composed only for a question that recorded no status', () => {
+  const log = QUESTIONS_LOG.replace('**Dependencies**: Q-002, D-001\n**Status**: open\n', '**Dependencies**: Q-002, D-001\n');
+  assert.deepEqual(run(log, 'questions', questions()), []);
+  const suffixed = log.replace('## Q-001 · critical · plot', '## Q-001 · critical · plot ✅ RESOLVED');
+  assert.deepEqual(run(suffixed, 'questions', questions()), ['entry words added (not in the old entry): status: open', 'entry words missing: RESOLVED']);
 });
 
 test('a composed title must use the question’s own words', () => {
@@ -329,8 +361,21 @@ test('compareEntry reports an entry with no frontmatter', () => {
   assert.deepEqual(compareEntry(entry, 'D', '**Summary**: no frontmatter here.\n'), ['no frontmatter']);
 });
 
-test('a log with no entries, or with both kinds, is a log finding', () => {
-  assert.deepEqual(run('# Decisions\n\nNothing yet.\n', 'decisions', {}), ['log no `## D-###` or `## Q-###` entries found']);
+test('an empty log means an empty folder and an index with no rows', () => {
+  const empty = '---\ncount: 0\n---\n\n# Decisions\n\nNothing yet.\n';
+  const header = '# Decisions\n\n| ID | Date | Type | Topic | Integrated | Superseded by |\n|---|---|---|---|---|---|\n';
+  assert.deepEqual(run(empty, 'decisions', { '_index.md': header }), []);
+  assert.deepEqual(run(empty, 'decisions', {}), ['index missing']);
+  const stray = run(empty, 'decisions', { '_index.md': DECISIONS_INDEX, 'D-001.md': D001 });
+  assert.ok(stray.includes('count 1 entry file, but the log heads 0 entries'), stray.join('\n'));
+  assert.ok(stray.includes('extra-entry D-001 isn\'t headed in the log'), stray.join('\n'));
+  assert.ok(stray.includes('index row for D-002, which has no entry file'), stray.join('\n'));
+  // A questions log with no entries is known by its heading.
+  const q = run('# Open Questions\n', 'questions', { '_index.md': '# Questions\n', 'D-001.md': D001 });
+  assert.ok(q.includes('kind a decision file in a question folder'), q.join('\n'));
+});
+
+test('a log with both kinds is a log finding', () => {
   assert.deepEqual(run(`${DECISIONS_LOG}\n${QUESTIONS_LOG}`, 'decisions', decisions()), ['log holds both decision and question entries']);
 });
 
@@ -340,7 +385,7 @@ test('main prints a clean summary and exits 0 on a faithful upgrade, 1 on findin
     const out: string[] = [];
     const err: string[] = [];
     assert.equal(main([s.log, s.folder], (l) => out.push(l), (l) => err.push(l)), 0);
-    assert.deepEqual(out, ['decisions.md → decisions/: 3 entries in the log, 3 files; 0 findings (11 words outside the entries, not compared)']);
+    assert.deepEqual(out, ['decisions.md → decisions/: 3 entries in the log, 3 files; 0 findings (11 words of preamble, not carried)']);
     assert.deepEqual(err, []);
     writeFileSync(join(s.folder, 'D-001.md'), D001.replace('everything', 'nothing'));
     const out2: string[] = [];
@@ -365,7 +410,7 @@ test('the CLI runs under node with clean output', () => {
     const r = spawnSync(process.execPath, [join(here, 'upgrade-check.ts'), s.log, s.folder], { encoding: 'utf8' });
     assert.equal(r.status, 0, r.stderr);
     assert.equal(r.stderr, '');
-    assert.equal(r.stdout, 'questions.md → questions/: 2 entries in the log, 2 files; 0 findings (2 words outside the entries, not compared)\n');
+    assert.equal(r.stdout, 'questions.md → questions/: 2 entries in the log, 2 files; 0 findings (2 words of preamble, not carried)\n');
   } finally {
     rmSync(s.root, { recursive: true, force: true });
   }

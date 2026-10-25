@@ -15,8 +15,8 @@ export interface UpgradeResult {
   logEntries: number;
   /** Entry files in the folder. */
   folderEntries: number;
-  /** Words in the old log outside every entry (its frontmatter values, heading and preamble), which no entry carries. */
-  outside: number;
+  /** Words in the old log before its first entry (its frontmatter values, heading and preamble), which no entry carries. */
+  preamble: number;
 }
 
 interface OldEntry { id: string; header: string; body: string }
@@ -38,11 +38,18 @@ const isWord = (t: string): boolean => /[\p{L}\p{N}]/u.test(t);
 /** The words of a markdown fragment with markup stripped, the way md-profile-check --words counts them. */
 const wordsOf = (src: string): string[] => markdownWords(`${src}\n`).filter(isWord);
 
-/** Split an old log into its entries; everything else (frontmatter, preamble, non-entry sections) counts as outside. */
-export function parseLog(src: string): { entries: OldEntry[]; outside: string } {
+/** A non-entry section after the first entry: its heading and the text under it, which no entry carries. */
+export interface Stray { heading: string; text: string }
+
+/**
+ * Split an old log into its entries. Everything before the first entry (frontmatter, heading, preamble) is the
+ * preamble; a non-entry heading after it, with the text under it up to the next entry, is a stray section.
+ */
+export function parseLog(src: string): { entries: OldEntry[]; preamble: string; strays: Stray[] } {
   const lines = src.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n').split('\n');
   const fm = frontmatterOf(lines);
-  const outside: string[] = lines.slice(0, fm.body);
+  const preamble: string[] = lines.slice(0, fm.body);
+  const strays: Array<{ heading: string; text: string[] }> = [];
   const entries: OldEntry[] = [];
   let cur: { id: string; header: string; body: string[] } | null = null;
   let fence: string | null = null;
@@ -55,12 +62,17 @@ export function parseLog(src: string): { entries: OldEntry[]; outside: string } 
     else {
       const m = ENTRY_HEAD.exec(line);
       if (m) { close(); cur = { id: `${m[1]}-${m[2]}`, header: line.slice(3), body: [] }; continue; }
-      if (ANY_HEAD.test(line)) close();
+      if (ANY_HEAD.test(line)) {
+        close();
+        if (entries.length > 0) { strays.push({ heading: line, text: [] }); continue; }
+      }
     }
-    if (cur) cur.body.push(line); else outside.push(line);
+    if (cur) cur.body.push(line);
+    else if (strays.length > 0) strays[strays.length - 1].text.push(line);
+    else preamble.push(line);
   }
   close();
-  return { entries, outside: outside.join('\n') };
+  return { entries, preamble: preamble.join('\n'), strays: strays.map((x) => ({ heading: x.heading, text: x.text.join('\n') })) };
 }
 
 /** Strip one layer of YAML quoting from a scalar. */
@@ -127,6 +139,17 @@ const minus = (a: Map<string, number>, b: Map<string, number>): Map<string, numb
   return out;
 };
 const listOf = (m: Map<string, number>): string[] => [...m].flatMap(([w, n]) => Array<string>(n).fill(w));
+/** The text of an entry's first `**<label>**:` field, up to the next field label line (empty when it has none). */
+function fieldText(body: string, label: string): string {
+  const out: string[] = [];
+  let on = false;
+  for (const line of body.split('\n')) {
+    const l = LABEL.exec(line.trimStart());
+    if (l) { if (on) break; if (l[1].trim() === label) { on = true; out.push(line); } continue; }
+    if (on) out.push(line);
+  }
+  return out.join('\n');
+}
 const show = (ws: readonly string[]): string => (ws.length > 12 ? `${ws.slice(0, 12).join(' ')} … (${ws.length} in all)` : ws.join(' '));
 /** Lowercased, with surrounding punctuation and a possessive ’s removed: how a composed title’s word is matched. */
 const bare = (w: string): string => w.toLowerCase().replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '').replace(/['’]s$/u, '');
@@ -156,12 +179,25 @@ export function compareEntry(old: OldEntry, kind: 'D' | 'Q', entrySrc: string): 
   const composedTitle = kind === 'Q' && !oldLabels.has('Title');
   const fixed: string[] = [...wordsOf(body)];
   const restated: string[] = [];
+  // Every word a restating field holds must come from the old entry: its header (` ✅ RESOLVED` gives `resolved`)
+  // or a body line. Matched ignoring case, also inside a longer word (`RESOLVED`, `half-resolved`). The one value
+  // the conversion composes is `status: open` for a question that recorded no status at all.
+  const oldText = `${old.header}\n${old.body}`.toLowerCase();
+  const noStatus = kind === 'Q' && !oldLabels.has('Status') && !/✅|resolved|invalidated/i.test(old.header);
+  const invented: string[] = [];
   for (const f of fields) {
     if (f.key.startsWith('storystormer_')) continue;
     const ws = f.values.flatMap((v) => wordsOf(v));
-    if (RESTATING.has(f.key) || (composedTitle && f.key === 'title')) restated.push(...ws);
+    if (RESTATING.has(f.key)) {
+      restated.push(...ws);
+      for (const w of ws) {
+        const b = bare(w);
+        if (b !== '' && !oldText.includes(b) && !(f.key === 'status' && b === 'open' && noStatus)) invented.push(`${f.key}: ${w}`);
+      }
+    } else if (composedTitle && f.key === 'title') restated.push(...ws);
     else fixed.push(...ws);
   }
+  if (invented.length) problems.push(`words added (not in the old entry): ${invented.join(', ')}`);
   const newBag = bag(fixed);
 
   const added = minus(newBag, oldBag);
@@ -190,7 +226,8 @@ export function compareEntry(old: OldEntry, kind: 'D' | 'Q', entrySrc: string): 
     const title = get('title')?.values[0] ?? '';
     if (title === '') problems.push('title is missing (the old entry has none, so the upgrade composes one)');
     else {
-      const pool = new Set([...oldBag.keys()].map(bare));
+      const question = fieldText(old.body, 'Question');
+      const pool = new Set(wordsOf(question === '' ? old.body : question).map(bare));
       const foreign = wordsOf(title).filter((w) => !pool.has(bare(w)));
       if (foreign.length) problems.push(`composed title uses words the question doesn’t: ${foreign.join(' ')}`);
     }
@@ -216,29 +253,39 @@ const num = (id: string): number => Number(id.slice(2));
 export function checkUpgrade(logPath: string, folder: string): UpgradeResult {
   const findings: UpgradeFinding[] = [];
   const add = (path: string, rule: string, message: string): void => { findings.push({ path, rule, message }); };
-  const { entries, outside } = parseLog(readFileSync(logPath, 'utf8'));
+  const { entries, preamble, strays } = parseLog(readFileSync(logPath, 'utf8'));
   const kinds = new Set(entries.map((e) => e.id[0] as 'D' | 'Q'));
-  const kind: 'D' | 'Q' | null = kinds.size === 1 ? [...kinds][0] : null;
-  const result = (folderEntries: number): UpgradeResult => ({ findings, kind, logEntries: entries.length, folderEntries, outside: wordsOf(outside).length });
-  if (entries.length === 0) { add(logPath, 'log', 'no `## D-###` or `## Q-###` entries found'); return result(0); }
-  if (kind === null) { add(logPath, 'log', 'holds both decision and question entries'); return result(0); }
+  // An empty log (a header and no entries) is zero entries: its kind comes from its name or heading, and the folder
+  // and index must then be empty too.
+  const named = /question/i.test(`${basename(logPath)} ${preamble}`) ? 'Q' : /decision/i.test(`${basename(logPath)} ${preamble}`) ? 'D' : null;
+  const kind: 'D' | 'Q' | null = kinds.size === 1 ? [...kinds][0] : kinds.size === 0 ? named : null;
+  const result = (folderEntries: number): UpgradeResult => ({ findings, kind, logEntries: entries.length, folderEntries, preamble: wordsOf(preamble).length });
+  if (kinds.size > 1) { add(logPath, 'log', 'holds both decision and question entries'); return result(0); }
+  for (const s of strays) {
+    const n = wordsOf(s.text).length + wordsOf(s.heading.replace(/^#+/, '')).length;
+    if (n > 0) add(logPath, 'outside-entry', `${n} word${n === 1 ? '' : 's'} under “${s.heading.trim()}”, after the first entry, in no entry`);
+  }
 
   const seen = new Map<string, number>();
   for (const e of entries) seen.set(e.id, (seen.get(e.id) ?? 0) + 1);
   for (const [id, n] of seen) if (n > 1) add(logPath, 'duplicate-id', `${id} heads ${n} entries; one file can't hold them`);
 
   const files = readdirSync(folder).filter((n) => ENTRY_FILE.test(n) && statSync(join(folder, n)).isFile());
+  if (kind === null) {
+    // An empty log whose kind can't be told: every entry file is extra.
+    for (const n of files) add(join(folder, n), 'extra-entry', `${n.slice(0, -3)} isn't headed in the log`);
+  }
   const byId = new Map(files.map((n) => [n.slice(0, -3), n]));
   if (files.length !== entries.length) add(folder, 'count', `${files.length} entry file${files.length === 1 ? '' : 's'}, but the log heads ${entries.length} entr${entries.length === 1 ? 'y' : 'ies'}`);
-  for (const n of files) if (n[0] !== kind) add(join(folder, n), 'kind', `a ${n[0] === 'D' ? 'decision' : 'question'} file in a ${kind === 'D' ? 'decision' : 'question'} folder`);
+  for (const n of files) if (kind !== null && n[0] !== kind) add(join(folder, n), 'kind', `a ${n[0] === 'D' ? 'decision' : 'question'} file in a ${kind === 'D' ? 'decision' : 'question'} folder`);
   for (const id of seen.keys()) if (!byId.has(id)) add(folder, 'missing-entry', `${id} has no ${id}.md`);
   for (const id of byId.keys()) if (!seen.has(id)) add(join(folder, `${id}.md`), 'extra-entry', `${id} isn't headed in the log`);
 
   for (const e of entries) {
-    if ((seen.get(e.id) ?? 0) > 1) continue;
+    if (kind === null || (seen.get(e.id) ?? 0) > 1) continue;
     const file = byId.get(e.id);
     if (!file) continue;
-    for (const p of compareEntry(e, kind, readFileSync(join(folder, file), 'utf8'))) add(join(folder, file), 'entry', p);
+    for (const p of compareEntry(e, kind as 'D' | 'Q', readFileSync(join(folder, file), 'utf8'))) add(join(folder, file), 'entry', p);
   }
 
   const indexPath = join(folder, '_index.md');
@@ -262,11 +309,12 @@ const USAGE = `upgrade-check: compare an old-layout log with the entry folder mi
 
   node tools/upgrade-check.ts <old decisions.md | questions.md> <decisions/ | questions/>
 
-Checks the entry count against the log's ## D-### / ## Q-### headings, that every ID has its file (and no file is
+Checks the entry count against the log's ## D-### / ## Q-### headings (an empty log means an empty folder and index), that every ID has its file (and no file is
 extra), each entry's id and storystormer_* fields, that each entry keeps every word of its old entry (a multiset,
 markup stripped; label words whose line moved into the frontmatter, and words a status, resolved_by, superseded_by,
-integrated or composed title restates, are allowed), that a composed title uses the question's own words, and that
-_index.md lists every entry once, in order. Prints path: rule message per finding and a summary; exits 1 on findings.`;
+integrated or retracted restates, are allowed, but every one of them must come from the old entry), that a composed
+title uses the question's own words, that no text sits under a non-entry heading after the first entry, and that
+_index.md lists every entry once, in order. It reads files only: work on a local copy of the project. Prints path: rule message per finding and a summary; exits 1 on findings.`;
 
 export function main(argv: readonly string[], out: (s: string) => void = (s) => process.stdout.write(`${s}\n`), err: (s: string) => void = (s) => process.stderr.write(`${s}\n`)): number {
   if (argv.includes('--help') || argv.includes('-h')) { out(USAGE); return 0; }
@@ -283,7 +331,7 @@ export function main(argv: readonly string[], out: (s: string) => void = (s) => 
   const r = checkUpgrade(log, folder);
   for (const f of r.findings) out(`${f.path}: ${f.rule} ${f.message}`);
   const n = r.findings.length;
-  out(`${basename(log)} → ${basename(folder)}/: ${r.logEntries} entries in the log, ${r.folderEntries} files; ${n} finding${n === 1 ? '' : 's'} (${r.outside} words outside the entries, not compared)`);
+  out(`${basename(log)} → ${basename(folder)}/: ${r.logEntries} entries in the log, ${r.folderEntries} files; ${n} finding${n === 1 ? '' : 's'} (${r.preamble} words of preamble, not carried)`);
   return n > 0 ? 1 : 0;
 }
 
