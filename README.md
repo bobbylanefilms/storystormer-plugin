@@ -196,6 +196,13 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 
 These may follow in later versions once the kernel proves out.
 
+### What v0.21.1 fixed over v0.21.0
+
+- **A second full round trip of a 148-file project** (local → Notion → Dropbox → local) came back unchanged apart from the one construct the profile already names. These fixes come from what it turned up.
+- **`migrate`’s check of its own tidying is stricter.** The second look at each tidied document now goes line by line, rather than reading for sense; reading for sense let eighteen headings run into paragraphs slip past.
+- **`migrate` names more of what it replaces.** When the target builds the character or outline index itself, the plan now names any notes you wrote by hand in your own copy (your copy keeps them).
+- **No duplicated titles in Notion.** A page’s leading title is restored only when Notion actually dropped it.
+
 ### What v0.21.0 added over v0.20.1
 
 - **A portable markdown profile.** The plugin now writes one kind of markdown on every backend: the subset that comes back from Notion byte for byte, found by writing 243 constructs to Notion and reading them back, plus follow-up probes from three live migrations (`references/markdown-profile.md`; the evidence is in `tests/markdown-profile/`). Your own files in a folder or in Dropbox are never reformatted; only the plugin’s own text follows the profile.

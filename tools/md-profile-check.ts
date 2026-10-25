@@ -149,7 +149,6 @@ function canInterrupt(marker: string, rest: string): boolean {
   return rest.trim() !== '' && (!/\d/.test(marker) || parseInt(marker, 10) === 1);
 }
 
-const COMMENT_LINE = /^ {0,3}<!--.*-->[ \t]*$/;
 const FM_KEY = /^(?:[A-Za-z_][\w.-]*|"[^"\n]*"|'[^'\n]*')[ \t]*:(?:[ \t]|$)/;
 export interface Frontmatter { body: number; issue?: { line: number; message: string } }
 /**
@@ -870,6 +869,11 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
     let j = i;
     let first = true;
     let afterGap = false;
+    // Is this list directly under a field label line (empty lines between allowed)? Only then is a
+    // field label under its last item the next field; elsewhere it's the item's continuation.
+    let above = i - 1;
+    while (above >= 0 && L[above].trim() === '') above--;
+    const underLabel = above >= 0 && FIELD_LABEL.test(L[above]);
     /** The deepest open item whose content column the indentation reaches, or -1. */
     const owner = (w: number): number => {
       let lvl = stack.length - 1;
@@ -987,8 +991,8 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
       }
       if (w === 0) {
         if (kind !== 'para' && kind !== 'footdef' && kind !== 'refdef') break;
-        // A field label line under a list is the next field, not the last item's continuation.
-        if (FIELD_LABEL.test(t)) break;
+        // A field label line under a list that sits under a field label is the next field.
+        if (underLabel && FIELD_LABEL.test(t)) break;
       }
       continuation(t, w);
       afterGap = false;
@@ -1019,9 +1023,6 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
       const t = L[j];
       if (t.trim() === '') break;
       if (j > i) {
-        // A whole-line HTML comment is its own block in Notion, so it ends a paragraph and starts one
-        // (a run of comment lines, such as an ABOUTME header, counts as one block).
-        if (COMMENT_LINE.test(t) !== COMMENT_LINE.test(L[j - 1])) break;
         if (SETEXT.test(t)) { emit(ln(j), 'heading-setext', 'an underlined heading; write it with #s'); j++; break; }
         const k = classify(t);
         if (k === 'item') {

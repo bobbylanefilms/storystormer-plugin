@@ -196,11 +196,11 @@ test('lint profile rules the first version missed', () => {
   assert.deepEqual(rulesOf('- [ ]\n- [x] done\n'), ['list-empty-item']);
   assert.deepEqual(rulesOf('| a | b |\n|---|---|\n| c |\n'), ['table-form']);
   assert.deepEqual(rulesOf('- a\n1. b\n'), ['block-separation']);
-  // A whole-line HTML comment is its own block: it needs an empty line on each side.
-  assert.deepEqual(rulesOf('Para one.\n<!-- note -->\nPara two.\n').filter((r) => r === 'block-separation').length, 2);
-  assert.deepEqual(rulesOf('Para one.\n\n<!-- note -->\n\nPara two.\n').filter((r) => r === 'block-separation'), []);
-  // A field label line under the last item of any list is the next field.
-  assert.ok(rulesOf('### Obligations\n\n- one\n**Affects**: Q-008\n').includes('block-separation'));
+  // A comment line run into a paragraph stays a line of it in Notion (probes 11, 12): not a block.
+  assert.deepEqual(rulesOf('Para one.\n<!-- note -->\nPara two.\n').filter((r) => r === 'block-separation'), []);
+  // A field label under the last item of a list that isn't under a field label is the item's
+  // continuation, as markdown reads it and Notion stores it (probe 11).
+  assert.deepEqual(rulesOf('### Obligations\n\n- one\n**Affects**: Q-008\n').filter((r) => r === 'block-separation'), []);
   assert.deepEqual(rulesOf('A.\n\n * * *\n\nB.\n'), ['leading-whitespace']);
   assert.deepEqual(rulesOf('> ```\n> - code\n> ```\n'), ['quote-content']);
   assert.deepEqual(rulesOf('Para.\n\n    ```\n    code\n    ```\n'), ['indented-code']);

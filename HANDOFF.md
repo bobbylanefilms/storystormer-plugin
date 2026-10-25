@@ -19,11 +19,7 @@
 
 ## Current position
 
-SB6 released as 0.21.0-poc on `main`. All slices accepted. mini run 3 passed with an empty (b) list; the first full ring ran at `c2420dd`, and its findings were fixed in `2a0781b` and `7cfe89d` and probed.
-
-**In flight (Rob asked 2026-10-24):** a second full ring at `d91e507` (0.21.0-poc). An Opus runner is working from the brief `sb6/runner-ring2.md` in the session scratchpad, with slug `sb6-ring2` and scratch `sb6/live/ring2/` (log at `log.md`). The deliverable is the (b) list. On completion: verify against the log, fix any (b) items (a patch release if they're functional), then report.
-
-Next after the ring: SB7 (entry collections, slim `state.md`), AP5 in the web-app repo, ISSUE072.
+SB6 released as 0.21.0-poc, then 0.21.1-poc after the second full ring (2026-10-24, at `d91e507`, slug `sb6-ring2`). That ring passed: the only change in transit is `craft-document.md:241`, the named No in-profile form case. Its wording findings, plus a Fable review of the fixes, landed in 0.21.1; probes 11 and 12 showed HTML comment lines aren't blocks, overturning one runner claim. Next: SB7 (entry collections, slim `state.md`), AP5 in the web-app repo, ISSUE072.
 
 ## Decisions and deviations
 
