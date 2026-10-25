@@ -409,6 +409,21 @@ The 148-file ring (local → Notion → Dropbox → local, slug `sb6-ring`) chan
 
 **Cost:** 8 Notion calls, all synchronous: 4 creates, 3 fetches and 1 rows query (plus one fetch of a mistyped id, which failed). Probe 10 is two of them.
 
+## Autolinks inside emphasis (2026-10-25)
+
+The SB7 ring (local → Notion, slug `sb7-ring`) changed one line: `journal/2026-10-25-s12.md:38` held a bare `state.md` inside a bold span, `(**state.md's**`, and Notion returned `(</b>[<b>state.md</b>](http://state.md)<b>'s`, which the read renders `(**[**state.md**](http://state.md)**'s`. The autolink collapse can’t undo it: the link’s text holds the bold markers, so it no longer equals its URL less the scheme. Two child pages under the `sb6-probe` row, written synchronously and fetched once each, in today’s write form:
+
+- **Probe 13, where Notion autolinks** (`probe/sb7-autolink.md`, `404e980b-9c74-81c1-b62f-d172046c2760`):
+  - **Outside emphasis** a bare `state.md` was autolinked in a paragraph, at a sentence’s end, in a list item, in a heading and in a table cell (`[state.md](http://state.md)`), which the collapse reads as written.
+  - **Inside emphasis, every kind:** bold, italic, strikethrough and bold italic, around the whole name or part of a span (`**the state.md file**`), the possessive (`**state.md's**`), a quote and a table cell. Each came back with the link moved outside the emphasis and the emphasis inside the link text, as `<b>the </b>[<b>state.md</b>](http://state.md)<b> file</b>`, which no read rule returns as written. In a path only the basename was linked (`<b>decisions/</b>[<b>D-001.md</b>](http://D-001.md)`), with the same split.
+  - **Which extensions:** of `notes.txt`, `config.json`, `a.pdf`, `x.py`, `ada-vale.md`, `report.docx`, `data.csv`, `pic.png` and `list.yaml`, only `.md` and `.py` (both top-level domains) were linked, bare or in bold or italic; the rest came back as written.
+  - **A code span inside bold** (``**the `state.md` file**``) came back as `<b>the </b><b><code>state.md</code></b><b> file</b>`, which merges back as written.
+- **Probe 14, the rewrite** (`probe/sb7-autolink-rewrites.md`, `404e980b-9c74-810d-9e39-c78dccf62d16`): the same lines with the name in a code span inside the emphasis, ``**`state.md`**``, ``**the `state.md` file**``, ``(**`state.md`'s** budget)``, the italic, strikethrough and bold-italic forms, a table cell, ``**`decisions/D-001.md`**``, ``**see `decisions/D-001.md` here**``, ``*`x.py`*`` and ``~~*the `state.md` file*~~``. Every one came back as split runs that merge to the line as written (`(<b><code>state.md</code></b><b>'s</b> budget)` → ``(**`state.md`'s** budget)``).
+
+That is the profile’s new rewrite row (`references/markdown-profile.md` § Rewrite table: a bare filename Notion autolinks, inside emphasis) and `tools/md-profile-check.ts`’s `bare-path-emphasis` rule. A bare name outside emphasis stays as it was, kept as written in author text.
+
+**Cost:** 4 Notion calls, all synchronous: 2 creates and 2 fetches.
+
 ## Cost
 
 **Round one:** 30 Notion calls: 7 creates (2 of them the async failures), 5 `replace_content`, 2 `update_content`, 13 fetches (one of them the connector’s markdown spec, one a read-only fetch of an SB5-era page to confirm the serializer change), 2 searches and 1 rows query. They ran from 07:35 to 07:54 Pacific, 19 minutes of wall time including transcription.

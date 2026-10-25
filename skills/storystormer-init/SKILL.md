@@ -15,7 +15,7 @@ Always follow `references/plan-first.md` — load context, propose a plan in pla
 
 When the user gives you the go-ahead, you create or update:
 
-- `state.md` — the slim dashboard (`references/file-schemas.md` § `state.md`): its four sections, and the frontmatter that owns every field the author sees: `title`, `slug` (the kebab-case of the title, set now and never changed), `project_type`, `target_word_count`, `genre`, `logline`, `stage`, `initial_maturity`, `created`, `last_session`, `session_count` (the journal entry's number: `1` for a brand-new project), `surfacing_mode`
+- `state.md` — the slim dashboard (`references/file-schemas.md` § `state.md`): its four sections, and the frontmatter that owns every field the author sees: `title`, `slug` (the author’s choice when they name one, else the kebab-case of the title; kebab case, `[a-z0-9-]` only; set now and never changed), `project_type`, `target_word_count`, `genre`, `logline`, `stage`, `initial_maturity`, `created`, `last_session`, `session_count` (the journal entry's number: `1` for a brand-new project), `surfacing_mode`
 - `.storystormer/config.json` — exactly two keys, `layout: 2` and `storage` (`references/file-schemas.md` § `.storystormer/config.json`): a new project gets the store the author chose (§ Where a new project lives), `"storage": { "kind": "local" }` for the open folder; an existing project keeps the `storage` block it has. Nothing in it mirrors `state.md`
 - `.storystormer/` — supporting subfolders, each created with its first file (no empty folders)
 - `decisions/_index.md` and `questions/_index.md` — always for a new project (a re-run keeps the ones it has), with their heading and table header and no rows (`references/file-schemas.md` § `decisions/_index.md`, § `questions/_index.md`), so every layout-2 project has them; where the binding computes them, they are skipped
@@ -99,6 +99,7 @@ Set `initial_maturity` to the same value as `stage` **except for the two outline
 Before doing anything else, ask 2–4 questions to fill in what the materials don't tell you:
 
 - **Working title** — confirm or ask.
+- **Slug** — the project’s stable short name (§ What you produce, `state.md`), shown in the plan as a default the author may change: the kebab-case of the title (`the-keepers-log`). On Dropbox and Notion it is also the project’s folder (`/StoryStormer/<slug>/`) or its row’s `Slug`, so it is fixed before anything is written there. No need to ask about it separately; the plan shows it.
 - **Project type** — novel / novella / short story / screenplay / **series**, written as `novel`, `novella`, `short_story`, `screenplay`, `series` (series triggers the multi-book folder structure in `references/series.md`).
 - **Target length** — the book's target word count (for a series, a default for every book, written to the root `state.md`, plus any book that differs, written to that book's `books/<slug>/state.md`). If the author has no number, use the type's default from `references/file-schemas.md` § Target word count and the derived budgets (120,000 for a novel) and say so; it becomes `target_word_count`, which every word budget is computed from.
 - **Genre** — confirm or ask. If hybrid, capture both.
@@ -117,7 +118,7 @@ If the project is a **series**, ask additional intake questions:
 
 ### 4. Propose a plan, in plain language
 
-Tell the user what you're going to do based on the stage and what you found, and where the story will live: this folder, `/StoryStormer/<slug>/` in Dropbox, or the Notion hub, plus the pointer config a connector backend leaves in the open folder. Examples:
+Tell the user what you're going to do based on the stage and what you found, and where the story will live: this folder, `/StoryStormer/<slug>/` in Dropbox, or the Notion hub, plus the pointer config a connector backend leaves in the open folder. The plan names the slug (`Slug: the-keepers-log, from the title; say if you want another`), and the author's change, validated as kebab case, is the one used. Examples:
 
 > **Stage: `brain-dump`.** Here's what I'm planning:
 >
@@ -160,7 +161,7 @@ The main session aggregates the completion logs from each subagent for the final
 
 For decision and question extraction in either mode (subagent-dispatched or main-session-direct), lean on the model — it's a judgment task, not a regex match. The user reviews the proposed entries before they're written. Never auto-write decisions or questions from intake without user review; the user's voice in those entries matters.
 
-The proposed IDs are provisional: the collections start empty at `D-001` and `Q-001`, and the store assigns each number when the entry is created with `new` and reports it (`references/store.md` § New entries). From then on that reported ID is the entry's ID. Adopt it before writing any marker or cross-reference (a question's `**Dependencies**`, a `resolved_by`, the journal, the report).
+The proposed IDs are provisional: the collections start empty at `D-001` and `Q-001`, and the store assigns each number when the entry is created with `new` and reports it (`references/store.md` § New entries). From then on that reported ID is the entry's ID. Adopt it before writing any marker or cross-reference (a question's `**Dependencies**`, a `resolved_by`, the journal, the report); the journal entry, created first, names the entries only once their numbers are reported (`references/file-schemas.md` § `journal/`, IDs as the store reported them).
 
 ### 6. Report
 

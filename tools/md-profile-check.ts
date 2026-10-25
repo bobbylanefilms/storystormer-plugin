@@ -58,6 +58,7 @@ export const RULES: Readonly<Record<string, string>> = {
   'bare-email': '§ Rewrite table: a bare email address',
   'footnote': '§ Rewrite table: a footnote',
   'bare-path': '§ Inline: Paths and filenames (in code spans)',
+  'bare-path-emphasis': '§ Rewrite table: a bare filename Notion autolinks, inside emphasis',
   'obsidian-syntax': '§ Kept as written: Obsidian syntax',
   'nbsp': '§ Rewrite table: a non-breaking space (U+00A0)',
   'frontmatter-separation': '§ Rewrite table: the body run into the frontmatter, or set off by more than one empty line',
@@ -315,6 +316,9 @@ const EMAIL_CH = /[A-Za-z0-9._%+-]/;
 const PATH = /(?:\.{1,2}\/)*(?:[A-Za-z0-9_][A-Za-z0-9_.-]*\/)*[A-Za-z0-9_][A-Za-z0-9_.-]*\.[A-Za-z0-9]{1,8}(?![A-Za-z0-9_/-])/y;
 const PATH_START = /[A-Za-z0-9_.]/;
 const PATH_PREV = /[A-Za-z0-9_./@-]/;
+// Extensions Notion autolinks as domains (probe-results.md § Autolinks inside emphasis: .md and .py linked; .txt,
+// .json, .pdf, .docx, .csv, .png, .yaml not). Inside emphasis such a name comes back split from its emphasis.
+const AUTOLINK_EXTS = new Set(['md', 'py']);
 const FILE_EXTS = new Set(['md', 'markdown', 'docx', 'doc', 'txt', 'json', 'yaml', 'yml', 'csv', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'svg']);
 const WIKILINK = /!?\[\[[^\]\n]+\]\]/y;
 const HIGHLIGHT = /==[^=\s](?:[^=\n]*[^=\s])?==/y;
@@ -688,7 +692,11 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
         if (!inLink) {
           if (n.k === 'url') at(n.pos, 'bare-url', `bare URL ${n.s}; write [url](url)`);
           if (n.k === 'email') at(n.pos, 'bare-email', `bare email address ${n.s}; write [address](mailto:address)`);
-          if (n.k === 'path') at(n.pos, 'bare-path', `bare path or filename ${n.s}; put it in a code span`);
+          if (n.k === 'path') {
+            const ext = (/\.([A-Za-z0-9]+)$/.exec(n.s)?.[1] ?? '').toLowerCase();
+            if (inEmph && AUTOLINK_EXTS.has(ext)) at(n.pos, 'bare-path-emphasis', `bare filename ${n.s} inside emphasis; Notion autolinks it out of the span, so put it in a code span`);
+            else at(n.pos, 'bare-path', `bare path or filename ${n.s}; put it in a code span`);
+          }
         }
         if (n.k === 'delim' && n.ch === '*' && n.count > 0) {
           if (inEmph) at(n.pos, 'emphasis-nested', 'a literal * inside an emphasis span; a span holds no other delimiter');
@@ -1495,5 +1503,7 @@ export function main(argv: readonly string[], out: (s: string) => void = (s) => 
 }
 
 if (process.argv[1] !== undefined && fileURLToPath(import.meta.url) === process.argv[1]) {
+  // A reader that stops early (`| head`) closes the pipe: that ends the output, it isn't a failure.
+  process.stdout.on('error', (e: NodeJS.ErrnoException) => { if (e.code === 'EPIPE') process.exit(process.exitCode ?? 0); throw e; });
   process.exitCode = main(process.argv.slice(2));
 }

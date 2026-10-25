@@ -16,7 +16,7 @@ Always follow `references/plan-first.md` — propose the plan with file lists, c
 - **`primer.md`** — bumped to the next version. The story craft dossier — **50,000-foot front-matter** — with five standard sections: Story Identity / Premise & Moral Argument (incl. Reveal Architecture) / Structural Framework / Tone, Style & Writing Rules / Character Dynamics. Total ~4,500 words (hard ceiling 5,000). See `references/file-schemas.md` § `primer.md`.
 - **`treatment.md`** — bumped to the next version. Full prose treatment written in propulsive treatment voice. `primer_version` set to the new primer's version. Length calibrated by the budgets computed from `target_word_count` (`references/file-schemas.md` § Target word count and the derived budgets). See `references/treatment-voice.md` and `references/file-schemas.md` § `treatment.md`.
 - **Snapshots** (per `store.md`) of the *current* primer and treatment **as a pair**, before overwriting. They round-trip together; never snapshot one without the other.
-- Updated decision entries — each decision consumed by this update gets `integrated: "yes (<date>)"`, and its row in `decisions/_index.md` follows.
+- Updated decision entries — each decision consumed by this update gets `integrated: "yes (<date>)"`, and its row in `decisions/_index.md` follows. So does each **settled carried-over decision**: one with no `integrated` at all (carried over by the layout upgrade from a log that never marked it), which is checked against the current treatment rather than integrated blindly. Already reflected there → `integrated: "yes (<date>)"` with no prose rewritten; not reflected → it is pending like any other.
 - Updated `state.md` — version bumps, summary refresh, `What's Next` updated, a short Last Session.
 - The session's journal entry (`journal/<date>-s<NN>.md`) — what this update integrated and changed, and why.
 
@@ -59,7 +59,7 @@ Load:
 - `treatment.md` (full)
 - `manifest.md` (full)
 - All major-tier character bios (full)
-- `decisions/_index.md`, then every decision entry whose `integrated` is not `yes` (missing counts as not integrated) — full reads of those entries; the integrated ones stay unread unless a pending decision cites or supersedes one
+- `decisions/_index.md`, then every decision entry whose `integrated` is not `yes` (missing counts as not integrated) — full reads of those entries; the integrated ones stay unread unless a pending decision cites or supersedes one. The ones with no `integrated` key are checked against the treatment first: those it already reflects are settled (marked `yes`, nothing rewritten), and only the rest join the pending set
 - `questions/_index.md`, then the open question entries (so unresolved questions can be marked `[OPEN: Q-###]`)
 - `state.md` (full), including `target_word_count` (in a series, the focused book's own target from `books/<slug>/state.md` when it has one, else the series-level value; unset means the project type's default)
 - `.storystormer/genre-reference.md` if it exists
@@ -74,7 +74,7 @@ This is the canonical heavy-context turn. **Operate in substantive mode** — li
 > - **Phase 1 — Primer**: revise the five standard sections of `primer.md` to fold in the new decisions about Marlowe's father wound and the shift in the antagonist's motivation. Most sections untouched; the Premise & Moral Argument section — including its Reveal Architecture (the father-wound reveal's timing) — gets meaningful updates. Bump primer version 3 → 4.
 > - **Phase 2 — Treatment**: regenerate `treatment.md` against the refreshed primer in treatment voice. I expect a meaningful rewrite of the Act 2 midpoint and a lighter pass on Acts 1 and 3. Bump treatment version 7 → 8.
 > - **Snapshot**: current primer.md + treatment.md, as a pair, per `store.md`.
-> - **Mark**: the 7 unintegrated decisions as `integrated: yes (2026-05-11)`.
+> - **Mark**: the 7 unintegrated decisions as `integrated: yes (2026-05-11)`. Of the 22 carried-over decisions with no `integrated` line, 18 are already in the treatment and are marked `yes` with nothing rewritten; the other 4 are among the 7.
 > - **Open elements**: I'll keep `[OPEN: Q-019]` and `[OPEN: Q-021]` markers in the treatment for the two unresolved critical questions, and add a `[NEEDS DEVELOPMENT: …]` marker for Elena's Act-3 infiltration mechanics (no tracked question yet).
 >
 > About 5–8 minutes once we start. Anything to adjust?
@@ -229,8 +229,8 @@ After the user approves the new treatment:
 - Create any new question entries (`new`, each with its row in `questions/_index.md`; in a series, with `scope` and `affects_books` per `references/series.md` § Scoping decisions and questions), so every `[OPEN: Q-###]` in the new treatment carries the ID the store reported.
 - Write the snapshot per `store.md` — both the old primer and the old treatment, as a pair.
 - `store.write` the new `primer.md` and `treatment.md`.
-- For each decision consumed by this update, edit its entry to set `integrated: "yes (<date>)"` (removing or updating an old `**Integrated into treatment**:` body line it carries, so the two agree), and replace its row in `decisions/_index.md`.
-- Extend the journal entry with the update, using the IDs the store reported: the decisions integrated, the questions opened, what changed in the primer and the treatment and why.
+- For each decision consumed by this update, and each carried-over one the pre-flight found already reflected, edit its entry to set `integrated: "yes (<date>)"` (removing or updating an old `**Integrated into treatment**:` body line it carries, so the two agree), and replace its row in `decisions/_index.md`.
+- Extend the journal entry with the update, using the IDs the store reported (and correcting any proposed number it already names: `references/file-schemas.md` § `journal/`, IDs as the store reported them): the decisions integrated, the questions opened, what changed in the primer and the treatment and why.
 - Update `state.md`:
   - `What Exists → Primer` and `Treatment` lines bumped to new versions and the new `built_from_decisions` list.
   - `Summary` refreshed.

@@ -33,7 +33,7 @@ Event-driven, never calendar-driven:
 
 - **Canon edits**, applied on approval: Revelation Log lines appended; accretion folded into the governing section of a bio or worldbuilding entry; obsolete lines removed or corrected; each touched file's `version` bumped. Promotions (a minor element that needs its own entry) are **recommended and routed** to `character-bio` / `worldbuilding-entry`, not written here.
 - **A run record** at `.storystormer/canon-sync/<YYYY-MM-DD>-ch<NN>-<MM>.md`: the classified findings, every adjudication with its ruling and decision ID, the **manuscript fix list**, and the **invalidated Blueprints** list. This is the artifact the author works from afterward.
-- **Decisions**, one new entry per adjudication, recorded via `decision-capture` with `source: canon-sync`. A ruling that is not recorded is not a ruling; without this the next pass re-litigates the same conflict.
+- **Decisions**, one new entry per adjudication, recorded via `decision-capture` with `source: canon-sync`. A ruling that is not recorded is not a ruling; without this the next pass re-litigates the same conflict. They are logged before the canon edits that cite them, so a Revelation Log line, a proposal’s `applied (D-###)` and the run record carry the number the store reported, never the one proposed.
 - **Snapshot** of the canon documents the approved plan will edit, as one set, per `store.md`, **before applying anything** (the whole canon set only when the author asks for a full checkpoint; `/storystormer:checkpoint` does that).
 - **Notes proposals marked** in each `ch<NN>-notes.md` § Proposals: `applied (D-###)`, `declined (reason)`, or `routed (character-bio)`.
 - Updates to `state.md`: unintegrated-proposal count reset to what remains; `What's Next` carries the fix list pointer and the Blueprints to rebuild; `Last Session` in two or three sentences plus the journal entry's path.
@@ -122,13 +122,13 @@ Then the classified findings, one approve-or-rule list:
 > **Obsolescence (remove unless you object)**
 > 7. `golden-valley.md` still says traffic is rare after midnight; three chapters establish teenagers out there nightly.
 
-### 6. Snapshot, apply, log, record
+### 6. Snapshot, log, apply, record
 
 After the author rules:
 
 1. **Snapshot** the canon documents the approved plan will edit (bios, worldbuilding entries, `manifest.md`), as one set per `store.md`, not the whole canon set unless the author asks for a full checkpoint (`/storystormer:checkpoint` exists for that). This happens before the first edit, no exceptions.
-2. **Apply canon edits**: append Revelation Log lines (`- **Ch N** — …`); fold accretion into the governing section with the smallest edit that makes the entry accurate; correct or remove obsolete lines; bump each touched file's `version` and `last_updated`. Never restyle, expand, or tidy anything the ruling didn't name.
-3. **Log each adjudication** via `decision-capture`, as a new decision entry: `source: canon-sync`, `topic: Canon ruling: <subject>`, `type` per the fact, `Summary` stating the ruling, `Details` naming the notes line, the canon line, the upstream source the trace found, the authorship that set the default (or that it was canon against canon with no default), and whether the author overrode it. Accretions absorbed without dispute do not need a decision; contradictions, drift rulings, and obsolescence removals do.
+2. **Log each adjudication first** via `decision-capture`, as a new decision entry created with `new`: `source: canon-sync`, `topic: Canon ruling: <subject>`, `type` per the fact, `Summary` stating the ruling, `Details` naming the notes line, the canon line, the upstream source the trace found, the authorship that set the default (or that it was canon against canon with no default), and whether the author overrode it. Accretions absorbed without dispute do not need a decision; contradictions, drift rulings, and obsolescence removals do. The store may move a proposed number (`references/store.md` § New entries), so the rulings are logged before any canon edit that cites one, and every citation carries the number the store reported.
+3. **Apply canon edits**, citing the rulings by their reported numbers: append Revelation Log lines (`- **Ch N** — …`); fold accretion into the governing section with the smallest edit that makes the entry accurate; correct or remove obsolete lines; bump each touched file's `version` and `last_updated`. Never restyle, expand, or tidy anything the ruling didn't name.
 4. **Mark proposals** in each notes file's § Proposals.
 5. **Write the run record** with `store.write` to `.storystormer/canon-sync/<date>-ch<NN>-<MM>.md`: findings by category with outcomes; the manuscript fix list (chapter · passage · required change); invalidated Blueprints (chapter · entry that changed · version stamp it was built against); promotions routed; chain closures struck from §2 (logged as decisions so `treatment-update` preserves the strike).
 6. **Extend the session's journal entry, update `state.md`**, and report.

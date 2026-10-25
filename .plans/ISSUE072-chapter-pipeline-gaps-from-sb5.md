@@ -29,6 +29,16 @@ Items 13–18 come from SB6's lint run (a fresh synthetic project taken through 
 17. **Bio heading levels.** `canon-schemas.md` gives no heading levels for a bio file.
 18. **“Integrated into structure”** is used but not in the decisions schema's field list; `treatment-update` and `pre-outline-session` both write it.
 
+Items 19–25 come from SB7's live runs (local, Dropbox and Notion loops on The Good Dog, 2026-10-25; scratchpad logs `sb7/live/{local,dropbox,notion}/log.md`):
+
+19. **Italic speech against the prose spec.** `prose-spec.md` § Output rules forbids bold and italic markers, but the style guide’s speech channel requires unparsed human speech as an italic wash with roman CAPS strikes. All three generators hit it and followed the style guide (local F17, Dropbox ch 1 prose, Notion ch 1 prose). Give the spec a carve-out for an author’s voice rule, or say which wins.
+20. **Blueprint wording.** `blueprint` § 2’s “open row whose index title names the chapter” matched nothing on any backend (the literal reading gives an empty list), and the spec’s 4–8k budget sits against “sole carrier” (the v5 rebuilds ran 9.4k–10k words on every backend). Say how open questions are matched to a chapter, and whether the budget yields to the sole-carrier rule. (Overlaps item 4.)
+21. **“Tier 1 chains.”** `notes` cites “Tier 1 chains in primer §2”, but the primer schema has no tiers, and nothing says what to do when the primer lacks Reveal Architecture (Dropbox and Notion ch 1 notes; `blueprint` too on Notion).
+22. **A correction pass that finds nothing doesn’t restamp.** `outline-chapters`’ correction-only mode, with no error to fix, leaves the author’s file alone, so its `treatment_version` and `primer_version` stamps stay stale and `/storystormer:outline` keeps calling the outline stale (Dropbox and Notion ch 1). Say whether a clean check restamps, or how it records itself.
+23. **canon-sync’s accretions have no D-###.** Accretions absorbed without dispute need no decision (§ 6), but each one’s notes proposal is marked `applied (D-###)` (§ What you produce). Give an accretion’s proposal a mark with no ID, such as `applied (canon-sync <date>)`.
+24. **`treatment-update` doesn’t read chapter outlines.** Its pre-flight reads the primer, treatment, manifest, bios and entries but no `ch<NN>-outline.md`, so an author-written outline’s facts can’t inform it, and it only flags the outlines’ stamps as stale afterwards (local s13). Decide whether outlines are an input.
+25. **`characters/_index.md` regeneration drops one-liners.** Regenerating the index in the schema’s list form (name, type, tags) dropped the characters’ one-liners (local F10, `character-bio`). Either the schema keeps a description, or regeneration says what it drops.
+
 ## Files
 
 `skills/storystormer-init/SKILL.md` · `skills/blueprint/SKILL.md` § 5, § 8, § 9 · `references/blueprint-spec.md` · `skills/notes/SKILL.md` § Preconditions · `references/canon-schemas.md` § Revelation Log · `skills/canon-sync/SKILL.md`

@@ -34,7 +34,7 @@ Walk the user through composing a new question. Fields (see `references/file-sch
 - **Source** — `manual` (the user is adding it here).
 - **Scope** and **affects books** — in a series only, per `references/series.md` § Scoping decisions and questions.
 
-Show the composed entry; confirm; create it with `store.write(questions/Q-###.md, content, new)`, proposing the next number after the index's highest (`Q-019`). That ID is provisional: the store assigns the number and reports it (`references/store.md` § New entries), and that reported ID is the one used in the confirmation, the index row, and everywhere the question is referenced. Then add its row to `questions/_index.md`.
+Show the composed entry; confirm; create it with `store.write(questions/Q-###.md, content, new)`, proposing the next number after the index's highest (`Q-019`). That ID is provisional: the store assigns the number and reports it (`references/store.md` § New entries), and that reported ID is the one used in the confirmation, the index row, the session’s journal entry (`references/file-schemas.md` § `journal/`, IDs as the store reported them), and everywhere the question is referenced. Then add its row to `questions/_index.md`.
 
 ### `/storystormer:questions resolve Q-019`
 

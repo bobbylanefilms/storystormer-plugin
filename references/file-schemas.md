@@ -49,7 +49,7 @@ current_focus: book-1                       # which book the user is currently w
 ---
 ```
 
-`slug` is the project’s stable name: set once by `init` (or by the layout upgrade), the kebab-case of the title at that moment, and never changed when the title changes. On Dropbox it equals the root folder name, on Notion the row’s `Slug`. Every entry copies it into `storystormer_project`. Only the root `state.md` carries it.
+`slug` is the project’s stable name: set once by `init` (or by the layout upgrade), and never changed when the title changes. At `init` the author may name it; the default is the kebab-case of the title at that moment, and either way it is kebab case, `[a-z0-9-]` only. On Dropbox it equals the root folder name, on Notion the row’s `Slug`. Every entry copies it into `storystormer_project`. Only the root `state.md` carries it.
 
 `project_type` is one of the app's values: `novel`, `novella`, `short_story`, `screenplay`, or `series` (an older `short-story` reads as `short_story`).
 
@@ -567,9 +567,11 @@ One table row per question, every status included, sorted by ID numerically. No 
 
 | ID | Priority | Category | Title | Status | Resolved by |
 |---|---|---|---|---|---|
-| [Q-007](./Q-007.md) | important | Worldbuilding | The rules of the loop | resolved | [D-023](./D-023.md) |
+| [Q-007](./Q-007.md) | important | Worldbuilding | The rules of the loop | resolved | [D-023](../decisions/D-023.md) |
 | [Q-014](./Q-014.md) | critical | Plot | How Marlowe finds the loop | open |  |
 ```
+
+The **Resolved by** link points into `decisions/`, so from this index it is `../decisions/D-###.md`, never `./D-###.md` (which would name a file in `questions/`).
 
 **Series mode** adds a **Scope** column after **Category**.
 
@@ -583,7 +585,7 @@ One table row per question, every status included, sorted by ID numerically. No 
 
 ### `journal/` — one entry per session
 
-`journal/<YYYY-MM-DD>-s<NN>.md`: the session’s date and its number, zero-padded to 2 digits (3 past 99). In a series the root `state.md`’s `session_count` numbers it; per-book `state.md` files count no sessions. It records what a session did and why, so `state.md` doesn’t have to.
+`journal/<YYYY-MM-DD>-s<NN>.md`: the date the entry was created and the session’s number, zero-padded to 2 digits (3 past 99). In a series the root `state.md`’s `session_count` numbers it; per-book `state.md` files count no sessions. It records what a session did and why, so `state.md` doesn’t have to.
 
 ```markdown
 ---
@@ -602,10 +604,11 @@ Worked through Marlowe's backstory. The author settled that her father was murde
 Refreshed the treatment to v7 with D-001..D-018. Act 2's reveal now turns on the father; Q-014 is still open and blocks Act 1 beat 3.
 ```
 
-- **Frontmatter:** `date`; `session` (the number in the filename); `skills`, the skills that wrote during the session; `decisions`, the IDs logged or changed; `questions`, the IDs opened, resolved or invalidated; `source`, `plugin` for an entry the plugin writes and `app` for one the app writes from its own chat sessions; and the two `storystormer_*` fields. Lists are empty (`[]`) when nothing applies.
+- **Frontmatter:** `date`, the day the entry was created, the same as the filename’s and unchanged for the life of the entry, even when the session runs past midnight (later steps extend the same entry; their paragraphs may name their own dates); `session` (the number in the filename); `skills`, the skills that wrote during the session; `decisions`, the IDs logged or changed; `questions`, the IDs opened, resolved or invalidated; `source`, `plugin` for an entry the plugin writes and `app` for one the app writes from its own chat sessions; and the two `storystormer_*` fields. Lists are empty (`[]`) when nothing applies.
 - **Body:** a short narrative, in the profile, of what was done and why: the choices made and the reasons, what changed in which documents, what was left open. It is where a finished What’s Next item goes, and where the detail that `state.md` no longer carries lives.
 - **Created by the session’s first write,** before `state.md` is written. Its number is one more than the higher of `state.md`’s `session_count` and the highest `sNN` in the `journal/` listing, compared numerically (the app writes entries too, so the counter can lag the listing). It is created with `store.write(path, content, new)`; on a collision, take the next number and try again. Then `state.md` is written with that number as `session_count`. An empty `journal/` with `session_count` absent gives `s01`, which `init` creates for its own session: `init` and `migrate`’s layout upgrade are the exceptions to “first”: the upgrade snapshots and writes the converted entries before its own journal entry, and creates past sessions’ entries numbered below its own (`skills/migrate/SKILL.md` § The layout upgrade); its own entry is numbered the old `session_count` + 1, fixed at its first run, and a resumed upgrade extends that entry rather than creating another. For `init`, its config (what makes the folder a layout-2 project) and the two empty indexes go first, then `s01`, then everything else, with `state.md` last.
 - **Extended, never rewritten whole,** by every later step in the same session: `store.edit` adds the step’s paragraph after the last one and adds its IDs and skill to the frontmatter lists. An entry from an earlier session is never changed.
+- **IDs as the store reported them.** A new decision or question is named in the journal (its `decisions` or `questions` list, and its body) by the number the store reported for it (§ Entry collections, numbers come from the store), so the line naming it is added after the entry’s `new` write. If the journal already names it by the proposed number (an entry created first that cites it, or text composed before the write), the same session corrects every such mention to the reported number in its next edit of the entry; that is a correction within the session, not a change to an earlier session’s entry.
 - **No index.** Filenames sort by date and session, so the listing is the index. A skill wanting recent history lists `journal/` and reads the newest few entries. Nothing reads the journal by default, and it is never pruned.
 - **Series mode:** one journal at the root, like the decisions; a per-book `state.md`’s Last Session names the root entry.
 

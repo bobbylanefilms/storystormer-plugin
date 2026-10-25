@@ -63,6 +63,7 @@ const CASES: Array<{ rule: string; pass: string; fail: string }> = [
   { rule: 'bare-email', pass: 'Write [a@example.com](mailto:a@example.com) or ping @ada.\n', fail: 'Write a@example.com today.\n' },
   { rule: 'footnote', pass: 'A claim.[1]\n\n[1] The note.\n', fail: 'A claim.[^1]\n\n[^1]: The note.\n' },
   { rule: 'bare-path', pass: 'See `characters/ada_vale.md`, example.com and e.g. ada_vale_profile.\n', fail: 'See characters/ada_vale.md now.\n' },
+  { rule: 'bare-path-emphasis', pass: 'See (**`state.md`\'s** budget) and **`notes.txt`** now.\n', fail: 'See (**state.md\'s** budget) now.\n' },
   { rule: 'obsidian-syntax', pass: 'See the page, and a == b.\n', fail: 'See [[Some Page]] and ==this==.\n' },
   { rule: 'nbsp', pass: 'Two words.\n', fail: 'Two\u00A0words.\n' },
   { rule: 'html-entity', pass: 'Salt & pepper — and a < b.\n', fail: 'A &mdash; dash.\n' },
@@ -531,6 +532,24 @@ test('--words: an HTML table and its pipe-table rewrite have the same words (str
 
 const FILE_ROW = '| The_Good_Dog_-_Brainstorming_&amp;_Future_Plot_Points.md | `notes/brainstorming.md` |\n|---|---|\n';
 
+test('a bare .md or .py name inside emphasis is bare-path-emphasis; outside it, or with another extension, bare-path', () => {
+  // probe-results.md § Autolinks inside emphasis: Notion moved the link outside every kind of emphasis.
+  assert.deepEqual(rulesOf('A **the state.md file** b.\n'), ['bare-path-emphasis']);
+  assert.deepEqual(rulesOf('A *state.md* b.\n'), ['bare-path-emphasis']);
+  assert.deepEqual(rulesOf('A ~~the state.md file~~ b.\n'), ['bare-path-emphasis']);
+  assert.deepEqual(rulesOf('A ***state.md*** b.\n'), ['bare-path-emphasis']);
+  assert.deepEqual(rulesOf('A **see decisions/D-001.md here** b.\n'), ['bare-path-emphasis']);
+  assert.deepEqual(rulesOf('A **tools/x.py** b.\n'), ['bare-path-emphasis']);
+  assert.deepEqual(rulesOf('| a | b |\n|---|---|\n| c | **state.md** |\n'), ['bare-path-emphasis']);
+  // Outside emphasis the collapse reads it back: still only the advisory rule.
+  assert.deepEqual(rulesOf('Read state.md first.\n'), ['bare-path']);
+  // Extensions Notion doesn't link stay advisory inside emphasis too.
+  assert.deepEqual(rulesOf('A **notes.txt** and *config.json* b.\n'), ['bare-path', 'bare-path']);
+  // The rewrite (a code span inside the emphasis) is clean and keeps every word.
+  assert.deepEqual(rulesOf('A **the `state.md` file** and (**`state.md`\'s** budget).\n'), []);
+  assert.ok(same('A (**state.md\'s** budget).\n', 'A (**`state.md`\'s** budget).\n'));
+});
+
 test('bare filenames are kept as written: no emphasis or link rewrite applies inside one, in lint or --words', () => {
   // The mini round trip's rewrite of `_x_` inside a filename is a word change.
   assert.ok(!same(FILE_ROW, FILE_ROW.replace('-_Brainstorming_&amp;_', '-*Brainstorming*&_')));
@@ -541,7 +560,7 @@ test('bare filenames are kept as written: no emphasis or link rewrite applies in
   assert.deepEqual(rulesOf(FILE_ROW).sort(), ['bare-path', 'html-entity']);
   assert.deepEqual(rulesOf('See Miles_Corwin_-_Character_Profile_(Investigative_Journalist).md now.\n'), ['bare-path']);
   // Emphasis around a filename is still emphasis, and its rewrite still passes.
-  assert.deepEqual(rulesOf('See _Story_Primer.md_ now.\n'), ['emphasis-underscore', 'bare-path']);
+  assert.deepEqual(rulesOf('See _Story_Primer.md_ now.\n'), ['emphasis-underscore', 'bare-path-emphasis']);
   assert.ok(same('See _Story_Primer.md_ now.\n', 'See *Story_Primer.md* now.\n'));
   assert.ok(same('See (notes_a.md), then **b_c.md**.\n', 'See (notes_a.md), then **b_c.md**.\n'));
   // A URL inside a run is not a filename token: the bare-URL rule still applies.
@@ -549,7 +568,7 @@ test('bare filenames are kept as written: no emphasis or link rewrite applies in
   // Commas and symbols end a token; a doubled leading underscore keeps the token.
   assert.equal(rulesOf('See a_b.md,c_d.md now.\n').filter((r) => r === 'bare-path').length, 2);
   assert.equal(rulesOf('See x.md→y.md now.\n').filter((r) => r === 'bare-path').length, 2);
-  assert.ok(rulesOf('See __notes.md_ now.\n').includes('bare-path'));
+  assert.ok(rulesOf('See __notes.md_ now.\n').includes('bare-path-emphasis')); // italic `notes.md` after a literal `_`
   // `&`, `(` and a matched `)` stay inside a token; an unmatched `)` ends it (`Chapter 1 (Opus 4).docx` has spaces: no token).
   assert.deepEqual(rulesOf('See Chapter 1 (Opus 4).docx now.\n'), []);
   assert.deepEqual(rulesOf('See Q&A_(draft).md now.\n'), ['bare-path']);
