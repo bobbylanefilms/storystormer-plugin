@@ -149,6 +149,7 @@ function canInterrupt(marker: string, rest: string): boolean {
   return rest.trim() !== '' && (!/\d/.test(marker) || parseInt(marker, 10) === 1);
 }
 
+const COMMENT_LINE = /^ {0,3}<!--.*-->[ \t]*$/;
 const FM_KEY = /^(?:[A-Za-z_][\w.-]*|"[^"\n]*"|'[^'\n]*')[ \t]*:(?:[ \t]|$)/;
 export interface Frontmatter { body: number; issue?: { line: number; message: string } }
 /**
@@ -1018,6 +1019,9 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
       const t = L[j];
       if (t.trim() === '') break;
       if (j > i) {
+        // A whole-line HTML comment is its own block in Notion, so it ends a paragraph and starts one
+        // (a run of comment lines, such as an ABOUTME header, counts as one block).
+        if (COMMENT_LINE.test(t) !== COMMENT_LINE.test(L[j - 1])) break;
         if (SETEXT.test(t)) { emit(ln(j), 'heading-setext', 'an underlined heading; write it with #s'); j++; break; }
         const k = classify(t);
         if (k === 'item') {
