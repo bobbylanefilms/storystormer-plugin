@@ -18,7 +18,7 @@
 3. **All three bindings:** realize the collections. On Notion, this replaces most of SB5’s log-entry preservation machinery with the ordinary frontmatter ↔ properties rule.
 4. **The skills that read or write the logs or `state.md`:** they address entries, not log text.
 5. **`migrate`:** gains the in-place layout upgrade.
-6. **The web app:** a companion change, **AP5 piece 5** (`~/Git/storystormer/.plans/AP5-app-side-finish.md` § 5; folded in from CL100), gives the app a journal and has the MCP serve the same per-entry paths, so the future StoryStormer binding (AP4) sees the same layout.
+6. **The web app:** a companion change, **AP5 piece 5** (`~/Git/storystormer/.plans/AP5-server-storage-contract.md` § 5; folded in from CL100), gives the app a journal and has the MCP serve the same per-entry paths, so the future StoryStormer binding (AP4) sees the same layout.
 
 **Why it matters:**
 - **Parity:** the same layout on all four backends.
