@@ -60,7 +60,7 @@ Say any of:
 - **"Blueprint Act 1"** / **"prep chapters 1–10 for prose"** — a batch. The natural rhythm is one act at a time, right after that act's outlines are done.
 - **"Rebuild the ch 12 blueprint — it's missing Linda's grief"** — targeted rebuild.
 
-You'll get a **plan first**: which chapters, which characters and elements surface in each, what it will read, roughly how long it'll take. Approve it, and the Blueprints get built (in parallel for a batch). Each lands as `chapters/chapter-NN/ch<NN>-blueprint.md`, and the outline index and `state.md` update to show what's blueprinted.
+You'll get a **plan first**: which chapters, which characters and elements surface in each, what it will read, roughly how long it'll take. Approve it, and the Blueprints get built (in parallel for a batch). Each lands as `chapters/chapter-NN/ch<NN>-blueprint.md`, and the outline index and the `state.md` dashboard update to show what's blueprinted.
 
 ### Good to know
 

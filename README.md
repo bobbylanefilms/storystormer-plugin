@@ -15,7 +15,7 @@ Fourteen skills that load via progressive disclosure when your intent matches:
 |---|---|
 | `storystormer-init` | start a new story, drop materials into a folder, or want to "set up StoryStormer here" |
 | `brainstorm-session` | want to talk through the story, develop characters/themes/structure, work open questions |
-| `decision-capture` | settle something the story now treats as true — captured to the decision log |
+| `decision-capture` | settle something the story now treats as true — captured as its own decision entry |
 | `character-bio` | create or expand a character bio (auto-tiered: major / supporting / minor) |
 | `worldbuilding-entry` | create or expand a worldbuilding entry — location, object, organization, magic system, etc. |
 | `treatment-update` | regenerate the primer and treatment after a stretch of brainstorming |
@@ -46,12 +46,18 @@ A fully-developed project's folder looks like this (files appear as the correspo
 
 ```
 my-story/
-├── state.md                     # living dashboard — what exists, what's next
+├── state.md                     # slim dashboard: summary, what exists, what's next, last session
 ├── primer.md                    # story craft dossier (5 sections, ~4,500w)
 ├── treatment.md                 # full prose treatment of the story
 ├── manifest.md                  # lean inventory of characters & worldbuilding
-├── decisions.md                 # append-only decision log
-├── questions.md                 # open questions triaged by priority
+├── decisions/                   # one file per decision, never deleted
+│   ├── _index.md                # one table row per decision
+│   └── D-001.md, D-002.md, …
+├── questions/                   # one file per open question
+│   ├── _index.md
+│   └── Q-001.md, Q-002.md, …
+├── journal/                     # one entry per session: what happened and why
+│   └── 2026-05-11-s01.md, …
 ├── characters/
 │   ├── _index.md                # mirror of the manifest's character list
 │   └── alice.md, bob.md, …      # per-character bios (type: Protagonist, Major, …)
@@ -73,7 +79,7 @@ my-story/
 ├── research/
 │   └── 2026-05-11-genre-conventions.md
 └── .storystormer/
-    ├── config.json              # project metadata (type, target_word_count, genre, current_focus)
+    ├── config.json              # just the layout version and where the story lives (title, target and genre are in state.md)
     ├── genre-reference.md       # synthesized genre research (obligatory scenes, tropes, pitfalls)
     └── history/                 # paired snapshots before any treatment/manifest rewrite
 ```
@@ -89,15 +95,16 @@ my-series/
 ├── state.md                     # Series-level dashboard
 ├── series.md                    # Arc-level document — cross-book setups/payoffs, series theme
 ├── manifest.md                  # Shared cast + worldbuilding inventory (all books)
-├── decisions.md                 # All decisions, each scoped: series | book-<slug>
-├── questions.md                 # Same — scoped per entry
+├── decisions/                   # All decisions (D-###.md), each scoped: series | book-<slug>
+├── questions/                   # Same — Q-###.md, scoped per entry
+├── journal/                     # Session journal for the whole series
 ├── characters/                  # Shared bios; one per character across the whole series
 │   └── maya.md, senator-vance.md, …
 ├── worldbuilding/               # Shared worldbuilding
 ├── research/                    # Shared research
 ├── books/
 │   ├── book-1/
-│   │   ├── state.md             # Per-book dashboard
+│   │   ├── state.md             # Per-book dashboard (own title, target and focus)
 │   │   ├── primer.md
 │   │   ├── treatment.md
 │   │   ├── outline/
@@ -105,7 +112,7 @@ my-series/
 │   ├── book-2/
 │   └── book-3/
 └── .storystormer/
-    └── config.json              # project_type: series, books: [...], current_focus: book-1
+    └── config.json              # layout and storage only; the book list and current_focus live in the series state.md
 ```
 
 The skills work the same way in series mode — they just resolve per-book file paths through `books/<current_focus>/` instead of the workspace root. Series mode adds:
@@ -125,12 +132,12 @@ A story can live in one of three places. Every skill works the same on all three
 
 - **A local folder:** the folder your session is open in. A Google Drive or OneDrive folder synced to your computer counts (the plugin just sees a folder); those services have no direct backend.
 - **Dropbox:** the story lives in your Dropbox at `/StoryStormer/<your-project>/`, through the Dropbox connector, as the same folder tree a local project has, file for file. If that folder also syncs to your computer, tell init where, and sessions on that machine work on the synced copy directly. Snapshots and `/storystormer:checkpoint` work as they do locally.
-- **Notion:** the story lives in your Notion workspace, through the Notion connector, under a page called `StoryStormer` that holds five databases (Projects, Assets, Chapters, Decisions, Questions). Most documents are rows you can open, browse and edit in Notion, and the agent reads your edits like anything else. A few are views the agent computes from those rows, not rows you edit directly (the dashboard’s What Exists, the decision and question logs, which are one row per entry, and the character and outline indexes), and anything without a database of its own is a child page of the project. Notion keeps every page’s version history itself, so there are no snapshot folders and `/storystormer:checkpoint` politely declines.
+- **Notion:** the story lives in your Notion workspace, through the Notion connector, under a page called `StoryStormer` that holds six databases (Projects, Assets, Chapters, Decisions, Questions, Journal). Most documents are rows you can open, browse and edit in Notion, and the agent reads your edits like anything else. A few are views the agent computes from those rows, not rows you edit directly (the dashboard’s What Exists, the decision and question logs, which are one row per entry, and the character and outline indexes), and anything without a database of its own is a child page of the project. Notion keeps every page’s version history itself, so there are no snapshot folders and `/storystormer:checkpoint` politely declines.
 
 How they compare, from a full test on a real project (SB5, October 2026):
 
 - **Local:** the fastest and the reference everything else is measured against.
-- **Dropbox:** every file comes back byte for byte, but sessions run about twice as slow as local, because the connector rewrites a whole file on every change and the decision log and dashboard grow large.
+- **Dropbox:** every file comes back byte for byte, but sessions run about twice as slow as local, because the connector rewrites a whole file on every change. (Since v0.22.0 each decision, question and journal entry is its own small file, so the old long logs no longer slow it down.)
 - **Notion:** a little slower than local. Everything the plugin writes uses a set of markdown Notion keeps exactly, so it comes back from Notion as it went in. When you move an existing project into Notion, your own files are tidied once on the way in (spacing, list markers, underscores used for emphasis, raw HTML tables, non-breaking spaces): `/storystormer:migrate` shows what will change before it starts, your words never change, and your original files stay where they were. Text you type directly in Notion keeps whatever form Notion gives it.
 - **Google Drive and OneDrive:** use them as a synced folder; their connectors will be re-tested in November 2026.
 
@@ -195,6 +202,14 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.22.0 added over v0.21.1
+
+- **One file per decision and per question.** Decisions and questions used to be two long files that grew without end. Each is now its own small file (`decisions/D-001.md`, `questions/Q-001.md`) with an `_index.md` that lists them, so a session reads the index and opens only the entries it needs. In Notion each one is a row. Numbers never change, so a chapter that cites D-003 still points at D-003.
+- **A session journal.** What happened in each session, and why, now goes into `journal/<date>-s<NN>.md`, one short entry per session, instead of piling up in `state.md`. In Notion it is a new Journal database.
+- **A slim dashboard.** `state.md` is now four short sections (Summary, What Exists, What’s Next, Last Session) and stays under about 4 KB, so it is cheap to read at the start of every session. It also owns the title, target word count and series fields, so `.storystormer/config.json` shrinks to the layout version and where the story lives.
+- **Upgrading an existing project is one command.** A project started on an older version stays readable but won’t be changed until you upgrade. Run `/storystormer:migrate upgrade` (or accept the offer a session makes). It shows you a plan, waits for your go, and converts the project in place, on the same home it already lives in. Nothing is lost: the old files are kept under `.storystormer/history/…-layout-upgrade/`, and in Notion each converted row keeps its page history.
+- **Moving between homes keeps every number.** Moving a story to Dropbox, Notion or back again now carries each decision, question and journal entry across at its own number.
 
 ### What v0.21.1 fixed over v0.21.0
 

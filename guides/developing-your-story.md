@@ -3,7 +3,7 @@
 
 # How-To: Developing Your Story — From Idea to Outline
 
-This guide walks you through the front half of the pipeline: setting up a workspace with **init**, developing the story through **brainstorming** (and the decision log it feeds), building **canon** (character bios and worldbuilding), keeping the **primer and treatment** current, and finally committing to a **chapter structure** ready for prose.
+This guide walks you through the front half of the pipeline: setting up a workspace with **init**, developing the story through **brainstorming** (and the decisions it feeds), building **canon** (character bios and worldbuilding), keeping the **primer and treatment** current, and finally committing to a **chapter structure** ready for prose.
 
 Where this guide ends, **[Writing Chapters — Blueprint, Prose & Kit Bash](writing-chapters.md)** picks up. (Haven't installed the plugin yet? Start with **[Installing StoryStormer](installing.md)**.)
 
@@ -47,17 +47,17 @@ Every skill follows the same rhythm: it reads what matters, **proposes a plan**,
 
 You don't need to memorize the folder layout (the [README](../README.md) has the full map), but five documents do most of the work, and knowing what each one *is for* makes the whole system click:
 
-- **`decisions.md` — the story's spine.** An append-only log of everything you've settled: "Marlowe and Voss are estranged siblings," "present tense, first person," "the midpoint is the locket reveal." Decisions are never deleted — a changed mind *supersedes* the old entry, so the history of your thinking survives.
-- **`questions.md` — the open-question queue.** Everything unresolved, triaged by priority (critical / important / nice-to-resolve), each with a short title and a category. Brainstorm sessions work through these; decisions resolve them.
+- **`decisions/` — the story's spine.** One small file per decision (`D-001.md`, `D-002.md`, …) with an `_index.md` that lists them all at a glance. It's an append-only record of everything you've settled: "Marlowe and Voss are estranged siblings," "present tense, first person," "the midpoint is the locket reveal." Decisions are never deleted — a changed mind *supersedes* the old entry, so the history of your thinking survives.
+- **`questions/` — the open-question queue.** One file per question (`Q-001.md`, …), again with an `_index.md`. Everything unresolved, triaged by priority (critical / important / nice-to-resolve), each with a short title and a category. Brainstorm sessions work through these; decisions resolve them.
 - **`primer.md` — the craft dossier.** A ~4,500-word structured reference: premise and moral argument, reveal architecture, structural framework, tone and writing rules, character dynamics. The 50,000-foot view.
 - **`treatment.md` — the story itself, in prose.** The full narrative treatment, written in propulsive treatment voice. This is the source of truth every downstream stage builds from.
 - **`manifest.md` — the index.** A short entry per character and worldbuilding element: a capped one-line description and a status (*Mentioned* up to *Canon Asset Created*) that tells you which ones still need a bio or entry. Lean by design — depth lives in the bios and entries.
 
-Plus **`state.md`**, the living dashboard — what exists, what stage you're at, what's next. Say **"status"** (or run `/storystormer:status`) anytime to see it.
+Plus **`state.md`**, the living dashboard — a short page (four sections: Summary, What Exists, What's Next, Last Session) saying what exists, what stage you're at and what's next. It stays small on purpose: what happened in each session goes to **`journal/`** instead, one file per session (`journal/2026-05-11-s07.md`), so you can read back how the story developed. Say **"status"** (or run `/storystormer:status`) anytime to see it.
 
 All of it is plain markdown. You can open and hand-edit any file at any time — the agent reads your edits like anything else. The formats match the StoryStormer web app's (the same decision types, question categories, manifest layout, and outline fields), so a project can move between the two.
 
-Decisions carry one of five types (plot, character, worldbuilding, structure, theme) and questions one of seven categories (Story Structure, Character, Plot, Worldbuilding, Theme, Setting, Pacing). Your book's **target word count** lives in `.storystormer/config.json` (mirrored in `state.md`; in a series, each book can have its own); every word budget (the treatment's length, each act's share of the book) is computed from it, 25/50/25 across three acts unless you say otherwise. Each act's share is a ceiling: while an act is still thin, its treatment stays short and marks the gaps rather than padding.
+Decisions carry one of five types (plot, character, worldbuilding, structure, theme) and questions one of seven categories (Story Structure, Character, Plot, Worldbuilding, Theme, Setting, Pacing). Your book's **target word count** lives in `state.md` (in a series, each book can have its own); every word budget (the treatment's length, each act's share of the book) is computed from it, 25/50/25 across three acts unless you say otherwise. Each act's share is a ceiling: while an act is still thin, its treatment stays short and marks the gaps rather than padding.
 
 ---
 
@@ -99,7 +99,7 @@ Craft frameworks (Save the Cat, Truby, McKee, the Enneagram…) inform the conve
 
 ### Decisions: the log that keeps you honest
 
-When something lands in conversation — *"OK, they're estranged siblings"* — you'll see *"capturing that as D-019"* and the entry goes to `decisions.md` with a summary, the reasoning, and what it affects. The plugin captures aggressively on purpose: an unlogged decision gets remembered differently next session, contradicted later, or silently lost in the next treatment rewrite. Logged-and-later-changed is cheap; lost is expensive.
+When something lands in conversation — *"OK, they're estranged siblings"* — you'll see *"capturing that as D-019"* and the entry goes to `decisions/D-019.md` with a summary, the reasoning, and what it affects. The plugin captures aggressively on purpose: an unlogged decision gets remembered differently next session, contradicted later, or silently lost in the next treatment rewrite. Logged-and-later-changed is cheap; lost is expensive.
 
 Things worth knowing:
 
@@ -197,7 +197,7 @@ A chapter outline with zero unresolved markers is prose-ready — which is exact
 |---|---|
 | `/storystormer:status` | The dashboard — what exists, current stage, what's next |
 | `/storystormer:outline` | Outline-specific status — spine, chapters drafted, blockers, staleness |
-| `/storystormer:decisions` | Browse the decision log (filter, show one, add) |
+| `/storystormer:decisions` | Browse the decisions (filter, show one, add) |
 | `/storystormer:questions` | The open-question queue by priority |
 | `/storystormer:checkpoint` | Manual snapshot of every document the plugin manages (canon, outline, chapters, voice, config) — take one before anything risky |
 | `/storystormer:migrate` | Move the story to another home (this folder, Dropbox, or Notion); see below |
@@ -214,7 +214,7 @@ Started in a folder and want the story in Notion now? Say **“move this story t
 
 Like every skill, it starts with a plan and waits for your go. The plan counts what’s there, says what will happen to each kind of file and where the story will end up, estimates how big the job is, and checks the destination for a project with the same name.
 
-**What moves:** everything the new home can hold. Canon, primer, treatment, manifest, voice and research files, the outline, every chapter’s files, and the decision and question logs. In Notion each decision and question becomes its own row and keeps its number, so a chapter that cites D-003 still points at D-003. Indexes Notion builds for itself (the character and outline indexes) are rebuilt there rather than copied, and markdown with no natural place in Notion (Kit Bash drafts, init’s intake records) becomes a page inside the project, listed in the report.
+**What moves:** everything the new home can hold. Canon, primer, treatment, manifest, voice and research files, the outline, every chapter’s files, and the decisions, questions and session journal. In Notion each decision, question and journal entry is its own row, and every entry keeps its number when it moves, so a chapter that cites D-003 still points at D-003. Indexes Notion builds for itself (the character and outline indexes) are rebuilt there rather than copied, and markdown with no natural place in Notion (Kit Bash drafts, init’s intake records) becomes a page inside the project, listed in the report.
 
 **What stays behind**, named in the plan and again in the report:
 
@@ -228,7 +228,7 @@ Once the move is done, the session you’re in carries on in the new home, so th
 
 **Re-running is safe.** If a move is interrupted, run it again: as long as what was already copied still matches the original, it’s left as it is and the move carries on with the rest. If the original changed in between, migrate treats the half-finished copy as another project with the same name and asks you (merge, or another name), as below.
 
-**A big project takes a while.** Each document is its own step through the connector, and Notion needs two or three per document and per logged decision or question. A 150-document novel with 200 decisions is on the order of a thousand steps into Notion, or a few hundred into Dropbox. The plan gives the estimate for your project before anything starts.
+**A big project takes a while.** Each document is its own step through the connector, and Notion needs two or three per document and per decision, question or journal entry. A 150-document novel with 200 decisions is on the order of a thousand steps into Notion, or a few hundred into Dropbox. The plan gives the estimate for your project before anything starts.
 
 **Same name, different story.** The name migrate checks is the project’s short name, its slug (the folder name in Dropbox, the `Slug` in Notion), not its title. If the new home already holds a project with this story’s slug, migrate stops before writing anything, tells you what’s there (its title, stage and last session), and asks whether you meant to merge into it or to give this story a different slug. Moving into this folder (`/storystormer:migrate local`) when the folder already holds another project is different, since a new slug can’t help: merge into it, or open another folder and run migrate there. A merge writes this story’s documents over the ones at the same paths in the destination (where the destination keeps snapshots, it snapshots each one it replaces first; Notion keeps the old version in page history), and it never deletes a document that exists only in the destination; where both sides hold different decisions under the same number, it leaves that one out (with anything that refers to it) and lists it for you to sort out. If what it finds is its own unfinished earlier run, it says so and offers to finish the job instead.
 
@@ -260,8 +260,9 @@ Once the move is done, the session you’re in carries on in the new home, so th
 
 ```
 state.md                     ← the dashboard (start here when lost)
-decisions.md                 ← everything settled, append-only
-questions.md                 ← everything open, by priority
+decisions/D-###.md           ← everything settled, one file each (+ _index.md)
+questions/Q-###.md           ← everything open, one file each (+ _index.md)
+journal/<date>-s<NN>.md      ← one entry per session: what happened and why
 primer.md                    ← the craft dossier (built by treatment-update)
 treatment.md                 ← the story in prose (the source of truth)
 manifest.md                  ← one-line index of characters & worldbuilding
@@ -279,7 +280,7 @@ chapters/chapter-NN/…        ← per-chapter outlines (then blueprints, prose)
 
 **The treatment has `[NEEDS DEVELOPMENT]` markers in it. Is that broken?** No — it's the system refusing to invent your story. Each marker is a spot where structure implies content nobody has decided yet. They're your brainstorming to-do list, and they block those chapters from reaching prose until resolved.
 
-**I changed my mind about something I decided weeks ago.** Just say so. The new decision supersedes the old one (which stays in the log with a pointer), and the next treatment update ripples the change through.
+**I changed my mind about something I decided weeks ago.** Just say so. The new decision supersedes the old one (which stays on file with a pointer), and the next treatment update ripples the change through.
 
 **How do I know when to run a treatment update?** When ~5 or more decisions have piled up unintegrated, or after anything structural shifts. The status dashboard shows the count, and brainstorm sessions will offer at the right moments.
 
