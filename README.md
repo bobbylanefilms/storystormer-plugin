@@ -26,7 +26,7 @@ Fourteen skills that load via progressive disclosure when your intent matches:
 | `prose` | write or revise a chapter's actual prose — from its Blueprint, outline, your voice inputs, and the story so far |
 | `notes` | record what a chapter's prose actually committed — as-written synopsis, divergences, harvest, accidental canon, end-state — and propose canon updates |
 | `canon-sync` | reconcile a span of chapters' notes back into canon — absorb accretion, adjudicate contradictions by authorship, surface drift, produce a manuscript fix list and the Blueprints to rebuild |
-| `migrate` | move a story to another home (a local folder, Dropbox, or Notion), leaving the original in place |
+| `migrate` | move a story to another home (a local folder, Dropbox, or Notion), leaving the original in place; or upgrade an older project in place |
 
 Plus eight slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline`, `/storystormer:switch` (series mode only), and `/storystormer:migrate`.
 
@@ -34,7 +34,7 @@ Plus eight slash commands for direct control: `/storystormer:init`, `/storystorm
 
 Step-by-step help for the bigger workflows lives in [`guides/`](guides/):
 
-- **[Installing StoryStormer](guides/installing.md)** — adding the marketplace and installing the plugin in Claude Cowork or Claude Code, connecting a story folder, choosing where a story lives (a folder, Dropbox, or Notion), updating, and troubleshooting.
+- **[Installing StoryStormer](guides/installing.md)** — adding the marketplace and installing the plugin in Claude Cowork or Claude Code, connecting a story folder, choosing where a story lives (a folder, Dropbox, or Notion), upgrading an older project, updating, and troubleshooting.
 - **[Developing Your Story — From Idea to Outline](guides/developing-your-story.md)** — the front half of the pipeline: setting up a workspace from any starting state, the brainstorm → decision → treatment-update development loop, building character and worldbuilding canon, committing to a chapter structure, and moving a story between homes.
 - **[Writing Chapters — Blueprint, Prose & Kit Bash](guides/writing-chapters.md)** — from a chapter outline to finished prose: building the pre-prose Blueprint, generating and refining prose through chat, and Kit Bashing competing multi-model drafts into one chapter.
 
@@ -53,7 +53,7 @@ my-story/
 ├── decisions/                   # one file per decision, never deleted
 │   ├── _index.md                # one table row per decision
 │   └── D-001.md, D-002.md, …
-├── questions/                   # one file per open question
+├── questions/                   # one file per question, never deleted
 │   ├── _index.md
 │   └── Q-001.md, Q-002.md, …
 ├── journal/                     # one entry per session: what happened and why
@@ -104,7 +104,7 @@ my-series/
 ├── research/                    # Shared research
 ├── books/
 │   ├── book-1/
-│   │   ├── state.md             # Per-book dashboard (own title, target and focus)
+│   │   ├── state.md             # Per-book dashboard (its own title, and its own target when it has one)
 │   │   ├── primer.md
 │   │   ├── treatment.md
 │   │   ├── outline/
@@ -132,12 +132,12 @@ A story can live in one of three places. Every skill works the same on all three
 
 - **A local folder:** the folder your session is open in. A Google Drive or OneDrive folder synced to your computer counts (the plugin just sees a folder); those services have no direct backend.
 - **Dropbox:** the story lives in your Dropbox at `/StoryStormer/<your-project>/`, through the Dropbox connector, as the same folder tree a local project has, file for file. If that folder also syncs to your computer, tell init where, and sessions on that machine work on the synced copy directly. Snapshots and `/storystormer:checkpoint` work as they do locally.
-- **Notion:** the story lives in your Notion workspace, through the Notion connector, under a page called `StoryStormer` that holds six databases (Projects, Assets, Chapters, Decisions, Questions, Journal). Most documents are rows you can open, browse and edit in Notion, and the agent reads your edits like anything else. A few are views the agent computes from those rows, not rows you edit directly (the dashboard’s What Exists, the decision and question logs, which are one row per entry, and the character and outline indexes), and anything without a database of its own is a child page of the project. Notion keeps every page’s version history itself, so there are no snapshot folders and `/storystormer:checkpoint` politely declines.
+- **Notion:** the story lives in your Notion workspace, through the Notion connector, under a page called `StoryStormer` that holds six databases (Projects, Assets, Chapters, Decisions, Questions, Journal). Most documents are rows you can open, browse and edit in Notion, and the agent reads your edits like anything else. A few are views the agent computes from those rows, not rows you edit directly (the dashboard’s What Exists, the decision and question indexes (each decision and question is its own row), and the character and outline indexes), and anything without a database of its own is a child page of the project. Notion keeps every page’s version history itself, so there are no snapshot folders and `/storystormer:checkpoint` politely declines.
 
 How they compare, from a full test on a real project (SB5, October 2026):
 
 - **Local:** the fastest and the reference everything else is measured against.
-- **Dropbox:** every file comes back byte for byte, but sessions run about twice as slow as local, because the connector rewrites a whole file on every change. (Since v0.22.0 each decision, question and journal entry is its own small file, so the old long logs no longer slow it down.)
+- **Dropbox:** every file comes back byte for byte, but sessions run about twice as slow as local, because the connector rewrites a whole file on every change. (v0.22.0 makes each decision, question and journal entry its own small file, which should shrink those rewrites; the speed hasn’t been re-measured yet.)
 - **Notion:** a little slower than local. Everything the plugin writes uses a set of markdown Notion keeps exactly, so it comes back from Notion as it went in. When you move an existing project into Notion, your own files are tidied once on the way in (spacing, list markers, underscores used for emphasis, raw HTML tables, non-breaking spaces): `/storystormer:migrate` shows what will change before it starts, your words never change, and your original files stay where they were. Text you type directly in Notion keeps whatever form Notion gives it.
 - **Google Drive and OneDrive:** use them as a synced folder; their connectors will be re-tested in November 2026.
 

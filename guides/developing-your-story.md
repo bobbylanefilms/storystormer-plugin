@@ -47,13 +47,13 @@ Every skill follows the same rhythm: it reads what matters, **proposes a plan**,
 
 You don't need to memorize the folder layout (the [README](../README.md) has the full map), but five documents do most of the work, and knowing what each one *is for* makes the whole system click:
 
-- **`decisions/` — the story's spine.** One small file per decision (`D-001.md`, `D-002.md`, …) with an `_index.md` that lists them all at a glance. It's an append-only record of everything you've settled: "Marlowe and Voss are estranged siblings," "present tense, first person," "the midpoint is the locket reveal." Decisions are never deleted — a changed mind *supersedes* the old entry, so the history of your thinking survives.
+- **`decisions/` — the story's spine.** One small file per decision (`D-001.md`, `D-002.md`, …) with an `_index.md` that lists them all at a glance. It’s an append-only record of everything you've settled: "Marlowe and Voss are estranged siblings," "present tense, first person," "the midpoint is the locket reveal." Decisions are never deleted — a changed mind *supersedes* the old entry, so the history of your thinking survives.
 - **`questions/` — the open-question queue.** One file per question (`Q-001.md`, …), again with an `_index.md`. Everything unresolved, triaged by priority (critical / important / nice-to-resolve), each with a short title and a category. Brainstorm sessions work through these; decisions resolve them.
 - **`primer.md` — the craft dossier.** A ~4,500-word structured reference: premise and moral argument, reveal architecture, structural framework, tone and writing rules, character dynamics. The 50,000-foot view.
 - **`treatment.md` — the story itself, in prose.** The full narrative treatment, written in propulsive treatment voice. This is the source of truth every downstream stage builds from.
 - **`manifest.md` — the index.** A short entry per character and worldbuilding element: a capped one-line description and a status (*Mentioned* up to *Canon Asset Created*) that tells you which ones still need a bio or entry. Lean by design — depth lives in the bios and entries.
 
-Plus **`state.md`**, the living dashboard — a short page (four sections: Summary, What Exists, What's Next, Last Session) saying what exists, what stage you're at and what's next. It stays small on purpose: what happened in each session goes to **`journal/`** instead, one file per session (`journal/2026-05-11-s07.md`), so you can read back how the story developed. Say **"status"** (or run `/storystormer:status`) anytime to see it.
+Plus **`state.md`**, the living dashboard — a short page (four sections: Summary, What Exists, What’s Next, Last Session) saying what exists, what stage you're at and what's next. It stays small on purpose: what happened in each session goes to **`journal/`** instead, one file per session (`journal/2026-05-11-s07.md`), so you can read back how the story developed. Say **"status"** (or run `/storystormer:status`) anytime to see it.
 
 All of it is plain markdown. You can open and hand-edit any file at any time — the agent reads your edits like anything else. The formats match the StoryStormer web app's (the same decision types, question categories, manifest layout, and outline fields), so a project can move between the two.
 
@@ -66,7 +66,7 @@ Decisions carry one of five types (plot, character, worldbuilding, structure, th
 Run `/storystormer:init` (or just say **“set up StoryStormer here”**) in the folder where your story will live, or in a session with no folder if it will live in Dropbox or Notion. For a new project, init also asks once where the story should live: this folder, or Dropbox or Notion when their connectors are connected. [Choosing where your story lives](installing.md#choosing-where-your-story-lives) in the installing guide explains the options. Any starting state works:
 
 - **Empty folder** — you'll answer a few questions (title, project type, genre) and get a minimal scaffold.
-- **A one-line concept or a brain dump** — init reads it, extracts the decisions already implicit in it ("protagonist is a forensic accountant" was a decision, even if you never called it one), surfaces the open questions you wrote as "maybe X or Y???", and seeds both logs — showing you the lists for confirmation first.
+- **A one-line concept or a brain dump** — init reads it, extracts the decisions already implicit in it ("protagonist is a forensic accountant" was a decision, even if you never called it one), surfaces the open questions you wrote as "maybe X or Y???", and seeds the decisions and questions — showing you the lists for confirmation first.
 - **A half-finished treatment, character sketches, a tangled mid-project mess** — init reads everything, tells you what it thinks each file is, asks about contradictions ("v1 says Alex, v2 says Marlowe — I'll treat v2 as canonical, confirm?"), and proposes a migration into the canonical structure. Your original files are snapshotted before anything moves.
 - **Existing prose chapters** — detected, confirmed with you, and stashed untouched into `chapters/` with canonical naming. Init never edits your prose.
 
@@ -104,7 +104,7 @@ When something lands in conversation — *"OK, they're estranged siblings"* — 
 Things worth knowing:
 
 - **Floating an idea isn't deciding.** *"What if they were siblings?"* becomes a question, not a decision. If the agent misjudges which one you meant, say so.
-- **Changing your mind is first-class.** The old decision stays in the log marked *superseded by D-041*; the new one records what changed and why.
+- **Changing your mind is first-class.** The old decision stays on file, marked *superseded by D-041*; the new one records what changed and why.
 - **You can dictate directly**: *"log a decision: the story is set in 1987."*
 - **Browse anytime**: `/storystormer:decisions` lists recent entries; `/storystormer:questions` shows the open-question queue by priority.
 
@@ -200,7 +200,7 @@ A chapter outline with zero unresolved markers is prose-ready — which is exact
 | `/storystormer:decisions` | Browse the decisions (filter, show one, add) |
 | `/storystormer:questions` | The open-question queue by priority |
 | `/storystormer:checkpoint` | Manual snapshot of every document the plugin manages (canon, outline, chapters, voice, config) — take one before anything risky |
-| `/storystormer:migrate` | Move the story to another home (this folder, Dropbox, or Notion); see below |
+| `/storystormer:migrate` | Move the story to another home (this folder, Dropbox, or Notion), or `upgrade` an older project in place; see below |
 
 The plugin is git-agnostic: `/storystormer:checkpoint` is your save point. Skills also snapshot automatically before overwriting anything, so checkpoints are for milestones ("pre-act-3-rework"), not routine safety. (A project stored in Notion doesn’t need checkpoints: Notion keeps every page’s version history, so checkpoint says so and writes nothing. Dropbox projects checkpoint normally.)
 
@@ -228,7 +228,7 @@ Once the move is done, the session you’re in carries on in the new home, so th
 
 **Re-running is safe.** If a move is interrupted, run it again: as long as what was already copied still matches the original, it’s left as it is and the move carries on with the rest. If the original changed in between, migrate treats the half-finished copy as another project with the same name and asks you (merge, or another name), as below.
 
-**A big project takes a while.** Each document is its own step through the connector, and Notion needs two or three per document and per decision, question or journal entry. A 150-document novel with 200 decisions is on the order of a thousand steps into Notion, or a few hundred into Dropbox. The plan gives the estimate for your project before anything starts.
+**A big project takes a while.** Each document is its own step through the connector, and Notion needs three or four steps per document, while decisions, questions and journal entries go across several at a time. A 150-document novel with 200 entries is on the order of five hundred steps into Notion, or a couple of hundred into Dropbox. The plan gives the estimate for your project before anything starts.
 
 **Same name, different story.** The name migrate checks is the project’s short name, its slug (the folder name in Dropbox, the `Slug` in Notion), not its title. If the new home already holds a project with this story’s slug, migrate stops before writing anything, tells you what’s there (its title, stage and last session), and asks whether you meant to merge into it or to give this story a different slug. Moving into this folder (`/storystormer:migrate local`) when the folder already holds another project is different, since a new slug can’t help: merge into it, or open another folder and run migrate there. A merge writes this story’s documents over the ones at the same paths in the destination (where the destination keeps snapshots, it snapshots each one it replaces first; Notion keeps the old version in page history), and it never deletes a document that exists only in the destination; where both sides hold different decisions under the same number, it leaves that one out (with anything that refers to it) and lists it for you to sort out. If what it finds is its own unfinished earlier run, it says so and offers to finish the job instead.
 
