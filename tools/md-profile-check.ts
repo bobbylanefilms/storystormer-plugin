@@ -318,6 +318,7 @@ const PATH_START = /[A-Za-z0-9_.]/;
 const PATH_PREV = /[A-Za-z0-9_./@-]/;
 // Extensions Notion autolinks as domains (probe-results.md § Autolinks inside emphasis: .md and .py linked; .txt,
 // .json, .pdf, .docx, .csv, .png, .yaml not). Inside emphasis such a name comes back split from its emphasis.
+// Bounded by that 2026-10-25 probe: TLD-like extensions it didn't test (.sh, .zip, .io, .ai, .app, .dev, .mov) are open.
 const AUTOLINK_EXTS = new Set(['md', 'py']);
 const FILE_EXTS = new Set(['md', 'markdown', 'docx', 'doc', 'txt', 'json', 'yaml', 'yml', 'csv', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'svg']);
 const WIKILINK = /!?\[\[[^\]\n]+\]\]/y;

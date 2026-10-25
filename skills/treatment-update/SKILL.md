@@ -59,7 +59,7 @@ Load:
 - `treatment.md` (full)
 - `manifest.md` (full)
 - All major-tier character bios (full)
-- `decisions/_index.md`, then every decision entry whose `integrated` is not `yes` (missing counts as not integrated) — full reads of those entries; the integrated ones stay unread unless a pending decision cites or supersedes one. The ones with no `integrated` key are checked against the treatment first: those it already reflects are settled (marked `yes`, nothing rewritten), and only the rest join the pending set
+- `decisions/_index.md`, then every **pending** decision entry: one whose `integrated` starts with neither `yes` nor `n/a` (`no`, `partially`, or missing; `n/a` is settled, never pending) — full reads of those entries; the integrated ones stay unread unless a pending decision cites or supersedes one. The ones with no `integrated` key are checked against the treatment first: those it already reflects are settled (marked `yes`, nothing rewritten), and only the rest join the pending set
 - `questions/_index.md`, then the open question entries (so unresolved questions can be marked `[OPEN: Q-###]`)
 - `state.md` (full), including `target_word_count` (in a series, the focused book's own target from `books/<slug>/state.md` when it has one, else the series-level value; unset means the project type's default)
 - `.storystormer/genre-reference.md` if it exists
@@ -70,11 +70,11 @@ This is the canonical heavy-context turn. **Operate in substantive mode** — li
 
 > Here's the plan for the treatment update:
 >
-> - **Read** (substantive mode): I'll full-read `primer.md`, `treatment.md` (~6,800w), `manifest.md`, the 4 major bios (~4,800w combined), the 7 unintegrated decision entries, and the 6 open question entries — then quote at least one passage from each in my next response to prove the absorption.
+> - **Read** (substantive mode): I'll full-read `primer.md`, `treatment.md` (~6,800w), `manifest.md`, the 4 major bios (~4,800w combined), the 7 pending decision entries, and the 6 open question entries — then quote at least one passage from each in my next response to prove the absorption.
 > - **Phase 1 — Primer**: revise the five standard sections of `primer.md` to fold in the new decisions about Marlowe's father wound and the shift in the antagonist's motivation. Most sections untouched; the Premise & Moral Argument section — including its Reveal Architecture (the father-wound reveal's timing) — gets meaningful updates. Bump primer version 3 → 4.
 > - **Phase 2 — Treatment**: regenerate `treatment.md` against the refreshed primer in treatment voice. I expect a meaningful rewrite of the Act 2 midpoint and a lighter pass on Acts 1 and 3. Bump treatment version 7 → 8.
 > - **Snapshot**: current primer.md + treatment.md, as a pair, per `store.md`.
-> - **Mark**: the 7 unintegrated decisions as `integrated: yes (2026-05-11)`. Of the 22 carried-over decisions with no `integrated` line, 18 are already in the treatment and are marked `yes` with nothing rewritten; the other 4 are among the 7.
+> - **Mark**: the 7 pending decisions as `integrated: yes (2026-05-11)`. Of the 22 carried-over decisions with no `integrated` line, 18 are already in the treatment and are marked `yes` with nothing rewritten; the other 4 are among the 7.
 > - **Open elements**: I'll keep `[OPEN: Q-019]` and `[OPEN: Q-021]` markers in the treatment for the two unresolved critical questions, and add a `[NEEDS DEVELOPMENT: …]` marker for Elena's Act-3 infiltration mechanics (no tracked question yet).
 >
 > About 5–8 minutes once we start. Anything to adjust?
@@ -299,19 +299,19 @@ Dispatch read subagents per `references/subagent-pattern.md` when:
 
 - The combined bio reads exceed ~10,000 words (3+ major-tier bios in a single-novel project, or any series-mode bio set).
 - A book's treatment exceeds ~6,000 words.
-- The unintegrated decisions count is high (10+ entries), making decisions-extraction a heavy read in itself.
+- The pending decisions count is high (10+ entries), making decisions-extraction a heavy read in itself.
 
 **Suggested subagent grouping for a heavy treatment-update:**
 
 1. **Bios subagent** — full-reads every major (and supporting, in series mode) bio in scope. Returns per-bio summary with quoted excerpts focused on Voice Fingerprint, Lie/Ghost, Thematic Posture, and the per-book sub-arcs (series mode).
 2. **Cross-book bios subagent** (series mode only) — reads each book's treatment to surface the focused-book character's actions across the series, for series-aware Reveal Architecture updates and cross-book chain fidelity.
-3. **Decisions filter subagent** — reads `decisions/_index.md` and the unintegrated entries it lists, returns just those scoped to the focused book or series-with-this-book-affected, plus quoted excerpts and the categorical mapping to primer sections.
+3. **Decisions filter subagent** — reads `decisions/_index.md` and the pending entries it lists (not `yes`, not `n/a`), returns just those scoped to the focused book or series-with-this-book-affected, plus quoted excerpts and the categorical mapping to primer sections.
 
 The main session retains direct reads of `primer.md`, `treatment.md`, `manifest.md`, and `series.md`. These are *judgment-bearing* artifacts that the two-phase pipeline writes against — the main session must absorb them itself, not via summary, because both phases depend on their full texture.
 
 The same anti-confabulation discipline applies: subagent returns must include verbatim excerpts. Reject and re-dispatch quote-free returns. Every brief carries the store block from `references/subagent-pattern.md` § Mandatory brief fields.
 
-For incremental treatment updates against a small project (1 protagonist bio, short treatment, 2 unintegrated decisions), direct main-session reads are fine — subagent overhead would exceed benefit.
+For incremental treatment updates against a small project (1 protagonist bio, short treatment, 2 pending decisions), direct main-session reads are fine — subagent overhead would exceed benefit.
 
 ## What this skill does not do
 
