@@ -13,7 +13,7 @@ Lean hard on `references/philosophy.md` — character and theme matter as much a
 
 ## What you do
 
-1. **Read context.** Load `state.md`, `primer.md` (if it exists), `treatment.md` (if it exists), `manifest.md` (if it exists), the most recent ~10 entries in `decisions.md`, and all `open` entries in `questions.md`. Read in full — don't grep.
+1. **Read context.** Load `state.md`, `primer.md` (if it exists), `treatment.md` (if it exists), `manifest.md` (if it exists), `decisions/_index.md` and the ~10 most recent decision entries it lists, and `questions/_index.md` and the entries it shows as `open`. Read those in full — don't grep. Older decisions stay unread until the conversation reaches one; the index tells you which. When the user picks up "where we left off" and Last Session isn't enough, the newest entry or two in `journal/` holds the detail.
 
 2. **Read the user's intent.** What did they actually ask for? *"Let's brainstorm Marlowe's relationship to the antagonist"* is a focused session; *"let's work on the story"* is open-ended. Match the cadence to the intent.
 
@@ -25,9 +25,9 @@ Lean hard on `references/philosophy.md` — character and theme matter as much a
 
 4. **Have the conversation.** This is the part you don't script. Lean on the philosophy, surface frameworks when they help, surface genre material from `genre-reference.md` when relevant. Keep it grounded in *this* story — the user's characters, the user's themes, the user's voice.
 
-5. **Capture decisions aggressively as they surface.** Lean toward capturing rather than deferring — the log is the story's spine, and gaps in it cost more than overcapture does. When something is settled — *"OK, Marlowe and Voss are estranged siblings, not strangers"* — invoke the `decision-capture` skill (or just write the entry yourself if it's clear-cut). Always tell the user *"capturing that as decision D-019"* so they see the log forming. See `skills/decision-capture/SKILL.md` § "When to capture" for the full trigger list — character Lies and Ghosts, thematic articulations, worldbuilding rules with constraints, relationship dynamics, faction definitions, and "let's move on" transitions all warrant capture.
+5. **Capture decisions aggressively as they surface.** Lean toward capturing rather than deferring — the decisions are the story's spine, and gaps in them cost more than overcapture does. When something is settled — *"OK, Marlowe and Voss are estranged siblings, not strangers"* — invoke the `decision-capture` skill (or just write the entry yourself if it's clear-cut, the way `decision-capture` does: a `new` entry, its index row, the journal). Always tell the user *"capturing that as decision D-019"* so they see the decisions forming. See `skills/decision-capture/SKILL.md` § "When to capture" for the full trigger list — character Lies and Ghosts, thematic articulations, worldbuilding rules with constraints, relationship dynamics, faction definitions, and "let's move on" transitions all warrant capture.
 
-6. **Update question status.** When a question is resolved by a decision, set its status to `resolved (D-019)` in `questions.md`, using the decision’s ID as the store reported it.
+6. **Update question status.** When a question is resolved by a decision, set its entry's `status: resolved` and `resolved_by` to the decision’s ID as the store reported it, and replace its row in `questions/_index.md`.
 
 7. **Offer step-back moments — light, then structured.** Every 4–6 substantive decisions, or at natural conversational pauses, pause to take stock. The light version is just *"That's been a productive run. Want me to summarize what we've decided, or keep pushing?"* The user can also ask any time.
 
@@ -49,7 +49,7 @@ Lean hard on `references/philosophy.md` — character and theme matter as much a
 
 8. **Watch for treatment-update triggers.** Suggest a `treatment-update` more proactively than you might think necessary — information that hasn't been folded into the primer and treatment is at risk of being lost. Don't wait until session end; mid-session refreshes are often the right move. Trigger when any of these fires:
 
-   - `unintegrated_decisions` in state.md hits ≥ 5.
+   - The unintegrated decisions (the index's Integrated column) reach 5 or more.
    - A major plot element has been developed (a midpoint shift, a major character arc, a structural rework).
    - A character arc has been fully developed end-to-end in the conversation.
    - The thematic framework has crystallized (premise, controlling idea, or thematic question has landed).
@@ -68,7 +68,7 @@ Lean hard on `references/philosophy.md` — character and theme matter as much a
    - **Note stage progress.** If the project's `stage` in `state.md` should advance (e.g., `brainstorming` → `treatment-drafted` after a comprehensive first treatment lands; `treatment-drafted` → `treatment-refined` after a polish-pass), call it out: *"We've moved out of brainstorming — next session probably wants to be a treatment review."*
    - **Flag canon-ready characters.** If a character was developed to the point where their bio is ready to write, name them and recommend a tier. *"Marlowe is developed enough for a major-tier bio — her Lie, Ghost, social dimensions, and her relationship to Voss are all locked in. Want to draft her bio next session, or keep brainstorming?"*
    - **Flag outline-readiness.** If the session has refined the treatment and the major bios are in place — i.e., the project is at `treatment-refined` or `canon-development` stage with no significant structural gaps — recommend `pre-outline-session` as the next major step. *"The treatment is refined, Marlowe and Voss have major bios, and the manifest is current. Pre-outline-session would commit the story to a chapter structure next — want to do that, or keep developing canon first?"* Pre-outline-session is the natural transition out of treatment work into outline work.
-   - **Update `state.md`** — `Last Session` summary, `What's Next` recommendation, version bumps if anything advanced, `unintegrated_decisions` count refreshed.
+   - **Write the session down.** The session's journal entry gets the story of it: what was explored, what was decided and why, which questions opened or closed, what was left hanging (created first if nothing this session has written yet; `references/file-schemas.md` § `journal/`). Then update `state.md`: `Last Session` in two or three sentences plus the journal entry's path, `What's Next` with forward items only, version bumps if anything advanced, the unintegrated decisions count refreshed.
 
 ## Mode-aware opening
 
@@ -103,7 +103,7 @@ In any mode, the user can override with *"skip to [topic]"* or *"I want to work 
 
 ## Asking good questions
 
-In `brainstorming` and earlier stages, you're working through questions in `questions.md` one at a time. Each question becomes a focused conversational segment.
+In `brainstorming` and earlier stages, you're working through the open questions one at a time. Each question becomes a focused conversational segment.
 
 A good question segment:
 
@@ -112,7 +112,7 @@ A good question segment:
 3. **React to the user's response.** Push back where there's a craft problem; affirm where they've found something. Don't just nod.
 4. **Land the decision.** Once it's resolved, capture it as a decision and update the question's status.
 
-If a question turns out to depend on another question, log the dependency in `questions.md` and move to the dependency.
+If a question turns out to depend on another question, add the dependency to the question entry's `**Dependencies**:` and move to the dependency.
 
 ## When the user is stuck
 
@@ -128,10 +128,10 @@ If the conversation spans the whole story (a treatment-quality review, a sweepin
 
 ## Series Mode
 
-If `state.md` shows `project_type: series`, read `references/series.md` first. Brainstorm sessions in series mode operate on the **focused book** (per `current_focus` in `state.md` and `.storystormer/config.json`), but with two important additions:
+If `state.md` shows `project_type: series`, read `references/series.md` first. Brainstorm sessions in series mode operate on the **focused book** (per `current_focus` in the root `state.md`), but with two important additions:
 
 1. **Also load `series.md`** alongside the per-book primer/treatment/manifest. The series arc, cross-book setups, and continuity concerns are first-class context for any brainstorm session in series mode — even when working on just one book.
-2. **Capture decisions with `Scope`**. Every decision logged in a series-mode session carries a `Scope` field — `series` (affects the arc or multiple books) or `book-<focus>` (affects only the focused book). Default to the focused book's scope; ask the user when the decision's reach is ambiguous (*"this affects book 2 directly — does it also affect book 1's planted setups or book 3's payoffs?"*). See `references/series.md` § Scoping decisions and questions.
+2. **Capture decisions with `scope`**. Every decision logged in a series-mode session carries a `scope` field — `series` (affects the arc or multiple books) or `book-<focus>` (affects only the focused book). Default to the focused book's scope; ask the user when the decision's reach is ambiguous (*"this affects book 2 directly — does it also affect book 1's planted setups or book 3's payoffs?"*). See `references/series.md` § Scoping decisions and questions.
 
 When a decision lands that affects more than the focused book, surface the implication in your response: *"This is series-scoped because it changes what book 1's chapter 38 plants for book 3. Capturing as D-024 with scope: series, affects books: book-1 (ch 38), book-3 (ch 22). The book-1 treatment will likely need a refresh to integrate the new foreshadowing — recommend `treatment-update` for book 1 next."*
 
@@ -157,7 +157,7 @@ This skill is the *conversation* — the others are *artifacts produced from* th
 - `references/framework-surfacing.md` — how much framework language to expose (default: invisible)
 - `references/alt-structure.md` — when the conventional structural frameworks don't fit
 - `references/genres.md` — surfacing genre material
-- `references/file-schemas.md` — decisions/questions formats (including Scope in series mode)
+- `references/file-schemas.md` — § Entry collections: the decision and question entries and their indexes (scope in series mode included), and § `journal/`
 - `references/canon-schemas.md` — § Revelation Log (chapter-anchored reveals/state-changes to propose onto Canon entries)
 - `references/reading-discipline.md` — full-read rules, Zoom Selection
 - `references/series.md` — **read when `project_type: series`** (multi-book workflow, scoping, focus)

@@ -12,7 +12,7 @@ Invoke the `storystormer-init` skill on the user's open folder (or, with none, o
 3. Ask 2–4 questions to fill in what the materials don't tell it, and, for a new project, where the story should live: this folder, or Dropbox or Notion when the session can reach them (the skill’s § Where a new project lives). A re-run on an existing project keeps its store; moving one is `/storystormer:migrate`.
 4. Propose a plan for what it will scaffold, what it will defer, and where the story will live.
 5. Wait for the user's go-ahead before writing anything.
-6. Scaffold the canonical structure (`state.md`, `.storystormer/`, `decisions.md`, `questions.md`, and only the deeper files appropriate to the maturity stage) in the store the user chose, then report where it lives and how to get back to it.
+6. Scaffold the canonical structure (`state.md`, `.storystormer/`, the `decisions/` and `questions/` collections with their indexes and any approved intake entries, the session's first journal entry, and only the deeper files appropriate to the maturity stage) in the store the user chose, then report where it lives and how to get back to it.
 
 This is the marquee skill — designed to accept any starting state, from an empty folder to a tangled mid-project mess, and produce a coherent workspace.
 

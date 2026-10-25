@@ -10,7 +10,7 @@ Surfacing genre-specific obligatory scenes, tropes, and pitfalls at the right mo
 - Watch for genre keywords in the user's description and any intake materials.
 - If ambiguous, ask explicitly: *"Is this closer to a literary thriller or a procedural mystery?"* with 2–3 options.
 - Allow hybrid declarations (*"literary thriller with a romance subplot"*).
-- Capture in `state.md` → `genre` + `genre_secondary` fields, and in `.storystormer/config.json`.
+- Capture in `state.md` → `genre` + `genre_secondary` fields, which own them (the config holds no genre).
 
 ## On-demand research
 

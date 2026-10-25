@@ -16,8 +16,9 @@ Always follow `references/plan-first.md` — propose the plan with file lists, c
 - **`primer.md`** — bumped to the next version. The story craft dossier — **50,000-foot front-matter** — with five standard sections: Story Identity / Premise & Moral Argument (incl. Reveal Architecture) / Structural Framework / Tone, Style & Writing Rules / Character Dynamics. Total ~4,500 words (hard ceiling 5,000). See `references/file-schemas.md` § `primer.md`.
 - **`treatment.md`** — bumped to the next version. Full prose treatment written in propulsive treatment voice. `primer_version` set to the new primer's version. Length calibrated by the budgets computed from `target_word_count` (`references/file-schemas.md` § Target word count and the derived budgets). See `references/treatment-voice.md` and `references/file-schemas.md` § `treatment.md`.
 - **Snapshots** (per `store.md`) of the *current* primer and treatment **as a pair**, before overwriting. They round-trip together; never snapshot one without the other.
-- Updated `decisions.md` — the decisions consumed by this update are marked `Integrated into treatment: yes (<date>)`.
-- Updated `state.md` — version bumps, summary refresh, `What's Next` updated.
+- Updated decision entries — each decision consumed by this update gets `integrated: "yes (<date>)"`, and its row in `decisions/_index.md` follows.
+- Updated `state.md` — version bumps, summary refresh, `What's Next` updated, a short Last Session.
+- The session's journal entry (`journal/<date>-s<NN>.md`) — what this update integrated and changed, and why.
 
 ## Operating philosophy
 
@@ -42,7 +43,7 @@ The Story Primer is the story's intellectual foundation. Treat it carefully:
 
 When a pending decision contradicts the existing primer or the old treatment, **trust the decision**. The Story Primer phase runs before the Treatment phase, so contradictions between decisions and the old treatment will be resolved when Phase 2 rewrites the treatment. Don't flag those as problems in Phase 1 — they're pending, not broken.
 
-DO flag genuinely broken chains unrelated to pending decisions (pre-existing inconsistencies). DO flag setup/payoff chains in the old treatment that have no payoff written yet — if the chain is load-bearing, it belongs in primer §2's Reveal Architecture; if the payoff is genuinely undecided, log it as an open question in `questions.md` (`Source: treatment_update`). Don't reintroduce a running ledger.
+DO flag genuinely broken chains unrelated to pending decisions (pre-existing inconsistencies). DO flag setup/payoff chains in the old treatment that have no payoff written yet — if the chain is load-bearing, it belongs in primer §2's Reveal Architecture; if the payoff is genuinely undecided, log it as an open question, a new entry in `questions/` (`source: treatment_update`). Don't reintroduce a running ledger.
 
 ### Framework attribution preservation
 
@@ -58,9 +59,9 @@ Load:
 - `treatment.md` (full)
 - `manifest.md` (full)
 - All major-tier character bios (full)
-- `decisions.md` — full read, but focus on entries where `Integrated into treatment: no`
-- `questions.md` — open entries (so unresolved questions can be marked `[OPEN: Q-###]`)
-- `state.md` (full), and `target_word_count` from `.storystormer/config.json` (the owner; `state.md` mirrors it, so repair the mirror if they differ; in a series, the focused book's target; unset means the project type's default)
+- `decisions/_index.md`, then every decision entry whose `integrated` is not `yes` (missing counts as not integrated) — full reads of those entries; the integrated ones stay unread unless a pending decision cites or supersedes one
+- `questions/_index.md`, then the open question entries (so unresolved questions can be marked `[OPEN: Q-###]`)
+- `state.md` (full), including `target_word_count` (in a series, the focused book's own target from `books/<slug>/state.md` when it has one, else the series-level value; unset means the project type's default)
 - `.storystormer/genre-reference.md` if it exists
 
 This is the canonical heavy-context turn. **Operate in substantive mode** — list the files at the top of your next response, read each one with `store.read` (full read, beginning to end), and quote at least one passage from each in your output. See `references/reading-discipline.md` § Substantive mode.
@@ -69,7 +70,7 @@ This is the canonical heavy-context turn. **Operate in substantive mode** — li
 
 > Here's the plan for the treatment update:
 >
-> - **Read** (substantive mode): I'll full-read `primer.md`, `treatment.md` (~6,800w), `manifest.md`, the 4 major bios (~4,800w combined), the 7 unintegrated decisions in `decisions.md`, and the 6 open questions — then quote at least one passage from each in my next response to prove the absorption.
+> - **Read** (substantive mode): I'll full-read `primer.md`, `treatment.md` (~6,800w), `manifest.md`, the 4 major bios (~4,800w combined), the 7 unintegrated decision entries, and the 6 open question entries — then quote at least one passage from each in my next response to prove the absorption.
 > - **Phase 1 — Primer**: revise the five standard sections of `primer.md` to fold in the new decisions about Marlowe's father wound and the shift in the antagonist's motivation. Most sections untouched; the Premise & Moral Argument section — including its Reveal Architecture (the father-wound reveal's timing) — gets meaningful updates. Bump primer version 3 → 4.
 > - **Phase 2 — Treatment**: regenerate `treatment.md` against the refreshed primer in treatment voice. I expect a meaningful rewrite of the Act 2 midpoint and a lighter pass on Acts 1 and 3. Bump treatment version 7 → 8.
 > - **Snapshot**: current primer.md + treatment.md, as a pair, per `store.md`.
@@ -94,7 +95,7 @@ Once the user gives the go-ahead, read every file in the list — `store.read` (
 - **Unintegrated decisions** — what they say, what they affect, how they should shift the primer/treatment.
 - **Genre obligations** — from `genre-reference.md`, what obligatory scenes the treatment hits or misses.
 
-In your first response after the reading pass, quote at least one verbatim passage from each source file (primer, treatment, manifest, each major bio, decisions.md). This proves you absorbed the source. If you find yourself wanting to assert something the source doesn't directly state, surface it as a question instead. The treatment is the source of truth; genre priors are not.
+In your first response after the reading pass, quote at least one verbatim passage from each source file (primer, treatment, manifest, each major bio, the pending decision entries). This proves you absorbed the source. If you find yourself wanting to assert something the source doesn't directly state, surface it as a question instead. The treatment is the source of truth; genre priors are not.
 
 ### 4. Phase 1 — Story Primer (five sections)
 
@@ -108,7 +109,7 @@ Rewrite `primer.md`. The Primer is **50,000-foot front-matter** with **exactly f
 
 **Editing posture — conservative about *whether*, liberal *within*.** The primer is the story's intellectual foundation; it changes less often than the treatment. Two judgments pull in opposite directions on purpose: (1) **Conservative about whether to touch a section** — if it's well-developed and no decision affects it, leave it. Every substantive change traces to a pending decision; don't rewrite for variety or add comps/rules the author didn't brainstorm. (2) **Liberal within a section you are editing** — once a decision requires touching a section, preserve its *meaning*, not its exact words. Rewrite, condense, and reorganize freely to keep it tight and fold the decision in cleanly. There is no "reproduce verbatim" rule for the primer — a section you're already editing is the right place to trim accumulated bloat. (This is the opposite of the treatment's verbatim-preservation rule in Phase 2 — the treatment is authored prose; the primer is a reference doc.)
 
-**The razor — eject, don't absorb.** If the existing primer carries non-standard content — a "Setup/Payoff Ledger," a named worldbuilding apparatus, an "Open Questions" list, a beat sheet — decide first whether it belongs in the primer *at all*. Most such content has a home elsewhere: **drop it, don't fold it in.** Open questions → `questions.md`; project-specific plot machinery / invented systems → canon (`characters/`, `worldbuilding/`); beat sheets / scene-level narrative → `treatment.md`. Ejected content is preserved in the snapshot — you're keeping the front-matter small, not destroying anything. Only genuinely 50,000-foot content with no other home gets absorbed into a standard section (load-bearing reveals → §2 Reveal Architecture; character thematic positions → §2; condensed tonal analysis → §4).
+**The razor — eject, don't absorb.** If the existing primer carries non-standard content — a "Setup/Payoff Ledger," a named worldbuilding apparatus, an "Open Questions" list, a beat sheet — decide first whether it belongs in the primer *at all*. Most such content has a home elsewhere: **drop it, don't fold it in.** Open questions → entries in `questions/`; project-specific plot machinery / invented systems → canon (`characters/`, `worldbuilding/`); beat sheets / scene-level narrative → `treatment.md`. Ejected content is preserved in the snapshot — you're keeping the front-matter small, not destroying anything. Only genuinely 50,000-foot content with no other home gets absorbed into a standard section (load-bearing reveals → §2 Reveal Architecture; character thematic positions → §2; condensed tonal analysis → §4).
 
 **Decision routing.** Each pending decision affects one or more primer sections — or none. Use `decision_type` (or the decision content) as a hint:
 
@@ -120,7 +121,7 @@ Rewrite `primer.md`. The Primer is **50,000-foot front-matter** with **exactly f
 | `character` | Section 2 if it changes a thematic position or a load-bearing reveal; Section 5 if it changes a relationship, alliance, or power balance |
 | `worldbuilding` | Rarely affects the primer directly — usually Manifest / canon. May affect Section 3 if it changes structural elements. |
 
-Most decisions don't affect the primer at all. Purely narrative decisions (plot events, scenes, dialogue) belong in the treatment, not the primer. A decision that surfaces an unresolved story problem is an **open question** (`questions.md`), not primer content.
+Most decisions don't affect the primer at all. Purely narrative decisions (plot events, scenes, dialogue) belong in the treatment, not the primer. A decision that surfaces an unresolved story problem is an **open question** (an entry in `questions/`), not primer content.
 
 **No word-budget table in Section 3.** An existing primer that still carries a "Treatment Word Budget" table loses it on this pass (the razor: the numbers are computed from `target_word_count` every run, so a stored copy only goes stale). If the author wants weighted act proportions, Section 3 states them in prose and the budget calculation honors them.
 
@@ -197,7 +198,7 @@ Compute the budget from `target_word_count` per `references/file-schemas.md` § 
 
 Two marker types:
 
-- `[OPEN: Q-###]` — links to a tracked open question in `questions.md`. Use when a specific question has been logged. An ID you propose for a new question is provisional: a store that assigns numbers may use a different one and reports it, and from then on that reported ID is the question's ID, so log it before writing any marker that cites it.
+- `[OPEN: Q-###]` — links to a tracked open question, `questions/Q-###.md`. Use when a specific question has been logged. An ID you propose for a new question is provisional: the store assigns the number when the entry is created with `new` and reports it (`references/store.md` § New entries), and from then on that reported ID is the question's ID, so create the entry before writing any marker that cites it.
   > *`[OPEN: Q-014] — How does Marlowe discover the time loop? Three plausible directions: A, B, C.`*
 - `[NEEDS DEVELOPMENT: …]` — for narrative gaps that don't yet have a tracked question. Use when story structure implies content that hasn't been brainstormed.
   > *`[NEEDS DEVELOPMENT: Elena's infiltration mechanics. We know she gets into Voss's compound by Act 3 — we don't yet know how.]`*
@@ -224,17 +225,18 @@ Show the new treatment to the user. For long treatments, summarize what changed 
 
 After the user approves the new treatment:
 
-- Log any new questions in `questions.md` first, so every `[OPEN: Q-###]` in the new treatment carries the ID the store reported.
+- Create any new question entries first (`new`, each with its row in `questions/_index.md`), so every `[OPEN: Q-###]` in the new treatment carries the ID the store reported.
 - Write the snapshot per `store.md` — both the old primer and the old treatment, as a pair.
 - `store.write` the new `primer.md` and `treatment.md`.
-- For each decision consumed by this update, edit its entry in `decisions.md` to set `Integrated into treatment: yes (<date>)`.
+- For each decision consumed by this update, edit its entry to set `integrated: "yes (<date>)"` (removing or updating an old `**Integrated into treatment**:` body line it carries, so the two agree), and replace its row in `decisions/_index.md`.
+- Record the update in the session's journal entry (created first if this is the session's first write; `references/file-schemas.md` § `journal/`): the decisions integrated, the questions opened, what changed in the primer and the treatment and why.
 - Update `state.md`:
   - `What Exists → Primer` and `Treatment` lines bumped to new versions and the new `built_from_decisions` list.
   - `Summary` refreshed.
   - `unintegrated decisions` count reset.
-  - `Last Session` updated.
+  - `Last Session` set to two or three sentences and the journal entry's path; the detail lives in the journal.
   - `stage` advanced if appropriate (`brainstorming` → `treatment-drafted` after a first comprehensive treatment; `treatment-drafted` → `treatment-refined` after a polish-pass). `initial_maturity` never changes.
-  - `What's Next` updated — typically: resolve the next critical/important questions; if the manifest hasn't been updated in a while, suggest `manifest-sync`.
+  - `What's Next` updated, forward items only — typically: resolve the next critical/important questions; if the manifest hasn't been updated in a while, suggest `manifest-sync`.
 
 ### 7. Report
 
@@ -256,17 +258,16 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. T
 Three additions in series mode:
 
 1. **Also load `series.md`** during the pre-flight read. The series arc, cross-book setups, and continuity concerns inform the focused book's treatment refresh — especially primer §2's Reveal Architecture, whose load-bearing reveals must respect cross-book chains (tracked in `series.md`) that span beyond this book.
-2. **Filter decisions by scope.** Only integrate decisions whose `Scope` is the focused book OR is `series` with the focused book in `Affects books`. Decisions scoped to other books are not consumed by this update — they stay pending for their book's treatment.
+2. **Filter decisions by scope.** Only integrate decisions whose `scope` is the focused book OR is `series` with the focused book in `affects_books`; the index's Scope column picks them out before any entry is read. Decisions scoped to other books are not consumed by this update — they stay pending for their book's treatment.
 3. **Surface series-level impact in the report.** When the treatment refresh affects cross-book chains (a setup that pays off in a later book, a character state that book N+1 starts from), call it out explicitly: *"This treatment change moves Maya's confrontation with Senator Vance from ch 35 to ch 38. Book 2's opening currently assumes Maya leaves Washington after ch 35 — recommend a brainstorm session on book 2's opening, or a series.md patch to update the Continuity Concerns section."*
 
-The `Integrated into` field on consumed decisions becomes book-aware. For a series-scoped decision integrated into the focused book's treatment, set the book's line to `yes (date)` and leave other books' lines untouched:
+The `integrated` field on consumed decisions becomes book-aware. For a series-scoped decision integrated into the focused book's treatment, set the book's item to `yes (date)` and leave other books' items untouched:
 
-```markdown
-**Integrated into**:
-
-- book-1 treatment: yes (2026-05-24)
-- book-2 treatment: pending
-- book-3 treatment: no
+```yaml
+integrated:
+  - book-1 treatment yes (2026-05-24)
+  - book-2 treatment no
+  - book-3 treatment no
 ```
 
 If the treatment refresh structurally affects `series.md` (a cross-book chain changed, the book's arc summary needs updating in the Per-Book Synopses section), recommend a `series.md` patch as a follow-up in the report — don't auto-patch series.md from within `treatment-update`. Series.md updates are conversational; this skill stays focused on the per-book primer+treatment cycle.
@@ -301,7 +302,7 @@ Dispatch read subagents per `references/subagent-pattern.md` when:
 
 1. **Bios subagent** — full-reads every major (and supporting, in series mode) bio in scope. Returns per-bio summary with quoted excerpts focused on Voice Fingerprint, Lie/Ghost, Thematic Posture, and the per-book sub-arcs (series mode).
 2. **Cross-book bios subagent** (series mode only) — reads each book's treatment to surface the focused-book character's actions across the series, for series-aware Reveal Architecture updates and cross-book chain fidelity.
-3. **Decisions filter subagent** — full-reads `decisions.md`, returns just the unintegrated entries scoped to the focused book or series-with-this-book-affected, plus quoted excerpts and the categorical mapping to primer sections.
+3. **Decisions filter subagent** — reads `decisions/_index.md` and the unintegrated entries it lists, returns just those scoped to the focused book or series-with-this-book-affected, plus quoted excerpts and the categorical mapping to primer sections.
 
 The main session retains direct reads of `primer.md`, `treatment.md`, `manifest.md`, and `series.md`. These are *judgment-bearing* artifacts that the two-phase pipeline writes against — the main session must absorb them itself, not via summary, because both phases depend on their full texture.
 

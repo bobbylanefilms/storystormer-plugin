@@ -21,11 +21,17 @@ The folder structure makes this explicit:
 
 ```
 my-series/
-├── state.md                     # Series-level dashboard
+├── state.md                     # Series-level dashboard: books, current_focus, the default target, session_count
 ├── series.md                    # Arc-level document (cross-book overview, setup/payoff chains)
 ├── manifest.md                  # Shared cast + worldbuilding inventory (all books)
-├── decisions.md                 # All decisions, each with scope: series | book-<slug>
-├── questions.md                 # All questions, each with scope: series | book-<slug>
+├── decisions/                   # All decisions, one entry each, scope: series | book-<slug>
+│   ├── _index.md
+│   └── D-001.md, D-002.md, …
+├── questions/                   # All questions, one entry each, scope: series | book-<slug>
+│   ├── _index.md
+│   └── Q-001.md, …
+├── journal/                     # One entry per session, for the whole series
+│   └── 2026-05-24-s12.md, …
 ├── characters/                  # Shared bios — one bio per character, full series arc
 │   ├── _index.md
 │   ├── maya-vance.md
@@ -35,7 +41,7 @@ my-series/
 ├── research/                    # Shared research
 ├── books/
 │   ├── book-1/
-│   │   ├── state.md             # Per-book dashboard
+│   │   ├── state.md             # Per-book dashboard: the book's title, its own target if it has one
 │   │   ├── primer.md            # Book 1's craft dossier
 │   │   ├── treatment.md         # Book 1's treatment
 │   │   ├── outline/            # Book-level spine
@@ -52,7 +58,7 @@ my-series/
 │   └── book-3/
 │       └── … (same shape)
 └── .storystormer/
-    ├── config.json              # project_type: series, target_word_count, books: [...] (each may carry its own target), current_focus: book-2
+    ├── config.json              # layout: 2 and storage, the same two keys as a standalone project
     ├── genre-reference.md
     └── history/                 # where the binding's history is snapshots
 ```
@@ -66,12 +72,13 @@ A book inside `books/<slug>/` looks **identical** to a standalone-novel project 
 | `state.md` (series-level) | `<root>/state.md` | Series-level dashboard. Tracks all books' progress at a glance. |
 | `series.md` | `<root>/series.md` | The arc-level document. Cross-book setups, series theme, per-book synopses. |
 | `manifest.md` | `<root>/manifest.md` | One cast inventory across all books. Each entry has an `Appears in:` field. |
-| `decisions.md` | `<root>/decisions.md` | All decisions in one log, scoped per entry. Avoids per-book duplication and makes cross-book chains traceable. |
-| `questions.md` | `<root>/questions.md` | Same — one questions log, scoped per entry. |
+| `decisions/` | `<root>/decisions/` | All decisions in one collection, scoped per entry, with one `_index.md`. Avoids per-book duplication and makes cross-book chains traceable. |
+| `questions/` | `<root>/questions/` | Same — one questions collection, scoped per entry. |
+| `journal/` | `<root>/journal/` | One entry per session, whichever book it worked on. The root `state.md` counts the sessions. |
 | `characters/` | `<root>/characters/` | One bio per character. Bios reflect the full series arc with per-book sub-arcs. |
 | `worldbuilding/` | `<root>/worldbuilding/` | Shared. The Senate is the Senate; doesn't fork per book. |
 | `research/` | `<root>/research/` | Shared. |
-| `.storystormer/` | `<root>/.storystormer/` | Shared config + genre reference + history. |
+| `.storystormer/` | `<root>/.storystormer/` | Shared config (`layout` and `storage` only) + genre reference + history. |
 | `state.md` (per-book) | `books/<slug>/state.md` | Per-book dashboard. Tracks one book's stage, primer/treatment versions, outline status. |
 | `primer.md` | `books/<slug>/primer.md` | Per-book. Each book has its own thematic / structural commitment. |
 | `treatment.md` | `books/<slug>/treatment.md` | Per-book. Each book is its own story. |
@@ -84,18 +91,13 @@ The principle: **shared at root, per-book in `books/<slug>/`**. If you're touchi
 
 Every skill that reads or writes per-book files must resolve paths through the current-focused book.
 
-The **current focus** is recorded in two places (kept in sync):
+The **current focus** is recorded in one place, the root `state.md` frontmatter: `current_focus: book-2`. The config holds no focus and no book list.
 
-- `state.md` frontmatter: `current_focus: book-2`
-- `.storystormer/config.json`: `"current_focus": "book-2"`
-
-Use `state.md` as the source of truth; `config.json` is the convenience mirror.
-
-**Word targets are per book.** `config.json` owns the targets: the root `target_word_count` is the default, and a `books` entry may carry its own `target_word_count` (the app stores a target per novel). Budgets always use the focused book's effective target, and switching focus never rewrites the root value. See `references/file-schemas.md` § `.storystormer/config.json` (the series example) and § Target word count and the derived budgets.
+**Word targets are per book.** `state.md` owns the targets: the root `state.md`'s `target_word_count` is the default, and a book's own `books/<slug>/state.md` may carry its own `target_word_count` (the app stores a target per novel); absent means the book uses the default. Budgets always use the focused book's effective target, and switching focus never rewrites the root value. See `references/file-schemas.md` § `state.md` and § Target word count and the derived budgets.
 
 In series mode, when a skill instruction says *"read `primer.md`"*, the actual path is `books/<current_focus>/primer.md`. When it says *"read `treatment.md`"*, the actual path is `books/<current_focus>/treatment.md`. Same for every per-book artifact.
 
-Shared artifacts (`manifest.md`, `characters/*.md`, `decisions.md`, `questions.md`, etc.) are always at root regardless of focus.
+Shared artifacts (`manifest.md`, `characters/*.md`, `decisions/`, `questions/`, `journal/`, etc.) are always at root regardless of focus.
 
 ### When you need to read a different book's artifacts
 
@@ -110,7 +112,7 @@ Sometimes you need to read a non-focused book's files — e.g., when working on 
 If the user says *"let's switch to book 2"*, *"I want to work on book 3 now"*, or otherwise signals a focus change, do one of:
 
 1. **Suggest the slash command**: *"Use `/storystormer:switch book-2` to change focus."*
-2. **Or inline as part of the next plan-first proposal**: *"Before I start, let me switch focus to book 2 — current_focus is currently book-1."* Then update `state.md` and `config.json` before doing anything else.
+2. **Or inline as part of the next plan-first proposal**: *"Before I start, let me switch focus to book 2 — current_focus is currently book-1."* Then update the root `state.md`'s `current_focus` before doing anything else.
 
 Both are fine. Pick based on the conversation's tempo — explicit command for a clear pivot, inline switch for a fluid conversation that's already in motion.
 
@@ -123,47 +125,62 @@ In series mode, every decision and every question carries a `scope` field. Value
 
 In the StoryStormer app the same scope is the record's novel: `book-<slug>` is the novel that book is, and `series` is a record with no novel (series-wide).
 
-Examples:
+The scope is entry frontmatter (`references/file-schemas.md` § `decisions/`), and both indexes gain a Scope column, so a skill picks out one book's decisions or questions from the index alone. Examples:
 
 ```markdown
-## D-024 · 2026-05-24 · plot
+---
+id: D-024
+date: 2026-05-24
+type: plot
+scope: series
+affects_books: [book-1 (ch 38), book-3 (ch 22)]
+topic: Inauguration scene foreshadowing
+source: brainstorm
+integrated:
+  - book-1 treatment yes (2026-05-24)
+  - book-3 treatment no
+storystormer_project: inauguration-day
+storystormer_kind: decision
+---
 
-**Scope**: series
-**Affects books**: book-1 (ch 38), book-3 (ch 22)
-**Topic**: Inauguration scene foreshadowing
 **Summary**: The inauguration scene in book 1 chapter 38 will plant visual elements (the missing aide, the deviation from protocol) that pay off as the assassination attempt in book 3 chapter 22.
 **Details**: ...
-**Source**: brainstorm
-**Integrated into**: book-1 treatment yes (2026-05-24); book-3 treatment no
 ```
 
 ```markdown
-## D-025 · 2026-05-24 · character
+---
+id: D-025
+date: 2026-05-24
+type: character
+scope: book-1
+topic: Maya's confrontation with her father
+source: brainstorm
+integrated:
+  - book-1 treatment yes (2026-05-24)
+storystormer_project: inauguration-day
+storystormer_kind: decision
+---
 
-**Scope**: book-1
-**Topic**: Maya's confrontation with her father
 **Summary**: Maya confronts Senator Vance in book 1 chapter 35.
 **Details**: ...
-**Integrated into**: book-1 treatment yes (2026-05-24)
 ```
 
-The `Integrated into` field becomes book-aware too — a series-scoped decision can be integrated into one book's treatment but pending in another's.
+The `integrated` field becomes book-aware too — a series-scoped decision can be integrated into one book's treatment but pending in another's.
 
 When in doubt about scope: **ask the user**. Don't default series-scope on a book-specific decision or vice versa; the scope determines which artifacts get refreshed when the decision is integrated.
 
 ### Status flow for series-scoped decisions
 
-A series-scoped decision typically has integration pending across multiple books. Track each independently:
+A series-scoped decision typically has integration pending across multiple books. Track each independently, one `integrated` item per book:
 
-```markdown
-**Integrated into**:
-
-- book-1 treatment: yes (2026-05-24)
-- book-2 treatment: pending (waiting on Q-031 to resolve)
-- book-3 treatment: no
+```yaml
+integrated:
+  - book-1 treatment yes (2026-05-24)
+  - book-2 treatment no (waiting on Q-031 to resolve)
+  - book-3 treatment no
 ```
 
-When a `treatment-update` runs for book 2 and folds in the series-scoped decision, that book's line flips to `yes (date)`. Other books' lines remain.
+When a `treatment-update` runs for book 2 and folds in the series-scoped decision, that book's item flips to `yes (date)` and the index row's Integrated cell follows (`book-1 yes; book-2 yes; book-3 no`). Other books' items remain.
 
 ## Character bios in series mode
 
@@ -256,7 +273,7 @@ See `references/file-schemas.md` § `series.md` for the schema. In short, it con
 
 The series.md document refreshes when:
 
-- A cross-book decision lands (`scope: series` with multiple books in `Affects books`).
+- A cross-book decision lands (`scope: series` with multiple books in `affects_books`).
 - A book's treatment changes in a way that affects the series arc (e.g., book 1's ending shifts, which changes book 2's starting state).
 - A new cross-book setup/payoff chain is identified.
 - A book's role in the series shifts (e.g., the user decides book 2 is now a prequel rather than a sequel).
@@ -277,10 +294,10 @@ There is no dedicated `series-update` skill in v0.3. The series-level document i
 
 The current focus changes via:
 
-- **`/storystormer:switch <book-slug>`** — explicit slash command. Validates the slug exists in `books/`, updates `current_focus` in both `state.md` and `config.json`, reports the new book's state.
+- **`/storystormer:switch <book-slug>`** — explicit slash command. Validates the slug exists in `books/`, updates `current_focus` in the root `state.md`, reports the new book's state.
 - **Inline in a skill's plan-first proposal** — if the user signals a focus change conversationally and a skill is about to fire, the skill switches focus as the first step of execution.
 
-The switch is a small operation — two file edits and a state report. Don't ceremony it.
+The switch is a small operation — one frontmatter edit and a state report. Don't ceremony it.
 
 ## Series-level state.md vs per-book state.md
 
@@ -289,12 +306,15 @@ The switch is a small operation — two file edits and a state report. Don't cer
 - `project_type: series`
 - `current_focus: book-2`
 - `books: [book-1, book-2, book-3]`
+- `target_word_count`: the default for every book
+- `slug`, `session_count` and `last_session`: the project's name and the one session counter, which numbers the shared journal
 - `What Exists` section: lists the **series-level** artifacts plus a one-line status per book.
 - `What's Next`: usually points to the current-focused book's `What's Next`, or to a series-level next step (e.g., *"refresh series.md after book 2 treatment lands"*).
+- `Last Session`: two or three sentences and the session's journal entry path.
 
 **Per-book state.md** (at `books/<slug>/state.md`):
 
-- Mirrors a standalone novel's state.md — `stage`, `target_word_count` (this book's effective target, mirrored from `config.json`), `What Exists` for *this book's* artifacts, `What's Next` for *this book's* work.
+- The standalone schema for one book — the book's `title`, `stage`, `target_word_count` only when the book has its own (absent means the series default), `What Exists` for *this book's* artifacts, `What's Next` for *this book's* work, and a `Last Session` naming the same root journal entry. No `slug`, `session_count` or `last_session`: sessions are the series'.
 - `parent_series: <series-title>` field in frontmatter, pointing back to the root.
 
 A skill working on book 2 reads `books/book-2/state.md` for its primary state, and may also read `<root>/state.md` for series context. Updates to per-book state.md don't automatically update series-level state.md — the series-level dashboard is refreshed periodically (e.g., by `brainstorm-session`'s closing protocol) rather than on every per-book write.
@@ -310,7 +330,7 @@ All v0.2 skills work in series mode with **only path-resolution changes**. The s
 - `manifest-sync` — operates on the shared `manifest.md`. Reads all books' treatments to build the `Appears in:` field per entry.
 - `pre-outline-session` — operates on the focused book. Reads the focused book's primer/treatment plus `series.md` for cross-book setups that need spine slots.
 - `outline-chapters` — operates on the focused book. Reads `books/<focus>/outline/structure.md` and writes `books/<focus>/chapters/chapter-NN/ch<NN>-outline.md`.
-- `decision-capture` — captures decisions to the shared `decisions.md` with a `scope` field. Asks the user about scope when ambiguous.
+- `decision-capture` — creates decision entries in the shared `decisions/` with a `scope` field. Asks the user about scope when ambiguous.
 
 In each case, the *what to read* and *what to write* sections of the skill body apply as written; the only change is that per-book paths get prefixed with `books/<current_focus>/`.
 

@@ -9,14 +9,15 @@ Snapshot the current state of every plugin-managed file to a timestamped checkpo
 
 What to capture: **every document `references/file-schemas.md` defines for the project**, wherever it exists:
 
-- the book-level documents (`state.md`, `primer.md`, `treatment.md`, `manifest.md`, `decisions.md`, `questions.md`, and `series.md` in a series);
+- the book-level documents (`state.md`, `primer.md`, `treatment.md`, `manifest.md`, and `series.md` in a series);
+- the entry collections (`decisions/`, `questions/`, `journal/`: every entry and both indexes);
 - canon (`characters/`, `worldbuilding/`, recursive);
 - the outline (`outline/`) and every file in each chapter folder (`chapters/chapter-NN/`, recursive: outlines, blueprints, prose, scenes, notes, `kitbash/` drafts, generation packets), except its `.history/`;
 - voice (`voice/`, recursive, including `voice/samples/`);
 - notes and records (canon-sync run records);
-- config and the genre reference (`.storystormer/config.json`, `.storystormer/genre-reference.md`; the reference is defined in `references/genres.md` and is costly to regenerate).
+- config and the genre reference (`.storystormer/config.json`, its `layout` and `storage`; `.storystormer/genre-reference.md`, defined in `references/genres.md` and costly to regenerate).
 
-In a series, that is the series-level documents plus the same set under each `books/<slug>/`.
+In a series, that is the series-level documents and the collections (which live only at the root) plus the per-book set under each `books/<slug>/`.
 
 Do **not** capture:
 

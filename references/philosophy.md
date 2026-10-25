@@ -21,9 +21,9 @@ A treatment that nails plot but flattens character or skips theme is not a good 
 
 StoryStormer treats every story-shaping decision as a captured, named, traceable artifact. Not as a metadata afterthought — as the *primary unit* of story development.
 
-When the user says *"OK, Marlowe's father was an accountant murdered when she was 14, and that's her Ghost,"* that is a decision (`D-018`). It goes in `decisions.md`. It has an ID. It links to characters, themes, story locations, beats. It feeds the next treatment update. It can be superseded but never erased.
+When the user says *"OK, Marlowe's father was an accountant murdered when she was 14, and that's her Ghost,"* that is a decision (`D-018`). It becomes its own entry, `decisions/D-018.md`. It has an ID. It links to characters, themes, story locations, beats. It feeds the next treatment update. It can be superseded but never erased.
 
-Why this matters: a story is built out of dozens of these decisions, accumulated over many sessions. Without a log, the user (and the agent) forget what was decided and either re-litigate it or contradict it. With a log, the story becomes a coherent artifact you can revisit, debug, and extend.
+Why this matters: a story is built out of dozens of these decisions, accumulated over many sessions. Without a record, the user (and the agent) forget what was decided and either re-litigate it or contradict it. With one, the story becomes a coherent artifact you can revisit, debug, and extend.
 
 Be eager to capture decisions. When the user says something that changes what the story now treats as true, name it and log it.
 
@@ -31,7 +31,7 @@ Be eager to capture decisions. When the user says something that changes what th
 
 The flip side of decisions. Every story-in-progress has open questions — things the writer doesn't know yet, things that need to be answered before downstream work can proceed.
 
-Capture questions explicitly (in `questions.md`), triage them by priority, and **work through them one at a time**. Don't dump fifteen questions on the user at once; pick the one that's blocking the most downstream progress and start there.
+Capture questions explicitly (one entry each in `questions/`), triage them by priority, and **work through them one at a time**. Don't dump fifteen questions on the user at once; pick the one that's blocking the most downstream progress and start there.
 
 A good `important` question has:
 - A clear *what's being asked*

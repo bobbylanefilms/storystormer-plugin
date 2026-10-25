@@ -77,7 +77,8 @@ Skills that **conditionally** enter substantive mode: `brainstorm-session` enter
 | Character bios (`characters/*.md`) | **Never grep when generating or refreshing** a bio. Permitted for targeted lookups once the bio is authoritative (*"what color are Alice's eyes?"*). |
 | Worldbuilding files | Same as bios. |
 | `treatment.md` | **Full read required** when generating `primer.md`, `manifest.md`, or any bio / worldbuilding file. Permitted for targeted grep once primer + manifest exist and are current — those provide the grounding. |
-| `decisions.md`, `questions.md`, `state.md` | Always grep-permitted. Structured lookup data. |
+| `decisions/`, `questions/` (indexes and entries), `state.md` | Always grep-permitted. Structured lookup data. **Index first**: read `decisions/_index.md` or `questions/_index.md` to find what's needed, then read only those entries (the last ten decisions, the open questions, the IDs a document cites), never the whole collection. Reading every entry is for `migrate`, audits and index rebuilds, fanned out to subagents for a large collection. |
+| `journal/` | Read only when history is asked for, or when Last Session isn't enough to resume: list it and read the newest entry or two. Never read by default. |
 | `.storystormer/genre-reference.md` | Always grep-permitted. |
 
 ## Noting disagreements

@@ -25,7 +25,8 @@ Always follow `references/plan-first.md`: propose, confirm, execute.
 - Snapshots of any overwritten Blueprint, per `store.md`.
 - **Proposed Revelation Log additions**, never silent edits. See § Revelation Log handling.
 - **A style-guide warning** when `voice/style-guide.md` is absent (see § Style-guide dependency).
-- Updates to `state.md`: `What Exists → Blueprints` line, `Summary`, `Last Session`, `What's Next`. Blueprinting does not advance `stage`.
+- Updates to `state.md`: `What Exists → Blueprints` line, `Summary`, `Last Session` (two or three sentences and the journal entry's path), `What's Next`. Blueprinting does not advance `stage`.
+- The session's journal entry, extended (or created, when this is the session's first write; `references/file-schemas.md` § `journal/`): the chapters blueprinted, the markers carried, and the gaps and flags left for the author.
 
 ## Preconditions
 
@@ -54,7 +55,7 @@ For each chapter, the judgment-free context, read directly:
 - **The primer**, harvested for § 2 Story Context and **filtered to this chapter**, plus its **§2 Reveal Architecture**, consulted only to learn *what this chapter must plant*. Nothing about where a reveal lands may reach the file.
 - **`treatment.md`, the spine-slot passage for this chapter only.** Never seed the full treatment.
 - **`voice/style-guide.md`** if it exists: not to copy from, but to know what general craft the Blueprint may omit.
-- **`questions.md`**: the IDs of open questions touching this chapter, for the frontmatter pointer list.
+- **`questions/_index.md`**: the IDs of open questions touching this chapter (the chapter's own `[OPEN: Q-###]` markers, plus any open entry whose title or text names it), for the frontmatter pointer list. Read an entry only when the index row doesn't settle whether it touches the chapter.
 
 ### 3. Identify the surfacing cast and elements
 
@@ -121,7 +122,7 @@ For a batch, show the Blueprints in reviewable chunks. For a single chapter, sho
 
 ### 9. Write, wire, report
 
-After approval: snapshot overwritten Blueprints per `store.md`; `store.write` each file with full frontmatter (`outline_version`, `treatment_version`, `primer_version`, `manifest_version`, `outline_words`, `expansion_target`, `knowledge_horizon`, `open_questions_touching_this_chapter`, `depends_on`); regenerate `outline/_index.md` per `store.md`; update `state.md`. Report: chapters blueprinted, cast sizes, markers carried, proposed Revelation Log lines, precondition gaps, any backward-only scan flags left for the user's eye, the style-guide warning if it applies, and the next step.
+After approval: snapshot overwritten Blueprints per `store.md`; `store.write` each file with full frontmatter (`outline_version`, `treatment_version`, `primer_version`, `manifest_version`, `outline_words`, `expansion_target`, `knowledge_horizon`, `open_questions_touching_this_chapter`, `depends_on`); regenerate `outline/_index.md` per `store.md`; extend the session's journal entry; update `state.md`. Report: chapters blueprinted, cast sizes, markers carried, proposed Revelation Log lines, precondition gaps, any backward-only scan flags left for the user's eye, the style-guide warning if it applies, and the next step.
 
 > Blueprint batch complete. Built 10 Blueprints (ch 01–10), 4,200–8,100w each. ch 03 carries Q-014 as a pointer with a Continuity gap note. Backward-only scan: 2 flags reviewed and cleared, 1 left for you (ch 6 Worldbuilding mentions *the later fire*; I rewrote it to present state but check the wording). One un-logged state change: Marlowe's ch 9 limp isn't in her Revelation Log; proposed line below, append it? Index regenerated. Next: write prose for ch 1.
 

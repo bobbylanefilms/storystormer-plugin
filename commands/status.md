@@ -10,11 +10,12 @@ Resolve the store first per `references/store.md` if the session hasn't. `store.
 What to report:
 
 1. **Title, genre, project type, stage** — from `state.md` frontmatter.
-2. **What exists** — primer/treatment/manifest versions, character bios with their types, worldbuilding elements by type, decisions/questions counts. Cross-check `state.md → What Exists` against the documents actually in the project (enumerate them with `store.list`); flag any drift.
+2. **What exists** — primer/treatment/manifest versions, character bios with their types, worldbuilding elements by type, decisions/questions counts. Cross-check `state.md → What Exists` against the documents actually in the project (enumerate them with `store.list`; the decision and question counts come from `decisions/_index.md` and `questions/_index.md`); flag any drift.
 3. **What's next** — `state.md → What's Next` verbatim.
 4. **Last session** — `state.md → Last Session` verbatim.
-5. **Open questions summary** — top 3 critical/important questions from `questions.md`.
-6. **Unintegrated decisions count** — and if ≥ 5, mention that a `/storystormer:treatment-update` would be reasonable.
+5. **Open questions summary** — top 3 critical/important open questions, picked from `questions/_index.md` (titles from the index; read an entry only if the user asks for more).
+6. **Unintegrated decisions count** — from the index's Integrated column, and if ≥ 5, mention that a `/storystormer:treatment-update` would be reasonable.
+7. **Recent sessions** — only when the user asks for history (*"what have we done lately?"*, *"status with history"*): `store.list(journal/*.md)`, read the newest two or three entries, and give a line or two on each. The journal is never read by default.
 
 This command does not modify any files. It's a read-only status report.
 

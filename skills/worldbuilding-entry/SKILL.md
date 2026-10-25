@@ -27,7 +27,7 @@ Two formats, decided at Step 2:
 - `treatment.md` — full read. Find every mention of the element. What does it do? Who interacts with it? What's its function in the story?
 - `primer.md` — full read. Is it central to the premise / setting / mechanism?
 - `manifest.md` — what type is this element logged under? Is it already logged, or new?
-- `decisions.md` — grep-permitted, but read the relevant decisions in full. Anything about the element's rules, history, or function?
+- `decisions/_index.md` — scan the topics for the element, then read the decision entries that touch it in full (skip superseded and retracted ones unless the history matters). Anything about the element's rules, history, or function?
 - Existing entry for this element if there is one (expansion / refresh case): search every folder under `worldbuilding/`, old plural forms like `magic-systems/` included, not just `worldbuilding/<type-slug>/`. An entry found in an old folder moves to the new one on this write; the rule is in `references/file-schemas.md` § Worldbuilding files (Entries in an old folder).
 - Adjacent entries in the same category — for consistency. If you're writing a new organization, scan the other organizations for tone, structure, and naming conventions.
 
@@ -115,7 +115,7 @@ Once approved:
 - Snapshot any existing entry per `store.md`.
 - `store.write(worldbuilding/<type-slug>/<slug>.md)` with the new entry. If it was found in an old folder, move it first: snapshot, `store.move(from, to)` into the new folder, then `store.write` the new entry over the moved file, and name both paths in the report. If the binding leaves the old file for the author to remove, say so as a pending step: until it's gone, two copies are discoverable.
 - Update `manifest.md` if the entry is newly added, its description needs to change, or its status should now read `Canon Asset Created`.
-- Update `state.md → What Exists` to reflect the new/updated entry.
+- Update `state.md → What Exists` to reflect the new/updated entry, and add a line on the entry to the session's journal entry (created first if this is the session's first write; `references/file-schemas.md` § `journal/`).
 
 ### 9. Report
 

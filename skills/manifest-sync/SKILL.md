@@ -44,7 +44,7 @@ Compare what the treatment / bios / worldbuilding name vs. what the existing man
 
 - **Additions** — elements in the story that aren't in the manifest yet (often: a new character mentioned in the treatment but no bio yet; a location that appeared in Act 3 that wasn't logged).
 - **Removals** — elements in the manifest that the treatment no longer references (sometimes after a treatment rewrite — flag for the user, don't auto-remove without confirmation).
-- **Renames** — *"Alex" in the old manifest, "Marlowe" in the new treatment*. Detect rename via the bios' frontmatter and the decision log if it's there.
+- **Renames** — *"Alex" in the old manifest, "Marlowe" in the new treatment*. Detect rename via the bios' frontmatter and any decision recording it (`decisions/_index.md` topics, then that entry).
 - **Role shifts** — a character was supporting, now appears in 30+ scenes and is functionally major. Flag for the user; the user makes the call (and an uncertain one goes to Open Questions).
 - **Status changes** — `Canon Asset Created` exactly when the bio or entry file exists; otherwise `Mentioned`, `Partially Developed`, or `Ready for Asset` by how much detail the story has settled.
 - **Merges** — the same person or thing under variant names (*Kate* and *Katherine*, *Captain Vex* and *Vex*). Merge confident cases into one entry; flag uncertain ones in Open Questions.
@@ -77,7 +77,7 @@ After the user approves:
 
 - Snapshot current `manifest.md` per `store.md`.
 - `store.write(manifest.md)` with the new manifest, with the version bumped, `treatment_version` set to the current treatment version, `last_updated` set to today, the body's `*Last synced: …*` line updated, and the footer counts recomputed.
-- Update `state.md → What Exists → Manifest` to reflect the new version and current element counts.
+- Update `state.md → What Exists → Manifest` to reflect the new version and current element counts, and add a line on what changed to the session's journal entry (created first if this is the session's first write; `references/file-schemas.md` § `journal/`).
 
 ### 5. Report
 

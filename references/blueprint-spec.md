@@ -40,7 +40,7 @@ The prose agent gets a precise instruction and no future. *Load-bearing* and *mu
 - **Reveal Architecture.** Consult primer §2 to know *what this chapter must plant*; nothing about where a reveal lands may reach the file. Convert every entry to an imperative plant instruction or drop it.
 - **Cast.** A character who does not appear and is not thought about in this chapter is not named, even inside canon wording you are carrying. Genericize it.
 - **Worldbuilding.** Carry the element's current state and governing logic; cut any chain-of-custody narrative that runs past this chapter.
-- **Open questions.** Carry as frontmatter ID pointers only (`open_questions_touching_this_chapter: [Q-011, Q-015]`). Marker prose goes in the body only when the question creates a gap the prose agent must actively write around. Otherwise `questions.md` is the register.
+- **Open questions.** Carry as frontmatter ID pointers only (`open_questions_touching_this_chapter: [Q-011, Q-015]`). Marker prose goes in the body only when the question creates a gap the prose agent must actively write around. Otherwise `questions/` is the register.
 
 A grep over a finished Blueprint for `ch \d`, `chapter \d`, `Act [23]`, `pays off`, `later`, `back half` catches most violations. It false-positives on present-tense world facts, so it flags for review rather than failing the build.
 

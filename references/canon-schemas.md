@@ -327,9 +327,9 @@ State changes and reveals that modify this entry's base description, keyed to th
 - **The base entry is not edited to match.** When a change is permanent enough that the whole-arc description is now wrong (a character loses an arm in ch 12 and it's gone for the rest of the book), it is fine to also update the base entry — but the log line stays, because it carries the *chapter* the change lands. The log is the timeline; the base entry is the steady-state portrait.
 - **`chapter ≤ N` is the whole mechanism.** A consumer building an artifact for chapter N reads the log and includes only entries at or before N. Entries after N are **future state** the consumer must not write toward. This is the folder-native equivalent of the app's "load_canon_for_scene never returns future revelations" rule.
 
-### Distinct from `decisions.md`
+### Distinct from `decisions/`
 
-The decision log records *authoring* choices ("we decided Linda dies in Act 2"). The Revelation Log records *in-story chronology* of state ("as of ch 17, Linda is dead"). A single decision often produces one Revelation Log line in one or more entries. Decisions are why; the Revelation Log is when.
+The decisions record *authoring* choices ("we decided Linda dies in Act 2"). The Revelation Log records *in-story chronology* of state ("as of ch 17, Linda is dead"). A single decision often produces one Revelation Log line in one or more entries. Decisions are why; the Revelation Log is when.
 
 ### Who writes it
 

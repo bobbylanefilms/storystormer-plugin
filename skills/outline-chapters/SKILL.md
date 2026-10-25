@@ -43,7 +43,8 @@ These are the app's values, and the app enforces the same protection: its re-out
 - **`chapters/chapter-NN/ch<NN>-outline.md`**: one file per chapter, in that chapter's folder, chapter-number-prefixed and zero-padded (`ch17-outline.md`).
 - **`outline/_index.md`**: the outline view (chapter × stage matrix), regenerated per `store.md` so each chapter's Outline column reflects the new state (version link, or `—`, plus any inline markers).
 - Snapshots of any overwritten outline, per `store.md`. New outlines have nothing to snapshot.
-- Updates to `state.md`: `What Exists → Chapter outlines` line (`12/40 drafted`), `Summary`, `Last Session`, `What's Next`; `stage` advances to `outline-drafted` only when every spine chapter is outlined and zero unresolved markers remain across the bodies, otherwise `outlining`.
+- The session's journal entry, extended (or created, when this is the session's first write; `references/file-schemas.md` § `journal/`): the chapters outlined or corrected, the markers carried, and the chain-check results.
+- Updates to `state.md`: `What Exists → Chapter outlines` line (`12/40 drafted`), `Summary`, `Last Session` (two or three sentences and the journal entry's path), `What's Next`; `stage` advances to `outline-drafted` only when every spine chapter is outlined and zero unresolved markers remain across the bodies, otherwise `outlining`.
 
 ## Preconditions
 
@@ -70,15 +71,15 @@ Read the target file's `authorship` (after the revision-detection step above) *b
 - `treatment.md` (full; you will map specific treatment passages onto specific chapter slots)
 - `manifest.md` (full)
 - Major bios for any POV character in the batch (full); supporting bios for major non-POV characters in the batch (full)
-- `decisions.md` (full; `plot`, `character`, `theme` decisions affecting the range)
-- `questions.md` (open entries mapping to spine slots in the range)
+- `decisions/_index.md`, then the `plot`, `character` and `theme` decision entries affecting the range (full), skipping superseded and retracted ones
+- `questions/_index.md`, then the open question entries mapping to spine slots in the range
 - `.storystormer/genre-reference.md` if it exists (obligatory scenes that should land in this range)
 - Existing outlines adjacent to the batch (the chapter before and after) for continuity
 - **Style samples**: the 2–3 most recent outlines whose `authorship` is `author_written` or `ai_generated_author_revised`, preferring chapters near the target range. See § Style inheritance.
 
-**Single-chapter revision** (chapter N, `ai_generated`): `structure.md` (full), the existing outline (full), N-2 through N+2 if they exist, primer §2 and §3, the treatment passages for this spine slot (targeted read, permitted because the spine and the existing outline provide grounding), bios for the chapter's cast (full for major-tier, frontmatter + Quick Reference otherwise), `decisions.md` and `questions.md` entries affecting the chapter, and the style samples.
+**Single-chapter revision** (chapter N, `ai_generated`): `structure.md` (full), the existing outline (full), N-2 through N+2 if they exist, primer §2 and §3, the treatment passages for this spine slot (targeted read, permitted because the spine and the existing outline provide grounding), bios for the chapter's cast (full for major-tier, frontmatter + Quick Reference otherwise), the decision and question entries affecting the chapter (found through the two indexes), and the style samples.
 
-**Correction-only** (chapter N): the outline (full), every canon file it touches (full bios and worldbuilding entries for anyone and anything named or implied in the body), `decisions.md` (full), `questions.md`, and `structure.md`. This is a canon audit; it reads more canon than a generation pass does, because the job is to find where the text and canon disagree.
+**Correction-only** (chapter N): the outline (full), every canon file it touches (full bios and worldbuilding entries for anyone and anything named or implied in the body), `decisions/_index.md` and every live decision entry touching what the body names (full), `questions/_index.md` and the open entries it cites, and `structure.md`. This is a canon audit; it reads more canon than a generation pass does, because the job is to find where the text and canon disagree.
 
 List the files at the top of your next response, full-read each, and quote at least one passage from each. See `references/reading-discipline.md` § Substantive mode.
 
@@ -97,7 +98,7 @@ List the files at the top of your next response, full-read each, and quote at le
 
 **Correction-only example:**
 
-> Chapter 1 is `author_written`, so this is a correction pass, not a rewrite. I'll audit it against every canon file it touches (Muppy, Pickle, Vinnie, Tommy, the burial site, the jacket, Golden Valley, the BLM land, the decision log), then show you a triage: canon contradictions, POV-capability breaches, stale scaffolding, and sequencing errors, each with the smallest fix quoted. I'll also list the prose-stage items I'm declining to touch. Nothing changes until you approve specific items.
+> Chapter 1 is `author_written`, so this is a correction pass, not a rewrite. I'll audit it against every canon file it touches (Muppy, Pickle, Vinnie, Tommy, the burial site, the jacket, Golden Valley, the BLM land, the decisions touching them), then show you a triage: canon contradictions, POV-capability breaches, stale scaffolding, and sequencing errors, each with the smallest fix quoted. I'll also list the prose-stage items I'm declining to touch. Nothing changes until you approve specific items.
 
 ### 4. Generate (`ai_generated` mode)
 
@@ -163,7 +164,7 @@ Surface failures to the user before writing. Don't fix them silently.
 
 ### 9. Show, write, wire, report
 
-Show batches in halves and let the user approve, request per-chapter edits, or request a global adjustment (then re-show). After approval: snapshot superseded versions per `store.md`, `store.write` the files with full frontmatter (the five app keys filled; `authorship` set; `structure_version`, `treatment_version`, `primer_version` stamped; `word_count` recorded), regenerate `outline/_index.md` per `store.md`, update `state.md`.
+Show batches in halves and let the user approve, request per-chapter edits, or request a global adjustment (then re-show). After approval: snapshot superseded versions per `store.md`, `store.write` the files with full frontmatter (the five app keys filled; `authorship` set; `structure_version`, `treatment_version`, `primer_version` stamped; `word_count` recorded), regenerate `outline/_index.md` per `store.md`, extend the session's journal entry, update `state.md`.
 
 When a chapter you just outlined already has prose the new outline no longer describes (typically intake prose from before StoryStormer, which the author's newer plan replaced), **propose retiring that prose** in the report; don't retire it yourself. On the author's yes, set its `status: retired` with a frontmatter-only edit, body untouched (`references/file-schemas.md` § Prose → `status: retired`), so it stops anchoring the voice and feeding the story-so-far.
 
@@ -198,7 +199,7 @@ Projects outlined under the older nine-section schema (Premise / Setting & Time 
 
 1. Snapshot the outline per `store.md`.
 2. Reduce the body to the prose account. If the old file had no prose body (beats only), the beats *are* the content: expand them into a prose account in `ai_generated` mode, or, if the author wrote the beats, leave them and set `author_written` so the Blueprint stage reads them as content.
-3. Open Threads: confirm each `[OPEN: Q-###]` is registered in `questions.md`; leave the marker inline in the body only where it marks a real gap in the narrative.
+3. Open Threads: confirm each `[OPEN: Q-###]` has its entry in `questions/` (the index answers it); leave the marker inline in the body only where it marks a real gap in the narrative.
 4. Set `authorship`. Default `ai_generated` if the history shows a skill wrote it; otherwise ask. Fill the five app keys (`chapter`, `title`, `pov`, `act`, `summary`) from the spine slot.
 5. Recommend rebuilding the chapter's Blueprint, since the Blueprint derives the removed scaffolding from canon rather than transplanting it.
 

@@ -25,11 +25,11 @@ For `treatment-update`:
 
 > Here's what I'm thinking:
 >
-> - **Read in full (substantive mode)**: `primer.md`, `treatment.md`, `decisions.md` (the 7 unintegrated entries), `manifest.md`, and the 4 major-tier bios in `characters/`. I'll quote at least one passage from each to prove the read.
+> - **Read in full (substantive mode)**: `primer.md`, `treatment.md`, the 7 unintegrated decision entries (picked out of `decisions/_index.md`), `manifest.md`, and the 4 major-tier bios in `characters/`. I'll quote at least one passage from each to prove the read.
 > - **Phase 1**: rewrite `primer.md` to reflect the new decisions about the antagonist's backstory and the second-act revelation.
 > - **Phase 2**: regenerate `treatment.md` against the refreshed primer. I expect this to be a meaningful rewrite of Act 2 and a lighter pass on Acts 1 and 3.
 > - **Snapshot** the current primer + treatment first (per `store.md`).
-> - **Mark** the 7 decisions as `integrated: treatment` with today's date.
+> - **Mark** the 7 decisions `integrated: "yes (<today>)"`, each with its index row.
 >
 > About 4–6 minutes. Anything you want to adjust before I start?
 
@@ -51,7 +51,7 @@ For `character-bio` (creating a new major character):
 Rarely. Only when:
 
 - The user has explicitly approved a multi-step sequence and is now mid-execution (e.g., they said "go through all the open questions one by one" — each question doesn't need its own plan).
-- The action is a trivial single-file read (showing the user what's in `decisions.md`).
+- The action is a trivial read (showing the user what's in `decisions/_index.md`, or one decision).
 
 When in doubt, propose.
 

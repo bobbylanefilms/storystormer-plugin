@@ -1,11 +1,11 @@
 ---
 name: decision-capture
-description: Append a settled choice about the story to `decisions.md`. Use when the user has settled something the story now treats as true ("OK, Marlowe and Voss are siblings," "the story is in present tense first-person," "Act 2 ends with the locket reveal"), or asks to "log a decision," "record that," "save this choice," "add to the decision log." Captures one decision at a time with stable IDs and links to affected characters / questions / treatment.
+description: Record a settled choice about the story as a new decision entry in `decisions/`. Use when the user has settled something the story now treats as true ("OK, Marlowe and Voss are siblings," "the story is in present tense first-person," "Act 2 ends with the locket reveal"), or asks to "log a decision," "record that," "save this choice," "add to the decisions." Captures one decision at a time with stable IDs and links to affected characters / questions / treatment.
 ---
 
 # StoryStormer · Decision Capture
 
-You are appending a decision to `decisions.md`. A decision is anything the story now treats as true — character facts, plot choices, structural moves, thematic commitments, voice/POV decisions, anything.
+You are recording a decision as a new entry, `decisions/D-###.md`. A decision is anything the story now treats as true — character facts, plot choices, structural moves, thematic commitments, voice/POV decisions, anything.
 
 This skill is small and focused. It's typically called inline from `brainstorm-session` as decisions surface, but the user can also invoke it directly.
 
@@ -15,21 +15,25 @@ Always follow `references/plan-first.md` — confirm the wording with the user b
 
 ### 1. Read what's there
 
-Load `decisions.md` so you can propose the next ID. (If it doesn't exist yet, start at `D-001`.) Read the relevant active question in `questions.md` if this decision resolves one.
+Read `decisions/_index.md`: it is the overview, enough to propose the next ID and to spot an earlier decision this one might supersede. Read only the entries that matter here: the one being superseded, and the question entry this decision resolves (find it in `questions/_index.md`). Never read the whole collection to log one decision.
 
 ### 2. Compose the entry
 
-Follow the schema in `references/file-schemas.md`. Fields:
+Follow `references/file-schemas.md` § `decisions/`. The frontmatter:
 
-- **ID** — next sequential, zero-padded (`D-019`). A local display number; the app keeps its own id.
-- **Date** — today (ISO format `YYYY-MM-DD`).
-- **Type** — one of the app's five: `plot`, `character`, `worldbuilding`, `structure`, `theme`. Setting and speculative-mechanism rules are `worldbuilding`; voice, POV, tone, and genre choices are `theme` (`references/file-schemas.md` § `decisions.md` maps the retired types).
-- **Topic** — short noun phrase. *"Marlowe's relationship to Voss"*, *"the time loop's rules"*.
+- **`id`** — the next number after the highest in the index, zero-padded (`D-019`). A proposal: the store assigns the number (step 4).
+- **`date`** — today (ISO format `YYYY-MM-DD`).
+- **`type`** — one of the app's five: `plot`, `character`, `worldbuilding`, `structure`, `theme`. Setting and speculative-mechanism rules are `worldbuilding`; voice, POV, tone, and genre choices are `theme` (`references/file-schemas.md` § `decisions/` maps the retired types).
+- **`topic`** — short noun phrase. *"Marlowe's relationship to Voss"*, *"the time loop's rules"*. It is the label the index lists.
+- **`source`** — one of: `intake` (extracted at init), `brainstorm` (surfaced in conversation), `treatment-update` (clarified during a treatment refresh), `canon-sync` (a ruling on a manuscript-versus-canon conflict; the Details name the notes line, the canon line, the prose authorship that set the default, and whether the author overrode it), `user-declared` (the user stated it directly).
+- **`integrated`** — `"no"`. (Becomes `"yes (<date>)"` after the next `treatment-update` that includes this decision.)
+- **`storystormer_project`** — the root `state.md`’s `slug`; **`storystormer_kind`** — `decision`.
+
+The body:
+
 - **Summary** — one sentence. The decision in its most compressed form. *"Marlowe and Voss are estranged siblings, not strangers."*
 - **Details** — 1–3 paragraphs of context. The *why* and the *texture*. What this means for character, plot, theme. Anything a future read should know to apply this decision correctly.
 - **Affects** — what's downstream: characters, story locations, beats, themes. Don't try to be exhaustive — name the most directly impacted elements.
-- **Source** — one of: `intake` (extracted at init), `brainstorm` (surfaced in conversation), `treatment-update` (clarified during a treatment refresh), `canon-sync` (a ruling on a manuscript-versus-canon conflict; the Details name the notes line, the canon line, the prose authorship that set the default, and whether the author overrode it), `user-declared` (the user stated it directly).
-- **Integrated into treatment** — default `no`. (Becomes `yes (<date>)` after the next `treatment-update` that includes this decision.)
 
 ### 3. Show the user before writing
 
@@ -38,31 +42,32 @@ Show the composed entry. Ask:
 > Capturing this as `D-019`. Sound right?
 >
 > ```
-> ## D-019 · 2026-05-11 · character
+> type: character · topic: Marlowe's relationship to Voss
 >
-> **Topic**: Marlowe's relationship to Voss
 > **Summary**: Marlowe and Voss are estranged siblings, not strangers.
 > **Details**: …
 > ```
 
 If the user adjusts wording, fold in the changes. If they want details expanded, expand them. The user's voice should be visible in the decision text — these are *their* decisions, not yours.
 
-### 4. Append, never overwrite
+### 4. Create the entry, never overwrite
 
-Append the entry to the end of `decisions.md` with `store.edit`, anchored on the log’s last entry (or `store.write` when the log doesn’t exist yet), so the store’s concurrency guard sees a decision another device added in the meantime (`references/store.md`; where the binding computes the log, its realization adds the entry). The ID you proposed is provisional: a store that assigns numbers may use a different one and reports it, and from then on that reported ID is the decision’s ID, in the confirmation line, in a question’s `resolved (D-###)`, in an earlier entry’s `**Superseded by**`, and in every other cross-reference. Bump `state.md → What Exists → Decisions` count and adjust `unintegrated decisions` count (a store that computes `state.md` keeps the counts itself).
+Write the entry with `store.write(decisions/D-###.md, content, new)`. The ID you proposed is provisional: the store assigns the number and reports it (`references/store.md` § New entries), and from then on that reported ID is the decision’s ID, in the confirmation line, the index row, a question’s `resolved_by`, an earlier entry’s `superseded_by`, the journal entry, and every other cross-reference.
+
+Then add the decision’s one row to `decisions/_index.md` (`references/file-schemas.md` § Who rebuilds an index; a store that computes the index keeps it itself). Bump `state.md → What Exists → Decisions` count and adjust the unintegrated count (a store that computes `state.md` keeps the counts itself), and record the decision in the session’s journal entry: its ID in the `decisions` list and a line on what was settled. If this is the session’s first write, the journal entry is created first (`references/file-schemas.md` § `journal/`).
 
 ### 5. Update related questions
 
-If the conversation surfaced a new open question rather than a decision, log it in `questions.md` per its schema (a 3–7 word `Title`, one of the seven Title Case categories, `Source: plugin`).
+If the conversation surfaced a new open question rather than a decision, create it as a question entry (`questions/Q-###.md`, written with `new`, per § `questions/`: a 3–7 word `title`, one of the seven Title Case categories, `source: plugin`) and add its row to `questions/_index.md`.
 
-If this decision resolves a question in `questions.md`:
+If this decision resolves a question:
 
-- Set the question's `Status` to `resolved (D-019)`.
+- Set the question entry's `status: resolved` and `resolved_by` to the decision's ID, add a `**Resolution**:` line saying how, and replace its row in `questions/_index.md`.
 - Don't delete the question. The history matters.
 
 If this decision *changes* (supersedes) an earlier decision:
 
-- The earlier decision stays in `decisions.md` with a new `**Superseded by**: D-019` field.
+- The earlier entry stays, with `superseded_by` set to the new ID in its frontmatter and its index row updated to match.
 - The new decision's `**Details**` should explicitly note what changed and why.
 
 ### 6. Report briefly
@@ -79,7 +84,7 @@ When `brainstorm-session` is running and a decision surfaces, you can be invoked
 
 ## When to capture (be aggressive)
 
-Lean toward capturing rather than deferring. Decisions that don't get logged tend to drift — the user remembers them differently next session, contradicts them in a later decision, or quietly forgets them when the treatment is regenerated. The log is the story's spine; keep it dense.
+Lean toward capturing rather than deferring. Decisions that don't get logged tend to drift — the user remembers them differently next session, contradicts them in a later decision, or quietly forgets them when the treatment is regenerated. The decisions are the story's spine; keep them dense.
 
 Trigger capture when:
 
@@ -97,7 +102,7 @@ When in doubt, capture. A decision logged and later superseded is cheap (superse
 
 ## When *not* to capture
 
-- The user is *floating* an idea, not committing to it. *"What if Marlowe and Voss were siblings?"* is not a decision — it's a question for `questions.md`. Capture it as a question, not a decision.
+- The user is *floating* an idea, not committing to it. *"What if Marlowe and Voss were siblings?"* is not a decision — it's an open question. Capture it as a question entry, not a decision.
 - The decision is too small to log. *"OK, her name is Marlowe with one 'L' not two"* — sure, log it if it's likely to be referenced. *"OK, the diner has a red door"* — probably not, unless the red door is doing real narrative work.
 - The user is brainstorming aloud and the "decision" might change in five minutes. Wait until it lands.
 
@@ -105,33 +110,32 @@ When in doubt, ask: *"Want me to log this as a decision, or hold off until it fi
 
 ## Multi-decision moments
 
-Sometimes a single conversational moment produces three or four linked decisions. Capture them as separate entries with sequential IDs (`D-019`, `D-020`, `D-021`) and use the `**Affects**` field to cross-link them. Don't try to cram multiple decisions into one entry — the log becomes ungrep-able and the integration flags become muddled.
+Sometimes a single conversational moment produces three or four linked decisions. Capture them as separate entries, one `new` write each (`D-019`, `D-020`, `D-021`, or whatever the store reports), and use the `**Affects**` field to cross-link them. Don't try to cram multiple decisions into one entry — the index stops saying what was decided and the integration flags become muddled.
 
 ## Series Mode
 
-If `state.md` shows `project_type: series`, read `references/series.md` first. In series mode, **every decision carries a `Scope` field** — either `series` (affects the arc or multiple books) or `book-<slug>` (affects one specific book). See `references/file-schemas.md` § Series-mode additions for the entry format.
+If `state.md` shows `project_type: series`, read `references/series.md` first. In series mode, **every decision carries a `scope` field** — either `series` (affects the arc or multiple books) or `book-<slug>` (affects one specific book). See `references/file-schemas.md` § `decisions/` → Series mode for the entry format; the index gains a Scope column.
 
-The capture flow gains two steps in series mode:
+The capture flow gains three steps in series mode:
 
-1. **Determine scope.** Look at the decision content. If it's purely a per-book matter (Maya confronts her father in book 1 ch 35 — that's book 1's plot), use `Scope: book-<slug>`, where `<slug>` is the focused book's entry in `config.json`'s `books` list (a slug that already starts with `book-`, such as `book-1`, is written as it is: `Scope: book-1`, never `book-book-1`). If it affects the arc, plants a setup that pays off in a later book, or has implications for multiple books, use `Scope: series`. **When ambiguous, ask the user**: *"Is this just about book 1, or does it affect what books 2 and 3 do? I want to scope it right so we know which treatments to refresh."*
+1. **Determine scope.** Look at the decision content. If it's purely a per-book matter (Maya confronts her father in book 1 ch 35 — that's book 1's plot), use `scope: book-<slug>`, where `<slug>` is the focused book's entry in the root `state.md`’s `books` list (a slug that already starts with `book-`, such as `book-1`, is written as it is: `scope: book-1`, never `book-book-1`). If it affects the arc, plants a setup that pays off in a later book, or has implications for multiple books, use `scope: series`. **When ambiguous, ask the user**: *"Is this just about book 1, or does it affect what books 2 and 3 do? I want to scope it right so we know which treatments to refresh."*
 
-2. **For series-scoped decisions, list `Affects books`.** Name every book the decision touches, with the relevant act/chapter reference if known:
+2. **For series-scoped decisions, list `affects_books`.** Name every book the decision touches, with the relevant act/chapter reference if known:
 
-   ```markdown
-   **Scope**: series
-   **Affects books**: book-1 (ch 38 plants setup), book-3 (ch 22 pays off)
+   ```yaml
+   scope: series
+   affects_books: [book-1 (ch 38 plants setup), book-3 (ch 22 pays off)]
    ```
 
-3. **For series-scoped decisions, expand `Integrated into` to a per-book breakdown:**
+3. **Make `integrated` a per-book list:**
 
-   ```markdown
-   **Integrated into**:
-
-   - book-1 treatment: no
-   - book-3 treatment: no (book 3 not yet drafted)
+   ```yaml
+   integrated:
+     - book-1 treatment no
+     - book-3 treatment no (book 3 not yet drafted)
    ```
 
-   Each book's line updates independently as that book's `treatment-update` integrates the decision.
+   Each book's item updates independently as that book's `treatment-update` integrates the decision.
 
 When in doubt about scope, default to the user's current focus — most decisions in a brainstorm session are about the book being discussed. Series scope is the exception, not the default, and should be deliberate.
 
@@ -140,6 +144,7 @@ For decisions that affect `series.md` itself (cross-book setup chains, continuit
 ## References
 
 - `references/plan-first.md`
-- `references/file-schemas.md` — decisions.md schema (including Series-mode additions)
+- `references/file-schemas.md` — § `decisions/` and § `decisions/_index.md` (series mode included), § Who rebuilds an index, § `journal/`
+- `references/store.md` — § New entries (the store assigns and reports the number)
 - `references/canon-schemas.md` — § Revelation Log (a chapter-anchored reveal/state-change decision is also a Revelation Log candidate)
 - `references/series.md` — **read when `project_type: series`** (scope, affects books, per-book integration tracking)

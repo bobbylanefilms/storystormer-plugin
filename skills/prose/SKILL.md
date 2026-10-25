@@ -25,7 +25,8 @@ The division of labor:
 - **`chapters/chapter-NN/ch<NN>-prose.md`** — the chapter's prose, per the schema in `references/file-schemas.md` § `ch<NN>-prose.md`. Body is **prose only** (no markdown headers, no meta-commentary). Frontmatter carries `pov`, `pov_type` and `tense` (the app's scene enums), the version stamps (`outline_version`, `blueprint_version`, `treatment_version`, `primer_version`), `status: drafted`, `authorship: ai_generated`, `word_count`, and a **~150–250w `synopsis`** — the chapter's contribution to every later chapter's story-so-far. Scene-split chapters write `scenes/ch<NN>-scene-MM.md` instead.
 - **`outline/_index.md`** — regenerated per `store.md` so each chapter's **Prose** column reflects the new state (version link, `retired`, or `—`); bump `chapters_drafted` in its frontmatter (retired prose doesn't count).
 - Snapshots any overwritten prose (a prior draft, or intake-stashed prose), per `store.md`, and, where the binding's `history` is `snapshots`, leaves an **as-written copy** of every prose write (`references/file-schemas.md` § Per-chapter history → Prose as-written copies): the baseline § 8's author-revision check compares against.
-- Updates to `state.md`: `What Exists → Prose chapters` line (`6/40 written`, retired prose not counted), `Summary`, `Last Session`, `What's Next`.
+- Updates to `state.md`: `What Exists → Prose chapters` line (`6/40 written`, retired prose not counted), `Summary`, `Last Session` (two or three sentences and the journal entry's path), `What's Next`.
+- The session's journal entry, extended (or created, when this is the session's first write; `references/file-schemas.md` § `journal/`): the chapters written, revised or retired, the path and anchor each used, and the continuity flags raised.
 
 ## Preconditions
 
@@ -101,7 +102,7 @@ From the subagent's returned report (compact — the prose is on disk, not in yo
 - **Measure and record `word_count`.** Read the written file back, measure the body, and record that count with a frontmatter-only edit (`references/file-schemas.md` § Prose → `word_count`; no snapshot for this bookkeeping edit). Do this after every prose write this skill makes, in every mode. Where the host can't count exactly the figure is approximate, which is fine: it is for reporting, never for detecting edits.
 - Regenerate `outline/_index.md` per `store.md` — Prose column updated; bump `chapters_drafted`.
 - When the chapter's `status` later reaches `revising` or `revised`, recommend `notes` so the chapter's end-state and harvest exist for the next chapter's Blueprint.
-- Update `state.md` (What Exists → Prose chapters; Summary; Last Session; What's Next).
+- Extend the session's journal entry, then update `state.md` (What Exists → Prose chapters; Summary; Last Session; What's Next).
 - Present: the synopsis the subagent wrote, the word count, which path it used, the prior-prose anchor it chose, and any continuity flags it raised. Point the user at `chapters/chapter-NN/ch<NN>-prose.md` to read — **the file is the review surface** (don't dump 4,000 words into the conversation).
 - **Surface the file for in-app reading**: `store.open(chapters/chapter-NN/ch<NN>-prose.md)` so the user reads the draft beside the chat — never paste its contents into the conversation. Chat feedback on the open draft (*"make the intro more atmospheric," "tighten the second scene"*) is **revise mode** (below): each note becomes a surgical edit against the same file, snapshotted first per `store.md`, so the reading pane always reflects the current draft and the loop can run as many rounds as the user wants.
 

@@ -23,6 +23,7 @@ A subagent cannot reach the plugin bundle and never resolves the store (`referen
 - **Binding:** the session's backend (`kind`) and the binding's name.
 - **Root:** the project root the paths hang from.
 - **Capabilities line:** the binding's line, verbatim.
+- **Layout:** the project's `layout` as the session resolved it (`2`: decisions, questions and the journal are entry collections; `references/file-schemas.md` § Entry collections). A subagent that creates an entry also gets the `new` write and the rule that the store reports the number it assigned (`references/store.md` § New entries), pasted as text, and returns the reported numbers.
 - **Realizations:** the binding's realization of each operation this subagent will use (`store.read`, `store.write`, `store.list`, and so on), pasted from the binding document.
 - **Triggered clauses:** the `store.md` clauses its work triggers, **pasted as text, not cited** (the subagent can't open `store.md`):
   - **Snapshot:** for each existing target, read it and write it to the named snapshot path before overwriting it. Reading the target for this is authorized even when the brief otherwise limits what to read.
@@ -47,7 +48,7 @@ Task: substantive-mode read of <scope-name>
 
 Scope: <list of file paths, or a folder path>
 
-Store: binding <kind>; root <root>; capabilities <the binding's capabilities line>;
+Store: binding <kind>; root <root>; capabilities <the binding's capabilities line>; layout <2>;
   operations <the binding's realization of store.read / store.list as used here>;
   triggered clauses <none: read-only>
 
@@ -103,7 +104,7 @@ Task: execute <category> operations per the approved plan
 
 Scope: <list of file operations — each {source_path, target_path, action: write|move|stamp, frontmatter_to_apply}>
 
-Store: binding <kind>; root <root>; capabilities <the binding's capabilities line>;
+Store: binding <kind>; root <root>; capabilities <the binding's capabilities line>; layout <2>;
   operations <the binding's realization of each operation used here: store.read / write / list / move>;
   triggered clauses <pasted: snapshot procedure + paths; concurrency guard + baseline per target;
   write recovery where write is not native; confirmation posture; documents not to write because the
@@ -169,7 +170,7 @@ variant named in the plan), pasted by the main session. Rules text, not exemplar
 prose — like the spec, its pre-sample position doesn't compete for voice
 conditioning. Skip this block entirely when the author has a style guide.>
 
-[STORE] binding <kind>; root <root>; capabilities <the binding's capabilities line>;
+[STORE] binding <kind>; root <root>; capabilities <the binding's capabilities line>; layout <2>;
   operations <the binding's realization of store.read / store.write>;
   triggered clauses <pasted: snapshot procedure + path for any existing prose; the as-written copy
   path where history is `snapshots`; concurrency guard +

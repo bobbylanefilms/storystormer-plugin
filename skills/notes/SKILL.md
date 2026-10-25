@@ -26,7 +26,8 @@ Four things, and capturing them is the whole job:
 - **Proposals, never writes**, written to the notes file's § Proposals as unchecked items and repeated in the report: Revelation Log lines for state changes the prose established; promotions of accidental canon into a bio or worldbuilding entry; manifest additions for new named elements; **closures of Tier 1 chains** in primer §2 whose payoff this chapter delivered. Same contract as `blueprint`: canon is the author's, and the skill appends only on approval. This is also how chains close; without it, closure is manual and will not happen.
 - **`outline/_index.md`** regenerated per `store.md` so the chapter's **Notes** column reflects the new state; bump `chapters_noted` in its frontmatter.
 - Snapshots of any overwritten notes file, per `store.md`.
-- Updates to `state.md`: `What Exists → Notes` line, `Summary`, `Last Session`, `What's Next` (including the count of unintegrated proposals, which is what tells the author a `canon-sync` is owed).
+- Updates to `state.md`: `What Exists → Notes` line, `Summary`, `Last Session` (two or three sentences and the journal entry's path), `What's Next` (including the count of unintegrated proposals, which is what tells the author a `canon-sync` is owed).
+- The session's journal entry, extended (or created, when this is the session's first write; `references/file-schemas.md` § `journal/`): the chapters noted, the drift flagged, and the proposals raised.
 
 ## Preconditions
 
@@ -80,7 +81,7 @@ Then the subagent checks the Blueprint's plants and established state against th
 
 ### 5. Show, write, wire, report
 
-Show the notes file (or the batch in chunks). After approval: snapshot per `store.md`, `store.write`, regenerate the index per `store.md`, update `state.md`. The report carries the proposals as a single approve-or-decline list:
+Show the notes file (or the batch in chunks). After approval: snapshot per `store.md`, `store.write`, regenerate the index per `store.md`, extend the session's journal entry, update `state.md`. The report carries the proposals as a single approve-or-decline list:
 
 > Notes complete for ch 1–6. Proposals (nothing written yet):
 > - **Revelation Log**: Muppy · Ch 1 — cheatgrass awn in the webbing of a forepaw, still in at chapter's end. Append to `characters/muppy.md`?

@@ -15,10 +15,12 @@ Always follow `references/plan-first.md` — load context, propose a plan in pla
 
 When the user gives you the go-ahead, you create or update:
 
-- `state.md` — living dashboard (see `references/file-schemas.md`), with `storage_kind` in its frontmatter mirroring the config
-- `.storystormer/config.json` — project metadata, including `project_type`, `target_word_count` (config owns the target; `state.md` mirrors it) and `storage`: a new project gets the store the author chose (§ Where a new project lives), `"storage": { "kind": "local" }` for the open folder; an existing project keeps the `storage` block it has
+- `state.md` — the slim dashboard (`references/file-schemas.md` § `state.md`): its four sections, and the frontmatter that owns every field the author sees: `title`, `slug` (the kebab-case of the title, set now and never changed), `project_type`, `target_word_count`, `genre`, `logline`, `stage`, `initial_maturity`, `created`, `last_session`, `session_count: 1`, `surfacing_mode`
+- `.storystormer/config.json` — exactly two keys, `layout: 2` and `storage` (`references/file-schemas.md` § `.storystormer/config.json`): a new project gets the store the author chose (§ Where a new project lives), `"storage": { "kind": "local" }` for the open folder; an existing project keeps the `storage` block it has. Nothing in it mirrors `state.md`
 - `.storystormer/` — supporting subfolders, each created with its first file (no empty folders)
-- `decisions.md` and `questions.md` — seeded from any materials you found
+- `decisions/_index.md` and `questions/_index.md` — always for a new project (a re-run keeps the ones it has), with their heading and table header and no rows (`references/file-schemas.md` § `decisions/_index.md`, § `questions/_index.md`), so every layout-2 project has them; where the binding computes them, they are skipped
+- Decision and question entries — `decisions/D-###.md` and `questions/Q-###.md`, one per item the author approved from the intake, each created with `new` and given its index row
+- `journal/<date>-s01.md` — the session's journal entry: what init found, how it triaged, what it created and extracted, and why (`references/file-schemas.md` § `journal/`)
 - `treatment.md` — only when the user brings in an existing treatment-like document and explicitly agrees to a copy-and-clean-up step. **Never generate a new treatment at init.**
 - `primer.md` — **never at init.** The primer is a five-section structured craft dossier (~4,500w, hard ceiling 5,000) that's always built by `treatment-update`'s Phase 1 (first-run mode handles construction from intake materials). Init leaves `primer.md` absent so the first `treatment-update` run populates it.
 - `manifest.md` — only if there's enough character/world content to seed it
@@ -98,7 +100,7 @@ Before doing anything else, ask 2–4 questions to fill in what the materials do
 
 - **Working title** — confirm or ask.
 - **Project type** — novel / novella / short story / screenplay / **series**, written as `novel`, `novella`, `short_story`, `screenplay`, `series` (series triggers the multi-book folder structure in `references/series.md`).
-- **Target length** — the book's target word count (for a series, a default for every book plus any book that differs, each written to its `books` entry). If the author has no number, use the type's default from `references/file-schemas.md` § Target word count and the derived budgets (120,000 for a novel) and say so; it becomes `target_word_count`, which every word budget is computed from.
+- **Target length** — the book's target word count (for a series, a default for every book, written to the root `state.md`, plus any book that differs, written to that book's `books/<slug>/state.md`). If the author has no number, use the type's default from `references/file-schemas.md` § Target word count and the derived budgets (120,000 for a novel) and say so; it becomes `target_word_count`, which every word budget is computed from.
 - **Genre** — confirm or ask. If hybrid, capture both.
 - **The user's intent for this session** — *"what would you like to focus on first?"* lets them redirect from your default plan.
 - **Where the story lives** — a new project only, and only when there is a choice (§ Where a new project lives).
@@ -110,7 +112,7 @@ For a mid-project mess (decisions made elsewhere, partial files), also ask:
 If the project is a **series**, ask additional intake questions:
 - **How many books** — confirm the planned count (typical: trilogy = 3; longer series may be open-ended).
 - **Book slugs and titles** — `book-1`, `book-2`, `book-3` are the conventional slugs; titles can be working titles or TBD. Slugs are stable (used in file paths); titles can change.
-- **Which book is the current focus** — the user names which book they're actively working on; that becomes `current_focus` in `state.md` and `config.json`.
+- **Which book is the current focus** — the user names which book they're actively working on; that becomes `current_focus` in the root `state.md`.
 - **Shared-vs-per-book intake materials** — if the user brought in materials, ask which apply to which book (or to the series as a whole). Brain dumps and decisions get sorted into their right scope.
 
 ### 4. Propose a plan, in plain language
@@ -119,9 +121,9 @@ Tell the user what you're going to do based on the stage and what you found, and
 
 > **Stage: `brain-dump`.** Here's what I'm planning:
 >
-> - Set up `state.md`, `decisions.md`, `questions.md`, and the `.storystormer/` folder.
-> - Extract about 8–10 decisions from your `notes.md` (things like "protagonist is a forensic accountant" and "set in the present day") and seed them into `decisions.md` — I'll show you the list for confirmation before locking it in.
-> - Extract the implicit open questions (the things you wrote as "???" or "maybe X or Y") into `questions.md` with priorities.
+> - Set up `state.md`, the `decisions/` and `questions/` folders, the session journal, and the `.storystormer/` folder.
+> - Extract about 8–10 decisions from your `notes.md` (things like "protagonist is a forensic accountant" and "set in the present day") and record each as a decision — I'll show you the list for confirmation before locking it in.
+> - Extract the implicit open questions (the things you wrote as "???" or "maybe X or Y") as triaged questions with priorities.
 > - Skip generating a primer or treatment for now — we don't have enough decided yet. We'll work through the questions in priority order and build the primer once the shape is clearer.
 > - Synthesize a genre reference for literary thrillers on the side, so I can surface obligatory scenes and pitfalls as we go.
 >
@@ -130,8 +132,8 @@ Tell the user what you're going to do based on the stage and what you found, and
 > **Stage: `treatment-drafted`.** What I'm seeing: the treatment is in good shape for Acts 1 and 2 but Act 3 is mostly bullet sketches; you've named four characters but only one has a bio. My plan:
 >
 > - Set up `state.md` showing where things are (treatment v1 imported, 1 bio exists, manifest needs seeding).
-> - Read the treatment carefully and extract ~15 decisions into `decisions.md` so they're a first-class log.
-> - Surface 5–8 open questions from the Act 3 gaps as triaged entries in `questions.md`.
+> - Read the treatment carefully and extract ~15 decisions so they're first-class records.
+> - Surface 5–8 open questions from the Act 3 gaps as triaged question entries.
 > - Seed `manifest.md` from the characters and locations the treatment names — lean inventory entries, no bios yet.
 > - **Not** regenerate the primer or treatment in this init pass — the treatment is solid; we'll refine it once Act 3 is decided.
 >
@@ -143,20 +145,22 @@ For non-trivial migrations (more than a handful of files to move, write, or stam
 
 - **Bios migration subagent** — reads each bio in the intake scope, normalizes to the canonical character bio schema (`references/file-schemas.md` § Character bio files), writes to `characters/<slug>.md`, stamps frontmatter (name, `type` from the project's People types, version: 1, last_updated; an old `tier:` becomes the matching `type`). Returns completion log per file.
 - **Worldbuilding migration subagent** — assigns each file a worldbuilding type (the fourteen defaults in `references/frameworks.md` § Worldbuilding), writes to `worldbuilding/<type-slug>/<slug>.md` (the type's kebab-case slug: `locations/`, `magic/`), stamps frontmatter (`category` = the type name verbatim). When the workspace already has a `worldbuilding/` folder (re-running init on an existing project), it applies the old-folder rule in `references/file-schemas.md` § Worldbuilding files: it finds existing entries under any folder, old plural forms included, and proposes moving them to the new folders rather than writing duplicates. Returns completion log per file.
-- **Decisions extraction subagent** — reads brain dumps and legacy decision-style files, produces *proposals* for `decisions.md` entries (D-### IDs, summaries, details, source, scope in series mode). The subagent **does not write** — it returns proposed entries; the main session reviews them and decides what gets written. This is judgment work that stays in main.
-- **Questions extraction subagent** — same pattern as decisions: returns proposed Q-### entries (each with a 3–7 word title, one of the seven categories, `Source: ingestion`); main session reviews before writing to `questions.md`.
+- **Decisions extraction subagent** — reads brain dumps and legacy decision-style files, produces *proposals* for decision entries (D-### IDs, topics, summaries, details, `source: intake`, scope in series mode). The subagent **does not write** — it returns proposed entries; the main session reviews them and decides what gets written. This is judgment work that stays in main.
+- **Questions extraction subagent** — same pattern as decisions: returns proposed Q-### entries (each with a 3–7 word title, one of the seven categories, `source: ingestion`); main session reviews before writing any question entry.
 - **History snapshot subagent** — snapshots superseded folders per `store.md` (where the binding’s `history` is `native` or `versions`, nothing is snapshotted and it writes only the intake archives and the mapping), writes the `intake-original-names.md` mapping table. Returns the snapshot inventory.
 - **Prose chapter stash subagent** (if applicable, see § Prose Chapter Stashing) — moves detected prose into `chapters/` with canonical naming, preserves content verbatim, adds minimal frontmatter, returns the original-to-canonical mapping.
 
 The main session aggregates the completion logs from each subagent for the final § Report step.
 
-**Sequential after aggregation.** After all parallel subagents complete, the main session does the writes that depend on aggregated state: `state.md` (the dashboard reflects everything the subagents did), `series.md` stub (in series mode), `manifest.md` (depends on what bios and worldbuilding subagents migrated), `decisions.md` and `questions.md` (only after the main session has reviewed and approved the proposed entries from the extraction subagents).
+**First, before any subagent writes:** the config (`layout: 2`, `storage`), the two header-only indexes, and the session's journal entry, `journal/<date>-s01.md`, created with `new`. The journal entry starts with what init found and how it triaged it, and each later step extends it.
+
+**Sequential after aggregation.** After all parallel subagents complete, the main session does the writes that depend on aggregated state: the decision and question entries (only after the main session has reviewed and approved the proposed entries from the extraction subagents; each a `new` write, then its index row), `manifest.md` (depends on what bios and worldbuilding subagents migrated), `series.md` stub (in series mode), the journal entry extended with what was created and the IDs logged, and `state.md` last (the dashboard reflects everything the subagents did; Last Session is two or three sentences and the journal entry's path).
 
 **Direct execution in main session** when the migration is trivial — a fresh empty folder with 2–3 files of intake material. The subagent dispatch overhead isn't worth it for tiny operations.
 
-For decision and question extraction in either mode (subagent-dispatched or main-session-direct), lean on the model — it's a judgment task, not a regex match. The user reviews the proposed entries before they're written. Never auto-write decisions or questions from intake without user review; the user's voice in those logs matters.
+For decision and question extraction in either mode (subagent-dispatched or main-session-direct), lean on the model — it's a judgment task, not a regex match. The user reviews the proposed entries before they're written. Never auto-write decisions or questions from intake without user review; the user's voice in those entries matters.
 
-The proposed IDs are provisional: a store that assigns numbers may use a different one and reports it, and from then on that reported ID is the entry's ID. Adopt it before writing any marker or cross-reference (a question's `**Dependencies**`, a `resolved (D-###)`, the report).
+The proposed IDs are provisional: the collections start empty at `D-001` and `Q-001`, and the store assigns each number when the entry is created with `new` and reports it (`references/store.md` § New entries). From then on that reported ID is the entry's ID. Adopt it before writing any marker or cross-reference (a question's `**Dependencies**`, a `resolved_by`, the journal, the report).
 
 ### 6. Report
 
@@ -315,17 +319,18 @@ If the user is starting (or has) a multi-book series, init builds the **series f
 
 In series mode:
 
-- `state.md` and `.storystormer/config.json` at root carry `project_type: series`, the `books: [...]` list, and `current_focus`.
+- The root `state.md` carries `project_type: series`, the `books: [...]` list, `current_focus`, and the series-level `target_word_count`. The config is the same two keys as a standalone project's.
 - `series.md` is scaffolded at root with stub sections (Series Arc, Series Theme, Per-Book Synopses, Cross-Book Setups, Continuity Concerns). Real content lands when the user actually develops the arc — at init, it's a stub like primer is for standalone projects.
-- `manifest.md`, `decisions.md`, `questions.md`, `characters/`, `worldbuilding/`, `research/` all live at root (shared across books).
-- A `books/<slug>/` folder is created **for each book named in intake**. Inside each, a `state.md` is created with `parent_series: <title>` in its frontmatter and `stage: concept` (or whatever stage the user reports for that specific book). Per-book primer.md, treatment.md, outline/ are NOT created at init — they appear lazily via the relevant skills, same as standalone projects.
+- `manifest.md`, `decisions/`, `questions/`, `journal/`, `characters/`, `worldbuilding/`, `research/` all live at root (shared across books).
+- A `books/<slug>/` folder is created **for each book named in intake**. Inside each, a `state.md` is created with the book's `title`, `parent_series: <title>` in its frontmatter, its own `target_word_count` only when the book differs from the series default, and `stage: concept` (or whatever stage the user reports for that specific book). Per-book primer.md, treatment.md, outline/ are NOT created at init — they appear lazily via the relevant skills, same as standalone projects.
 
 For intake of an existing standalone project that the user wants to convert to series:
 - Confirm with the user before restructuring — this is a non-trivial move.
 - Snapshot the current standalone folder per `store.md` before any file moves.
 - `store.move` existing `primer.md`, `treatment.md`, and each document under `outline/` and `chapters/` (enumerate with `store.list(outline/**)` and `store.list(chapters/**)`; chapter content is per-book, `references/series.md`) into `books/book-1/`, keeping their relative paths. A document the binding computes is skipped by `move` and follows its rows.
-- Keep `manifest.md`, `decisions.md`, `questions.md`, `characters/`, `worldbuilding/` at root (they were already shared in spirit).
-- Update each existing decision and question to add `Scope: book-1` (since pre-series, they were all about the one book).
+- Keep `manifest.md`, `decisions/`, `questions/`, `journal/`, `characters/`, `worldbuilding/` at root (they were already shared in spirit).
+- Update each existing decision and question entry to add `scope: book-1` (since pre-series, they were all about the one book), and give both indexes their Scope column.
+- The project's `target_word_count` becomes the series default in the root `state.md`, whose `title` becomes the series' title; book 1's own title goes in `books/book-1/state.md`. The `slug` never changes.
 - Create stubs for book 2 and book 3 (or however many the user is planning).
 - Scaffold `series.md` from the existing book-1 content plus any new series-arc decisions the user volunteers.
 
@@ -337,12 +342,13 @@ For first-time series intake (the user starts fresh), the flow is the same as st
 - **Generate a treatment from scratch.** If the user brings in an existing treatment-like document, you can copy-and-clean-up to `treatment.md` with the user's explicit agreement. Otherwise, leave `treatment.md` absent — `treatment-update`'s Phase 2 first-run mode handles construction.
 - **Generate `series.md` content beyond a stub.** Just like primer, the real content of `series.md` is developed through brainstorming. At init, scaffold the sections with `[To be developed]` markers and the book list; don't invent series arc content.
 - Run any other heavy generation. This is a scaffolding and triage skill.
-- Modify materials the user brought in (the brain dump, the existing treatment). Read them; reference them in `decisions.md`; do not rewrite them. The exception is the explicit copy-and-clean-up step above.
+- Modify materials the user brought in (the brain dump, the existing treatment). Read them; reference them in the decision entries; do not rewrite them. The exception is the explicit copy-and-clean-up step above.
 
 ## References
 
 - `references/plan-first.md` — universal plan-first behavior
-- `references/file-schemas.md` — exact file formats (including `series.md` schema and series-mode state.md fields)
+- `references/file-schemas.md` — exact file formats (including § Entry collections, § `journal/`, § `.storystormer/config.json`, `series.md` schema and series-mode state.md fields)
+- `references/store.md` — § New entries (the store assigns and reports each entry's number)
 - `references/reading-discipline.md` — read in full, don't grep; Zoom Selection for choosing artifact tier
 - `references/subagent-pattern.md` — **read on every non-trivial intake** (survey + execute dispatch, parallel subagents, return schema)
 - `references/series.md` — **read when scaffolding a series project** (multi-book folder structure, shared-vs-per-book artifacts, scoping)
