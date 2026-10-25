@@ -16,7 +16,8 @@ There is **no copy elsewhere**. The web-app repo (`bobbylanefilms/storystormer`)
 2. **Run `claude plugin validate .`** — must pass before commit. (This is what catches schema breaks like an invalid `source`.)
 3. **Commit + push.**
 4. **Land it on `main`.** Cowork installs from the repo's **default branch (`main`)** — it does *not* see feature branches. If you developed on a branch, merge it to `main` and push `main` (a fast-forward when the branch is strictly ahead). **Skip this and Cowork stays on whatever `main` last had, no matter how many times you re-sync** — this is the most common "why is it still showing the old version" cause.
-5. **Re-sync in Cowork** (update marketplace → update plugin → restart session).
+5. **Re-sync in Cowork:** on **claude.ai → Manage Marketplaces**, press **Sync** on `storystormer-plugin` first, then update the plugin in the desktop app and restart the session. The desktop app installs the account's copy of the marketplace, which refreshes only on that Sync; without it, **Update** keeps reinstalling the old version (2026-10-25: stuck at 0.20.1 through three releases). The Manage Marketplaces page is also the only place that shows the server's warnings.
+6. **Skill descriptions:** no angle brackets (claude.ai strips them as tags: write `chNN-outline.md`, not `ch<NN>-outline.md`) and at most 1,024 characters. A command never shares a skill's name (Cowork skips the command).
 
 Doc-only changes (README, this file, PLUGIN-GUIDE.md) do **not** need a version bump — they aren't shipped plugin components.
 
