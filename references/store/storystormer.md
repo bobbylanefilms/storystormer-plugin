@@ -152,7 +152,7 @@ The well-known root is the connected account: `list_projects` lists every projec
 5. **Journal and `state.md`.** `edit` the journal entry (its revision from step 2), then `write` `state.md` last: the text read at the step’s start with What’s Next and Last Session changed, and that read’s revision as `if_revision` (§ Quirks).
 6. **Open.** The report links `treatment.md` with its `openUrl` from step 4.
 
-## Worked example: `decision-capture` logs a decision
+## Worked example: `decisions` logs a decision
 
 1. **Journal.** A fresh session has no entry yet: its first write is `write` `journal/<today>-s??.md` with `mode: "new"`, and the result’s `path` is the entry.
 2. **Number.** No listing needed for the number: `write` `decisions/D-069.md` (the skill’s proposal from the last listing it holds, or any) with `mode: "new"`. The app logged one meanwhile, so the result is `number: 70`, `proposed: 69`, `path: decisions/D-070.md`, and the server has written `D-070` into the entry. The report says `D-070 (proposed D-069)`.

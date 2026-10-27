@@ -1,6 +1,6 @@
 ---
 name: pre-outline-session
-description: Run the conversation that commits a story to a chapter structure — pick the structural framework, lock the act boundaries, and map the treatment's scenes onto a numbered chapter spine. Use when the user says "let's outline the story," "set up the chapter structure," "map the treatment to chapters," "how many chapters should this be," "decide the act breaks," "build the outline scaffold," or otherwise signals they're ready to move from prose-shaped treatment to chapter-shaped outline. Produces `outline/structure.md` — the contract that `outline-chapters` then fulfills chapter by chapter.
+description: Commit the story to a chapter structure (framework, act breaks, numbered chapter spine). Use for “let’s outline the story,” “how many chapters should this be,” “map the treatment to chapters.”
 ---
 
 # StoryStormer · Pre-Outline Session
@@ -28,7 +28,7 @@ Always follow `references/plan-first.md` — propose what you intend to focus on
 The natural entry points:
 
 - **Treatment is refined, major bios exist, manifest is current** — the project is structurally ready, the user wants to commit to chapters. This is the canonical case.
-- **User brought in pre-existing chapter outlines, beat sheets, or scene lists** at intake and `storystormer-init` flagged them. Pre-outline maps them into `outline/structure.md` shape.
+- **User brought in pre-existing chapter outlines, beat sheets, or scene lists** at intake and `init` flagged them. Pre-outline maps them into `outline/structure.md` shape.
 - **User wants to revise an existing structure** — change the chapter count, swap frameworks, shift act boundaries. This re-opens `structure.md` and re-derives the spine.
 
 Decline (or push back) when:
@@ -88,7 +88,7 @@ Once the user agrees, do the reads. Then in your first response after the readin
 - **The treatment's POV pattern** — single-POV, multi-POV, observer protagonist, ensemble. The bios tell you who has interiority developed.
 - **The primer's framework commitment** — exact phrasing from Section 3.
 - **Open structural questions** — any open question entry that affects the spine.
-- **Load-bearing reveals** — from the primer's §2 Reveal Architecture, which is the book's **chain register**: each entry names what is hidden, where it plants, when it lands, and why it matters. Every registered chain needs a spine slot at both ends. When the spine fixes a plant or payoff chapter that §2 still carries as `TBD`, record it as a decision via `decision-capture` so the next `treatment-update` writes it into §2 and it survives primer regeneration. Ordinary setup/payoff chains the treatment carries are the treatment's business; they don't get a register row unless they pass §2's admission criteria (load-bearing, long-range, not self-evident).
+- **Load-bearing reveals** — from the primer's §2 Reveal Architecture, which is the book's **chain register**: each entry names what is hidden, where it plants, when it lands, and why it matters. Every registered chain needs a spine slot at both ends. When the spine fixes a plant or payoff chapter that §2 still carries as `TBD`, record it as a decision via `decisions` so the next `treatment-update` writes it into §2 and it survives primer regeneration. Ordinary setup/payoff chains the treatment carries are the treatment's business; they don't get a register row unless they pass §2's admission criteria (load-bearing, long-range, not self-evident).
 
 ### 5. The framework conversation
 

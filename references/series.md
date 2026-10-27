@@ -327,14 +327,14 @@ A skill working on book 2 reads `books/book-2/state.md` for its primary state, a
 
 All v0.2 skills work in series mode with **only path-resolution changes**. The skill bodies are unchanged in their core behavior:
 
-- `storystormer-init` — recognizes series intent during intake, scaffolds the series folder structure, asks the user for book slugs and titles.
+- `init` — recognizes series intent during intake, scaffolds the series folder structure, asks the user for book slugs and titles.
 - `brainstorm-session` — reads the focused book's primer/treatment plus the shared `series.md`, `manifest.md`, and relevant character bios. Captures decisions with `scope` field. Watches for cross-book triggers (a decision that affects another book).
 - `treatment-update` — operates on the focused book's primer and treatment. Surfaces series-level impact in the report (does this change affect book N+1's starting state?). Recommends a `series.md` update if cross-book effects are material.
 - `character-bio` — reads from `characters/<slug>.md` at root (shared). Adds per-book sub-arc sections in series mode. Cross-references all books' treatments for the character's appearances.
 - `manifest-sync` — operates on the shared `manifest.md`. Reads all books' treatments to build the `Appears in:` field per entry.
 - `pre-outline-session` — operates on the focused book. Reads the focused book's primer/treatment plus `series.md` for cross-book setups that need spine slots.
 - `outline-chapters` — operates on the focused book. Reads `books/<focus>/outline/structure.md` and writes `books/<focus>/chapters/chapter-NN/ch<NN>-outline.md`.
-- `decision-capture` — creates decision entries in the shared `decisions/` with a `scope` field. Asks the user about scope when ambiguous.
+- `decisions` — creates decision entries in the shared `decisions/` with a `scope` field. Asks the user about scope when ambiguous.
 
 In each case, the *what to read* and *what to write* sections of the skill body apply as written; the only change is that per-book paths get prefixed with `books/<current_focus>/`.
 

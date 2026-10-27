@@ -1,17 +1,30 @@
 ---
-name: decision-capture
-description: Record a settled choice about the story as a new decision entry in `decisions/`. Use when the user has settled something the story now treats as true ("OK, Marlowe and Voss are siblings," "the story is in present tense first-person," "Act 2 ends with the locket reveal"), or asks to "log a decision," "record that," "save this choice," "add to the decisions." Captures one decision at a time with stable IDs and links to affected characters / questions / treatment.
+name: decisions
+description: Capture a settled story choice as a decision entry, or list, filter and show past decisions. Use when the author settles something (“OK, they’re siblings”) or says “log that,” “show my decisions,” “what’s unintegrated?”
 ---
 
-# StoryStormer · Decision Capture
+# StoryStormer · Decisions
 
-You are recording a decision as a new entry, `decisions/D-###.md`. A decision is anything the story now treats as true — character facts, plot choices, structural moves, thematic commitments, voice/POV decisions, anything.
+The decisions collection: `decisions/_index.md` and the `decisions/D-###.md` entries (`references/file-schemas.md` § `decisions/`). A decision is anything the story now treats as true — character facts, plot choices, structural moves, thematic commitments, voice/POV decisions, anything.
 
-This skill is small and focused. It's typically called inline from `brainstorm-session` as decisions surface, but the user can also invoke it directly.
+Two jobs, one skill. **Capturing** a new decision is the main one: it's typically done inline from `brainstorm-session` as decisions surface, and the author can ask for it directly or run `/storystormer:decisions add`. **Reviewing** the collection (listing, filtering, showing, superseding) is the rest; `/storystormer:decisions` with no argument lists recent decisions.
 
-Always follow `references/plan-first.md` — confirm the wording with the user before locking it in, unless the user is dictating a decision word-for-word.
+Resolve the store first per `references/store.md` if the session hasn't; every read and write goes through its operations.
 
-## What you do
+## Reviewing decisions
+
+**The index answers listing and filtering.** Read `decisions/_index.md` first and read an entry only when the answer needs its text (a summary, a `show`). When a listing of `decisions/` is in hand anyway and its IDs disagree with the index's, rebuild the index first (`references/file-schemas.md` § Who rebuilds an index). Reviewing modifies nothing.
+
+- **List (the default, `/storystormer:decisions`):** summary counts from the index at the top (total; unintegrated, where the Integrated column isn't `yes`; superseded and retracted), then the 10 most recent decisions with ID, date, type, topic and integration status from the index, and each one's one-sentence summary from its entry. Short, scannable.
+- **Filter (`filter [type]`):** every decision of one type (`plot`, `character`, `worldbuilding`, `structure`, `theme`, `premise`, `process`) from the index's Type column, recent first. Older entries with a retired type count under the type it maps to (`setting` and `mechanics` → `worldbuilding`, `voice` and `genre` → `theme`, `methodology` → `process`).
+- **Show (`show D-019`):** the full text of one entry, `store.read(decisions/D-019.md)`.
+- **Unintegrated (`unintegrated`):** every decision whose Integrated column isn't `yes`. At 5 or more, suggest `treatment-update`.
+
+**Changing an existing decision.** Editing one in place is rare (decisions are normally settled once): `store.edit` the entry, note the edit in its `Details` with the date, and replace its index row if a listed field changed. To supersede, capture the new decision (below), then set the old entry's `superseded_by` to the new ID as the store reported it and update its index row. To withdraw a decision with nothing replacing it, set `retracted` to today and update its index row so the Superseded by column reads `retracted` (`references/file-schemas.md` § `decisions/_index.md`). Never delete an entry. Any change here is noted in the session's journal entry (created first if this is the session's first write; `references/file-schemas.md` § `journal/`).
+
+## Capturing a decision
+
+You are recording a decision as a new entry, `decisions/D-###.md`. Always follow `references/plan-first.md` — confirm the wording with the user before locking it in, unless the user is dictating a decision word-for-word.
 
 ### 1. Read what's there
 

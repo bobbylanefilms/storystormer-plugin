@@ -53,7 +53,7 @@ The principle: **choose the highest zoom that answers your question, EXCEPT when
 
 When the plugin adds prose generation in a later release, two new zoom levels will sit at the bottom of the table, both inside the chapter folder: `chapters/chapter-NN/ch<NN>-prose.md` (the chapter's actual prose, ~3,000–5,000w) and a derived `chapters/chapter-NN/ch<NN>-summary.md` (~1,000w, written *after* prose lands to capture what the chapter actually does — distinct from the outline's *intent* version). The same Zoom Selection rule applies: load the chapter-summary when you need "what happened in chapter N for continuity," and the full prose only when you're revising chapter N itself.
 
-**Until prose-writing functionality lands**, the chapter folders hold only the outline stage (`ch<NN>-outline.md`) plus any prose `storystormer-init` stashed at intake (`ch<NN>-prose.md`). Any skill that encounters stashed prose in v0.x should treat it as **read-only reference material** — the prose-writing skills don't exist yet to coordinate writes against the outline/treatment/canon layers, so editing stashed prose risks creating inconsistencies that can't yet be detected automatically. If a skill needs to reference what the prose actually says (e.g., to verify a character's voice in the prose matches the bio's Voice Fingerprint), full-read the chapter's prose file; do not modify it.
+**Until prose-writing functionality lands**, the chapter folders hold only the outline stage (`ch<NN>-outline.md`) plus any prose `init` stashed at intake (`ch<NN>-prose.md`). Any skill that encounters stashed prose in v0.x should treat it as **read-only reference material** — the prose-writing skills don't exist yet to coordinate writes against the outline/treatment/canon layers, so editing stashed prose risks creating inconsistencies that can't yet be detected automatically. If a skill needs to reference what the prose actually says (e.g., to verify a character's voice in the prose matches the bio's Voice Fingerprint), full-read the chapter's prose file; do not modify it.
 
 ## Substantive mode
 
@@ -64,7 +64,7 @@ For any heavy-context turn — treatment update, manifest sync, bio creation or 
 3. **Quote at least one verbatim sentence from each file you used.** The quote must be exact, with surrounding context. Format: `> "exact passage" — `filename`, section`. Hallucinations don't come with quotes. This is non-negotiable.
 4. **If you find yourself wanting to infer something about a character, plot, or world element that isn't directly stated in a file you've read, stop and tell the user.** Do not infer from genre conventions, training priors, or surrounding context. The source material is the only source of truth. Surface the gap as a question, not an answer.
 
-Skills that **always** operate in substantive mode for their primary generation turn: `treatment-update`, `manifest-sync`, `character-bio` (when generating or expanding), `worldbuilding-entry` (when generating or expanding), `storystormer-init` (intake reading).
+Skills that **always** operate in substantive mode for their primary generation turn: `treatment-update`, `manifest-sync`, `character-bio` (when generating or expanding), `worldbuilding-entry` (when generating or expanding), `init` (intake reading).
 
 Skills that **conditionally** enter substantive mode: `brainstorm-session` enters it when the conversation spans the whole story (treatment-quality reviews, sweeping consistency checks). For focused conversations on a single character or scene, the per-file policy below governs instead.
 

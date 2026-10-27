@@ -29,9 +29,9 @@ init  →  ┌─ the development loop ─────────────�
 
 | Skill | What it does | When |
 |---|---|---|
-| **Init** (`storystormer-init`) | Triages whatever is in your project and scaffolds the workspace | Once, at the start |
+| **Init** (`init`) | Triages whatever is in your project and scaffolds the workspace | Once, at the start |
 | **Brainstorm** (`brainstorm-session`) | The conversation where the story gets developed | Constantly — this is the core |
-| **Decisions** (`decision-capture`) | Logs anything the story now treats as true | Inline, as things get settled |
+| **Decisions** (`decisions`) | Logs anything the story now treats as true | Inline, as things get settled |
 | **Treatment update** (`treatment-update`) | Regenerates the primer + treatment from accumulated decisions | Every ~5+ new decisions |
 | **Character bio** (`character-bio`) | Deep, tiered character dossiers | As characters mature |
 | **Worldbuilding entry** (`worldbuilding-entry`) | Locations, organizations, magic systems, objects… | As elements mature |
@@ -170,7 +170,7 @@ Say **"let's outline the story"** or **"set up the chapter structure."** This is
 4. **POV strategy.** Who holds POV, in what distribution, under what rules.
 5. **The Chapter Spine.** The payoff: a short block per chapter (*"Chapter 17: The Locket"*, its status, POV, and act, then 60–100 words on what happens and what changes), built act by act so you can react in batches. Every entry traces to a treatment scene — where the treatment has a gap, the slot gets an honest marker instead of invented content. `structure.md` is written in the web app's pre-outline format, so the app can read the same spine.
 
-If the treatment isn't ready — too many unresolved structural markers, no primer, missing POV bios — the skill says so and recommends what to resolve first, rather than building a spine on sand. Structural commitments get logged as decisions as you go; the session ends with `outline/structure.md` written and `/storystormer:outline` available as a read-only dashboard of outline progress from here on.
+If the treatment isn't ready — too many unresolved structural markers, no primer, missing POV bios — the skill says so and recommends what to resolve first, rather than building a spine on sand. Structural commitments get logged as decisions as you go; the session ends with `outline/structure.md` written and `/storystormer:status outline` available as a read-only dashboard of outline progress from here on.
 
 ### Outline chapters: filling in the spine
 
@@ -196,7 +196,7 @@ A chapter outline with zero unresolved markers is prose-ready — which is exact
 | Command | What it does |
 |---|---|
 | `/storystormer:status` | The dashboard — what exists, current stage, what's next |
-| `/storystormer:outline` | Outline-specific status — spine, chapters drafted, blockers, staleness |
+| `/storystormer:status outline` | Outline-specific status — spine, chapters drafted, blockers, staleness |
 | `/storystormer:decisions` | Browse the decisions (filter, show one, add) |
 | `/storystormer:questions` | The open-question queue by priority |
 | `/storystormer:checkpoint` | Manual snapshot of every document the plugin manages (canon, outline, chapters, voice, config) — take one before anything risky |

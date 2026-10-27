@@ -1,6 +1,6 @@
 ---
 name: treatment-update
-description: Regenerate the story primer (five standard sections) and treatment from current decisions, character bios, and worldbuilding. Use when the user says "update the treatment," "refresh the primer," "rewrite the treatment with what we've decided," "let's see where we are," or after a stretch of brainstorming has accumulated unintegrated decisions. Runs as a two-phase pipeline (primer → treatment) in substantive mode to prevent confabulation.
+description: Regenerate the primer and treatment from current decisions, bios and worldbuilding. Use for “update the treatment,” “refresh the primer,” “let’s see where we are,” or when unintegrated decisions pile up.
 ---
 
 # StoryStormer · Treatment Update

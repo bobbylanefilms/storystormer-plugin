@@ -1,6 +1,6 @@
 ---
 name: character-bio
-description: Generate or expand a character bio at the right tier — major (~1400-1900w), supporting (~700w), or minor (~350w). Use when the user asks to "develop a character," "create a bio for [name]," "write up [name]," "flesh out a character," "promote a minor character to supporting / major," or "I have a character mentioned in the treatment but no bio yet." Auto-tiers the bio based on story role; lets the user override the tier.
+description: Write or expand a character bio at the right tier (major, supporting or minor). Use for “develop a character,” “write up Marlowe,” “flesh out a character,” or promoting a character to a higher tier.
 ---
 
 # StoryStormer · Character Bio

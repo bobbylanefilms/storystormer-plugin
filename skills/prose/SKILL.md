@@ -1,6 +1,6 @@
 ---
 name: prose
-description: Generate or revise a chapter's prose — the actual fiction, written from the chapter's Blueprint, outline, the author's voice inputs, and the story so far. Three modes — generate ("write chapter 17," "write the next chapter," "write the next three chapters"), revise ("revise the chapter 8 prose," "this paragraph in ch 5 is flat"), and Kit Bash ("kit bash chapter 17," "generate three drafts of ch 12," "consolidate the drafts") — competing multi-model drafts reviewed via in-file annotations, then consolidated. Assembles context in the voice-conditioning order (writing sample first, prior POV-matched prose last) and generates in a clean-window subagent, writing `chapters/chapter-NN/chNN-prose.md`. Refuses if a chapter has no outline — run `outline-chapters` first; works best when the chapter has a Blueprint (run `blueprint` first), falling back to raw canon when it doesn't. This is the prose stage: `outline → blueprint → prose → notes`.
+description: Write or revise a chapter’s prose, or Kit Bash competing drafts and consolidate them. Use for “write chapter 17,” “write the next chapter,” “revise the ch 8 prose,” “kit bash chapter 12.”
 ---
 
 # StoryStormer · Prose
@@ -148,7 +148,7 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 
 - **Post-prose refinement passes** — dialogue / editorial / de-AI / style-polish. Those are the `notes` stage (post-POC). This skill does generation and surgical *revision*, not the full refinement suite.
 - **Author or edit canon, the Blueprint, the outline, the treatment, or the primer.** It *reads* them. If generation reveals an upstream problem — a Blueprint that's gone stale against canon, an outline beat that contradicts a bio, a treatment fact that's wrong — it surfaces the flag and recommends the owning skill (`blueprint`, `outline-chapters`, `treatment-update`, `character-bio`). It does not fix upstream inline.
-- **Append to the Revelation Log.** If the prose realizes a chapter-anchored state change, that's a `decision-capture` / canon-skill proposal, not a prose-stage write.
+- **Append to the Revelation Log.** If the prose realizes a chapter-anchored state change, that's a `decisions` / canon-skill proposal, not a prose-stage write.
 - **Resolve open questions or invent missing plot.** A chapter outline carrying a marker generates with the gap carried forward and flagged — it doesn't confabulate the answer.
 
 ## References

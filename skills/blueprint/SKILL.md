@@ -1,6 +1,6 @@
 ---
 name: blueprint
-description: Generate or revise a chapter Blueprint — the self-contained continuity brief a prose-writing agent works from. It answers "what must I not get wrong?" for one chapter: every surfacing character and worldbuilding element tiered to the right resolution with scene-current state fused in, the chapter's shape and dialogue anchors, the plants stated as imperatives, and nothing about any chapter after it. Two modes — batch ("blueprint Act 1," "prep chapters 1–10 for prose," "build the briefs for the next act") and single-chapter ("blueprint chapter 17," "rebuild the chapter 23 brief," "the chapter 12 blueprint is missing Linda's grief"). Reads each chapter's `chNN-outline.md` for content plus the Canon it needs and writes `chapters/chapter-NN/chNN-blueprint.md`. Refuses if a chapter has no outline — run `outline-chapters` first. This is the pre-prose stage: `outline → blueprint → prose → notes`.
+description: Build or revise a chapter Blueprint, the continuity brief prose is written from (outline → blueprint → prose → notes). Use for “blueprint Act 1,” “prep chapters 1–10 for prose,” “rebuild the chapter 23 brief.”
 ---
 
 # StoryStormer · Blueprint
@@ -152,7 +152,7 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 - **Write prose.** That's `prose`.
 - **Author canon.** Missing canon → recommend `character-bio` / `worldbuilding-entry`. The one write-adjacent action is *proposing* Revelation Log lines.
 - **Edit the outline, treatment, primer, or structure.** Surface and recommend the owning skill.
-- **Resolve open questions.** Carry the pointer; `brainstorm-session` / `decision-capture` resolve.
+- **Resolve open questions.** Carry the pointer; `brainstorm-session` / `decisions` resolve.
 - **Carry general craft** when a style guide exists, or **anything about a later chapter**, ever.
 
 ## References

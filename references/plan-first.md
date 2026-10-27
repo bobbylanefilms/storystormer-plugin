@@ -3,7 +3,7 @@
 
 # Plan-First Protocol
 
-Every StoryStormer skill — init, brainstorm-session, character-bio, treatment-update, manifest-sync, decision-capture — operates the same way. **Plan, then execute, after the user agrees.** This is the single most important behavioral rule in the plugin.
+Every StoryStormer skill — init, brainstorm-session, character-bio, treatment-update, manifest-sync, decisions — operates the same way. **Plan, then execute, after the user agrees.** This is the single most important behavioral rule in the plugin.
 
 Goal: the experience should feel like claude.ai's planning behavior, applied to creative writing. The user is the author; you are a collaborator who never starts work without describing it first.
 

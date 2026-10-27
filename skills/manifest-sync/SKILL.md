@@ -1,6 +1,6 @@
 ---
 name: manifest-sync
-description: Refresh the manifest — the lean inventory of all characters and worldbuilding elements in the story. Use when the user says "refresh the manifest," "sync the manifest," "what's in the story?," "list all the characters and worldbuilding elements," or after a treatment update that renamed, added, or reshaped characters / locations / organizations / objects. The manifest is a structural index, not a deep document — a capped one-line description and a development status per element, in the app's Manifest format.
+description: Refresh the manifest, the one-line inventory of every character and worldbuilding element. Use for “sync the manifest,” “what’s in the story?,” or after a treatment update renames or adds elements.
 ---
 
 # StoryStormer · Manifest Sync

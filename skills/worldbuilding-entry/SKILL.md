@@ -1,6 +1,6 @@
 ---
 name: worldbuilding-entry
-description: Generate or expand a worldbuilding entry — a location, organization, magic system, object, vehicle, weapon, technology, creature, culture, history, religion, language, or lore element. Use when the user asks to "create an entry for [element]," "write up the Mercer Foundation / the Shimmer / the Heights," "develop the magic system," "expand the worldbuilding," or "I have a worldbuilding element mentioned in the treatment but no entry yet." Picks Reference Note vs Full Entry based on whether the element is novel/fictional or real-world-with-modifications.
+description: Write or expand a worldbuilding entry (a location, organization, magic system, object, technology, culture or lore). Use for “write up the Mercer Foundation,” “develop the magic system,” “expand the worldbuilding.”
 ---
 
 # StoryStormer · Worldbuilding Entry

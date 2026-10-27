@@ -1,6 +1,6 @@
 ---
 name: notes
-description: Record what a chapter's prose actually committed — the post-prose stage of the chapter pipeline (`outline → blueprint → prose → notes`). Writes `chapters/chapter-NN/chNN-notes.md` with the as-written synopsis, divergences from the outline, the harvest of concrete particulars the chapter put on the page, accidental canon the prose invented, and a structured end-state block the next chapter's Blueprint inherits. Proposes canon changes and chain closures; writes none without approval. Single-chapter ("take notes on chapter 17," "record what ch 3 committed") and batch ("notes for Act 1," "catch up the notes") modes. Runs on prose at `revising` or `revised` status; warns when run on a first draft. Records; never evaluates.
+description: Record what a chapter’s prose actually committed (synopsis, divergences, accidental canon, end state). Use for “take notes on chapter 17,” “record what ch 3 committed,” “catch up the notes for Act 1.”
 ---
 
 # StoryStormer · Notes
@@ -92,7 +92,7 @@ Show the notes file (or the batch in chunks). After approval: snapshot per `stor
 >
 > 5 unintegrated proposals now outstanding (in each file's § Proposals); a `canon-sync` pass is owed before blueprinting Act 2.
 
-Proposals are not applied here; they wait in § Proposals for `canon-sync`, which reads notes per span, classifies what has accumulated, adjudicates contradictions by authorship, and applies on approval. (If the user wants a single obvious Revelation Log line appended immediately, do it, mark the item `applied`, and say so.) The owning mechanisms are: Revelation Log lines appended directly (as `blueprint` does); promotions routed to `character-bio` / `worldbuilding-entry`; manifest additions to `manifest-sync`; chain closures as a logged decision via `decision-capture` so the strike survives primer regeneration.
+Proposals are not applied here; they wait in § Proposals for `canon-sync`, which reads notes per span, classifies what has accumulated, adjudicates contradictions by authorship, and applies on approval. (If the user wants a single obvious Revelation Log line appended immediately, do it, mark the item `applied`, and say so.) The owning mechanisms are: Revelation Log lines appended directly (as `blueprint` does); promotions routed to `character-bio` / `worldbuilding-entry`; manifest additions to `manifest-sync`; chain closures as a logged decision via `decisions` so the strike survives primer regeneration.
 
 ## Series Mode
 
@@ -104,7 +104,7 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 
 - **Evaluate the prose.** No craft judgments, no pacing opinions, no quality adjectives.
 - **Edit the prose.** A divergence flagged drift is the author's to resolve through `prose` revise mode.
-- **Write canon.** It proposes; `canon-sync`, `character-bio`, `worldbuilding-entry`, `manifest-sync`, and `decision-capture` apply on approval.
+- **Write canon.** It proposes; `canon-sync`, `character-bio`, `worldbuilding-entry`, `manifest-sync`, and `decisions` apply on approval.
 - **Maintain a central harvest file.** The harvest lives inside each chapter's notes; searching it is a `store.list(chapters/*/ch*-notes.md)` across chapters. Derived artifacts can be large; maintained artifacts must be small.
 - **Read a later chapter.** Ever.
 

@@ -1,6 +1,6 @@
 ---
 name: outline-chapters
-description: Generate, correct, or revise per-chapter outlines against the chapter spine. A chapter outline is the author's prose account of what happens in the chapter — frontmatter plus a flowing narrative body, nothing else — and it is the only artifact in the pipeline that carries the author's voice. Three modes — batch generation ("outline Act 1," "draft the outlines for chapters 1 through 10," "fill in the next act"); single-chapter revision of an AI-generated outline ("expand chapter 17," "tighten chapter 23," "this chapter's tension feels low"); and correction-only passes over author-written outlines ("check chapter 1 against canon," "audit my outline"), which may fix facts but never regenerate. Reads `outline/structure.md` as the contract and writes `chapters/chapter-NN/chNN-outline.md`. Refuses if no `outline/structure.md` exists — run `pre-outline-session` first.
+description: Write, revise or fact-check per-chapter outlines against the chapter spine. Use for “outline Act 1,” “expand chapter 17,” “tighten chapter 23,” “check my chapter 1 outline against canon.”
 ---
 
 # StoryStormer · Outline Chapters

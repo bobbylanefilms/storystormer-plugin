@@ -13,9 +13,9 @@ Fourteen skills that load via progressive disclosure when your intent matches:
 
 | Skill | Loads when you… |
 |---|---|
-| `storystormer-init` | start a new story, drop materials into a folder, or want to "set up StoryStormer here" |
+| `init` | start a new story, drop materials into a folder, or want to "set up StoryStormer here" |
 | `brainstorm-session` | want to talk through the story, develop characters/themes/structure, work open questions |
-| `decision-capture` | settle something the story now treats as true — captured as its own decision entry |
+| `decisions` | settle something the story now treats as true (captured as its own decision entry), or want to browse past decisions |
 | `character-bio` | create or expand a character bio (auto-tiered: major / supporting / minor) |
 | `worldbuilding-entry` | create or expand a worldbuilding entry — location, object, organization, magic system, etc. |
 | `treatment-update` | regenerate the primer and treatment after a stretch of brainstorming |
@@ -28,7 +28,7 @@ Fourteen skills that load via progressive disclosure when your intent matches:
 | `canon-sync` | reconcile a span of chapters' notes back into canon — absorb accretion, adjudicate contradictions by authorship, surface drift, produce a manuscript fix list and the Blueprints to rebuild |
 | `migrate` | move a story to another home (a local folder, Dropbox, Notion or the StoryStormer app), leaving the original in place; or upgrade an older project in place |
 
-Plus seven slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline` and `/storystormer:switch` (series mode only). `/storystormer:migrate` is the `migrate` skill’s own invocation.
+Plus four slash commands for direct control: `/storystormer:status` (`/storystormer:status outline` for where outlining stands), `/storystormer:checkpoint`, `/storystormer:questions` and `/storystormer:switch` (series mode only). `/storystormer:init`, `/storystormer:decisions` and `/storystormer:migrate` are those skills’ own invocations.
 
 ## How-to guides
 
@@ -211,6 +211,12 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.25.0 changed over v0.24.0
+
+- **A lighter footprint in every session.** Every enabled plugin puts each skill’s description into every session’s skill listing, which has a fixed budget; StoryStormer’s ran about 10,000 characters and pushed other skills’ descriptions out. Each description is now a short intent line with its trigger phrases (about 200 characters; the rules they used to carry already live in the skills), and the plugin lists 18 entries instead of 21.
+- **`init` and `decisions` are skills with their own commands.** The `storystormer-init` skill is now `init`, so `/storystormer:init` invokes it directly. `decision-capture` and the `/storystormer:decisions` command are one `decisions` skill: capture a decision in conversation as before, or run `/storystormer:decisions` to list, `filter`, `show` or check `unintegrated` ones.
+- **`/storystormer:outline` is now `/storystormer:status outline`.** Same report, one command fewer.
 
 ### What v0.24.0 changed over v0.23.0
 

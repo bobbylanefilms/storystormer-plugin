@@ -38,7 +38,7 @@ Show the composed entry; confirm; create it with `store.write(questions/Q-###.md
 
 ### `/storystormer:questions resolve Q-019`
 
-Mark a question as resolved. Ask which decision resolves it (or invoke `decision-capture` first if the resolution hasn't been logged yet). In one edit of the entry, set `status: resolved` and `resolved_by: D-NNN`, add a `**Resolution**:` line with the answer, and update or remove any old `**Status**:` body line so the two agree; then replace its index row. Don't delete the question — the history matters.
+Mark a question as resolved. Ask which decision resolves it (or invoke `decisions` first if the resolution hasn't been logged yet). In one edit of the entry, set `status: resolved` and `resolved_by: D-NNN`, add a `**Resolution**:` line with the answer, and update or remove any old `**Status**:` body line so the two agree; then replace its index row. Don't delete the question — the history matters.
 
 ### `/storystormer:questions invalidate Q-019`
 

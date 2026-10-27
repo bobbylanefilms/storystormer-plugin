@@ -110,7 +110,7 @@ Frontmatter, then exactly these four sections, and nothing else: no H1, no `## P
 - **The old chapter-notes line:** a `- **Notes** — …` line that counts chapter notes (`4/40 recorded`, stale notes, open proposals) is the old form of the **Chapter notes** line, not a carried line: any skill rewriting What Exists replaces it with the computed Chapter notes line. Lines are classified by content first; a label counts as already seen only among lines of the same kind, so an author’s `**Notes**` line about `notes/` stays carried beside it.
 - **Carried lines:** a `- **<Label>** — …` line in What Exists whose label isn’t a computed one but names documents the project holds (`**Research**`, `**Handoff**`, `**Methodology**`, or a `**Notes**` line about the project’s `notes/` folder) is the author’s: it is kept as written, after the computed lines, whenever What Exists is rewritten. A free paragraph or a sub-bullet in What Exists is not carried: a store or skill that recomputes the section (`migrate`, the Notion binding) drops it.
 - The counts in **What Exists** are computed from the store (bios in `characters/`, entries under `worldbuilding/`, chapter files under `chapters/`, decisions and questions from `decisions/_index.md` and `questions/_index.md`, which always exist in layout 2), never carried forward from the last write. Recount whenever the line is rewritten.
-- **Storage** appears in two cases, as the last line of What Exists (the root `state.md` in a series): a local project whose folder sits inside a sync service (`storystormer-init` § Where a new project lives), where it names the service and the folder; and the Dropbox hybrid, a Dropbox project with a `local_root` (`migrate` § The hybrid), where it says the folder is the synced copy of the Dropbox root (**Storage** — this folder is the synced copy of `/StoryStormer/the-good-dog` in Dropbox, at `~/Dropbox/StoryStormer/the-good-dog`). Whenever What Exists is rewritten in a session bound to the folder, recompute it from the folder’s current absolute path with the same check, so a folder moved out of a sync service drops the line; a session bound through the connector keeps the line as it stands; `migrate` sets it. Every other project omits it.
+- **Storage** appears in two cases, as the last line of What Exists (the root `state.md` in a series): a local project whose folder sits inside a sync service (`init` § Where a new project lives), where it names the service and the folder; and the Dropbox hybrid, a Dropbox project with a `local_root` (`migrate` § The hybrid), where it says the folder is the synced copy of the Dropbox root (**Storage** — this folder is the synced copy of `/StoryStormer/the-good-dog` in Dropbox, at `~/Dropbox/StoryStormer/the-good-dog`). Whenever What Exists is rewritten in a session bound to the folder, recompute it from the folder’s current absolute path with the same check, so a folder moved out of a sync service drops the line; a session bound through the connector keeps the line as it stands; `migrate` sets it. Every other project omits it.
 - **A new session** is the first write of a conversation. It creates that session’s journal entry first (§ `journal/`, which says how the number is chosen), then writes `state.md` with that number as `session_count` and today as `last_session` (the root `state.md` in a series). Every later write in the same session that changes Last Session also extends the same journal entry, so the two never disagree.
 - Bumping a numbered version (primer / treatment / manifest / bio) → update the corresponding line in **What Exists**.
 - Resolving a question → update **What's Next** to point to the next priority question.
@@ -548,7 +548,7 @@ storystormer_kind: question
 - **`title`:** required, 3–7 words naming the question, the label the app and the index list it under. Old logs often have none; the layout upgrade then writes a short label taken from the question’s own words. It is the only author-facing text the upgrade composes, and its preflight says so.
 - **`status`:** `open`, `resolved` or `invalidated`. Any other wording an older log used (`half-resolved`, `open, but no longer unmechanised`) is read as the closest of the three, and its words stay in the body as written.
 - **`resolved_by`:** the `D-###` that resolved it, set with `status: resolved`; also allowed on an invalidated question when a decision is what invalidated it. Omitted while it is open. This field is the one link between a question and the decision that settled it; a decision’s `**Resolves**:` line, where an older entry has one, stays in its body as written.
-- **`source`:** one of the app's values (`decision_capture`, `treatment_update`, `manual`, `ai_marker`, `question_triage`, `agent_tool`, `ingestion`) or `plugin`. The plugin writes `treatment_update` for a question `treatment-update` logs, `ingestion` for one `storystormer-init` extracts from intake materials, `manual` for one the user dictates through `/storystormer:questions add`, and `plugin` for any other skill (`brainstorm-session`, `pre-outline-session`, `outline-chapters`, and so on). A question that came from the app keeps its value.
+- **`source`:** one of the app's values (`decision_capture`, `treatment_update`, `manual`, `ai_marker`, `question_triage`, `agent_tool`, `ingestion`) or `plugin`. The plugin writes `treatment_update` for a question `treatment-update` logs, `ingestion` for one `init` extracts from intake materials, `manual` for one the user dictates through `/storystormer:questions add`, and `plugin` for any other skill (`brainstorm-session`, `pre-outline-session`, `outline-chapters`, and so on). A question that came from the app keeps its value.
 
 **May be absent on a carried-over entry:** `date` and `source`, when the old log never recorded them. `title` is always present (the upgrade writes one).
 
@@ -596,7 +596,7 @@ The **Resolved by** link points into `decisions/`, so from this index it is `../
 ---
 date: 2026-05-11
 session: 7
-skills: [brainstorm-session, decision-capture, treatment-update]
+skills: [brainstorm-session, decisions, treatment-update]
 decisions: [D-017, D-018]
 questions: [Q-014, Q-019]
 source: plugin
@@ -699,7 +699,7 @@ Tags are optional; no tags is better than a tag that groups nothing. The app nor
 
 ## Voice assets (`voice/`)
 
-The `voice/` folder holds the two **project-owned voice inputs** the `prose` skill reads to condition output toward the author's voice (the third input, the operational prose prompt, is plugin-owned — `references/prose-spec.md`). Both are plain markdown, both optional, both user/author-authored. The folder and its `README.md` are scaffolded by `storystormer-init` (the README explains both files and the read order; it is the warning that a project has no voice inputs yet). The two input files are created by the author, or placed by init when intake materials clearly contain them; never stubbed, because downstream skills key on their existence; never auto-generated from AI prose.
+The `voice/` folder holds the two **project-owned voice inputs** the `prose` skill reads to condition output toward the author's voice (the third input, the operational prose prompt, is plugin-owned — `references/prose-spec.md`). Both are plain markdown, both optional, both user/author-authored. The folder and its `README.md` are scaffolded by `init` (the README explains both files and the read order; it is the warning that a project has no voice inputs yet). The two input files are created by the author, or placed by init when intake materials clearly contain them; never stubbed, because downstream skills key on their existence; never auto-generated from AI prose.
 
 ```
 voice/
@@ -871,7 +871,7 @@ The rest are plugin keys the app ignores:
 - **`word_count`** is the body's count (frontmatter and `## Synopsis` excluded), recorded on every write; it is the cheap half of author-revision detection.
 - **`source`** names what the outline was built from (a treatment scene, a decision, the author).
 - **`revision`**: a free-text note on what changed and why.
-- **`structure_version`**, **`treatment_version`**, **`primer_version`**: the provenance stamps `/storystormer:outline` uses to flag stale outlines. An outline the app wrote has none; a missing stamp means the freshness is unknown, which is reported as unverified, never as stale or current.
+- **`structure_version`**, **`treatment_version`**, **`primer_version`**: the provenance stamps `/storystormer:status outline` uses to flag stale outlines. An outline the app wrote has none; a missing stamp means the freshness is unknown, which is reported as unverified, never as stale or current.
 
 POV type and tense are not outline keys; they live on the prose (`pov_type`, `tense`), as they do on the app's scene.
 
@@ -1184,9 +1184,9 @@ Pattern: `ch<NN>-<stage>-v<version>-<YYYY-MM-DD>.md`. The `version` is the super
 
 **Prose as-written copies.** Prose also keeps `ch<NN>-prose-v<version>-as-written.md`: the content exactly as the plugin wrote that version, written right after the prose write itself by whoever made it (the generation, surgical-edit or consolidation subagent, whose brief carries the path). Kit Bash draft files under `kitbash/` never get one; only the consolidated prose write does. It is the baseline § Prose → Detecting an author revision compares against, since the replace-time snapshot captures whatever the file holds by then, author edits included. It does not replace that snapshot: the copy lacks the frontmatter set after the write (`word_count`, `status`, `authorship`), so the replace-time snapshot is always taken. Scene-split prose keeps one per scene file (`ch<NN>-scene-MM-v<version>-as-written.md`).
 
-### Intake-stashed prose (`storystormer-init`)
+### Intake-stashed prose (`init`)
 
-The only chapter content created in the POC comes from `storystormer-init`'s intake, when the user brings in pre-existing prose. Init stashes each detected chapter as `chapters/chapter-NN/ch<NN>-prose.md` (markdown), or preserves the original extension (`ch<NN>-prose.docx`, etc.) when the source isn't markdown — flagged in the report, since prose-writing skills will require markdown.
+The only chapter content created in the POC comes from `init`'s intake, when the user brings in pre-existing prose. Init stashes each detected chapter as `chapters/chapter-NN/ch<NN>-prose.md` (markdown), or preserves the original extension (`ch<NN>-prose.docx`, etc.) when the source isn't markdown — flagged in the report, since prose-writing skills will require markdown.
 
 For intake-stashed prose, init populates only `chapter`, `title` (from the file's H1 or filename if discoverable), `version: 1`, `last_updated`, and `authorship: author_written`. The remaining frontmatter fields (`pov`, version stamps, `status`, `synopsis`) are populated by the `prose` skill when it next touches the chapter — e.g. it can synopsize stashed prose into the `synopsis` field so the chapter joins the story-so-far. **Body**: raw user content — preserve verbatim, do not rewrite or normalize.
 

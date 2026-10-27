@@ -1,6 +1,6 @@
 ---
 name: brainstorm-session
-description: Run a story-development conversation with the user — talk through character, theme, plot, structure, or any open question about the story. Use when the user wants to "brainstorm," "work on the story," "develop a character / theme / scene," "talk through Act 2," "figure out the protagonist's motivation," "work through the open questions," or otherwise signals they want collaborative thinking on the story rather than execution of a specific task. Loads primer, treatment, manifest, decisions, and open questions for context.
+description: Talk through the story with the author (character, theme, plot, structure, open questions). Use for “let’s brainstorm,” “work on the story,” “talk through Act 2,” or any collaborative thinking rather than a specific task.
 ---
 
 # StoryStormer · Brainstorm Session
@@ -25,7 +25,7 @@ Lean hard on `references/philosophy.md` — character and theme matter as much a
 
 4. **Have the conversation.** This is the part you don't script. Lean on the philosophy, surface frameworks when they help, surface genre material from `genre-reference.md` when relevant. Keep it grounded in *this* story — the user's characters, the user's themes, the user's voice.
 
-5. **Capture decisions aggressively as they surface.** Lean toward capturing rather than deferring — the decisions are the story's spine, and gaps in them cost more than overcapture does. When something is settled — *"OK, Marlowe and Voss are estranged siblings, not strangers"* — invoke the `decision-capture` skill (or just write the entry yourself if it's clear-cut, the way `decision-capture` does: a `new` entry, its index row, the journal). Always tell the user *"capturing that as decision D-019"* so they see the decisions forming. See `skills/decision-capture/SKILL.md` § "When to capture" for the full trigger list — character Lies and Ghosts, thematic articulations, worldbuilding rules with constraints, relationship dynamics, faction definitions, and "let's move on" transitions all warrant capture.
+5. **Capture decisions aggressively as they surface.** Lean toward capturing rather than deferring — the decisions are the story's spine, and gaps in them cost more than overcapture does. When something is settled — *"OK, Marlowe and Voss are estranged siblings, not strangers"* — invoke the `decisions` skill (or just write the entry yourself if it's clear-cut, the way `decisions` does: a `new` entry, its index row, the journal). Always tell the user *"capturing that as decision D-019"* so they see the decisions forming. See `skills/decisions/SKILL.md` § "When to capture" for the full trigger list — character Lies and Ghosts, thematic articulations, worldbuilding rules with constraints, relationship dynamics, faction definitions, and "let's move on" transitions all warrant capture.
 
 6. **Update question status.** When a question is resolved by a decision, edit its entry once: set `status: resolved` and `resolved_by` to the decision’s ID as the store reported it, add a `**Resolution**:` line, and update or remove any old `**Status**:` body line so the two agree. Then replace its row in `questions/_index.md`. A new question you log goes in as a `new` entry with its index row (in a series, with `scope` and `affects_books` per `references/series.md` § Scoping decisions and questions).
 
@@ -62,7 +62,7 @@ Lean hard on `references/philosophy.md` — character and theme matter as much a
 9. **End the session cleanly.** When the user signals they're done (or you sense the session is winding down), run the closing protocol — don't just write a one-line state update and stop. The close is where the session's value gets crystallized into artifacts.
 
    - **Take stock.** Run a final milestone progress check (see Step 7). What was accomplished — key decisions made, characters developed, thematic progress, plot shifts. Be specific; *"we made progress on Marlowe"* is not stock-taking, *"we locked in Marlowe's Ghost, her relationship to Voss, and her position on the central thematic question"* is.
-   - **Capture remaining decisions.** If anything surfaced in the final stretch that hasn't been logged, invoke `decision-capture` (or do it inline) so nothing from the tail of the session is lost.
+   - **Capture remaining decisions.** If anything surfaced in the final stretch that hasn't been logged, invoke `decisions` (or do it inline) so nothing from the tail of the session is lost.
    - **Suggest a treatment update** if unintegrated decisions have accumulated since the last refresh. *"That's eight new decisions since the treatment was last refreshed — want to run a `treatment-update` now, or hold off?"* Don't auto-execute; offer.
    - **Suggest a manifest sync** if new characters, worldbuilding elements, or organizations were introduced. *"We added three new characters and the Mercer Foundation today — want to run `manifest-sync` to capture them in the inventory?"*
    - **Note stage progress.** If the project's `stage` in `state.md` should advance (e.g., `brainstorming` → `treatment-drafted` after a comprehensive first treatment lands; `treatment-drafted` → `treatment-refined` after a polish-pass), call it out: *"We've moved out of brainstorming — next session probably wants to be a treatment review."*
@@ -146,7 +146,7 @@ Cross-book switching is permitted mid-session if the conversation organically pi
 - Generate a primer or treatment. That's `treatment-update`.
 - Create a character bio. That's `character-bio`.
 - Refresh the manifest. That's `manifest-sync`.
-- Capture a decision in isolation. That's `decision-capture` (but you'll often call it inline as decisions surface). When a decision is a chapter-anchored reveal or state change (a character revealed as the antagonist in ch 35, an injury that persists, a building destroyed), it's also a **Revelation Log** candidate — propose adding the chapter-keyed line to the affected Canon entry (see `references/canon-schemas.md` § Revelation Log).
+- Capture a decision in isolation. That's `decisions` (but you'll often call it inline as decisions surface). When a decision is a chapter-anchored reveal or state change (a character revealed as the antagonist in ch 35, an injury that persists, a building destroyed), it's also a **Revelation Log** candidate — propose adding the chapter-keyed line to the affected Canon entry (see `references/canon-schemas.md` § Revelation Log).
 - Regenerate `series.md` structurally. Patch sections inline when cross-book material accumulates; trigger a full `series.md` regeneration only when the series arc has structurally shifted (handle in a focused session, not folded into a per-book brainstorm).
 
 This skill is the *conversation* — the others are *artifacts produced from* the conversation.

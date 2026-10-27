@@ -97,7 +97,7 @@ The well-known root is `/StoryStormer/`; each child folder holding `.storystorme
 1. **Slug check.** List `/StoryStormer/` as § Locate step 1 does (the raw folder listing, not Locate’s project list) and look for a child named the slug, compared case-insensitively. None → go on. One that holds `.storystormer/config.json` (§ Locate step 2’s read) is a project: stop and ask the author for another slug or whether they meant that project. One without a config is someone’s folder: ask before writing into it.
 2. **Folders.** `create_folder` `/StoryStormer/` (when the listing found none; `ALREADY_EXISTS` means it is there), then `/StoryStormer/<slug>/`. `ALREADY_EXISTS` on the slug folder means it appeared since the check (another session): run step 1 again before writing anything.
 3. **Project.** Continue `init` through the contract, in `file-schemas.md`’s order for `init` (§ `journal/`): the stored config `{"layout": 2, "storage": {"kind": "dropbox", "root": "/StoryStormer/<slug>"}}`, the two header-only indexes, `journal/<date>-s01.md`, the rest, and `state.md` last (its `slug` is the folder name). Intake keeps this binding’s text-only rule (§ Quirks).
-4. **Pointer.** With an open folder that is not this root’s synced copy, `init` writes the pointer there (`storystormer-init` § Where a new project lives).
+4. **Pointer.** With an open folder that is not this root’s synced copy, `init` writes the pointer there (`init` § Where a new project lives).
 
 ## Quirks
 
@@ -107,7 +107,7 @@ The well-known root is `/StoryStormer/`; each child folder holding `.storystorme
 - **Size:** `fetch` reads up to 5 MiB; `create_file` writes up to 5 MB (`CONTENT_TOO_LARGE`), so a file between the two can be read but not written back (§ Write step 3). No story document comes near either; if one does, stop and report it rather than split it.
 - **Async jobs:** `delete` and `move` answer `in_progress` even for one file, and per-entry failures appear only in `check_job_status`’s result. Never treat the first response as the outcome.
 - **The trailing newline:** `fetch` adds one `\n` to every file it reads; `create_file` stores content byte for byte. Normalize the end on every read (§ Operations, `read`), or anchors, the no-op check and read-then-write snapshots drift by a line each round trip; the guard and the no-op check ignore a missing or extra final newline anyway (`store.md` § Operations). A `copy` snapshot never meets it.
-- **Text only:** `create_file` writes UTF-8 text, so a binary file (a `.docx`, an image) can’t be stored; `init` leaves a binary intake original in the open folder and names it (`storystormer-init` § Prose Chapter Stashing). Text formats (`.txt`, `.fountain`, `.rtf`) store as they are.
+- **Text only:** `create_file` writes UTF-8 text, so a binary file (a `.docx`, an image) can’t be stored; `init` leaves a binary intake original in the open folder and names it (`init` § Prose Chapter Stashing). Text formats (`.txt`, `.fountain`, `.rtf`) store as they are.
 - **New file, new id:** every overwrite deletes the file and creates another, so its `file_id` and `url` change. Never keep either across a write.
 
 ## Worked example: `treatment-update` replaces `treatment.md`
@@ -118,7 +118,7 @@ The well-known root is `/StoryStormer/`; each child folder holding `.storystorme
 4. **No extra confirmation.** The plan-first approval covered the snapshot copy (or creates), the delete and the create. The report names the snapshot folder and Dropbox’s Deleted files as the way back, once.
 5. **Open.** `fetch` `treatment.md` and give the author its `url`.
 
-## Worked example: `decision-capture` logs a decision
+## Worked example: `decisions` logs a decision
 
 1. **Number.** `list('decisions/*.md')`: one non-recursive `list_folder` of `decisions/`. The highest is `D-068`, so the skill proposes `D-069`.
 2. **Create.** `create_file` `decisions/D-069.md`. Another session created `D-069` since that listing, so the answer is `ALREADY_EXISTS`: no retry, no fetch. The binding puts `D-070` in the path and the `id` and creates again, which lands, and reports `D-070 (proposed D-069)`. The skill uses `D-070` from here on.

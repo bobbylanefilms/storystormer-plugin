@@ -17,7 +17,7 @@ There is **no copy elsewhere**. The web-app repo (`bobbylanefilms/storystormer`)
 3. **Commit + push.**
 4. **Land it on `main`.** Cowork installs from the repo's **default branch (`main`)** — it does *not* see feature branches. If you developed on a branch, merge it to `main` and push `main` (a fast-forward when the branch is strictly ahead). **Skip this and Cowork stays on whatever `main` last had, no matter how many times you re-sync** — this is the most common "why is it still showing the old version" cause.
 5. **Re-sync in Cowork:** on **claude.ai → Manage Marketplaces**, press **Sync** on `storystormer-plugin` first, then update the plugin in the desktop app and restart the session. The desktop app installs the account's copy of the marketplace, which refreshes only on that Sync; without it, **Update** keeps reinstalling the old version (2026-10-25: stuck at 0.20.1 through three releases). The Manage Marketplaces page is also the only place that shows the server's warnings.
-6. **Skill descriptions:** no angle brackets (claude.ai strips them as tags: write `chNN-outline.md`, not `ch<NN>-outline.md`) and at most 1,024 characters. A command never shares a skill's name (Cowork skips the command).
+6. **Skill descriptions:** aim for about 200 characters, trigger phrases first; rules and procedure go in the body. Every enabled plugin's descriptions share one listing budget in every session (1% of the context window in Claude Code), and an overflow drops other skills' descriptions, so a long one costs the user's other skills too. Hard limits: at most 1,024 characters, no angle brackets (claude.ai strips them as tags: write `chNN-outline.md`, not `ch<NN>-outline.md`), and no `: ` in an unquoted description (it breaks the YAML). A command never shares a skill's name (Cowork skips the command), and a new entry should earn its place in the listing: prefer a mode on an existing skill or command.
 
 Doc-only changes (README, this file, PLUGIN-GUIDE.md) do **not** need a version bump — they aren't shipped plugin components.
 
@@ -33,7 +33,7 @@ Doc-only changes (README, this file, PLUGIN-GUIDE.md) do **not** need a version 
 ## Layout
 
 - `skills/<name>/SKILL.md` — 14 progressive-disclosure skills.
-- `commands/<name>.md` — 7 `/storystormer:*` slash commands (a command never shares a skill’s name: Cowork skips the command when it does, so `/storystormer:migrate` is the `migrate` skill itself).
+- `commands/<name>.md` — 4 `/storystormer:*` slash commands (a command never shares a skill’s name: Cowork skips the command when it does, so `/storystormer:init`, `/storystormer:decisions` and `/storystormer:migrate` are those skills themselves).
 - `references/*.md` — shared docs cited by skills (single-edit-propagates; don't inline-duplicate into skills).
 - `references/store.md` — the store contract (file operations, capabilities line, resolution); `references/store/*.md` — one binding per backend: `local.md`, `dropbox.md`, `notion.md`, and `storystormer.md` (the StoryStormer app, through its MCP server).
 - `.mcp.json` — bundles the StoryStormer connector (`https://storystormer.vercel.app/api/mcp`, HTTP) so a Claude Code install connects it; claude.ai, Cowork and ChatGPT add it as a custom connector (README).

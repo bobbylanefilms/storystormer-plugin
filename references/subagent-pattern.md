@@ -9,7 +9,7 @@ The fix is to dispatch the bulk reads to subagents whose context is sacrificed t
 
 This doctrine applies to any skill that would otherwise consume substantial main context on substantive-mode reads. The four skills currently using it:
 
-- `storystormer-init` — folder survey and execution
+- `init` — folder survey and execution
 - `treatment-update` — bio reads and decisions filtering
 - `manifest-sync` — per-book treatment reads in series mode
 - `character-bio` — per-book treatment reads in series mode

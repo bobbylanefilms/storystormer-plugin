@@ -1,6 +1,6 @@
 ---
-name: storystormer-init
-description: Scaffold a StoryStormer story workspace in the open folder, or in Dropbox, Notion or the StoryStormer app when the author chooses one; or pick up a project the StoryStormer app hands off (a pasted prompt such as "Continue my StoryStormer project … (project id …)", in any wording). Use when the user starts a new story project, drops materials into a folder and wants to set up a structured workspace, or says things like "set up StoryStormer here," "start a new novel," "I have a brain dump / partial treatment / mess of materials — help me organize," or "init this project." Handles any starting state — empty folder, single logline, freeform brain dump, half-finished treatment, or a tangled mid-project mess with some characters bios written and the third act undefined.
+name: init
+description: Set up a new StoryStormer story workspace from any starting materials, or pick up a project the StoryStormer app hands off (“Continue my StoryStormer project…”). Use for “start a new novel,” “set up StoryStormer here,” “organize my brain dump.”
 ---
 
 # StoryStormer · Init

@@ -20,14 +20,14 @@ storystormer-plugin/                 (repo root = marketplace root = plugin root
 │   └── marketplace.json             # one-entry catalog (name: storystormer-plugin)
 │                                    #   the single plugin's "source" is "./"
 ├── skills/                          # 14 progressive-disclosure skills
-│   ├── storystormer-init/  brainstorm-session/  decision-capture/
+│   ├── init/  brainstorm-session/  decisions/
 │   ├── character-bio/  worldbuilding-entry/  treatment-update/
 │   ├── manifest-sync/  pre-outline-session/  outline-chapters/
 │   ├── blueprint/  prose/  notes/   # outline → blueprint → prose → notes
 │   ├── canon-sync/                  # notes back into canon
 │   ├── migrate/                     # move a project between storage backends
-├── commands/                        # 7 slash commands (/storystormer:*)
-│   ├── init  status  checkpoint  decisions  questions  outline  switch  migrate
+├── commands/                        # 4 slash commands (/storystormer:*)
+│   ├── status  checkpoint  questions  switch
 ├── references/                      # 22 shared docs the skills cite by relative path,
 │                                    #   plus store/ (one binding per backend)
 ├── README.md                        # user-facing
