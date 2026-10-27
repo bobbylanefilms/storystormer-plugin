@@ -212,6 +212,12 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 
 These may follow in later versions once the kernel proves out.
 
+### What v0.24.0 changed over v0.23.0
+
+- **The StoryStormer binding drops the workarounds the server no longer needs.** `edit` now covers a whole document, frontmatter and a canon entry’s Revelation Log included; `state.md` is written last from the read taken at the start of the step; a journal entry’s body is relabeled when its session number moves; `list_projects` returns each project’s `slug`; and the server’s version of an unfinished batch can be finished or dismissed (`finish_batch`, `dismiss_batch`).
+- **Seven decision types.** `premise` and `process` join the app’s five; `methodology` is retired into `process`. A `process` decision governs how the author works and never reaches the primer or treatment.
+- The live acceptance run against the server is still to come.
+
 ### What v0.23.0 added over v0.22.1
 
 - **The StoryStormer app as a home.** A story can now live in the StoryStormer web app itself: `/storystormer:init` offers it when the StoryStormer connector is connected, and every document the plugin writes appears in the app at once, with the app keeping versions of the story documents and chapter files. Each report links the documents it wrote, and `/storystormer:checkpoint` reports what changed since a point in time.
@@ -283,7 +289,7 @@ Fixes from SB5’s live test of every backend on a full project (The Good Dog):
 
 ### What v0.17.0 added over v0.16.1
 
-- **File formats match the StoryStormer web app's**, so a project can move between the two without translation (groundwork for the app's storage backend). Decisions use the app's five types (`plot`, `character`, `worldbuilding`, `structure`, `theme`; the retired `setting`, `mechanics`, `voice`, `genre` map onto them) and questions its seven Title Case categories, a required 3–7 word `Title`, and a `Source`. Bios carry `type:` (a People type: Protagonist, Antagonist, Major, Supporting, Minor by default) instead of `tier:`, with `references/canon-schemas.md` as the one body contract. Worldbuilding folders and `category:` use the app's fourteen type names (`locations/`, `magic/`; `category: Locations`). Bios and entries may carry up to three `tags`.
+- **File formats match the StoryStormer web app's**, so a project can move between the two without translation (groundwork for the app's storage backend). Decisions use the app's seven types (`plot`, `character`, `worldbuilding`, `structure`, `theme`, `premise`, `process`; the retired `setting`, `mechanics`, `voice`, `genre`, `methodology` map onto them) and questions its seven Title Case categories, a required 3–7 word `Title`, and a `Source`. Bios carry `type:` (a People type: Protagonist, Antagonist, Major, Supporting, Minor by default) instead of `tier:`, with `references/canon-schemas.md` as the one body contract. Worldbuilding folders and `category:` use the app's fourteen type names (`locations/`, `magic/`; `category: Locations`). Bios and entries may carry up to three `tags`.
 - **`outline/structure.md` is the app's pre-outline document**: header lines, a leading `## Structure Notes` section, then `### Chapter N: Title` blocks with `**Status:**`, `**POV:**`, `**Act:**` and a 60–100 word entry. Acts are numbers with an optional title (`2 — Fun and Games`), never `2A`.
 - **Chapter outlines carry the app's five frontmatter keys** (`chapter`, `title`, `pov`, `act`, `summary`) and the app's `authorship` spellings (`author_written`, `ai_generated`, `ai_generated_author_revised`); generated outlines end with `## Synopsis`. Present tense is a recommendation, never a rewrite.
 - **The manifest is the app's Manifest format**: role sections, capped descriptions, a `*Status: …*` ladder, `## Open Questions`, footer counts, and `*Appears in: …*` for series. No file pointers.

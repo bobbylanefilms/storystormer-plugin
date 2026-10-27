@@ -448,7 +448,7 @@ storystormer_kind: decision
 
 - **`id`:** `D-` and the number, zero-padded to 3 digits (`D-001`, `D-099`, `D-100`; 4 past 999). It matches the filename. Never reused. It is the plugin’s **display number**: the app and Notion keep their own record ids, and the number is the label.
 - **`date`:** the day it was decided.
-- **`type`:** one of the app's five: `plot`, `character`, `worldbuilding`, `structure`, `theme`. New entries write only these. An entry carried over from an older log keeps the word it was written with; readers take a retired word as its mapped type (the table after this list), and any other word (`premise`, `process`, `methodology`) as the closest of the five.
+- **`type`:** one of the app's seven: `plot`, `character`, `worldbuilding`, `structure`, `theme`, `premise`, `process`. New entries write only these. `premise` is the story's foundational premise (it routes with `theme`), and `process` is the author's working method, which governs how the book is made and is never story material. An entry carried over from an older log keeps the word it was written with; readers take a retired word as its mapped type (the table after this list), and any other word as the closest of the seven.
 - **`topic`:** a short name for the decision, the label the index lists it under.
 - **`source`:** what produced it. The plugin writes its workflow (`brainstorm`, `intake`, `treatment-update`, `user-declared`, `canon-sync`); the app writes its own values (`agent_tool`, `manual`, `decision_capture`, `sweep`, `canon_sync`), and a decision the plugin added to a connected project reads back as `plugin` because the app records the channel, not the workflow. Read every value in this list as valid, and keep any value an entry already has, qualifier included (`user-declared (init session)`). `canon-sync` (plugin) and `canon_sync` (app) are the same provenance.
 - **`integrated`:** whether the current treatment reflects it. It starts with `yes`, `no`, `partially` or `n/a`, and may go on with a date or a short qualifier as written (`yes (2026-05-24)`, `n/a — governs future work`). Quote it per § Frontmatter values: a bare `yes` or `no` would read as a boolean, so it is written `"yes"` or `"no"`. A carried-over decision whose log never recorded integration omits it; readers treat a missing `integrated` as not integrated, and `treatment-update` sets it when it integrates the decision (or finds the treatment already reflects it). `yes` and `n/a` are settled; `no`, `partially` and a missing value are **pending**, the set `treatment-update` reads. Integration into anything else (`Integrated into structure: yes`) is a body field. In a series it is a list, one item per book the decision touches, in the form `<slug> treatment <state>` (below).
@@ -461,6 +461,7 @@ storystormer_kind: decision
 | `mechanics` | `worldbuilding` | the rules of a speculative mechanism are worldbuilding |
 | `voice` | `theme` | voice, POV and tone choices; primer §4 still owns them (see `treatment-update`'s routing) |
 | `genre` | `theme` | |
+| `methodology` | `process` | retired in the app |
 
 **May be absent on a carried-over entry:** `integrated` (above), and `source` when the old log never recorded one. Every other field is required.
 

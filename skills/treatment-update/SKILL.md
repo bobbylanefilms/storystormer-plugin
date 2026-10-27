@@ -115,11 +115,12 @@ Rewrite `primer.md`. The Primer is **50,000-foot front-matter** with **exactly f
 
 | Decision type | Primer section(s) |
 |---|---|
-| `theme` | Section 2 (Premise & Moral Argument); Section 4 (Tone, Style & Writing Rules) when it settles voice, POV, tone, or genre register |
+| `theme`, `premise` | Section 2 (Premise & Moral Argument); Section 4 (Tone, Style & Writing Rules) when it settles voice, POV, tone, or genre register |
 | `structure` | Section 3 (Structural Framework) — update the act skeleton / turning points if they change |
 | `plot` | Usually **the treatment**, not the primer — plot events are narrative. Touch the primer only if the decision changes the act skeleton (Section 3) or lands/reframes a load-bearing reveal (Section 2, Reveal Architecture) |
 | `character` | Section 2 if it changes a thematic position or a load-bearing reveal; Section 5 if it changes a relationship, alliance, or power balance |
 | `worldbuilding` | Rarely affects the primer directly — usually Manifest / canon. May affect Section 3 if it changes structural elements. |
+| `process` | None. It governs the author's working method, never the story: set `integrated: n/a` and keep it out of the primer and treatment. |
 
 Most decisions don't affect the primer at all. Purely narrative decisions (plot events, scenes, dialogue) belong in the treatment, not the primer. A decision that surfaces an unresolved story problem is an **open question** (an entry in `questions/`), not primer content.
 

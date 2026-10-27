@@ -26,7 +26,7 @@ Invoke the `decision-capture` skill. The user can also just say *"capture a deci
 
 ### `/storystormer:decisions filter [type]`
 
-List all decisions matching a type (`plot`, `character`, `worldbuilding`, `structure`, `theme`), from the index's Type column. Recent first. Older entries with a retired type count under the type it maps to (`setting` and `mechanics` → `worldbuilding`, `voice` and `genre` → `theme`).
+List all decisions matching a type (`plot`, `character`, `worldbuilding`, `structure`, `theme`, `premise`, `process`), from the index's Type column. Recent first. Older entries with a retired type count under the type it maps to (`setting` and `mechanics` → `worldbuilding`, `voice` and `genre` → `theme`, `methodology` → `process`).
 
 ### `/storystormer:decisions show D-019`
 

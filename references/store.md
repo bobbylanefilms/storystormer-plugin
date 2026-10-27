@@ -36,7 +36,7 @@ For a **numbered entry** the store assigns the number and **reports it**, and th
 
 The skill proposes a number in the path and in the entry (`id`, and any citation of it inside the content of the same call); when the store assigns another, the binding writes the assigned number in all of them before the content lands, and the report names both.
 
-**Batches and their order.** A skill that writes several documents in one step may write them as one batch where the binding offers a batch write (its realization says how); without one, the writes go one at a time. On **every** backend, batch or not, write the document being referenced before the one that references it: the new decision before the old one’s `superseded_by`, the resolving decision before the question’s `resolved_by`, the treatment before the decisions it integrated. A run that stops halfway then reads as not done yet, never as a pointer to nothing. An unfinished batch that the binding shows in `state.md` is offered to the author at session start: finish it by rerunning with the same ids, or leave it.
+**Batches and their order.** A skill that writes several documents in one step may write them as one batch where the binding offers a batch write (its realization says how); without one, the writes go one at a time. On **every** backend, batch or not, write the document being referenced before the one that references it: the new decision before the old one’s `superseded_by`, the resolving decision before the question’s `resolved_by`, the treatment before the decisions it integrated. A run that stops halfway then reads as not done yet, never as a pointer to nothing. An unfinished batch that the binding shows in `state.md` is offered to the author at session start: finish it or dismiss it (the binding names the calls).
 
 **The final newline.** A document’s final newline is not content: `read` returns every document ending in exactly one newline, and the no-op check and the concurrency guard ignore a missing or extra final newline.
 
@@ -143,7 +143,7 @@ The plan-first approval (`references/plan-first.md`) is the confirmation for eve
 | `notion` | `references/store/notion.md` | 1 | 2026-10-16 |
 | `storystormer` | `references/store/storystormer.md` | 1 | 2026-10-26 |
 
-The StoryStormer binding was written against the server code on 2026-10-26; its live acceptance run (AP4 § 4) is still to come.
+The StoryStormer binding was written against the server code on 2026-10-27, with the CL101 server changes reflected; its live acceptance run (AP4 § 4) is still to come.
 
 Tier 1 realizes every operation directly; tier 2 needs a load-bearing workaround (Dropbox overwrites by delete and create). A **pending** binding is not written yet: a project whose `kind` names one cannot resolve, and the author is told so.
 
