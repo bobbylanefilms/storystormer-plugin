@@ -1,5 +1,5 @@
 ---
-description: Snapshot the current state of all story files to .storystormer/history/ as a manual checkpoint
+description: Snapshot the current state of all story files to .storystormer/history/ as a manual checkpoint, or, where the store keeps versions itself, report what changed since a point in time
 allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Task", "mcp__*"]
 ---
 
@@ -31,10 +31,20 @@ Follow `references/store.md`, resolving the binding first if the session hasn't.
 
 ## What to do
 
-1. **Check the backend keeps no history of its own.** Where the binding's `history` capability is `native` or `versions`, refuse and write nothing. If the binding documents a `checkpoint` refusal, give that message word for word. Otherwise refuse in one line: the backend already keeps every prior version of each document, so a copy would only duplicate it; point the author at the backend's own history (`store.history` shows what the binding can reach). Stop.
+1. **Check the backend keeps no history of its own.** Where the binding's `history` capability is `native`, refuse and write nothing. If the binding documents a `checkpoint` refusal, give that message word for word. Otherwise refuse in one line: the backend already keeps every prior version of each document, so a copy would only duplicate it; point the author at the backend's own history (`store.history` shows what the binding can reach). Stop. Where it is `versions`, write nothing either: report what changed instead (§ On a store that keeps versions), and stop.
 2. Enumerate what exists with `store.list` over the patterns above (`**` for the recursive folders), then drop anything the exclusions rule out.
 3. Ask the user for an optional label for the checkpoint, naming the folder and the count — *"I'll copy 31 files to `.storystormer/history/2026-10-16T09-12-manual/`. Want to name this checkpoint? (Optional — defaults to 'manual')"*. Names like `pre-act-3-rework` or `before-genre-pivot` make later browsing easier. The target folder is `.storystormer/history/<YYYY-MM-DD>T<HH-MM>-<label>/` in the session's local time. If that folder already exists (two checkpoints in one minute), append `-2`, `-3`, … until the name is new; never write into an existing checkpoint folder.
 4. Copy each document into the target folder per `references/store.md` § Local-mode clauses → Snapshot: through the binding's `copy` realization when it names one (the store copies the files itself, as few calls as it allows), otherwise `store.read` it, then `store.write` it to the target path. Either way each keeps its root-relative path (`characters/marlowe.md` becomes `<target>/characters/marlowe.md`; `chapters/chapter-07/ch07-prose.md` becomes `<target>/chapters/chapter-07/ch07-prose.md`). Don't assume a shell is available; the copy must work whether you're in Claude Code or Cowork.
 5. Report what was captured, grouped by kind with counts (e.g. "6 book-level documents, 9 characters, 12 chapters' artifacts"), and the folder path. Short summary.
 
 This is a no-question-asked safe operation. It only writes new files; it never overwrites or deletes anything. No plan needed beyond step 3: the author’s answer there, given with the target folder and file count in view, is the approval for the whole run (`references/store.md` § Confirmation posture). On a binding with `confirm: batch`, don’t ask again per file.
+
+## On a store that keeps versions
+
+`history: versions` means the store keeps every document's versions and `store.history` returns them, so a copy would only duplicate them. Instead, report **what changed since** a point:
+
+1. **The point.** Take it from the request, or ask: a date or time, a session (its journal entry's date), or a label, such as an earlier checkpoint's folder name from before the project moved here, or words matching a version's description. Turn it into a time and say which time you used.
+2. **What changed.** Enumerate the documents with `store.list` over the patterns above, then call `store.history` for each through the binding's realization (a binding may name a cheaper one over a whole project; use it). A document changed if it has versions after the point; one the binding reports with no versions of its own counts as changed when its last change is after the point.
+3. **Report** the changed documents grouped by kind, each with how many versions it gained since the point (none for the documents without versions; where the binding can return only a bounded number, say it as a lower bound, such as “50+”, never as an exact count), and the count of documents unchanged. Computed documents carry neither versions nor a last-change time, so leave them out and say so in one line. Name where the author can see or restore a version (`store.open`). Write nothing.
+
+This is read-only, so it needs no plan and no approval.

@@ -35,7 +35,8 @@ Doc-only changes (README, this file, PLUGIN-GUIDE.md) do **not** need a version 
 - `skills/<name>/SKILL.md` — 14 progressive-disclosure skills.
 - `commands/<name>.md` — 7 `/storystormer:*` slash commands (a command never shares a skill’s name: Cowork skips the command when it does, so `/storystormer:migrate` is the `migrate` skill itself).
 - `references/*.md` — shared docs cited by skills (single-edit-propagates; don't inline-duplicate into skills).
-- `references/store.md` — the store contract (file operations, capabilities line, resolution); `references/store/*.md` — one binding per backend.
+- `references/store.md` — the store contract (file operations, capabilities line, resolution); `references/store/*.md` — one binding per backend: `local.md`, `dropbox.md`, `notion.md`, and `storystormer.md` (the StoryStormer app, through its MCP server).
+- `.mcp.json` — bundles the StoryStormer connector (`https://storystormer.vercel.app/api/mcp`, HTTP) so a Claude Code install connects it; claude.ai, Cowork and ChatGPT add it as a custom connector (README).
 - `guides/*.md` — user-facing how-to guides (help docs for authors, not model-facing). Keep them synced when the skills they document change behavior.
 - `.plans/*.md` — execution plans for this repo (`SB1–SB5`, the storage-backend stage; `ISSUE###` handoffs). Design brainstorms live in the web-app repo (`plan/_cowork/CW*`). Not shipped plugin components; no version bump for plan edits.
 - Edit the plugin **here**; *run/test* it from a **story folder** (the skills act on the open folder, not this repo).

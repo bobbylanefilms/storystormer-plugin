@@ -32,9 +32,11 @@ For a **numbered entry** the store assigns the number and **reports it**, and th
 
 - **File stores:** one more than the highest number in the collection’s listing, compared numerically (`D-1000` above `D-999`), or `001` when the collection is empty, written with `new`; when that path turns out to exist (another session took the number between the listing and the create), take the next number and try again.
 - **Notion:** the binding’s own numbering (its § IDs), which renumbers on a collision the same way.
-- **The StoryStormer app:** display numbers by creation order, assigned by the server.
+- **The StoryStormer app:** stored numbers, assigned by the server in the create call, which also rewrites the proposed number inside the written content.
 
 The skill proposes a number in the path and in the entry (`id`, and any citation of it inside the content of the same call); when the store assigns another, the binding writes the assigned number in all of them before the content lands, and the report names both.
+
+**Batches and their order.** A skill that writes several documents in one step may write them as one batch where the binding offers a batch write (its realization says how); without one, the writes go one at a time. On **every** backend, batch or not, write the document being referenced before the one that references it: the new decision before the old one’s `superseded_by`, the resolving decision before the question’s `resolved_by`, the treatment before the decisions it integrated. A run that stops halfway then reads as not done yet, never as a pointer to nothing. An unfinished batch that the binding shows in `state.md` is offered to the author at session start: finish it by rerunning with the same ids, or leave it.
 
 **The final newline.** A document’s final newline is not content: `read` returns every document ending in exactly one newline, and the no-op check and the concurrency guard ignore a missing or extra final newline.
 
@@ -89,7 +91,7 @@ Resolution reads the open folder’s config through the local binding (`referenc
    The config lives in the store: a real file where the binding stores it, computed from the project’s record where it does not. Nothing mirrors `storage` (`file-schemas.md` § `.storystormer/config.json`).
 
    `local_root` only ever names the synced copy of a Dropbox `root` on this machine (`<Dropbox sync root>/StoryStormer/<slug>`): in the full config inside that folder, or in the config of a folder `migrate` moved there (`migrate` § The hybrid), so opening the old folder reaches the new copy. Nothing writes a `local_root` naming any other folder: resolution would bind it locally and bypass the connector.
-2. **No open folder holds a config.** Run the **locator**. `init` starting a new project is the exception: it chooses the store itself (`storystormer-init` § Where a new project lives).
+2. **No open folder holds a config.** Run the **locator**. Two exceptions skip it: `init` starting a new project chooses the store itself (`storystormer-init` § Where a new project lives); and a handoff from the StoryStormer app (a message naming a StoryStormer project id, in any wording) binds that project directly, without the locator and whatever an open folder’s config says, leaving that config as it is (`storystormer-init` § Picking up a project from the app).
    - **Search:** every binding in § Bindings that is not pending and whose tool check passes (step 3) runs its § Locate, which lists the projects at that backend’s well-known root. Each project comes back with its backend, root, slug, the `title`, `stage` and `last_session` of its `state.md` frontmatter as that binding reads it, and the time its `state.md` was last modified where the backend reports one. A series is one entry, the series, with its `books` named under it.
    - **Present** them grouped by backend, most recent `last_session` first, each with its last-modified time, and a project whose config’s `local_root` exists on this machine labeled as synced here (choosing it binds that folder, below); the author picks one, and its root becomes the binding’s root. That project’s stored config then decides as in step 1 (a Dropbox project whose `local_root` exists on this machine binds local, rooted there), with one exception: a located config whose `kind` is `local`, or that has no `storage` block (a local project sitting in a synced folder), binds the backend that found it, at that root, since it is the same files; the listing says it is a synced local project. Go on to step 3.
    - **Exactly one project** across every backend, with no Locate failed or incomplete: bind it and say so.
@@ -122,7 +124,7 @@ Behaviors the plugin has always had on a local folder are clauses keyed on the c
 
 Applies on every binding except local, because a connector store can change between calls (another device, the app). The **baseline** is the read the new content was prepared from; later reads (the snapshot’s included) never move it. Before a `write` or `edit` that replaces an existing document, re-read it and compare: its frontmatter `version` with the baseline’s, or, for a document without one (`state.md`, a decision, question or journal entry), the whole re-read with the whole baseline read, where any difference means it changed (a binding that computes a document names the parts it compares instead). A `new` write replaces nothing and needs no guard (§ New entries). If it **differs from the baseline**, stop: show the author both versions (what the store holds now and what this session was about to write) and write nothing until they choose; don’t snapshot the newer version as if it were the one being replaced. After that, last write wins; the backend’s history keeps the losing version.
 
-A binding may name an **equivalent check** that doesn’t re-read the whole document: a revision or modification stamp recorded at the baseline (from the baseline read’s response, or from this session’s own last write of the path) and compared through the store’s metadata. A matching stamp passes the guard. A stamp that differs, a missing stamp, or a check that can’t answer falls back to the full re-read, which decides as above (a stamp can move without the content changing), so a real change is still stopped and shown to the author the same way.
+A binding may name an **equivalent check** that doesn’t re-read the whole document: a revision or modification stamp recorded at the baseline (from the baseline read’s response, or from this session’s own last write of the path) and compared through the store’s metadata, or by the store itself as the write lands (the StoryStormer server’s `if_revision`, which refuses a stale write and returns the current content, which is the re-read). A matching stamp passes the guard. A stamp that differs, a missing stamp, or a check that can’t answer falls back to the full re-read, which decides as above (a stamp can move without the content changing), so a real change is still stopped and shown to the author the same way.
 
 ---
 
@@ -139,7 +141,9 @@ The plan-first approval (`references/plan-first.md`) is the confirmation for eve
 | `local` | `references/store/local.md` | 1 | 2026-10-15 |
 | `dropbox` | `references/store/dropbox.md` | 2 | 2026-10-16 |
 | `notion` | `references/store/notion.md` | 1 | 2026-10-16 |
-| `storystormer` | `references/store/storystormer.md` | 1 | pending |
+| `storystormer` | `references/store/storystormer.md` | 1 | 2026-10-26 |
+
+The StoryStormer binding was written against the server code on 2026-10-26; its live acceptance run (AP4 § 4) is still to come.
 
 Tier 1 realizes every operation directly; tier 2 needs a load-bearing workaround (Dropbox overwrites by delete and create). A **pending** binding is not written yet: a project whose `kind` names one cannot resolve, and the author is told so.
 
