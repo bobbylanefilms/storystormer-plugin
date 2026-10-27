@@ -141,7 +141,9 @@ The plan-first approval (`references/plan-first.md`) is the confirmation for eve
 | `local` | `references/store/local.md` | 1 | 2026-10-15 |
 | `dropbox` | `references/store/dropbox.md` | 2 | 2026-10-16 |
 | `notion` | `references/store/notion.md` | 1 | 2026-10-16 |
-| `storystormer` | `references/store/storystormer.md` | 1 | pending |
+| `storystormer` | `references/store/storystormer.md` | 1 | 2026-10-26 |
+
+The StoryStormer binding was written against the server code on 2026-10-26; its live acceptance run (AP4 § 4) is still to come.
 
 Tier 1 realizes every operation directly; tier 2 needs a load-bearing workaround (Dropbox overwrites by delete and create). A **pending** binding is not written yet: a project whose `kind` names one cannot resolve, and the author is told so.
 
