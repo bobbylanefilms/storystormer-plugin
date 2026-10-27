@@ -5,7 +5,7 @@
 
 A conversational story development workspace inside Claude Cowork (or Claude Code). Drop into any folder — empty, a one-line concept, a brain dump, a half-finished treatment, a tangled mid-project mess — and Claude triages what's there, proposes a plan, and develops the story with you.
 
-This is a proof of concept that ports the **brainstorm → canon → treatment → outline** kernel of [StoryStormer](https://storystormer.io)'s web app into the plugin format. It runs against markdown files (in a local folder, Dropbox or Notion), leans on the model for judgment (with future models making it better), and asks before it acts. Supports both **standalone novels** and **multi-book series** (trilogies, longer series).
+This is a proof of concept that ports the **brainstorm → canon → treatment → outline** kernel of [StoryStormer](https://storystormer.io)'s web app into the plugin format. It runs against markdown files (in a local folder, Dropbox, Notion or the StoryStormer app itself), leans on the model for judgment (with future models making it better), and asks before it acts. Supports both **standalone novels** and **multi-book series** (trilogies, longer series).
 
 ## What it gives you
 
@@ -26,7 +26,7 @@ Fourteen skills that load via progressive disclosure when your intent matches:
 | `prose` | write or revise a chapter's actual prose — from its Blueprint, outline, your voice inputs, and the story so far |
 | `notes` | record what a chapter's prose actually committed — as-written synopsis, divergences, harvest, accidental canon, end-state — and propose canon updates |
 | `canon-sync` | reconcile a span of chapters' notes back into canon — absorb accretion, adjudicate contradictions by authorship, surface drift, produce a manuscript fix list and the Blueprints to rebuild |
-| `migrate` | move a story to another home (a local folder, Dropbox, or Notion), leaving the original in place; or upgrade an older project in place |
+| `migrate` | move a story to another home (a local folder, Dropbox, Notion or the StoryStormer app), leaving the original in place; or upgrade an older project in place |
 
 Plus seven slash commands for direct control: `/storystormer:init`, `/storystormer:status`, `/storystormer:checkpoint`, `/storystormer:decisions`, `/storystormer:questions`, `/storystormer:outline` and `/storystormer:switch` (series mode only). `/storystormer:migrate` is the `migrate` skill’s own invocation.
 
@@ -34,7 +34,7 @@ Plus seven slash commands for direct control: `/storystormer:init`, `/storystorm
 
 Step-by-step help for the bigger workflows lives in [`guides/`](guides/):
 
-- **[Installing StoryStormer](guides/installing.md)** — adding the marketplace and installing the plugin in Claude Cowork or Claude Code, connecting a story folder, choosing where a story lives (a folder, Dropbox, or Notion), upgrading an older project, updating, and troubleshooting.
+- **[Installing StoryStormer](guides/installing.md)** — adding the marketplace and installing the plugin in Claude Cowork or Claude Code, connecting a story folder, choosing where a story lives (a folder, Dropbox, Notion or the StoryStormer app) and connecting the app, upgrading an older project, updating, and troubleshooting.
 - **[Developing Your Story — From Idea to Outline](guides/developing-your-story.md)** — the front half of the pipeline: setting up a workspace from any starting state, the brainstorm → decision → treatment-update development loop, building character and worldbuilding canon, committing to a chapter structure, and moving a story between homes.
 - **[Writing Chapters — Blueprint, Prose & Kit Bash](guides/writing-chapters.md)** — from a chapter outline to finished prose: building the pre-prose Blueprint, generating and refining prose through chat, and Kit Bashing competing multi-model drafts into one chapter.
 
@@ -128,11 +128,12 @@ See [references/series.md](references/series.md) for the full series doctrine �
 
 ## Where a story can live
 
-A story can live in one of three places. Every skill works the same on all three; only where the files sit changes.
+A story can live in one of four places. Every skill works the same on all four; only where the files sit changes.
 
 - **A local folder:** the folder your session is open in. A Google Drive or OneDrive folder synced to your computer counts (the plugin just sees a folder); those services have no direct backend.
 - **Dropbox:** the story lives in your Dropbox at `/StoryStormer/<your-project>/`, through the Dropbox connector, as the same folder tree a local project has, file for file. If that folder also syncs to your computer, tell init where, and sessions on that machine work on the synced copy directly. Snapshots and `/storystormer:checkpoint` work as they do locally.
 - **Notion:** the story lives in your Notion workspace, through the Notion connector, under a page called `StoryStormer` that holds six databases (Projects, Assets, Chapters, Decisions, Questions, Journal). Most documents are rows you can open, browse and edit in Notion, and the agent reads your edits like anything else. A few are views the agent computes from those rows, not rows you edit directly (the dashboard’s What Exists, the decision and question indexes (each decision and question is its own row), and the character and outline indexes), and anything without a database of its own is a child page of the project. Notion keeps every page’s version history itself, so there are no snapshot folders and `/storystormer:checkpoint` politely declines.
+- **The StoryStormer app:** the story lives in the [StoryStormer web app](https://storystormer.io), through the StoryStormer connector, and every document the plugin writes appears in the app’s browser at once: characters on People, worldbuilding on World, the primer and treatment on Story, decisions and the journal on Session. You can work on it in either place, and each sees the other’s changes; if both change the same document, the plugin shows you both versions instead of overwriting yours. The app keeps every version of every document, so there are no snapshot folders, and `/storystormer:checkpoint` reports what changed since a point in time instead. Every report links each document it wrote, so one click opens it in the app. (For now the connector’s address serves the app’s development deployment; nothing changes for you when it moves to production.)
 
 How they compare, from a full test on a real project (SB5, October 2026):
 
@@ -141,7 +142,15 @@ How they compare, from a full test on a real project (SB5, October 2026):
 - **Notion:** a little slower than local. Everything the plugin writes uses a set of markdown Notion keeps exactly, so it comes back from Notion as it went in. When you move an existing project into Notion, your own files are tidied once on the way in (spacing, list markers, underscores used for emphasis, raw HTML tables, non-breaking spaces): `/storystormer:migrate` shows what will change before it starts, your words never change, and your original files stay where they were. Text you type directly in Notion keeps whatever form Notion gives it.
 - **Google Drive and OneDrive:** use them as a synced folder; their connectors will be re-tested in November 2026.
 
-When you start a new project, `/storystormer:init` asks once where it should live, offering only the homes this session can reach (connect the Dropbox or Notion connector first to see them). In a session with no folder open, StoryStormer lists the projects it finds in your Dropbox and Notion and works on the one you pick. To move an existing story, run `/storystormer:migrate`: it copies everything the new home can hold, points your folder at the new copy, and leaves the original in place for you to delete when you’re ready. The [installing guide](guides/installing.md#choosing-where-your-story-lives) explains the choices, including the Dropbox hybrid.
+When you start a new project, `/storystormer:init` asks once where it should live, offering only the homes this session can reach (connect the Dropbox, Notion or StoryStormer connector first to see them). In a session with no folder open, StoryStormer lists the projects it finds in your Dropbox, Notion and the app, and works on the one you pick. The app’s **Continue in Claude** gives you a prompt to paste into a session; it names the project, and the session picks up where you left off, with the last session’s summary and what’s next. To move an existing story, run `/storystormer:migrate`: it copies everything the new home can hold, points your folder at the new copy, and leaves the original in place for you to delete when you’re ready. The [installing guide](guides/installing.md#choosing-where-your-story-lives) explains the choices, including the Dropbox hybrid.
+
+### Connecting the StoryStormer app
+
+The connector’s address is `https://storystormer.vercel.app/api/mcp`. The first time a session uses it, it opens a StoryStormer sign-in; sign in with your app account and the session works on your projects.
+
+- **Claude Code:** nothing to do. The plugin brings the connector with it (its `.mcp.json`), so installing the plugin connects it, and the first call opens the sign-in.
+- **claude.ai and Cowork:** **Settings → Connectors → Add custom connector**, name it StoryStormer, paste the address, then **Connect** and sign in.
+- **ChatGPT:** where your plan allows custom connectors, **Settings → Connectors** (with developer mode on), add a custom MCP connector with the address, and sign in. ChatGPT has no plugin skills, but it can read and write the same project through the connector.
 
 ## Install
 
@@ -202,6 +211,13 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.23.0 added over v0.22.1
+
+- **The StoryStormer app as a home.** A story can now live in the StoryStormer web app itself: `/storystormer:init` offers it when the StoryStormer connector is connected, and every document the plugin writes appears in the app at once, with the app keeping every version. Each report links the documents it wrote, and `/storystormer:checkpoint` reports what changed since a point in time.
+- **Continue in Claude.** Paste the prompt the app’s Continue in Claude gives you, and the session binds that project and opens with where you left off.
+- **Moving a story into the app, or out of it.** `/storystormer:migrate storystormer` copies a story into a new app project with every decision, question and journal number kept, and a rerun after an interruption repeats nothing. The app works as a source too.
+- **The connector comes with the plugin** in Claude Code; claude.ai, Cowork and ChatGPT add it as a custom connector ([Connecting the StoryStormer app](#connecting-the-storystormer-app)).
 
 ### What v0.22.1 fixed over v0.22.0
 
@@ -359,6 +375,6 @@ Fixes from SB5’s live test of every backend on a full project (The Good Dog):
 
 ## Status
 
-POC — parallel offering to the [StoryStormer web app](https://storystormer.io). The two are not synchronized; they're independent experiments in the same workflow. The plugin runs against markdown in a local folder, Dropbox or Notion; the web app runs against Convex. Both share the brainstorm → canon → treatment philosophy and the framework vocabulary.
+POC — companion to the [StoryStormer web app](https://storystormer.io). A story kept in the app is one project both work on (v0.23.0); a story kept in a folder, Dropbox or Notion is the plugin’s alone. The web app runs against Convex. Both share the brainstorm → canon → treatment philosophy and the framework vocabulary.
 
 For design rationale, read the per-skill `SKILL.md` files and the docs in `references/` — each skill cites the references it leans on. (The full design history lives in the StoryStormer web-app repo's `plan/_cowork/` notes.)
