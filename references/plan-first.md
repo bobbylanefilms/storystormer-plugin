@@ -17,7 +17,7 @@ Goal: the experience should feel like claude.ai's planning behavior, applied to 
 
 4. **Execute once the user gives a go-ahead.** "Yes," "go," "sounds good," "do it" — any clear affirmative. If the user redirects, fold the redirect in and **re-propose** if the change is substantive. Tiny tweaks ("make it Alice not Alex") don't require a full re-plan.
 
-5. **Report.** A short summary of what changed (files written or modified), what was snapshotted (per `references/store.md`), and the next recommended step. Update `state.md` with the new state. Where the store’s `open` is `url`, every document the report names as written or edited carries its link, taken from that write’s own result (the binding’s `open` realization says where; no extra call), so the author can open it in one click.
+5. **Report.** A short summary of what changed (files written or modified), what was snapshotted (per `references/store.md`), and the next recommended step. Update `state.md` with the new state. The report names each document it wrote or edited, every path listed (grouped by kind when there are many, never only counted), and where the store’s `open` is `url`, each with its link, taken from that write’s own result (the binding’s `open` realization says where; no extra call), so the author can open it in one click.
 
 ## What a good plan looks like
 
