@@ -7,9 +7,9 @@ description: Reconcile canon with what the manuscript committed over a span of c
 
 You are running the second half of the pipeline's return path. `notes` extracts, per chapter, what the prose committed; it proposes and writes nothing. **Without this skill, notes is a queue with no consumer**: the proposals pile up as a growing list of shoulds, which is precisely the ledger failure the whole artifact model exists to prevent. Canon-sync integrates, per span.
 
-Direction matters. `treatment-update` reconciles *downhill*: canon into the primer and treatment. Canon-sync runs *uphill*: prose facts into canon. They are sequential, not alternatives:
+Direction matters. `treatment-update` reconciles *downhill*: decisions and canon into the treatment (and, for premise, theme and structure, the primer). Canon-sync runs *uphill*: prose facts into canon. They are sequential, not alternatives:
 
-> `notes` (per chapter) → **`canon-sync`** (per span) → `manifest-sync` (reindex) → `treatment-update` (canon → primer and treatment)
+> `notes` (per chapter) → **`canon-sync`** (per span) → `manifest-sync` (reindex) → `treatment-update` (canon → treatment)
 
 **The boundary:** canon-sync **reconciles facts; it does not improve canon.** Rewriting a thin bio, deepening a worldbuilding entry, tightening the primer: those are `character-bio`, `worldbuilding-entry`, and `treatment-update`. If this skill starts making canon *better* rather than *accurate*, the author loses the ability to run it without reviewing everything it touched. Every edit it makes must be traceable to a specific line in a specific notes file.
 
@@ -55,7 +55,6 @@ In substantive mode (`references/reading-discipline.md`), full reads:
 - Every canon entry any notes file references, in full, including its Revelation Log. **Read the entry, not the line**: drift is only visible against the whole bio.
 - `manifest.md` (full), for what already has an entry and what the harvest says should.
 - `decisions/_index.md`, then only the entries it points to: prior rulings, found by their topic's `Canon ruling:` prefix (the form `decisions` gives every `canon-sync` ruling), and other decisions whose topics touch the contested facts, so settled conflicts are not re-opened.
-- `primer.md` § 2 Reveal Architecture, for chain closures the notes proposed.
 - The prose's `authorship` and `status` frontmatter for each chapter in the span (frontmatter only; the body stays closed). A chapter whose prose is `status: retired` is out of the span: its notes describe text the author set aside.
 - **For each contradiction, the upstream sources the page fact could have come from**: that chapter's outline (body and `authorship`), its chapter block in `outline/structure.md`, the treatment passage covering it, and decisions touching the fact. Read them **as the prose saw them**: the prose stamps `outline_version`, `treatment_version`, `blueprint_version` and `primer_version`, so where a source's current `version` is past its stamp, read the stamped version from `store.history` (snapshot files or the backend's versions). Read only the passages that bear on the contested fact, quoted when they settle it.
 
@@ -129,15 +128,15 @@ After the author rules:
 1. **Snapshot** the canon documents the approved plan will edit (bios, worldbuilding entries, `manifest.md`), as one set per `store.md`, not the whole canon set unless the author asks for a full checkpoint (`/storystormer:checkpoint` exists for that). This happens before the first edit, no exceptions.
 2. **Log each adjudication first** via `decisions`, as a new decision entry created with `new`: `source: canon-sync`, `topic: Canon ruling: <subject>`, `type` per the fact, `Summary` stating the ruling, `Details` naming the notes line, the canon line, the upstream source the trace found, the authorship that set the default (or that it was canon against canon with no default), and whether the author overrode it. Accretions absorbed without dispute do not need a decision; contradictions, drift rulings, and obsolescence removals do. The store may move a proposed number (`references/store.md` § New entries), so the rulings are logged before any canon edit that cites one, and every citation carries the number the store reported.
 3. **Apply canon edits**, citing the rulings by their reported numbers: append Revelation Log lines (`- **Ch N** — …`); fold accretion into the governing section with the smallest edit that makes the entry accurate; correct or remove obsolete lines; bump each touched file's `version` and `last_updated`. Never restyle, expand, or tidy anything the ruling didn't name.
-4. **Mark proposals** in each notes file's § Proposals.
-5. **Write the run record** with `store.write` to `.storystormer/canon-sync/<date>-ch<NN>-<MM>.md`: findings by category with outcomes; the manuscript fix list (chapter · passage · required change); invalidated Blueprints (chapter · entry that changed · version stamp it was built against); promotions routed; chain closures struck from §2 (logged as decisions so `treatment-update` preserves the strike).
+4. **Mark proposals** in each notes file’s § Proposals. An unchecked **Chain closure** item from older notes is checked off as `declined (chain closures retired)`: chains live in the treatment’s narrative and have no register to strike.
+5. **Write the run record** with `store.write` to `.storystormer/canon-sync/<date>-ch<NN>-<MM>.md`: findings by category with outcomes; the manuscript fix list (chapter · passage · required change); invalidated Blueprints (chapter · entry that changed · version stamp it was built against); promotions routed.
 6. **Extend the session's journal entry, update `state.md`**, and report.
 
 > Canon-sync complete for ch 1–6. The edited canon snapshotted per `store.md`. Applied: 8 accretions, 1 obsolete line removed, 2 contradictions ruled (D-041, D-042), 1 drift ruling (D-043: bio loosens). Routed: Wagon Wheel → `worldbuilding-entry`. **Fix list (2 items)** and **Blueprints to rebuild (ch 1, 3)** in `.storystormer/canon-sync/2026-08-22-ch01-06.md`. 0 proposals pending. Next: `manifest-sync`, then rebuild the two Blueprints before writing ch 7; `treatment-update` when convenient, since the burial-site change touches the treatment's staging.
 
 ## Series Mode
 
-If `state.md` shows `project_type: series`, read `references/series.md` first. Notes are book-local; canon is shared at the series root. Revelation Log lines are book-qualified (`Ch B2-07`). A contradiction between this book's page and a fact another book's prose already established is surfaced with both chapters cited and is not ruled by default; the author decides which book bends. Chain closures that span books strike from `series.md` as well as primer §2.
+If `state.md` shows `project_type: series`, read `references/series.md` first. Notes are book-local; canon is shared at the series root. Revelation Log lines are book-qualified (`Ch B2-07`). A contradiction between this book’s page and a fact another book’s prose already established is surfaced with both chapters cited and is not ruled by default; the author decides which book bends.
 
 Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 
@@ -152,7 +151,7 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 
 ## References
 
-- `references/file-schemas.md`: § Notes (§ Proposals statuses), § the history-snapshot section, § `.storystormer/canon-sync/`, § `decisions/` (the `canon-sync` source), § `journal/`, primer §2 Reveal Architecture
+- `references/file-schemas.md`: § Notes (§ Proposals statuses), § the history-snapshot section, § `.storystormer/canon-sync/`, § `decisions/` (the `canon-sync` source), § `journal/`
 - `references/canon-schemas.md`: § Revelation Log, bio and worldbuilding content shape
 - `references/plan-first.md`, `references/reading-discipline.md`, `references/subagent-pattern.md`
 - `references/series.md`: read when `project_type: series`

@@ -1,11 +1,11 @@
 ---
 name: treatment-update
-description: Regenerate the primer and treatment from current decisions, bios and worldbuilding. Use for “update the treatment,” “refresh the primer,” “let’s see where we are,” or when unintegrated decisions pile up.
+description: Regenerate the treatment, and the primer when a premise, theme or structure decision calls for it. Use for “update the treatment,” “refresh the primer,” “let’s see where we are,” or when decisions pile up.
 ---
 
 # StoryStormer · Treatment Update
 
-You are running the two-phase treatment update pipeline — the workflow's most important generative skill. The output is the canonical view of the story: a fresh five-section `primer.md` (story craft dossier) and a fresh `treatment.md` (full prose treatment) that reflect all the decisions, character work, and worldbuilding done since the last update.
+You are running the two-phase treatment update pipeline — the workflow's most important generative skill. The output is the canonical view of the story: a four-section `primer.md` (story craft dossier, rewritten only when a premise, theme or structure decision or the author asks) and a fresh `treatment.md` (full prose treatment) that reflect all the decisions, character work, and worldbuilding done since the last update.
 
 This skill mirrors the StoryStormer web app's `treatment_update` background job. The model is the orchestrator.
 
@@ -13,9 +13,10 @@ Always follow `references/plan-first.md` — propose the plan with file lists, c
 
 ## What you produce
 
-- **`primer.md`** — bumped to the next version. The story craft dossier — **50,000-foot front-matter** — with five standard sections: Story Identity / Premise & Moral Argument (incl. Reveal Architecture) / Structural Framework / Tone, Style & Writing Rules / Character Dynamics. Total ~4,500 words (hard ceiling 5,000). See `references/file-schemas.md` § `primer.md`.
-- **`treatment.md`** — bumped to the next version. Full prose treatment written in propulsive treatment voice. `primer_version` set to the new primer's version. Length calibrated by the budgets computed from `target_word_count` (`references/file-schemas.md` § Target word count and the derived budgets). See `references/treatment-voice.md` and `references/file-schemas.md` § `treatment.md`.
-- **Snapshots** (per `store.md`) of the *current* primer and treatment **as a pair**, before overwriting. They round-trip together; never snapshot one without the other.
+- **`primer.md`**, only when the gate opens (Step 4). The story craft dossier — **50,000-foot front-matter** — with four standard sections: Story Identity / Premise & Moral Argument / Structural Framework / Tone, Style & Writing Rules, at the depth the story has earned (a guide of about 5,000 words, never a trimming target). When it is written, its `version` and `built_from_decisions` move; when the gate stays closed, the primer is not touched and nothing about it moves. See `references/file-schemas.md` § `primer.md`.
+- **`treatment.md`** — bumped to the next version. Full prose treatment written in propulsive treatment voice. `primer_version` set to the primer it was written against: the new version when Phase 1 ran, otherwise the current one, unchanged. Length calibrated by the budgets computed from `target_word_count` (`references/file-schemas.md` § Target word count and the derived budgets). See `references/treatment-voice.md` and `references/file-schemas.md` § `treatment.md`.
+- **Snapshots** (per `store.md`) before overwriting: the current primer and treatment **as a pair** when both are rewritten, the treatment alone when the primer is skipped.
+- **A hand-off for what this skill does not write.** Character and theme decisions land partly in homes this skill never writes (a bio, the manifest’s Character Map), and a legacy primer’s ejected character material belongs in the Character Map. The plan and the report name each one, and the report proposes `manifest-sync` as the next, chained step (Step 7).
 - Updated decision entries — each decision consumed by this update gets `integrated: "yes (<date>)"`, and its row in `decisions/_index.md` follows. So does each **settled carried-over decision**: one with no `integrated` at all (carried over by the layout upgrade from a log that never marked it), which is checked against the current treatment rather than integrated blindly. Already reflected there → `integrated: "yes (<date>)"` with no prose rewritten; not reflected → it is pending like any other.
 - Updated `state.md` — version bumps, summary refresh, `What's Next` updated, a short Last Session.
 - The session's journal entry (`journal/<date>-s<NN>.md`) — what this update integrated and changed, and why.
@@ -27,7 +28,7 @@ Always follow `references/plan-first.md` — propose the plan with file lists, c
 Determine which mode you're in before applying any other rule:
 
 - **Update mode (default).** A non-empty `primer.md` and `treatment.md` exist. Your job is to integrate pending decisions while preserving what already works. The rules below describe update-mode behavior.
-- **First-run mode.** `primer.md` and/or `treatment.md` are empty or just-stubbed. Typical for newly initialized projects, or when intake-extracted content needs scaffolding into the canonical structure. In first-run mode, **construction** is the default — not preservation. Use project metadata + decisions + any existing materials to scaffold each primer section. Mark sections without source material as `**For Further Development**: …`. Scaffolding is not fabrication — don't invent story content to fill a blank.
+- **First-run mode.** `primer.md` and/or `treatment.md` are empty or just-stubbed (a missing primer, or an empty or stub section, opens the primer gate: Step 4). Typical for newly initialized projects, or when intake-extracted content needs scaffolding into the canonical structure. In first-run mode, **construction** is the default — not preservation. Use project metadata + decisions + any existing materials to scaffold each primer section. Mark sections without source material as `**For Further Development**: …`. Scaffolding is not fabrication — don’t invent story content to fill a blank.
 
 When the primer exists but some sections are populated and others empty, you're still in update mode — apply update-mode behavior to the populated sections, first-run construction to the empty ones.
 
@@ -35,7 +36,7 @@ When the primer exists but some sections are populated and others empty, you're 
 
 The Story Primer is the story's intellectual foundation. Treat it carefully:
 
-- **Preserve what's working.** If a primer section is well-developed and no decisions affect it, reproduce it verbatim. Don't churn prose that's already landed.
+- **Preserve what's working.** When the primer is rewritten, every section is reproduced exactly as it stands unless a pending decision or the author's instructions require a change. Never reword, condense or reorganize for its own sake, and never trim to a word budget. Don't churn prose that's already landed.
 - **Change only what decisions require.** Every edit must trace to a specific pending decision. Don't change Story Primer content to match the old treatment — the treatment updates separately.
 - **Don't embellish.** No adding comparable works, writing rules, or structural analysis the author didn't brainstorm. Integrate decisions; don't freelance.
 
@@ -43,7 +44,7 @@ The Story Primer is the story's intellectual foundation. Treat it carefully:
 
 When a pending decision contradicts the existing primer or the old treatment, **trust the decision**. The Story Primer phase runs before the Treatment phase, so contradictions between decisions and the old treatment will be resolved when Phase 2 rewrites the treatment. Don't flag those as problems in Phase 1 — they're pending, not broken.
 
-DO flag genuinely broken chains unrelated to pending decisions (pre-existing inconsistencies). DO flag setup/payoff chains in the old treatment that have no payoff written yet — if the chain is load-bearing, it belongs in primer §2's Reveal Architecture; if the payoff is genuinely undecided, log it as an open question, a new entry in `questions/` (`source: treatment_update`). Don't reintroduce a running ledger.
+DO flag genuinely broken chains unrelated to pending decisions (pre-existing inconsistencies). DO flag setup/payoff chains in the old treatment that have no payoff written yet — a settled chain is stated in the treatment's narrative where it is planted (Phase 2); if the payoff is genuinely undecided, log it as an open question, a new entry in `questions/` (`source: treatment_update`). Don't reintroduce a running ledger, and never put one in the primer.
 
 ### Framework attribution preservation
 
@@ -55,7 +56,7 @@ If the existing primer cites a framework by name (Save the Cat, Truby's 22 Block
 
 Load:
 
-- `primer.md` (full — all five sections if it exists)
+- `primer.md` (full — all four sections if it exists)
 - `treatment.md` (full)
 - `manifest.md` (full)
 - All major-tier character bios (full)
@@ -71,9 +72,10 @@ This is the canonical heavy-context turn. **Operate in substantive mode** — li
 > Here's the plan for the treatment update:
 >
 > - **Read** (substantive mode): I'll full-read `primer.md`, `treatment.md` (~6,800w), `manifest.md`, the 4 major bios (~4,800w combined), the 7 pending decision entries, and the 6 open question entries — then quote at least one passage from each in my next response to prove the absorption.
-> - **Phase 1 — Primer**: revise the five standard sections of `primer.md` to fold in the new decisions about Marlowe's father wound and the shift in the antagonist's motivation. Most sections untouched; the Premise & Moral Argument section — including its Reveal Architecture (the father-wound reveal's timing) — gets meaningful updates. Bump primer version 3 → 4.
-> - **Phase 2 — Treatment**: regenerate `treatment.md` against the refreshed primer in treatment voice. I expect a meaningful rewrite of the Act 2 midpoint and a lighter pass on Acts 1 and 3. Bump treatment version 7 → 8.
-> - **Snapshot**: current primer.md + treatment.md, as a pair, per `store.md`.
+> - **Phase 1 — Primer**: the gate is open because D-031 is a `theme` decision (the antagonist’s motivation shifts the moral argument), so I’d rewrite `primer.md` with every section reproduced exactly except Premise & Moral Argument. Bump primer version 3 → 4. (With only plot, character and worldbuilding decisions pending, I’d skip this phase and say so.)
+> - **Phase 2 — Treatment**: regenerate `treatment.md` against the primer in treatment voice. I expect a meaningful rewrite of the Act 2 midpoint and a lighter pass on Acts 1 and 3. Bump treatment version 7 → 8.
+> - **Not written here**: D-033 (`character`, Alice’s lie) changes her bio and the Character Map’s Thematic Positions, and D-031 moves Voss’s position in the Character Map. I’ll fold their story consequences into the treatment, then propose `manifest-sync` right after this update for the Character Map, and `character-bio` for `characters/alice.md` (ideally before the sync, which reads the bio).
+> - **Snapshot**: current primer.md + treatment.md, as a pair, per `store.md` (the treatment alone if the primer is skipped).
 > - **Mark**: the 7 pending decisions as `integrated: yes (2026-05-11)`. Of the 22 carried-over decisions with no `integrated` line, 18 are already in the treatment and are marked `yes` with nothing rewritten; the other 4 are among the 7.
 > - **Open elements**: I'll keep `[OPEN: Q-019]` and `[OPEN: Q-021]` markers in the treatment for the two unresolved critical questions, and add a `[NEEDS DEVELOPMENT: …]` marker for Elena's Act-3 infiltration mechanics (no tracked question yet).
 >
@@ -88,41 +90,63 @@ Once the user gives the go-ahead, read every file in the list — `store.read` (
 - **Subplots** — what they are, who carries them, how they connect to the main arc.
 - **Themes** — the central thematic question and how it's dramatized.
 - **Structural framework** — act structure, turning points, POV strategy, pacing patterns the existing primer specifies.
-- **Setup/payoff chains** — planted setups and their intended payoffs, foreshadowing threads.
-- **Character dynamics** — relationship map, factions, power dynamics, secrets.
-- **Tone, style & writing rules** — narrative voice, register, dialogue conventions, anti-patterns.
+- **Setup/payoff chains** — planted setups and their intended payoffs, foreshadowing threads (these live in the treatment's narrative, never the primer).
+- **Character dynamics** — relationship map, factions, power dynamics, secrets (these live in the manifest's Character Map, never the primer).
+- **Tone, style & writing rules** — narrative voice, register, rendering rules, anti-patterns.
 - **Open threads** — what the treatment marks as `[OPEN: …]` or `[NEEDS DEVELOPMENT: …]`.
 - **Unintegrated decisions** — what they say, what they affect, how they should shift the primer/treatment.
 - **Genre obligations** — from `genre-reference.md`, what obligatory scenes the treatment hits or misses.
 
 In your first response after the reading pass, quote at least one verbatim passage from each source file (primer, treatment, manifest, each major bio, the pending decision entries). This proves you absorbed the source. If you find yourself wanting to assert something the source doesn't directly state, surface it as a question instead. The treatment is the source of truth; genre priors are not.
 
-### 4. Phase 1 — Story Primer (five sections)
+### 4. Phase 1 — Story Primer (four sections)
 
-Rewrite `primer.md`. The Primer is **50,000-foot front-matter** with **exactly five standard sections** (full section spec in `references/file-schemas.md` § `primer.md`):
+**The gate.** Write the primer only when:
 
-1. **Story Identity** — logline, genre, comps, target length.
-2. **Premise & Moral Argument** — central dramatic question, what the story proves, character thematic positions, and the **Reveal Architecture** subsection (the ~2–5 load-bearing reveals: *what's hidden · where it plants · when revealed · why it matters*). Plant chapters come from decisions and the spine; preserve them across regeneration rather than re-inferring them.
-3. **Structural Framework** — act structure, turning points, POV strategy, pacing. No word-budget table: budgets are computed, not stored.
-4. **Tone, Style & Writing Rules** — narrative voice, register, dialogue conventions, anti-patterns.
-5. **Character Dynamics** — relationship map, factions, power dynamics, secrets (Truby's character web).
+- (a) no primer exists, or a section is empty or a stub (first-run mode fills it);
+- (b) a pending decision’s `type` is `premise`, `theme` or `structure` (a retired `voice` or `genre` reads as `theme`: `references/file-schemas.md` § `decisions/`);
+- (c) the author explicitly asks to update it; or
+- (d) the primer is still in the **legacy format**: it carries Reveal Architecture, a character-web section (Character Dynamics, thematic positions, dialogue conventions, a character web), or a Setup/Payoff Ledger. This rewrite is the migration (below).
 
-**Editing posture — conservative about *whether*, liberal *within*.** The primer is the story's intellectual foundation; it changes less often than the treatment. Two judgments pull in opposite directions on purpose: (1) **Conservative about whether to touch a section** — if it's well-developed and no decision affects it, leave it. Every substantive change traces to a pending decision; don't rewrite for variety or add comps/rules the author didn't brainstorm. (2) **Liberal within a section you are editing** — once a decision requires touching a section, preserve its *meaning*, not its exact words. Rewrite, condense, and reorganize freely to keep it tight and fold the decision in cleanly. There is no "reproduce verbatim" rule for the primer — a section you're already editing is the right place to trim accumulated bloat. (This is the opposite of the treatment's verbatim-preservation rule in Phase 2 — the treatment is authored prose; the primer is a reference doc.)
+Plot, character and worldbuilding decisions never reopen it. When the gate is closed, skip this phase, say so in the plan (“Primer skipped: no premise, theme or structure decision”), and go straight to the treatment.
 
-**The razor — eject, don't absorb.** If the existing primer carries non-standard content — a "Setup/Payoff Ledger," a named worldbuilding apparatus, an "Open Questions" list, a beat sheet — decide first whether it belongs in the primer *at all*. Most such content has a home elsewhere: **drop it, don't fold it in.** Open questions → entries in `questions/`; project-specific plot machinery / invented systems → canon (`characters/`, `worldbuilding/`); beat sheets / scene-level narrative → `treatment.md`. Ejected content is preserved in the snapshot — you're keeping the front-matter small, not destroying anything. Only genuinely 50,000-foot content with no other home gets absorbed into a standard section (load-bearing reveals → §2 Reveal Architecture; character thematic positions → §2; condensed tonal analysis → §4).
+**Spine-only structure decisions.** The act-break and chapter-count decisions `pre-outline-session` logs are `structure` decisions that touch the spine (`outline/structure.md`), not the primer. Phase 1 writes no chapter numbers or beats into Section 3. If such decisions are the only thing that opened the gate and Section 3 would read the same, say so and leave the primer as it is (no new version).
 
-**Decision routing.** Each pending decision affects one or more primer sections — or none. Use `decision_type` (or the decision content) as a hint:
+Rewrite `primer.md`. The Primer is **50,000-foot front-matter** with **exactly four standard sections** (full section spec in `references/file-schemas.md` § `primer.md`):
 
-| Decision type | Primer section(s) |
+1. **Story Identity** — logline, genre and subgenre, comparable works, target length.
+2. **Premise & Moral Argument** — central dramatic question, moral argument, core conflict architecture.
+3. **Structural Framework** — the broad act design (the model and what each act does; never chapter or scene beats), escalation logic, POV strategy, timeline structure, pacing, and a slot for **the project's own structural rules** (e.g. a story that holds one character's POV throughout except one scene). Subsection names follow the project, not a fixed list. No word-budget table: budgets are computed, not stored.
+4. **Tone, Style & Writing Rules** — narrative voice, tonal register, rendering rules for the story's systems, dramatic irony, anti-patterns.
+
+There is no Character Dynamics section, no thematic positions, no want/need, no Reveal Architecture or Setup/Payoff Ledger, and no dialogue conventions in the Primer.
+
+**Editing posture — the whole primer is rewritten, but only what a decision requires changes.** The primer is the story's intellectual foundation. You return the complete document, and you reproduce every section exactly as it stands unless a pending decision or the author's instructions require a change. Within a section a decision touches, change only what the decision requires; never reword, condense or reorganize for its own sake, and never trim untouched material. There is no word budget to land: if the primer runs past about 5,000 words, say so in your report and nothing else.
+
+**One home per decision type.** Premise, theme and structure live in the primer. Plot lives in the treatment (narrative only; each plant or setup is stated in the narrative where it is planted, so the outline can seed it into the right chapter). A character's ghost, lie, want, need and voice live in that character's bio, and thematic positions, parallels, dialogue conventions and character dynamics in the manifest's Character Map. Rules of the story's world live in the canon entry and the manifest inventory.
+
+**The razor — eject, don’t absorb.** If the existing primer carries content with another home (a “Setup/Payoff Ledger,” Reveal Architecture, Character Dynamics, thematic positions, dialogue conventions, an “Open Questions” list, a beat sheet), do not carry it into a standard section. Every ejected piece goes to its home in this run or is handed on explicitly; the snapshot is a backup, never its only copy:
+
+- **Reveals, plants and the Setup/Payoff Ledger; beat sheets and scene-level narrative** → the treatment, in Phase 2 of this run: each plant stated in the narrative where it is planted (Phase 2’s fifth source). One that Phase 2 cannot place goes into the report and the journal verbatim.
+- **Character material** (character web, Character Dynamics, thematic positions and parallels, dialogue conventions; a character’s ghost, lie, want or need) → copied verbatim into the session’s journal entry under `## Moved out of the primer`, with a `What's Next` line in `state.md` pointing at it, for `manifest-sync` to seed or update the Character Map and for `character-bio` to fold per-character material into the bios. Pass it to the chained `manifest-sync` (Step 7) directly as well.
+- **Open questions** → new `questions/` entries, filed in Step 6 for each one the author confirms (an existing open entry that already covers one is named instead); the rest are named in the report as dropped.
+- **Invented systems** → canon: listed in the report for `worldbuilding-entry`, and copied into the journal section above.
+
+The plan lists what will be ejected and where each piece goes; the report says where each one landed.
+
+**Decision routing.** Use the decision’s `type` (or its content) as a hint:
+
+| Decision type | Home |
 |---|---|
-| `theme`, `premise` | Section 2 (Premise & Moral Argument); Section 4 (Tone, Style & Writing Rules) when it settles voice, POV, tone, or genre register |
-| `structure` | Section 3 (Structural Framework) — update the act skeleton / turning points if they change |
-| `plot` | Usually **the treatment**, not the primer — plot events are narrative. Touch the primer only if the decision changes the act skeleton (Section 3) or lands/reframes a load-bearing reveal (Section 2, Reveal Architecture) |
-| `character` | Section 2 if it changes a thematic position or a load-bearing reveal; Section 5 if it changes a relationship, alliance, or power balance |
-| `worldbuilding` | Rarely affects the primer directly — usually Manifest / canon. May affect Section 3 if it changes structural elements. |
+| `premise` | Section 1 (identity), Section 2 (premise, moral argument) |
+| `theme` | Section 2 (moral argument); Section 4 when it settles tone or voice; the manifest's Character Map if a character's position moves |
+| `structure` | Section 3 (Structural Framework) |
+| `plot` | **The treatment**, not the primer. The primer never reopens for it |
+| `character` | The character’s bio and the manifest’s Character Map, not the primer. Its story consequences still reach the treatment in Phase 2; the bio and the map are handed on (Step 7) |
+| `worldbuilding` | Canon entries and the manifest inventory, not the primer |
 | `process` | None. It governs the author's working method, never the story: set `integrated: n/a` and keep it out of the primer and treatment. |
 
-Most decisions don't affect the primer at all. Purely narrative decisions (plot events, scenes, dialogue) belong in the treatment, not the primer. A decision that surfaces an unresolved story problem is an **open question** (an entry in `questions/`), not primer content.
+A decision that surfaces an unresolved story problem is an **open question** (an entry in `questions/`), not primer content.
 
 **No word-budget table in Section 3.** An existing primer that still carries a "Treatment Word Budget" table loses it on this pass (the razor: the numbers are computed from `target_word_count` every run, so a stored copy only goes stale). If the author wants weighted act proportions, Section 3 states them in prose and the budget calculation honors them.
 
@@ -130,12 +154,10 @@ Most decisions don't affect the primer at all. Purely narrative decisions (plot 
 
 1. **Recency** — more recent decisions take precedence.
 2. **Thematic consistency** — prefer the resolution that serves the moral argument.
-3. **Reveal preservation** — prefer the resolution that keeps the load-bearing reveal architecture intact.
+3. **Reveal preservation** — prefer the resolution that keeps the story's load-bearing reveals intact.
 4. **Narrative coherence** — prefer what preserves more story options.
 
 Document any conflicts you resolved and your reasoning in the section where they land.
-
-**Section budget enforcement.** Targets (full table in `file-schemas.md`): Section 1 = 800–1,200w, Section 2 = 800–1,400w (incl. Reveal Architecture), Section 3 = 800–1,200w, Section 4 = 800–1,200w, Section 5 = 400–800w. Total ~4,500, hard ceiling 5,000. If the primer is at or over the ceiling, net condensation is part of this pass — every section you touch is an opportunity to trim.
 
 **Primer voice.** Structured, concise, reference-oriented. Declarative statements (*"The novel uses close third-person POV"*), present tense for specifications, specific concrete language. Avoid hedging unless genuinely uncertain. The Primer is a craft document, not a narrative.
 
@@ -143,7 +165,7 @@ Show the new primer to the user. If they want adjustments, fold them in. Don't m
 
 ### 5. Phase 2 — Treatment
 
-Rewrite `treatment.md` against the refreshed primer and the source files you full-read in Step 3. The treatment is a *prose document* written in **treatment voice** — see `references/treatment-voice.md` before writing anything in this phase. The before/after example in that file teaches the difference between dry summary and treatment voice; an agent that skips it drifts into Wikipedia plot summary.
+Rewrite `treatment.md` against the primer and the source files you full-read in Step 3. The treatment is a *prose document* written in **treatment voice** — see `references/treatment-voice.md` before writing anything in this phase. The before/after example in that file teaches the difference between dry summary and treatment voice; an agent that skips it drifts into Wikipedia plot summary.
 
 #### Write the story, not the analysis
 
@@ -154,9 +176,11 @@ The treatment is *narrative*, not analysis. You do NOT:
 - Include design rationale (*"This staging was chosen over Option A because…"*).
 - Reproduce brainstorm decision text as-is. Decisions are raw material; you integrate their *meaning* into narrative voice.
 
-When a decision contains analytical material (e.g., *"The prologue should use a two-part structure — warm workplace register followed by sudden catastrophe"*), integrate the *result* into the treatment narrative — write the warm workplace register; write the sudden catastrophe. The analysis stays in primer Section 4.
+When a decision contains analytical material (e.g., *“The prologue should use a two-part structure — warm workplace register followed by sudden catastrophe”*), integrate the *result* into the treatment narrative — write the warm workplace register; write the sudden catastrophe. For a plot decision, the result in the narrative is the whole integration: the rationale is not stored anywhere. If the analysis is really a standing rule (a tone or structural rule the whole book follows), that is a `theme` or `structure` decision of its own; suggest logging it as one rather than routing it to the primer from a plot decision.
 
-#### What you write comes ONLY from these four sources
+**Plants are stated where they are planted.** The treatment is narrative only: no non-narrative sections. When a clue or setup is planted, the narrative says what it really is and where it pays off (*"the round in the doorframe is a tell Nolan can't name yet; Andrew explains it in Act One"*). This is load-bearing: the outline can only seed a plant into the right chapter if the treatment states it.
+
+#### What you write comes ONLY from these five sources
 
 Treatment content must trace to one of:
 
@@ -164,6 +188,7 @@ Treatment content must trace to one of:
 2. **A pending decision** — integrated at the correct chronological location.
 3. **A ripple effect from a decision** — updating a downstream passage for consistency.
 4. **Connective tissue** — brief transitional sentences needed to make the above read smoothly.
+5. **Content moved out of the primer this run** — a legacy primer’s Reveal Architecture, Setup/Payoff Ledger, cold open or beat material (Phase 1’s razor), stated in the narrative where it happens: each plant where it is planted, with what it really is and where it pays off.
 
 You do **not** invent new scenes, plot events, character actions, or dramatic details beyond what the decisions and existing treatment provide. If the story has a narrative gap — a place where structure implies content that hasn't been brainstormed — insert a `[NEEDS DEVELOPMENT: …]` marker (see Markers below). Do not fill gaps with invented material, no matter how plausible it seems. The author develops those gaps through future brainstorming sessions.
 
@@ -177,7 +202,8 @@ For voice preservation when integrating new material into existing prose, see `r
 
 - **Plot decisions** → integrate at the correct chronological location. Capture the decision's *meaning* — character actions, emotional stakes, cause-and-effect chain — in treatment voice at treatment density. Condense supporting details (visual descriptions, dialogue notes, choreography) into efficient prose. You are writing a *condensed treatment*, not transcribing the decision.
 - **Decisions affecting only the primer** → skip in Phase 2 (Phase 1 already handled them).
-- **Decisions with both analytical and narrative components** → integrate the narrative component; leave the analytical component to the primer.
+- **Decisions with both analytical and narrative components** → integrate the narrative component; for a plot decision the analysis is realized in the narrative, never stored (above). Only a premise, theme or structure decision’s analysis belongs to the primer, and Phase 1 already took it.
+- **Character and theme decisions** → integrate their story consequences (what the character now does, says or wants on the page). Their bio and Character Map components are not written here; list each in the report (Step 7).
 - **Ripple effects** → when an upstream decision changes something, check downstream for inconsistencies. Common patterns:
   - **Character motivation change** → scenes driven by that motivation may need updating.
   - **Plot event added/removed/moved** → setup/payoff chains that depend on it may break.
@@ -228,21 +254,29 @@ After the user approves the new treatment:
 
 - Create or extend the session's journal entry first (created with `new` if this is the session's first write; `references/file-schemas.md` § `journal/`).
 - Create any new question entries (`new`, each with its row in `questions/_index.md`; in a series, with `scope` and `affects_books` per `references/series.md` § Scoping decisions and questions), so every `[OPEN: Q-###]` in the new treatment carries the ID the store reported.
-- Write the snapshot per `store.md` — both the old primer and the old treatment, as a pair.
-- `store.write` the new `primer.md` and `treatment.md`.
+- Create the question entries for any open questions ejected from a legacy primer that the author confirmed.
+- Write the snapshot per `store.md`: the old primer and the old treatment as a pair when Phase 1 ran, the old treatment alone when it was skipped.
+- `store.write` the new `treatment.md`, and the new `primer.md` only when Phase 1 ran.
+- When Phase 1 ejected anything this run did not place (character material, an invented system, a plant Phase 2 could not seat), extend the journal entry with a `## Moved out of the primer` section holding all of it verbatim, and add the `What's Next` pointer to it (below), naming the skill that owns each piece.
 - For each decision consumed by this update, and each carried-over one the pre-flight found already reflected, edit its entry to set `integrated: "yes (<date>)"` (removing or updating an old `**Integrated into treatment**:` body line it carries, so the two agree), and replace its row in `decisions/_index.md`.
-- Extend the journal entry with the update, using the IDs the store reported (and correcting any proposed number it already names: `references/file-schemas.md` § `journal/`, IDs as the store reported them): the decisions integrated, the questions opened, what changed in the primer and the treatment and why.
+- Extend the journal entry with the update, using the IDs the store reported (and correcting any proposed number it already names: `references/file-schemas.md` § `journal/`, IDs as the store reported them): the decisions integrated, the questions opened, what changed in the treatment (and in the primer, or that it was skipped) and why.
 - Update `state.md`:
-  - `What Exists → Primer` and `Treatment` lines bumped to new versions and the new `built_from_decisions` list.
+  - `What Exists → Treatment` bumped to the new version and its `built_from_decisions` list. `What Exists → Primer` moves only when the primer was written.
   - `Summary` refreshed.
   - `unintegrated decisions` count reset.
   - `Last Session` set to two or three sentences and the journal entry's path; the detail lives in the journal.
   - `stage` advanced if appropriate (`brainstorming` → `treatment-drafted` after a first comprehensive treatment; `treatment-drafted` → `treatment-refined` after a polish-pass). `initial_maturity` never changes.
-  - `What's Next` updated, forward items only — typically: resolve the next critical/important questions; if the manifest hasn't been updated in a while, suggest `manifest-sync`.
+  - `What's Next` updated, forward items only — typically: resolve the next critical/important questions; `manifest-sync` owed when a character or theme decision was integrated or a legacy primer’s character material was moved (pointing at the journal section); `character-bio` for each bio a character decision changes.
 
 ### 7. Report
 
-> Treatment updated. Primer v4 (five sections, ~4,400w), treatment v8. Snapshot saved. 7 decisions marked integrated. Two open questions still flagged in the treatment (Q-019, Q-021), plus one `[NEEDS DEVELOPMENT]` marker on Elena's Act-3 infiltration mechanics. Act 3 is ~1,900 of its ~5,000w share: its back half isn't decided yet. Recommended next step: resolve Q-019 (Marlowe's relationship to the antagonist) in a brainstorm session — it's the highest-priority unresolved one.
+> Treatment updated. Primer v4 (four sections, rewritten for the theme decision D-031; only Premise & Moral Argument changed), treatment v8. Snapshot saved. 7 decisions marked integrated. Two open questions still flagged in the treatment (Q-019, Q-021), plus one `[NEEDS DEVELOPMENT]` marker on Elena’s Act-3 infiltration mechanics. Act 3 is ~1,900 of its ~5,000w share: its back half isn’t decided yet.
+>
+> **Not written by this update:** D-033 (Alice’s lie) → `characters/alice.md` and the Character Map’s Thematic Positions; D-031 → Voss’s position in the Character Map. Shall I run `manifest-sync` now? (Update Alice’s bio with `character-bio` first if you want the sync to read the new lie.) After that, resolve Q-019 (Marlowe’s relationship to the antagonist) in a brainstorm session — it’s the highest-priority unresolved one.
+
+#### The hand-off to `manifest-sync` and `character-bio`
+
+This skill never writes a bio or the manifest, and the plugin has no automatic chaining, so the hand-off is explicit. The plan and the report name every integrated `character` or `theme` decision whose bio or Character Map component this run did not write, and any character material a legacy primer ejected. When there is any, the report proposes running `manifest-sync` next, as its own plan-first step on the author’s yes (it reads the decisions it has not folded in from its own `built_from_decisions`, and the ejected text from the journal section), and lists each bio to update via `character-bio`. If the author declines, the `What's Next` lines carry it.
 
 #### Outline staleness flag
 
@@ -261,7 +295,7 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 
 Three additions in series mode:
 
-1. **Also load `series.md`** during the pre-flight read. The series arc, cross-book setups, and continuity concerns inform the focused book's treatment refresh — especially primer §2's Reveal Architecture, whose load-bearing reveals must respect cross-book chains (tracked in `series.md`) that span beyond this book.
+1. **Also load `series.md`** during the pre-flight read. The series arc, cross-book setups, and continuity concerns inform the focused book's treatment refresh — especially the treatment's planted setups, whose load-bearing reveals must respect cross-book chains (tracked in `series.md`) that span beyond this book.
 2. **Filter decisions by scope.** Only integrate decisions whose `scope` is the focused book OR is `series` with the focused book in `affects_books`; the index's Scope column narrows the candidates, and each `series`-scoped candidate still needs its `affects_books` checked: read that entry's frontmatter (or parse its Integrated cell, which names each book it touches) before counting it in. Decisions scoped to other books are not consumed by this update — they stay pending for their book's treatment.
 3. **Surface series-level impact in the report.** When the treatment refresh affects cross-book chains (a setup that pays off in a later book, a character state that book N+1 starts from), call it out explicitly: *"This treatment change moves Maya's confrontation with Senator Vance from ch 35 to ch 38. Book 2's opening currently assumes Maya leaves Washington after ch 35 — recommend a brainstorm session on book 2's opening, or a series.md patch to update the Continuity Concerns section."*
 
@@ -305,7 +339,7 @@ Dispatch read subagents per `references/subagent-pattern.md` when:
 **Suggested subagent grouping for a heavy treatment-update:**
 
 1. **Bios subagent** — full-reads every major (and supporting, in series mode) bio in scope. Returns per-bio summary with quoted excerpts focused on Voice Fingerprint, Lie/Ghost, Thematic Posture, and the per-book sub-arcs (series mode).
-2. **Cross-book bios subagent** (series mode only) — reads each book's treatment to surface the focused-book character's actions across the series, for series-aware Reveal Architecture updates and cross-book chain fidelity.
+2. **Cross-book bios subagent** (series mode only) — reads each book's treatment to surface the focused-book character's actions across the series, for series-aware plant statements in the treatment and cross-book chain fidelity.
 3. **Decisions filter subagent** — reads `decisions/_index.md` and the pending entries it lists (not `yes`, not `n/a`), returns just those scoped to the focused book or series-with-this-book-affected, plus quoted excerpts and the categorical mapping to primer sections.
 
 The main session retains direct reads of `primer.md`, `treatment.md`, `manifest.md`, and `series.md`. These are *judgment-bearing* artifacts that the two-phase pipeline writes against — the main session must absorb them itself, not via summary, because both phases depend on their full texture.
@@ -317,7 +351,7 @@ For incremental treatment updates against a small project (1 protagonist bio, sh
 ## What this skill does not do
 
 - Generate or update character bios. That's `character-bio`. (If a treatment update reveals a bio gap, surface it in the report and recommend `character-bio` as next.)
-- Refresh the manifest. That's `manifest-sync`. The treatment update may rename or reshape elements, but updating the inventory file is a separate operation. (Recommend `manifest-sync` in the report if the treatment changed meaningfully.)
+- Refresh the manifest. That’s `manifest-sync`. The treatment update may rename or reshape elements, but updating the inventory file and the Character Map is a separate operation, proposed as the chained next step (Step 7).
 - Generate or update worldbuilding entries. That's `worldbuilding-entry`. (If a treatment update reveals a worldbuilding gap, surface it in the report.)
 - Generate or update the chapter spine. That's `pre-outline-session`. If a treatment update structurally invalidates `outline/structure.md`, surface it in the staleness flag above and recommend `pre-outline-session` — don't unilaterally edit the spine.
 - Generate or revise per-chapter outlines. That's `outline-chapters`. Flag stale chapter outlines in the report.
@@ -326,7 +360,7 @@ For incremental treatment updates against a small project (1 protagonist bio, sh
 ## References
 
 - `references/plan-first.md` — universal plan-first behavior
-- `references/file-schemas.md` — `primer.md` (five sections, Reveal Architecture), `treatment.md` (header conventions, markers, length), § Target word count and the derived budgets, `series.md` schema, scope on decisions/questions
+- `references/file-schemas.md` — `primer.md` (four sections), `treatment.md` (header conventions, markers, length), § Target word count and the derived budgets, `series.md` schema, scope on decisions/questions
 - `references/reading-discipline.md` — full-read rules, substantive mode, Zoom Selection
 - `references/subagent-pattern.md` — **read when bios + treatment combined would consume substantial main context** (typically series mode or 3+ major bios)
 - `references/series.md` — **read when `project_type: series`** (focused-book path resolution, series.md impact, scope filtering)

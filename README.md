@@ -47,7 +47,7 @@ A fully-developed project's folder looks like this (files appear as the correspo
 ```
 my-story/
 ├── state.md                     # slim dashboard: summary, what exists, what's next, last session
-├── primer.md                    # story craft dossier (5 sections, ~4,500w)
+├── primer.md                    # story craft dossier (4 sections)
 ├── treatment.md                 # full prose treatment of the story
 ├── manifest.md                  # lean inventory of characters & worldbuilding
 ├── decisions/                   # one file per decision, never deleted
@@ -211,6 +211,16 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.26.0 changed over v0.25.0
+
+- **A stable Story Primer (the web app’s CL108).** The primer has four sections (Story Identity, Premise & Moral Argument, Structural Framework, Tone, Style & Writing Rules) and is rewritten only for a premise, theme or structure decision, or when the author asks. When it is rewritten, every section is reproduced exactly unless a decision requires a change; nothing is condensed or trimmed to a budget. Reveal Architecture, Character Dynamics, thematic positions and dialogue conventions leave it.
+- **One home per decision type.** Plot goes to the treatment (narrative only, with each plant stated where it is planted); character to the bio and the manifest’s Character Map; worldbuilding to canon and the manifest inventory.
+- **The manifest gains a `## Character Map`** (Thematic Positions, Thematic Parallels, Dialogue Conventions, Character Dynamics), carried forward unchanged unless a character or theme decision lands. It has no open questions in any form (`## Open Questions` is gone; a sync lists the ones it drops and files those you confirm); `manifest-sync` files a `questions/` entry (Character, important) when two leading characters collide.
+- **Character and theme decisions reach their homes.** `treatment-update` names each one whose bio or Character Map part it did not write and offers `manifest-sync` as the next step; the manifest’s new `built_from_decisions` tells `manifest-sync` which ones it hasn’t folded in yet.
+- **Older primers migrate on the next treatment update.** A primer with Reveal Architecture, a character web or a Setup/Payoff Ledger opens the gate; its plants move into the treatment’s narrative and its character material is handed to `manifest-sync` (verbatim in the journal) to seed the Character Map.
+- **The Blueprint orients forward only from the chapter outline’s setups**, found by matching the treatment’s stated plants against the outline’s events, and reads the Character Map; never from the primer. `notes` checks plants and payoffs the same way, and its **Chain closure** proposal is retired (chains live in the treatment).
+- **Snapshots follow what changed:** the primer and treatment as a pair when both are rewritten, the treatment alone otherwise.
 
 ### What v0.25.0 changed over v0.24.0
 

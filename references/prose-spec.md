@@ -27,7 +27,7 @@ The single most important rule:
 The Blueprint already consolidated the Canon this chapter needs — every surfacing character and element at the resolution its prominence earns, canonical facts fused with current-state continuity — and harvested the primer's story-level frame into its Story Context section. Loading the Blueprint *and* the full bios is redundant by construction.
 
 - **Blueprint present → lean path.** The `ch<NN>-blueprint.md` stands in for character bios + worldbuilding entries + the primer + the manifest entirely. The treatment stays out (future-plot spoilers).
-- **Blueprint absent → fallback path.** Raw character bios (POV-first) + worldbuilding entries the chapter touches + the **primer** (for thematic/relationship framing) + the **manifest** (the cast + worldbuilding inventory, so the prose knows who and what exists beyond the entries loaded in full). The **treatment stays out** on this path too — it contains future plot.
+- **Blueprint absent → fallback path.** Raw character bios (POV-first) + worldbuilding entries the chapter touches + the **primer** (for thematic framing) + the **manifest** (the cast + worldbuilding inventory and Character Map, so the prose knows who and what exists beyond the entries loaded in full). The **treatment stays out** on this path too — it contains future plot.
 
 The Blueprint path is the intended one and produces tighter prose (higher signal-to-noise). The fallback exists so prose is still possible if a chapter wasn't blueprinted — but recommend blueprinting first.
 
@@ -144,7 +144,7 @@ The model must never know what it hasn't written.
 
 - **Read only prior chapters.** Story-so-far is prior chapter synopses *only*; prior prose is a *prior* chapter only, and never prose at `status: retired` (prose the author set aside is not the story so far). Never read a chapter numbered after the one being written — not its outline, not its prose, not its synopsis.
 - **The treatment stays out** of prose-time context on *both* paths — it contains future plot.
-- **The chain register never enters.** Primer §2's Reveal Architecture is planning-side; plants reach the prose only as the Blueprint's imperative instructions, with no rationale. An agent that knows it is planting will telegraph.
+- **The chain register never enters.** Plant and payoff planning is planning-side (the treatment and outline); plants reach the prose only as the Blueprint's imperative instructions, with no rationale. An agent that knows it is planting will telegraph.
 - **Never write toward a not-yet-landed reveal.** The Blueprint already filtered canon to `chapter ≤ N` (via the Revelation Log); honor that. Don't foreshadow a specific future event the prose at this point couldn't know.
 
 ---

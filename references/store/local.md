@@ -51,7 +51,7 @@ Nothing to search. This binding has no well-known root: a local project is a fol
 
 ## Worked example: `treatment-update` replaces `treatment.md`
 
-1. **Snapshot** (`file-schemas.md` § `.storystormer/history/`: the primer and treatment snapshot as a pair). Create `.storystormer/history/<timestamp>-treatment-update/` and copy `primer.md` and `treatment.md` into it, unchanged; on a host with no copy, Read each in full and Write it there.
+1. **Snapshot** (`file-schemas.md` § `.storystormer/history/`: the primer and treatment snapshot as a pair when both are rewritten, the treatment alone when the primer is skipped). Create `.storystormer/history/<timestamp>-treatment-update/` and copy `treatment.md` into it, and `primer.md` too when the run rewrites it, unchanged; on a host with no copy, Read each in full and Write it there.
 2. **Write.** Write the new `treatment.md` over the old one; the skill’s read of `treatment.md`, which the new treatment was prepared from, satisfies Write’s read-first rule. The skill has already set its frontmatter (`version` bumped) in the content.
 3. **No guard, no extra confirmation.** The concurrency guard does not apply to local, and `confirm: none` means the plan-first approval was the only confirmation.
 4. **Open.** Present `treatment.md` in the host’s pane if the skill shows the result.

@@ -43,6 +43,8 @@ created: 2026-05-11
 last_session: 2026-05-11
 session_count: 1
 surfacing_mode: active | on-request
+people_types: [Protagonist, Antagonist, Major, Supporting, Minor]  # optional; the project's People types, in order (absent = the app's defaults)
+world_types: [Locations, Organizations]     # optional; the project's worldbuilding types (absent = the app's fourteen)
 # Series-mode only — present when project_type: series
 books: [book-1, book-2, book-3]            # ordered list of book slugs
 current_focus: book-1                       # which book the user is currently working on
@@ -170,7 +172,7 @@ The one place the plugin's word budgets come from, matching the app's treatment 
 
 These numbers are computed whenever a skill needs them and never stored as a table in the primer. In a series they use the **focused book's** target (`current_focus`): that book's own `target_word_count` when its `books/<slug>/state.md` carries one, else the series-level value. Switching focus changes which book's target the budgets use and never rewrites the series-level value.
 
-## `primer.md` — story craft dossier (five sections)
+## `primer.md` — story craft dossier (four sections)
 
 ```yaml
 ---
@@ -180,9 +182,22 @@ built_from_decisions: [D-001, D-002, D-005, D-009, D-012, D-018]
 ---
 ```
 
-The Story Primer is **50,000-foot front-matter** — the smallest set of load-bearing decisions that define what the story *is*. It defines *how* the story is told: its identity, moral argument, load-bearing reveal architecture, structural framework, writing rules, and character dynamics. Downstream agents (treatment writer, prose generators) read it for craft decisions, structural plans, and voice guidance. It is a short reference document, not a treatment and not an encyclopedia.
+The Story Primer is **50,000-foot front-matter** — the smallest set of load-bearing decisions that define what the story *is*. It defines *how* the story is told: its identity, moral argument, structural framework, and writing rules. Downstream agents (treatment writer, prose generators) read it for craft decisions, structural plans, and voice guidance. It is a short reference document, not a treatment and not an encyclopedia.
 
-The Primer has **exactly five standard sections** — no more, no fewer. Every piece of primer content lives inside one of these sections. Total target length: **~4,500 words** across all five, with a hard ceiling of **5,000**. The Primer is a reference document, not an essay; concise specific statements beat expansive analysis. Keeping it small and stable is a feature — every downstream consumer that loads it whole pays as little as possible.
+The Primer has **exactly four standard sections**. Every piece of primer content lives inside one of them. Depth is whatever the story has earned (about 5,000 words is the guide; there is no per-section target and no trimming to a budget). Keeping it stable is a feature — every downstream consumer loads it whole.
+
+### When the primer changes
+
+Only for a **premise, theme or structure** decision (by the decision’s `type`; a retired `voice` or `genre` reads as `theme`), the author’s explicit request, a first run (no primer, or an empty or stub section), or a primer still in the **legacy format** (one carrying Reveal Architecture, a character-web section or a Setup/Payoff Ledger, whose rewrite moves that material to its homes). Plot, character and worldbuilding decisions never reopen it. When it is updated, the whole Primer is rewritten but every section is reproduced exactly unless a decision requires a change; never condense or reword for its own sake. A run that skips the primer leaves its file, `version` and `built_from_decisions` alone.
+
+### One home per decision type
+
+| Decision type | Home |
+|---|---|
+| Premise, theme, structure | `primer.md` |
+| Plot | `treatment.md`, narrative only: each plant or setup is stated in the narrative where it is planted, so the outline can seed it into the right chapter |
+| Character | The character's bio (`characters/*.md`) and the manifest's Character Map |
+| Worldbuilding | Canon entries (`worldbuilding/`) and the manifest inventory |
 
 ### The razor — content with another home is ejected, never absorbed
 
@@ -190,66 +205,44 @@ The primer holds only material with **no other home** in the workspace. Content 
 
 - **Open questions** (unresolved story problems, "needs deciding" items) → an entry in `questions/`, not the primer.
 - **Project-specific plot machinery** (named operations, invented technologies, faction charters, worldbuilding apparatus) → canon (`characters/`, `worldbuilding/`), not the primer.
-- **Scene-level detail** (beat sheets, choreography, what-happens-next narrative) → `treatment.md`, not the primer.
+- **Scene-level detail** (beat sheets, choreography, reveals, plants, what-happens-next narrative) → `treatment.md`, not the primer.
+- **Character material** (thematic positions, want/need, dialogue conventions, relationship dynamics) → the bios and the manifest's Character Map, not the primer.
 
-Every primer rewrite is snapshotted (per `references/store.md`), so ejected content is never destroyed — it just stops riding along in the front-matter. Do not carry ejected content forward "just in case."
+Ejected content is moved, not just dropped: `treatment-update` states ejected plants in the treatment’s narrative in the same run, files confirmed open questions, and copies ejected character material verbatim into the session’s journal entry for `manifest-sync` and `character-bio` (`treatment-update` § The razor). The snapshot every primer rewrite takes (per `references/store.md`) is a backup, never ejected content’s only copy. Do not carry ejected content forward “just in case.”
 
-### Section 1 — Story Identity (800–1,200w)
+### Section 1 — Story Identity
 
-Logline (1–3 sentences capturing the hook), primary genre and subgenre, 3–5 comparable works with brief explanations of the comparison (one bullet each, title in italics and no bold around it: `- *Olive Kitteridge* (Elizabeth Strout): linked lives in one small town`), target word count and what that implies for pacing/structure.
+Logline (1–3 sentences capturing the hook), primary genre and subgenre, comparable works with brief explanations of the comparison (one bullet each, title in italics and no bold around it: `- *Olive Kitteridge* (Elizabeth Strout): linked lives in one small town`), target length and what that implies for pacing/structure.
 
 **Does NOT contain**: premise or moral argument (Section 2), character descriptions (Manifest), plot summary (treatment).
 
-### Section 2 — Premise & Moral Argument (800–1,400w)
+### Section 2 — Premise & Moral Argument
 
-The central dramatic question the story asks, the premise/moral argument (what the story proves through events), core conflict architecture (the levels of conflict operating simultaneously), character thematic positions (how each major character embodies a different answer to the central question), thematic parallels and structural echoes between characters, and the load-bearing **Reveal Architecture** (subsection below).
+The central dramatic question the story asks, the moral argument (what the story proves through events), and the core conflict architecture (the levels of conflict operating simultaneously).
 
-**Reveal Architecture (subsection).** The story's *load-bearing* reveals — the central mysteries, secrets, and revelations whose timing is structural, the ones that reframe the story when they land. For each, state four things tightly: **what is hidden**, **where it plants** (the chapter, once a spine exists; `plant: TBD` before that), **when it is revealed** (which act / turning point, and the chapter once known), and **why it matters** (what the revelation reframes or proves). The plant chapter is what turns this subsection into the book's **chain register**: `outline-chapters` checks that every registered plant is present in its chapter's outline, and `blueprint` renders it as an imperative instruction. Admission requires all three of: **load-bearing** (the payoff fails without the setup), **long-range** (spans more than about two chapters), and **not self-evident** (would not be caught by reading adjacent chapters). A chain that has been planted *and* paid is **struck**, not archived; an unpaid chain at end of draft is a bug report, not a row. This is deliberately **not** a ledger of every planted setup and payoff — capture only the handful of reveals the architecture depends on; a story usually has **two to five**, and rarely more than fifteen. Ordinary foreshadowing and minor callbacks are the treatment's and the prose stage's job, and the per-chapter harvest in `ch<NN>-notes.md` is where found-not-foreseen payoffs get searched for. If a reveal's payoff is genuinely undecided, that is an **open question** — route it to `questions/`, do not park an unresolved item here. Plant chapters should be sourced from decisions and the spine, not re-inferred on each `treatment-update`, so they survive primer regeneration.
+**Does NOT contain**: character thematic positions or parallels (the manifest's Character Map), reveals and plants (the treatment's narrative), detailed character bios, scene-by-scene narrative (treatment), writing technique specifications (Section 4). If a reveal's payoff is genuinely undecided, that is an **open question** — route it to `questions/`.
 
-**Does NOT contain**: detailed character bios (Manifest), scene-by-scene narrative (treatment), writing technique specifications (Section 4), a running ledger of every setup and payoff (retired — capture only load-bearing reveals, above).
+### Section 3 — Structural Framework
 
-### Section 3 — Structural Framework (800–1,200w)
-
-Act structure with approximate word counts and key turning points per act, POV strategy (which characters get POV, distribution, special rules), timeline structure (compressed present, flashback pattern, parallel timelines), pacing notes (where to accelerate, where to breathe, rhythm patterns), structural mechanisms (e.g., *"the recruitment sequence is the thematic engine"*).
+The broad act design (the model and what each act does, with no chapter or scene beats), escalation logic, POV strategy (which characters get POV, distribution, special rules), timeline structure (compressed present, flashback pattern, parallel timelines), pacing notes (where to accelerate, where to breathe), and a slot for **the project's own structural rules** (e.g., *"POV stays with the dog throughout except the kidnapping"*). Subsection names for the project's own rules follow the project, not a fixed list.
 
 Section 3 carries **no word-budget table.** The treatment's budget is computed on each run from `target_word_count` (see § Target word count and the derived budgets), exactly as the app does, so a stored table could only go stale. If the story wants weighted act proportions rather than the defaults, say so in prose here (*"Act 2 runs long: 60% of the book"*); the budget calculation honors it.
 
-**Does NOT contain**: a word-budget table (computed, not stored), beat-by-beat scene breakdowns (treatment), detailed staging deliberations (state conclusions, not the analytical process), full scene choreography (treatment).
+**Does NOT contain**: a word-budget table (computed, not stored), chapter or scene beats (treatment, outline), detailed staging deliberations (state conclusions, not the analytical process), full scene choreography (treatment).
 
-### Section 4 — Tone, Style & Writing Rules (800–1,200w)
+### Section 4 — Tone, Style & Writing Rules
 
-Overall narrative voice description, tonal register (e.g., *"dark procedural realism with metaphysical unease"*), dialogue conventions for major characters, special narrative techniques unique to this story, standing writing rules and anti-patterns to avoid, genre-specific voice modulations.
+Overall narrative voice (one line naming the protagonist's interior register when it is the book's main voice), tonal register (e.g., *"dark procedural realism with metaphysical unease"*), rendering rules for the story's systems, dramatic irony, standing writing rules and anti-patterns to avoid, genre-specific voice modulations.
 
-**Does NOT contain**: character personality descriptions (Manifest), character-specific humor examples at scene level (summarize the register, don't write example scenes), full dramatic-irony analysis (state the approach in 1–2 sentences).
-
-### Section 5 — Character Dynamics (400–800w)
-
-Key relationship dynamics between major characters (alliances, conflicts, mentoring, mirroring), power dynamics (who has leverage over whom), faction/group structures and their internal fault lines, cross-faction tensions (character belongs to one group but loyal to another), secrets between characters that drive dramatic irony.
-
-Use concise relationship descriptors — *"Marcus → Elena: professional rivalry masking mutual respect; he represents institutional loyalty, she represents reform"* — not prose paragraphs. This is a structural map of relationships (Truby's character web), not a narrative.
-
-**Does NOT contain**: individual character descriptions (Manifest), character thematic positions (Section 2), full character backstory (`characters/*.md`).
+**Does NOT contain**: dialogue conventions for individual characters (the manifest's Character Map), character personality descriptions (Manifest), character-specific humor examples at scene level (summarize the register, don't write example scenes).
 
 ### Header conventions
 
-- `##` (H2) for each of the five standard sections: `## 1. Story Identity`, `## 2. Premise & Moral Argument`, etc.
-- `###` (H3) for subsections within a section: `### Logline`, `### Central Dramatic Question`, `### Reveal Architecture`, etc.
+- `##` (H2) for each of the four standard sections: `## 1. Story Identity`, `## 2. Premise & Moral Argument`, etc.
+- `###` (H3) for subsections within a section: `### Logline`, `### Central Dramatic Question`, etc.
 - H1 (`#`) is reserved for the document title only.
 
-Separate the five sections with `---` horizontal rules for visual clarity.
-
-### Section budget summary
-
-| Section | Target Words |
-|---|---|
-| 1. Story Identity | 800–1,200 |
-| 2. Premise & Moral Argument (incl. Reveal Architecture) | 800–1,400 |
-| 3. Structural Framework | 800–1,200 |
-| 4. Tone, Style & Writing Rules | 800–1,200 |
-| 5. Character Dynamics | 400–800 |
-| **Total** | **~4,500 (hard ceiling 5,000)** |
-
-If a section runs at or over budget, condensing is part of the pass — every section you touch is an opportunity to trim. Density matters more than coverage.
+Separate the four sections with `---` horizontal rules for visual clarity.
 
 ## `treatment.md` — full story treatment
 
@@ -301,21 +294,24 @@ Two marker types — both signal pending work and are replaced with developed co
 
 The treatment's total length, its per-act split, and its per-chapter density are computed from `target_word_count`; see § Target word count and the derived budgets. They govern every treatment generation, first-run included (an unset target falls back to the project type's default).
 
-The treatment does **not** duplicate the primer — they're read together when full context is needed. The `primer_version` field records which primer this treatment was built against; a primer refresh that bumps `primer_version` past the treatment's recorded value means the treatment may need an update pass.
+The treatment does **not** duplicate the primer — they're read together when full context is needed. The `primer_version` field records which primer this treatment was built against; a primer rewrite that bumps `primer_version` past the treatment's recorded value means the treatment may need an update pass (the primer is rewritten rarely, so the version usually stays put while the treatment advances).
+
+The treatment is **narrative only**: no analytical or non-narrative sections. When a clue or setup is planted, the narrative says what it really is and where it pays off; the outline can only seed a plant into the right chapter if the treatment states it.
 
 ## `manifest.md` — lean inventory
 
-A structural index of every character and worldbuilding element, in the app's Manifest format (the Manifest Sync prompt's "Manifest Document Format", v1.4.0). Not a deep document: each entry is a name, a capped description, and a development status. The depth lives in the bios and worldbuilding entries; the manifest carries no file paths.
+A structural index of every character and worldbuilding element, in the app's Manifest format (the Manifest Sync prompt's "Manifest Document Format"), followed by the cast's **Character Map**. The inventory is not a deep document: each entry is a name, a capped description, and a development status. The depth lives in the bios and worldbuilding entries; the manifest carries no file paths.
 
 ```yaml
 ---
 version: 2
 last_updated: 2026-05-10
 treatment_version: 7
+built_from_decisions: [D-004, D-011, D-018]
 ---
 ```
 
-The frontmatter is plugin bookkeeping. The body below it is the app's document, verbatim in shape:
+The frontmatter is plugin bookkeeping. `built_from_decisions` lists the `character` and `theme` decisions the Character Map has folded in (or found it already reflected); `manifest-sync` reads the ones not on it as pending for the map. A manifest without the key (written before 0.26.0, or by the app) counts only decisions dated on or after its `last_updated`. The body below it is the app’s document, verbatim in shape:
 
 ```markdown
 # Manifest — The Pattern Recognition
@@ -366,13 +362,36 @@ Public-facing tech firm with a private fraud operation run from its compliance o
 
 ---
 
-## Open Questions
+## Character Map
 
-1. **Does Alice know about the fraud before Act 2?** Determines whether her betrayal is a choice or a discovery; blocks Alice's bio.
+### Thematic Positions
+
+- **Marlowe:** believes proof is the only justice; the story tests that belief.
+- **Alice:** believes loyalty outranks proof.
+
+### Thematic Parallels
+
+- Marlowe and Voss both bury what they cannot face.
+
+### Dialogue Conventions
+
+- **Marlowe:** clipped, numbers first, never finishes an apology.
+
+### Character Dynamics
+
+Relationships are the story's engine: who holds leverage over whom, and where the loyalties fracture.
+
+#### Core Team
+
+- **Marlowe → Alice:** professional trust masking an undisclosed debt.
+
+#### Antagonist Axis
+
+- **Marlowe ↔ Voss:** mirror image; each is what the other might have become.
 
 ---
 
-*Manifest entries: 5 (3 characters, 2 worldbuilding) · 1 open questions*
+*Manifest entries: 5 (3 characters, 2 worldbuilding)*
 ```
 
 **Entries.** A character is `**Full Name** — Role Label / Brief Archetype or Title` for major characters and `**Full Name** — Role Label` for supporting and minor; a worldbuilding entry is `**Entry Name**` alone. The description is one line under hard word caps: **major ≤30 words** (who they are, what they want, what blocks them), **supporting ≤20**, **minor ≤10**, **worldbuilding ≤20**. Every character is named (no "The CFO"); major and supporting characters carry first and last names.
@@ -388,11 +407,17 @@ Public-facing tech firm with a private fraud operation run from its compliance o
 
 The status replaces the old file pointers and "(no bio yet)" notes: "Canon Asset Created" says the file exists, anything lower says it doesn't.
 
-**Sections.** Characters are grouped under `### Major Characters`, `### Supporting Characters`, `### Minor Characters` (the manifest's own roles, not the bios' `type`). Worldbuilding is grouped under `### <Type>` using the project's worldbuilding types, spelled as in the entries' `category`; the app's defaults are the fourteen in `references/frameworks.md` § Worldbuilding (Organizations · Locations · Geography · Objects · Vehicles · Weapons · Technology · Magic · Creatures · Culture · History · Religion · Languages · Lore), and a project's custom types are allowed. No sections outside the project's list. Omit any section with no entries, and omit `## Open Questions` when nothing is unresolved.
+**Sections.** Characters are grouped under `### Major Characters`, `### Supporting Characters`, `### Minor Characters` (the manifest's own roles, not the bios' `type`). Worldbuilding is grouped under `### <Type>` using the project's worldbuilding types, spelled as in the entries' `category`; the app's defaults are the fourteen in `references/frameworks.md` § Worldbuilding (Organizations · Locations · Geography · Objects · Vehicles · Weapons · Technology · Magic · Creatures · Culture · History · Religion · Languages · Lore), and a project's custom types are allowed. No sections outside the project's list. Omit any section with no entries.
 
-**Open Questions** are decisions the author hasn't made that block downstream canon or outline work (including uncertain merges and role reclassifications): flagged as a blockquote under the affected entry and collected in the numbered `## Open Questions` list. They are not brainstorming prompts.
+**Order.** The inventory comes first (`## Characters`, `## Worldbuilding`, in the format above), then `## Character Map`.
 
-**Footer.** The last line counts the document: `*Manifest entries: {total} ({X} characters, {Y} worldbuilding) · {Z} open questions*`.
+**Character Map** is the cast’s thematic and relational map, at the depth the author has developed. It has four subsections: `### Thematic Positions` (how each leading character embodies an answer to the central question), `### Thematic Parallels` (echoes and mirrors between characters), `### Dialogue Conventions` (how each leading character talks), and `### Character Dynamics` (a framework line, then the project’s own subsections, e.g. Core Team, Antagonist Axis). The inventory’s word caps do not apply to it. It is built when the manifest has none (from the leading characters’ bios, the treatment, and character material moved out of a legacy primer), rewritten only when a **character or theme decision** lands, moved-out primer text arrives, or the author asks, and otherwise carried forward unchanged, byte for byte. Each character’s ghost, lie, want and need live only in that character’s bio, never in the manifest; where the Character Map and a bio disagree, the bio wins.
+
+**Leading characters** are those whose bio `type` is among the first four of the project’s People types (`state.md`’s `people_types`, else the app’s defaults, which makes Protagonist, Antagonist, Major and Supporting leading), the app’s rule for which bios the Treatment update reads in full.
+
+**No open questions in the manifest, in any form**: no `## Open Questions` section, no inline question blockquotes, no footer question count. Questions live only as `questions/Q-###.md` entries. When a sync finds two leading characters colliding (the same lie, want, need, thematic position or voice), it files one new open question per pair (§ `questions/`: `category: Character`, `priority: important`, `source: manifest_sync`, a 3–7 word `title`) unless an open one already names that pair’s collision; nothing about the collision goes into the manifest. A sync over an older manifest that still carries questions lists each one it drops and files those the author confirms as new entries. Uncertain merges and role changes go into the sync’s report, or become a `questions/` entry when the author confirms; they are never written into the manifest.
+
+**Footer.** The last line counts the inventory: `*Manifest entries: {total} ({X} characters, {Y} worldbuilding)*`.
 
 **Series projects** add one line under every entry's Status line, characters and worldbuilding alike: `*Appears in: books 1, 2*`, naming books by their number in the series' `books` list. Standalone novels never carry it. See `references/series.md`.
 
@@ -548,7 +573,7 @@ storystormer_kind: question
 - **`title`:** required, 3–7 words naming the question, the label the app and the index list it under. Old logs often have none; the layout upgrade then writes a short label taken from the question’s own words. It is the only author-facing text the upgrade composes, and its preflight says so.
 - **`status`:** `open`, `resolved` or `invalidated`. Any other wording an older log used (`half-resolved`, `open, but no longer unmechanised`) is read as the closest of the three, and its words stay in the body as written.
 - **`resolved_by`:** the `D-###` that resolved it, set with `status: resolved`; also allowed on an invalidated question when a decision is what invalidated it. Omitted while it is open. This field is the one link between a question and the decision that settled it; a decision’s `**Resolves**:` line, where an older entry has one, stays in its body as written.
-- **`source`:** one of the app's values (`decision_capture`, `treatment_update`, `manual`, `ai_marker`, `question_triage`, `agent_tool`, `ingestion`) or `plugin`. The plugin writes `treatment_update` for a question `treatment-update` logs, `ingestion` for one `init` extracts from intake materials, `manual` for one the user dictates through `/storystormer:questions add`, and `plugin` for any other skill (`brainstorm-session`, `pre-outline-session`, `outline-chapters`, and so on). A question that came from the app keeps its value.
+- **`source`:** one of the app’s values (`decision_capture`, `treatment_update`, `manual`, `ai_marker`, `question_triage`, `agent_tool`, `ingestion`, and `manifest_sync`, which the app’s CL108 adds alongside its own Manifest Sync collision check) or `plugin`. The plugin writes `treatment_update` for a question `treatment-update` logs, `manifest_sync` for a character-collision question `manifest-sync` files, `ingestion` for one `init` extracts from intake materials, `manual` for one the user dictates through `/storystormer:questions add`, and `plugin` for any other skill (`brainstorm-session`, `pre-outline-session`, `outline-chapters`, and so on). A question that came from the app keeps its value.
 
 **May be absent on a carried-over entry:** `date` and `source`, when the old log never recorded them. `title` is always present (the upgrade writes one).
 
@@ -610,7 +635,7 @@ Refreshed the treatment to v7 with D-001..D-018. Act 2's reveal now turns on the
 ```
 
 - **Frontmatter:** `date`, the day the entry was created, the same as the filename’s and unchanged for the life of the entry, even when the session runs past midnight (later steps extend the same entry; their paragraphs may name their own dates); `session` (the number in the filename); `skills`, the skills that wrote during the session; `decisions`, the IDs logged or changed; `questions`, the IDs opened, resolved or invalidated; `source`, `plugin` for an entry the plugin writes and `app` for one the app writes from its own chat sessions; and the two `storystormer_*` fields. Lists are empty (`[]`) when nothing applies.
-- **Body:** a short narrative, in the profile, of what was done and why: the choices made and the reasons, what changed in which documents, what was left open. It is where a finished What’s Next item goes, and where the detail that `state.md` no longer carries lives.
+- **Body:** a short narrative, in the profile, of what was done and why: the choices made and the reasons, what changed in which documents, what was left open. It is where a finished What’s Next item goes, and where the detail that `state.md` no longer carries lives. A `treatment-update` that migrates a legacy primer adds a `## Moved out of the primer` section holding the ejected character material verbatim, with a What’s Next line in `state.md` pointing at it; `manifest-sync` reads that section to seed the Character Map, the one time a skill reads the journal for content.
 - **Created by the session’s first write,** before `state.md` is written. Its number is one more than the higher of `state.md`’s `session_count` and the highest `sNN` in the `journal/` listing, compared numerically (the app writes entries too, so the counter can lag the listing). It is created with `store.write(path, content, new)`; on a collision, take the next number and try again. A store that owns session numbers assigns the number in that create and reports the path it wrote, which is the entry from then on. Then `state.md` is written with that number as `session_count`. An empty `journal/` with `session_count` absent gives `s01`, which `init` creates for its own session: `init` and `migrate`’s layout upgrade are the exceptions to “first”: the upgrade snapshots and writes the converted entries before its own journal entry, and creates past sessions’ entries numbered below its own (`skills/migrate/SKILL.md` § The layout upgrade); its own entry is numbered the old `session_count` + 1, fixed at its first run, and a resumed upgrade extends that entry rather than creating another. For `init`, its config (what makes the folder a layout-2 project) and the two empty indexes go first, then `s01`, then everything else, with `state.md` last.
 - **Extended, never rewritten whole,** by every later step in the same session: `store.edit` adds the step’s paragraph after the last one and adds its IDs and skill to the frontmatter lists. An entry from an earlier session is never changed.
 - **IDs as the store reported them.** A new decision or question is named in the journal (its `decisions` or `questions` list, and its body) by the number the store reported for it (§ Entry collections, numbers come from the store), so the line naming it is added after the entry’s `new` write. If the journal already names it by the proposed number (an entry created first that cites it, or text composed before the write), the same session corrects every such mention to the reported number in its next edit of the entry; that is a correction within the session, not a change to an earlier session’s entry.
@@ -1155,17 +1180,16 @@ The body is exactly these six sections, in this order. A section with nothing to
 - [ ] **Revelation Log** · `characters/muppy.md` · Ch 1 — awn in the webbing of a forepaw, still in at chapter's end.
 - [ ] **Promote** · the Hartleys' mudroom → `worldbuilding-entry` (appears ch 1, 4, 6 with consistent detail, no entry).
 - [ ] **Manifest** · the rooster three properties over (minor element).
-- [ ] **Chain closure** · §2 jacket chain (plant ch 1, pay ch 3) — paid here as registered.
 - [x] **Revelation Log** · … — applied (D-041)
 - [x] **Promote** · … — routed (worldbuilding-entry)
 - [x] **Manifest** · … — declined (already covered by `golden-valley.md`)
 ```
 
-The **End State** block is what the next chapter's Blueprint reads for carried-forward state instead of re-reading 3,500 words of prior prose. The **Proposals** section is the queue `canon-sync` consumes: `notes` writes each item unchecked; `canon-sync` checks it off with its outcome (`applied (D-###)`, `routed (<skill>)`, `declined (<reason>)`). The count of unchecked items across `chapters/*/ch*-notes.md` is the project's unintegrated-proposal count in `state.md`, leaving out chapters whose prose is `status: retired`.
+The **End State** block is what the next chapter’s Blueprint reads for carried-forward state instead of re-reading 3,500 words of prior prose. The **Proposals** section is the queue `canon-sync` consumes: `notes` writes each item unchecked; `canon-sync` checks it off with its outcome (`applied (D-###)`, `routed (<skill>)`, `declined (<reason>)`). The count of unchecked items across `chapters/*/ch*-notes.md` is the project’s unintegrated-proposal count in `state.md`, leaving out chapters whose prose is `status: retired`. Notes from before 0.26.0 may carry a **Chain closure** item: that type is retired (a chain lives in the treatment’s narrative and needs no register to close), and `canon-sync` checks an unchecked one off as `declined (chain closures retired)`.
 
 ### Canon-sync run records (`.storystormer/canon-sync/`)
 
-Each `canon-sync` run writes `.storystormer/canon-sync/<YYYY-MM-DD>-ch<NN>-<MM>.md`: findings by category (accretion, contradiction, drift, promotion, obsolescence) with outcomes and decision IDs; the **manuscript fix list** (chapter · passage · required change) for every contradiction canon won; the **invalidated Blueprints** list (chapter · entry that changed · stamp it was built against) for every contradiction the manuscript won; promotions routed; chain closures struck. The run's pre-edit canon snapshot is taken per `references/store.md`. Run records are never deleted by the plugin.
+Each `canon-sync` run writes `.storystormer/canon-sync/<YYYY-MM-DD>-ch<NN>-<MM>.md`: findings by category (accretion, contradiction, drift, promotion, obsolescence) with outcomes and decision IDs; the **manuscript fix list** (chapter · passage · required change) for every contradiction canon won; the **invalidated Blueprints** list (chapter · entry that changed · stamp it was built against) for every contradiction the manuscript won; promotions routed. The run’s pre-edit canon snapshot is taken per `references/store.md`. Run records are never deleted by the plugin.
 
 ### Per-chapter history (`.history/`)
 
@@ -1302,7 +1326,7 @@ This is the **book-level** snapshot mechanism. Before any rewrite of `primer.md`
 
 Inside a snapshot folder each file keeps its root-relative path (`books/book-2/treatment.md` in a series), so two books' documents stay distinct.
 
-The folder name encodes both the timestamp and the operation: `<YYYY-MM-DD>T<HH-MM>-<operation>`, the timestamp in the session's local time and `<operation>` the name of the skill or command that wrote it (`treatment-update`, `init`; `/storystormer:checkpoint` uses its label). A store operation such as `edit` is never the operation name. It uses **per-snapshot folders** because a single operation often archives several files **as a set** — primer and treatment are snapshotted as a pair during treatment updates, since the primer version that built a treatment is meaningless without the treatment it informed.
+The folder name encodes both the timestamp and the operation: `<YYYY-MM-DD>T<HH-MM>-<operation>`, the timestamp in the session’s local time and `<operation>` the name of the skill or command that wrote it (`treatment-update`, `init`; `/storystormer:checkpoint` uses its label). A store operation such as `edit` is never the operation name. It uses **per-snapshot folders** because a single operation often archives several files **as a set** — a treatment update that rewrites both snapshots the primer and treatment as a pair, since the primer version that built a treatment is meaningless without the treatment it informed. One that skips the primer snapshots the treatment alone (the primer did not change).
 
 **Chapter-level artifacts use a different mechanism.** Per-chapter content (outline/blueprint/prose/notes) revises frequently and one file at a time, so its snapshots are co-located in the chapter folder as flat, version+date-named files (`chapters/chapter-NN/.history/ch<NN>-<stage>-v<version>-<date>.md`) — not here, and not in per-snapshot subfolders. See § `chapters/` folder → Per-chapter history. The split is by altitude: book-level docs (which change as a set) snapshot centrally in folders; chapter-level artifacts (which change individually) snapshot locally as flat files. Both key on the frontmatter `version` integer.
 
