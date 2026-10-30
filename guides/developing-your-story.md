@@ -120,9 +120,9 @@ The update runs in two phases, with a pause between:
 Two guarantees worth internalizing:
 
 - **It never invents story.** Every sentence traces to your existing treatment, a logged decision, or connective tissue between them. Where structure implies content nobody has brainstormed yet, you get an honest marker instead: `[NEEDS DEVELOPMENT: Elena's infiltration mechanics]` or `[OPEN: Q-021]`. Markers are features — they're the map of what to brainstorm next, and they must be resolved before those chapters can reach prose.
-- **Nothing is lost.** The outgoing primer and treatment snapshot to history as a pair before the new versions land, and every consumed decision gets stamped *integrated* with the date.
+- **Nothing is lost.** The outgoing treatment snapshots to history before the new version lands (with the primer, as a pair, when the primer is rewritten too), and every consumed decision gets stamped *integrated* with the date.
 
-After an update, the report tells you the downstream impact — including, once you have an outline, whether the change made any of it stale.
+After an update, the report tells you the downstream impact — including, once you have an outline, whether the change made any of it stale. A character or theme decision also belongs in a bio or the manifest’s Character Map, which the treatment update doesn’t write, so the report names those and offers to run `manifest-sync` next (and `character-bio` for the bios). An older primer that still carries Reveal Architecture or a character web is rewritten on the next update: its plants move into the treatment and its character material goes to the Character Map.
 
 ---
 

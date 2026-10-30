@@ -178,6 +178,8 @@ As the conversation lands commitments, capture them:
 - POV strategy → `theme` decision (the app has no `voice` type).
 - Specific spine slot commitments that aren't already in the treatment (a chapter the user is inventing at the outline level) → `plot` decision.
 
+Act-break and chapter-count decisions touch the spine only. They open the next `treatment-update`’s primer gate, as every `structure` decision does, but its Phase 1 writes no chapter numbers or beats into the primer’s Section 3 (`treatment-update` § Phase 1, Spine-only structure decisions).
+
 If a question surfaces that you can't resolve in the session — *"Does the midpoint shift land at ch 18 or ch 20?"* — create it as a question entry (`questions/Q-###.md`) with category `Story Structure`, priority `critical`, a 3–7 word title, and `source: plugin` (blocks chapter outlining for the affected range); in a series, also `scope` and `affects_books` (`references/series.md` § Scoping decisions and questions).
 
 Lean toward capture. The structural decisions are load-bearing for everything downstream; a missed log here causes outline-to-prose drift later.

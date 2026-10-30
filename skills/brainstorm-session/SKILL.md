@@ -55,7 +55,7 @@ Lean hard on `references/philosophy.md` — character and theme matter as much a
    - The thematic framework has crystallized (premise, controlling idea, or thematic question has landed).
    - The act structure has been revised or expanded.
 
-   Know where each decision lands: premise, theme and structure decisions reopen the primer (log them with the right `decision_type`); plot goes to the treatment; a character's ghost, lie, want and need go to the bio, and thematic positions, dialogue conventions and relationships to the manifest's Character Map; worldbuilding to canon and the manifest inventory. Plot, character and worldbuilding decisions never reopen the primer.
+   Know where each decision lands: premise, theme and structure decisions reopen the primer (log them with the right `type`); plot goes to the treatment; a character’s ghost, lie, want and need go to the bio, and thematic positions, dialogue conventions and relationships to the manifest’s Character Map; worldbuilding to canon and the manifest inventory. Plot, character and worldbuilding decisions never reopen the primer.
 
    Phrasing: *"That's the kind of structural shift the treatment should reflect — want to run a `treatment-update` now, or finish this thread first?"* Don't auto-execute; offer. The user picks the moment.
 

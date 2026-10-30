@@ -57,7 +57,7 @@ For each chapter in scope:
 
 ### 3. The spoiler firewall (hold this throughout)
 
-Prose for chapter N must be built **only** from chapters before N. Never read — and never let the subagent read — a chapter numbered after N (no future outline, prose, or synopsis). **The treatment stays out** of prose-time context on both paths (it contains future plot). Story-so-far is prior chapter synopses only. **The chain register (primer §2 Reveal Architecture) is never passed to prose**: an agent that knows it is planting will telegraph, so plants reach the prose agent only as the Blueprint's imperative instructions. This is non-negotiable; a single future leak spoils the book. See `references/prose-spec.md` § The spoiler firewall.
+Prose for chapter N must be built **only** from chapters before N. Never read — and never let the subagent read — a chapter numbered after N (no future outline, prose, or synopsis). **The treatment stays out** of prose-time context on both paths (it contains future plot). Story-so-far is prior chapter synopses only. **Plant and payoff planning is never passed to prose** (it lives in the treatment and the outline): an agent that knows it is planting will telegraph, so plants reach the prose agent only as the Blueprint’s imperative instructions. This is non-negotiable; a single future leak spoils the book. See `references/prose-spec.md` § The spoiler firewall.
 
 ### 4. Build the story-so-far
 

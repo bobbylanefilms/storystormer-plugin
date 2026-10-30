@@ -43,6 +43,8 @@ created: 2026-05-11
 last_session: 2026-05-11
 session_count: 1
 surfacing_mode: active | on-request
+people_types: [Protagonist, Antagonist, Major, Supporting, Minor]  # optional; the project's People types, in order (absent = the app's defaults)
+world_types: [Locations, Organizations]     # optional; the project's worldbuilding types (absent = the app's fourteen)
 # Series-mode only — present when project_type: series
 books: [book-1, book-2, book-3]            # ordered list of book slugs
 current_focus: book-1                       # which book the user is currently working on
@@ -186,7 +188,7 @@ The Primer has **exactly four standard sections**. Every piece of primer content
 
 ### When the primer changes
 
-Only for a **premise, theme or structure** decision, or the author's explicit request (plus a first run). Plot, character and worldbuilding decisions never reopen it. When it is updated, the whole Primer is rewritten but every section is reproduced exactly unless a decision requires a change; never condense or reword for its own sake.
+Only for a **premise, theme or structure** decision (by the decision’s `type`; a retired `voice` or `genre` reads as `theme`), the author’s explicit request, a first run (no primer, or an empty or stub section), or a primer still in the **legacy format** (one carrying Reveal Architecture, a character-web section or a Setup/Payoff Ledger, whose rewrite moves that material to its homes). Plot, character and worldbuilding decisions never reopen it. When it is updated, the whole Primer is rewritten but every section is reproduced exactly unless a decision requires a change; never condense or reword for its own sake. A run that skips the primer leaves its file, `version` and `built_from_decisions` alone.
 
 ### One home per decision type
 
@@ -206,7 +208,7 @@ The primer holds only material with **no other home** in the workspace. Content 
 - **Scene-level detail** (beat sheets, choreography, reveals, plants, what-happens-next narrative) → `treatment.md`, not the primer.
 - **Character material** (thematic positions, want/need, dialogue conventions, relationship dynamics) → the bios and the manifest's Character Map, not the primer.
 
-Every primer rewrite is snapshotted (per `references/store.md`), so ejected content is never destroyed — it just stops riding along in the front-matter. Do not carry ejected content forward "just in case."
+Ejected content is moved, not just dropped: `treatment-update` states ejected plants in the treatment’s narrative in the same run, files confirmed open questions, and copies ejected character material verbatim into the session’s journal entry for `manifest-sync` and `character-bio` (`treatment-update` § The razor). The snapshot every primer rewrite takes (per `references/store.md`) is a backup, never ejected content’s only copy. Do not carry ejected content forward “just in case.”
 
 ### Section 1 — Story Identity
 
@@ -305,10 +307,11 @@ A structural index of every character and worldbuilding element, in the app's Ma
 version: 2
 last_updated: 2026-05-10
 treatment_version: 7
+built_from_decisions: [D-004, D-011, D-018]
 ---
 ```
 
-The frontmatter is plugin bookkeeping. The body below it is the app's document, verbatim in shape:
+The frontmatter is plugin bookkeeping. `built_from_decisions` lists the `character` and `theme` decisions the Character Map has folded in (or found it already reflected); `manifest-sync` reads the ones not on it as pending for the map. A manifest without the key (written before 0.26.0, or by the app) counts only decisions dated on or after its `last_updated`. The body below it is the app’s document, verbatim in shape:
 
 ```markdown
 # Manifest — The Pattern Recognition
@@ -408,9 +411,11 @@ The status replaces the old file pointers and "(no bio yet)" notes: "Canon Asset
 
 **Order.** The inventory comes first (`## Characters`, `## Worldbuilding`, in the format above), then `## Character Map`.
 
-**Character Map** is the cast's thematic and relational map, at the depth the author has developed. It has four subsections: `### Thematic Positions` (how each leading character embodies an answer to the central question), `### Thematic Parallels` (echoes and mirrors between characters), `### Dialogue Conventions` (how each leading character talks), and `### Character Dynamics` (a framework line, then the project's own subsections, e.g. Core Team, Antagonist Axis). The inventory's word caps do not apply to it. It is rewritten only when a **character or theme decision** lands (or the author asks); otherwise it is carried forward unchanged, byte for byte. Each character's ghost, lie, want and need live only in that character's bio, never in the manifest; where the Character Map and a bio disagree, the bio wins.
+**Character Map** is the cast’s thematic and relational map, at the depth the author has developed. It has four subsections: `### Thematic Positions` (how each leading character embodies an answer to the central question), `### Thematic Parallels` (echoes and mirrors between characters), `### Dialogue Conventions` (how each leading character talks), and `### Character Dynamics` (a framework line, then the project’s own subsections, e.g. Core Team, Antagonist Axis). The inventory’s word caps do not apply to it. It is built when the manifest has none (from the leading characters’ bios, the treatment, and character material moved out of a legacy primer), rewritten only when a **character or theme decision** lands, moved-out primer text arrives, or the author asks, and otherwise carried forward unchanged, byte for byte. Each character’s ghost, lie, want and need live only in that character’s bio, never in the manifest; where the Character Map and a bio disagree, the bio wins.
 
-**No open questions in the manifest, in any form**: no `## Open Questions` section, no inline question blockquotes, no footer question count. Questions live only as `questions/Q-###.md` entries. When a sync finds two leading characters colliding (the same lie, want, need, thematic position or voice), it files a new open question (a `questions/Q-###.md` entry, write mode "new") unless one already names that collision; nothing about the collision goes into the manifest. Uncertain merges and role reclassifications are likewise flagged to the author or filed as questions, not written into the manifest.
+**Leading characters** are those whose bio `type` is among the first four of the project’s People types (`state.md`’s `people_types`, else the app’s defaults, which makes Protagonist, Antagonist, Major and Supporting leading), the app’s rule for which bios the Treatment update reads in full.
+
+**No open questions in the manifest, in any form**: no `## Open Questions` section, no inline question blockquotes, no footer question count. Questions live only as `questions/Q-###.md` entries. When a sync finds two leading characters colliding (the same lie, want, need, thematic position or voice), it files one new open question per pair (§ `questions/`: `category: Character`, `priority: important`, `source: manifest_sync`, a 3–7 word `title`) unless an open one already names that pair’s collision; nothing about the collision goes into the manifest. A sync over an older manifest that still carries questions lists each one it drops and files those the author confirms as new entries. Uncertain merges and role changes go into the sync’s report, or become a `questions/` entry when the author confirms; they are never written into the manifest.
 
 **Footer.** The last line counts the inventory: `*Manifest entries: {total} ({X} characters, {Y} worldbuilding)*`.
 
@@ -568,7 +573,7 @@ storystormer_kind: question
 - **`title`:** required, 3–7 words naming the question, the label the app and the index list it under. Old logs often have none; the layout upgrade then writes a short label taken from the question’s own words. It is the only author-facing text the upgrade composes, and its preflight says so.
 - **`status`:** `open`, `resolved` or `invalidated`. Any other wording an older log used (`half-resolved`, `open, but no longer unmechanised`) is read as the closest of the three, and its words stay in the body as written.
 - **`resolved_by`:** the `D-###` that resolved it, set with `status: resolved`; also allowed on an invalidated question when a decision is what invalidated it. Omitted while it is open. This field is the one link between a question and the decision that settled it; a decision’s `**Resolves**:` line, where an older entry has one, stays in its body as written.
-- **`source`:** one of the app's values (`decision_capture`, `treatment_update`, `manual`, `ai_marker`, `question_triage`, `agent_tool`, `ingestion`, `manifest_sync`) or `plugin`. The plugin writes `treatment_update` for a question `treatment-update` logs, `manifest_sync` for a character-collision question `manifest-sync` files, `ingestion` for one `init` extracts from intake materials, `manual` for one the user dictates through `/storystormer:questions add`, and `plugin` for any other skill (`brainstorm-session`, `pre-outline-session`, `outline-chapters`, and so on). A question that came from the app keeps its value.
+- **`source`:** one of the app’s values (`decision_capture`, `treatment_update`, `manual`, `ai_marker`, `question_triage`, `agent_tool`, `ingestion`, and `manifest_sync`, which the app’s CL108 adds alongside its own Manifest Sync collision check) or `plugin`. The plugin writes `treatment_update` for a question `treatment-update` logs, `manifest_sync` for a character-collision question `manifest-sync` files, `ingestion` for one `init` extracts from intake materials, `manual` for one the user dictates through `/storystormer:questions add`, and `plugin` for any other skill (`brainstorm-session`, `pre-outline-session`, `outline-chapters`, and so on). A question that came from the app keeps its value.
 
 **May be absent on a carried-over entry:** `date` and `source`, when the old log never recorded them. `title` is always present (the upgrade writes one).
 
@@ -630,7 +635,7 @@ Refreshed the treatment to v7 with D-001..D-018. Act 2's reveal now turns on the
 ```
 
 - **Frontmatter:** `date`, the day the entry was created, the same as the filename’s and unchanged for the life of the entry, even when the session runs past midnight (later steps extend the same entry; their paragraphs may name their own dates); `session` (the number in the filename); `skills`, the skills that wrote during the session; `decisions`, the IDs logged or changed; `questions`, the IDs opened, resolved or invalidated; `source`, `plugin` for an entry the plugin writes and `app` for one the app writes from its own chat sessions; and the two `storystormer_*` fields. Lists are empty (`[]`) when nothing applies.
-- **Body:** a short narrative, in the profile, of what was done and why: the choices made and the reasons, what changed in which documents, what was left open. It is where a finished What’s Next item goes, and where the detail that `state.md` no longer carries lives.
+- **Body:** a short narrative, in the profile, of what was done and why: the choices made and the reasons, what changed in which documents, what was left open. It is where a finished What’s Next item goes, and where the detail that `state.md` no longer carries lives. A `treatment-update` that migrates a legacy primer adds a `## Moved out of the primer` section holding the ejected character material verbatim, with a What’s Next line in `state.md` pointing at it; `manifest-sync` reads that section to seed the Character Map, the one time a skill reads the journal for content.
 - **Created by the session’s first write,** before `state.md` is written. Its number is one more than the higher of `state.md`’s `session_count` and the highest `sNN` in the `journal/` listing, compared numerically (the app writes entries too, so the counter can lag the listing). It is created with `store.write(path, content, new)`; on a collision, take the next number and try again. A store that owns session numbers assigns the number in that create and reports the path it wrote, which is the entry from then on. Then `state.md` is written with that number as `session_count`. An empty `journal/` with `session_count` absent gives `s01`, which `init` creates for its own session: `init` and `migrate`’s layout upgrade are the exceptions to “first”: the upgrade snapshots and writes the converted entries before its own journal entry, and creates past sessions’ entries numbered below its own (`skills/migrate/SKILL.md` § The layout upgrade); its own entry is numbered the old `session_count` + 1, fixed at its first run, and a resumed upgrade extends that entry rather than creating another. For `init`, its config (what makes the folder a layout-2 project) and the two empty indexes go first, then `s01`, then everything else, with `state.md` last.
 - **Extended, never rewritten whole,** by every later step in the same session: `store.edit` adds the step’s paragraph after the last one and adds its IDs and skill to the frontmatter lists. An entry from an earlier session is never changed.
 - **IDs as the store reported them.** A new decision or question is named in the journal (its `decisions` or `questions` list, and its body) by the number the store reported for it (§ Entry collections, numbers come from the store), so the line naming it is added after the entry’s `new` write. If the journal already names it by the proposed number (an entry created first that cites it, or text composed before the write), the same session corrects every such mention to the reported number in its next edit of the entry; that is a correction within the session, not a change to an earlier session’s entry.
@@ -1175,17 +1180,16 @@ The body is exactly these six sections, in this order. A section with nothing to
 - [ ] **Revelation Log** · `characters/muppy.md` · Ch 1 — awn in the webbing of a forepaw, still in at chapter's end.
 - [ ] **Promote** · the Hartleys' mudroom → `worldbuilding-entry` (appears ch 1, 4, 6 with consistent detail, no entry).
 - [ ] **Manifest** · the rooster three properties over (minor element).
-- [ ] **Chain closure** · the jacket chain (plant ch 1, pay ch 3) — paid here as planned.
 - [x] **Revelation Log** · … — applied (D-041)
 - [x] **Promote** · … — routed (worldbuilding-entry)
 - [x] **Manifest** · … — declined (already covered by `golden-valley.md`)
 ```
 
-The **End State** block is what the next chapter's Blueprint reads for carried-forward state instead of re-reading 3,500 words of prior prose. The **Proposals** section is the queue `canon-sync` consumes: `notes` writes each item unchecked; `canon-sync` checks it off with its outcome (`applied (D-###)`, `routed (<skill>)`, `declined (<reason>)`). The count of unchecked items across `chapters/*/ch*-notes.md` is the project's unintegrated-proposal count in `state.md`, leaving out chapters whose prose is `status: retired`.
+The **End State** block is what the next chapter’s Blueprint reads for carried-forward state instead of re-reading 3,500 words of prior prose. The **Proposals** section is the queue `canon-sync` consumes: `notes` writes each item unchecked; `canon-sync` checks it off with its outcome (`applied (D-###)`, `routed (<skill>)`, `declined (<reason>)`). The count of unchecked items across `chapters/*/ch*-notes.md` is the project’s unintegrated-proposal count in `state.md`, leaving out chapters whose prose is `status: retired`. Notes from before 0.26.0 may carry a **Chain closure** item: that type is retired (a chain lives in the treatment’s narrative and needs no register to close), and `canon-sync` checks an unchecked one off as `declined (chain closures retired)`.
 
 ### Canon-sync run records (`.storystormer/canon-sync/`)
 
-Each `canon-sync` run writes `.storystormer/canon-sync/<YYYY-MM-DD>-ch<NN>-<MM>.md`: findings by category (accretion, contradiction, drift, promotion, obsolescence) with outcomes and decision IDs; the **manuscript fix list** (chapter · passage · required change) for every contradiction canon won; the **invalidated Blueprints** list (chapter · entry that changed · stamp it was built against) for every contradiction the manuscript won; promotions routed; chain closures struck. The run's pre-edit canon snapshot is taken per `references/store.md`. Run records are never deleted by the plugin.
+Each `canon-sync` run writes `.storystormer/canon-sync/<YYYY-MM-DD>-ch<NN>-<MM>.md`: findings by category (accretion, contradiction, drift, promotion, obsolescence) with outcomes and decision IDs; the **manuscript fix list** (chapter · passage · required change) for every contradiction canon won; the **invalidated Blueprints** list (chapter · entry that changed · stamp it was built against) for every contradiction the manuscript won; promotions routed. The run’s pre-edit canon snapshot is taken per `references/store.md`. Run records are never deleted by the plugin.
 
 ### Per-chapter history (`.history/`)
 
@@ -1322,7 +1326,7 @@ This is the **book-level** snapshot mechanism. Before any rewrite of `primer.md`
 
 Inside a snapshot folder each file keeps its root-relative path (`books/book-2/treatment.md` in a series), so two books' documents stay distinct.
 
-The folder name encodes both the timestamp and the operation: `<YYYY-MM-DD>T<HH-MM>-<operation>`, the timestamp in the session's local time and `<operation>` the name of the skill or command that wrote it (`treatment-update`, `init`; `/storystormer:checkpoint` uses its label). A store operation such as `edit` is never the operation name. It uses **per-snapshot folders** because a single operation often archives several files **as a set** — primer and treatment are snapshotted as a pair during treatment updates, since the primer version that built a treatment is meaningless without the treatment it informed.
+The folder name encodes both the timestamp and the operation: `<YYYY-MM-DD>T<HH-MM>-<operation>`, the timestamp in the session’s local time and `<operation>` the name of the skill or command that wrote it (`treatment-update`, `init`; `/storystormer:checkpoint` uses its label). A store operation such as `edit` is never the operation name. It uses **per-snapshot folders** because a single operation often archives several files **as a set** — a treatment update that rewrites both snapshots the primer and treatment as a pair, since the primer version that built a treatment is meaningless without the treatment it informed. One that skips the primer snapshots the treatment alone (the primer did not change).
 
 **Chapter-level artifacts use a different mechanism.** Per-chapter content (outline/blueprint/prose/notes) revises frequently and one file at a time, so its snapshots are co-located in the chapter folder as flat, version+date-named files (`chapters/chapter-NN/.history/ch<NN>-<stage>-v<version>-<date>.md`) — not here, and not in per-snapshot subfolders. See § `chapters/` folder → Per-chapter history. The split is by altitude: book-level docs (which change as a set) snapshot centrally in folders; chapter-level artifacts (which change individually) snapshot locally as flat files. Both key on the frontmatter `version` integer.
 
