@@ -257,7 +257,7 @@ After the user approves the new treatment:
 - Create the question entries for any open questions ejected from a legacy primer that the author confirmed.
 - Write the snapshot per `store.md`: the old primer and the old treatment as a pair when Phase 1 ran, the old treatment alone when it was skipped.
 - `store.write` the new `treatment.md`, and the new `primer.md` only when Phase 1 ran.
-- When Phase 1 ejected character material, extend the journal entry with a `## Moved out of the primer` section holding it verbatim (and any invented-system or unplaced plant text), and add the `What's Next` pointer to it (below).
+- When Phase 1 ejected anything this run did not place (character material, an invented system, a plant Phase 2 could not seat), extend the journal entry with a `## Moved out of the primer` section holding all of it verbatim, and add the `What's Next` pointer to it (below), naming the skill that owns each piece.
 - For each decision consumed by this update, and each carried-over one the pre-flight found already reflected, edit its entry to set `integrated: "yes (<date>)"` (removing or updating an old `**Integrated into treatment**:` body line it carries, so the two agree), and replace its row in `decisions/_index.md`.
 - Extend the journal entry with the update, using the IDs the store reported (and correcting any proposed number it already names: `references/file-schemas.md` § `journal/`, IDs as the store reported them): the decisions integrated, the questions opened, what changed in the treatment (and in the primer, or that it was skipped) and why.
 - Update `state.md`:
