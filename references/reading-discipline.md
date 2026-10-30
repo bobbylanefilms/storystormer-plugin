@@ -22,7 +22,7 @@ The zoom levels, from highest (least detail, most compressed) to lowest (most de
 | Zoom level | Artifact | Approx size | Reach into when… |
 |---|---|---|---|
 | Project pulse | `state.md` Summary | ~200w | You need a one-paragraph sense of where the project stands. |
-| Craft layer | `primer.md` | 4,500–5,500w | You need the structural framework, premise, setups, or writing rules — not the narrative content. |
+| Craft layer | `primer.md` | about 5,000w | You need the structural framework, premise, or writing rules — not the narrative content. |
 | Cast & world inventory | `manifest.md` | 500–1,500w | You need to know *what* exists in the story without depth. |
 | Story spine | `outline/structure.md` Chapter Spine | ~800w | You need the chapter-by-chapter shape without per-chapter detail. |
 | Outline-scan | `outline/_index.md` | ~1,500w | You need status across all chapters at a glance. |

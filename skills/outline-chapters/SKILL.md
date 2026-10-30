@@ -67,7 +67,7 @@ Read the target file's `authorship` (after the revision-detection step above) *b
 **Batch generation** (say, chapters 1–10), in substantive mode:
 
 - `outline/structure.md` (full)
-- `primer.md` (full; §2 Reveal Architecture and §3 especially)
+- `primer.md` (full; §3 Structural Framework especially)
 - `treatment.md` (full; you will map specific treatment passages onto specific chapter slots)
 - `manifest.md` (full)
 - Major bios for any POV character in the batch (full); supporting bios for major non-POV characters in the batch (full)
@@ -93,7 +93,7 @@ List the files at the top of your next response, full-read each, and quote at le
 > - **Style samples**: none yet. This batch is **style-setting**; review ch 1 as a template, not just a chapter.
 > - **Generate**: 10 outline files, each a prose account of its chapter at roughly 600–1,200w. Shown in two halves (ch 1–5, then 6–10).
 > - **Markers**: 2 spine slots carry `[OPEN: Q-014]` (the ch 3 inciting mechanism); I'll carry the marker inline rather than invent the mechanism.
-> - **Chain check**: primer §2 registers 4 load-bearing chains; 2 plant in this range. I'll confirm each plant is present in its chapter's body.
+> - **Chain check**: the treatment states 4 load-bearing chains; 2 plant in this range. I'll confirm each plant is present in its chapter's body.
 > - **Update**: `outline/_index.md` regenerated per `store.md`; `state.md` updated.
 
 **Correction-only example:**
@@ -106,7 +106,7 @@ For each chapter in the batch, write the prose account. Anchor it on:
 
 - **The spine slot**: the chapter's block in `structure.md` (heading, Status, POV, Act, entry). This is the contract.
 - **The treatment source**: the treatment scene(s) that map to this slot.
-- **The chains**: which primer §2 Reveal Architecture entries plant or pay in this chapter. The plant must be *present in the body as an event*; it is never labeled as a plant, and the rationale for it never appears. The chain register is planning-side knowledge; the outline shows the event and the Blueprint later launders it into an imperative for the prose agent.
+- **The plants**: which setups the treatment's narrative states as planted or paid in this chapter's slot (the treatment says what a clue really is and where it pays off). The plant must be *present in the body as an event*; it is never labeled as a plant, and the rationale for it never appears. The outline is where plants are seeded into chapters; the Blueprint later turns the setups the outline carries into imperatives for the prose agent.
 - **The cast's arcs**: what each appearing character's arc does here, anchored to the bio's Lie / Ghost where the chapter touches them. Render that as what they *do and feel* in the narrative, not as a note about them.
 - **POV**: from the spine entry or the act's POV strategy.
 
@@ -114,7 +114,7 @@ Write in the house style the samples establish (§ Style inheritance). With no s
 
 Fill the frontmatter from the spine slot: `chapter`, `title` (the block's heading), `pov` (its `**POV:**` line), `act` (its `**Act:**` line, as written), and a one- or two-sentence `summary` of the chapter's core event and turning point. End the outline with `## Synopsis`: 150–250 words recording the chapter's causal events, reveals, who learns what, and how things stand at its end, so later chapters can build on it without rereading the body (the app's chapter writer produces the same closing section).
 
-Content must trace to the spine, a treatment passage, a logged decision, a bio, a primer §2 reveal, or an honest `[NEEDS DEVELOPMENT: …]` / `[OPEN: Q-###]` marker carried inline in the body. You do not invent plot events, character actions, settings, or dramatic moments beyond these sources. The biggest failure mode is AI-default scene mechanics: a chase the treatment never called for, a confrontation the bios don't justify, a setup invented at outline time that fights the primer's Reveal Architecture. *Outline = render the existing decisions at chapter resolution, not author new ones.*
+Content must trace to the spine, a treatment passage, a logged decision, a bio, or an honest `[NEEDS DEVELOPMENT: …]` / `[OPEN: Q-###]` marker carried inline in the body. You do not invent plot events, character actions, settings, or dramatic moments beyond these sources. The biggest failure mode is AI-default scene mechanics: a chase the treatment never called for, a confrontation the bios don't justify, a setup invented at outline time that fights what the treatment states. *Outline = render the existing decisions at chapter resolution, not author new ones.*
 
 If a chapter slot's treatment source is thin or absent, surface it before generating.
 
@@ -157,7 +157,7 @@ Whatever the author writes. 500–1,500 words per 3,000-word chapter is typical.
 Before finalizing a batch:
 
 - **Continuity seams**: chapter N's closing state should be what chapter N+1 opens on. Mismatches mean a missed transition; flag and resolve.
-- **Chain check against primer §2**: for every registered load-bearing chain, the **plant chapter** and **payoff chapter** both exist in the spine; where both are outlined, the plant is actually present in the plant chapter's body. **Orphans surface as report items, not blocking errors.** An unplanted chain mid-draft is normal; an unplanted chain whose plant chapter is already written is not.
+- **Chain check against the treatment**: for every load-bearing chain the treatment's narrative states, the **plant chapter** and **payoff chapter** both exist in the spine; where both are outlined, the plant is actually present in the plant chapter's body. **Orphans surface as report items, not blocking errors.** An unplanted chain mid-draft is normal; an unplanted chain whose plant chapter is already written is not.
 - **POV consistency**: each chapter's POV matches the act's POV strategy in `structure.md`. Unexpected shifts should be the author's choice, noted in the spine slot, never introduced at outline time.
 
 Surface failures to the user before writing. Don't fix them silently.
@@ -168,7 +168,7 @@ Show batches in halves and let the user approve, request per-chapter edits, or r
 
 When a chapter you just outlined already has prose the new outline no longer describes (typically intake prose from before StoryStormer, which the author's newer plan replaced), **propose retiring that prose** in the report; don't retire it yourself. On the author's yes, set its `status: retired` with a frontmatter-only edit, body untouched (`references/file-schemas.md` § Prose → `status: retired`), so it stops anchoring the voice and feeding the story-so-far.
 
-> Outline-chapters batch complete. Wrote 10 outlines (ch 01–10), ~9,100w total, all `ai_generated`, matched to the style of your ch 1 and ch 2 (`author_written`). ch 3 carries `[OPEN: Q-014]` inline (the inciting mechanism). Chain check: both §2 chains that plant in Act 1 are present (the locket, ch 2; the ledger page, ch 7). Index regenerated. Next: review Act 1, then the first half of Act 2.
+> Outline-chapters batch complete. Wrote 10 outlines (ch 01–10), ~9,100w total, all `ai_generated`, matched to the style of your ch 1 and ch 2 (`author_written`). ch 3 carries `[OPEN: Q-014]` inline (the inciting mechanism). Chain check: both treatment chains that plant in Act 1 are present (the locket, ch 2; the ledger page, ch 7). Index regenerated. Next: review Act 1, then the first half of Act 2.
 
 ## Style inheritance
 
@@ -229,7 +229,7 @@ Two additions:
 ## References
 
 - `references/plan-first.md`: universal plan-first behavior
-- `references/file-schemas.md`: `ch<NN>-outline.md` shape (frontmatter + prose body), `outline/_index.md`, per-chapter `.history/`, marker conventions, primer §2 Reveal Architecture (the chain register, with plant chapters)
+- `references/file-schemas.md`: `ch<NN>-outline.md` shape (frontmatter + prose body), `outline/_index.md`, per-chapter `.history/`, marker conventions
 - `references/reading-discipline.md`: substantive mode
 - `references/series.md`: read when `project_type: series`
 - `references/frameworks.md`: character vocabulary (Lie / Ghost) the outline renders as action

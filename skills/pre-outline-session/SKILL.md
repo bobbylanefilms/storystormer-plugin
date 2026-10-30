@@ -45,7 +45,7 @@ Surface those preconditions in your plan-first proposal, not as a refusal — *"
 
 Load:
 
-- `primer.md` (full — especially Section 3 Structural Framework and Section 2's Reveal Architecture)
+- `primer.md` (full — especially Section 3 Structural Framework)
 - `treatment.md` (full — every scene, every act header, every marker)
 - `manifest.md` (full)
 - All major-tier character bios (full — POV holders especially)
@@ -88,7 +88,7 @@ Once the user agrees, do the reads. Then in your first response after the readin
 - **The treatment's POV pattern** — single-POV, multi-POV, observer protagonist, ensemble. The bios tell you who has interiority developed.
 - **The primer's framework commitment** — exact phrasing from Section 3.
 - **Open structural questions** — any open question entry that affects the spine.
-- **Load-bearing reveals** — from the primer's §2 Reveal Architecture, which is the book's **chain register**: each entry names what is hidden, where it plants, when it lands, and why it matters. Every registered chain needs a spine slot at both ends. When the spine fixes a plant or payoff chapter that §2 still carries as `TBD`, record it as a decision via `decisions` so the next `treatment-update` writes it into §2 and it survives primer regeneration. Ordinary setup/payoff chains the treatment carries are the treatment's business; they don't get a register row unless they pass §2's admission criteria (load-bearing, long-range, not self-evident).
+- **Load-bearing reveals** — from the treatment's narrative, which states each plant where it is planted and where it pays off. Every load-bearing chain (the payoff fails without the setup, it spans more than about two chapters, and it isn't self-evident) needs a spine slot at both ends. When the spine fixes a plant or payoff chapter, record it as a decision via `decisions` (a plot decision) so the next `treatment-update` states it in the treatment's narrative. The primer holds no reveal register and is never edited for it.
 
 ### 5. The framework conversation
 

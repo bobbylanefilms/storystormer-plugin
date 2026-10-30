@@ -49,7 +49,7 @@ You don't need to memorize the folder layout (the [README](../README.md) has the
 
 - **`decisions/` — the story's spine.** One small file per decision (`D-001.md`, `D-002.md`, …) with an `_index.md` that lists them all at a glance. It’s an append-only record of everything you've settled: "Marlowe and Voss are estranged siblings," "present tense, first person," "the midpoint is the locket reveal." Decisions are never deleted — a changed mind *supersedes* the old entry, so the history of your thinking survives.
 - **`questions/` — the open-question queue.** One file per question (`Q-001.md`, …), again with an `_index.md`. Everything unresolved, triaged by priority (critical / important / nice-to-resolve), each with a short title and a category. Brainstorm sessions work through these; decisions resolve them.
-- **`primer.md` — the craft dossier.** A ~4,500-word structured reference: premise and moral argument, reveal architecture, structural framework, tone and writing rules, character dynamics. The 50,000-foot view.
+- **`primer.md` — the craft dossier.** A structured reference of four sections: story identity, premise and moral argument, structural framework, tone and writing rules. The 50,000-foot view. It changes only for a premise, theme or structure decision (or when you ask); plot, character and worldbuilding decisions never reopen it. Character thematic positions, dialogue conventions and relationships live in the manifest's Character Map; reveals and plants live in the treatment.
 - **`treatment.md` — the story itself, in prose.** The full narrative treatment, written in propulsive treatment voice. This is the source of truth every downstream stage builds from.
 - **`manifest.md` — the index.** A short entry per character and worldbuilding element: a capped one-line description and a status (*Mentioned* up to *Canon Asset Created*) that tells you which ones still need a bio or entry. Lean by design — depth lives in the bios and entries.
 
@@ -114,7 +114,7 @@ Decisions accumulate; the treatment doesn't know about them until you fold them 
 
 The update runs in two phases, with a pause between:
 
-1. **Primer first.** The five-section craft dossier absorbs the decisions that change the story's *architecture* — premise, reveal timing, structure, tone rules, character dynamics. You review it before phase 2, because the treatment is built against it.
+1. **Primer first.** The four-section craft dossier absorbs only the decisions that change the story's *architecture* — premise, theme, structure. When none is pending, this phase is skipped and the primer stays exactly as it is; when it runs, every section is reproduced unless a decision requires a change. You review it before phase 2, because the treatment is built against it.
 2. **Then the treatment.** Regenerated in treatment voice with the new decisions integrated at the right chronological spots — and everything untouched by a decision **preserved verbatim**. The update integrates; it does not rewrite for variety or "improve" prose you already approved.
 
 Two guarantees worth internalizing:
@@ -184,7 +184,7 @@ The outline is the one artifact in the pipeline that carries *your* voice, and t
 - **Generated outlines carry a short `summary` and end with a `## Synopsis`** recording what the chapter does, so later chapters can build on it. Your own outlines get the summary line (in the frontmatter) but no added section unless you ask.
 - **Generated outlines borrow your style.** Before writing a new one, the skill reads your two or three most recent hand-written or hand-revised outlines and matches them — tense, density, how much dialogue you quote, whether you narrate or direct, whether you let yourself editorialize. With no samples yet, it flags the first batch as **style-setting** so you review it as a template.
 - **Everything traces to a source.** The spine, the treatment, a logged decision, a bio. The classic failure of AI outlining is invented scene mechanics — a chase the treatment never called for. Content with no source becomes an inline marker, not a guess.
-- **Batches get cross-checked.** Chapter-to-chapter seams, unplanned POV shifts, and every load-bearing chain registered in the primer's Reveal Architecture — is its plant actually present in the chapter that's supposed to plant it? Problems surface to you rather than getting quietly patched.
+- **Batches get cross-checked.** Chapter-to-chapter seams, unplanned POV shifts, and every load-bearing chain the treatment states — is its plant actually present in the chapter that's supposed to plant it? Problems surface to you rather than getting quietly patched.
 - **Revision is targeted.** On an AI-generated outline, saying **"chapter 17's tension feels low"** re-outlines just that chapter, using its neighbors for continuity — and if your complaint is vague, it diagnoses first and confirms what's wrong before rewriting.
 
 A chapter outline with zero unresolved markers is prose-ready — which is exactly where the [Writing Chapters guide](writing-chapters.md) begins.

@@ -55,7 +55,7 @@ In substantive mode (`references/reading-discipline.md`), full reads:
 - Every canon entry any notes file references, in full, including its Revelation Log. **Read the entry, not the line**: drift is only visible against the whole bio.
 - `manifest.md` (full), for what already has an entry and what the harvest says should.
 - `decisions/_index.md`, then only the entries it points to: prior rulings, found by their topic's `Canon ruling:` prefix (the form `decisions` gives every `canon-sync` ruling), and other decisions whose topics touch the contested facts, so settled conflicts are not re-opened.
-- `primer.md` § 2 Reveal Architecture, for chain closures the notes proposed.
+- `treatment.md`, only the passages that state a plant the notes proposed to close (its narrative says where each setup pays off).
 - The prose's `authorship` and `status` frontmatter for each chapter in the span (frontmatter only; the body stays closed). A chapter whose prose is `status: retired` is out of the span: its notes describe text the author set aside.
 - **For each contradiction, the upstream sources the page fact could have come from**: that chapter's outline (body and `authorship`), its chapter block in `outline/structure.md`, the treatment passage covering it, and decisions touching the fact. Read them **as the prose saw them**: the prose stamps `outline_version`, `treatment_version`, `blueprint_version` and `primer_version`, so where a source's current `version` is past its stamp, read the stamped version from `store.history` (snapshot files or the backend's versions). Read only the passages that bear on the contested fact, quoted when they settle it.
 
@@ -152,7 +152,7 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 
 ## References
 
-- `references/file-schemas.md`: § Notes (§ Proposals statuses), § the history-snapshot section, § `.storystormer/canon-sync/`, § `decisions/` (the `canon-sync` source), § `journal/`, primer §2 Reveal Architecture
+- `references/file-schemas.md`: § Notes (§ Proposals statuses), § the history-snapshot section, § `.storystormer/canon-sync/`, § `decisions/` (the `canon-sync` source), § `journal/`
 - `references/canon-schemas.md`: § Revelation Log, bio and worldbuilding content shape
 - `references/plan-first.md`, `references/reading-discipline.md`, `references/subagent-pattern.md`
 - `references/series.md`: read when `project_type: series`

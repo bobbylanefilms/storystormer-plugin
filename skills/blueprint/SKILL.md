@@ -32,7 +32,7 @@ Always follow `references/plan-first.md`: propose, confirm, execute.
 
 - **`chapters/chapter-NN/ch<NN>-outline.md` must exist** for every chapter in scope. Otherwise refuse that chapter and recommend `outline-chapters`.
 - **The outline should be marker-free.** One carrying `[OPEN: Q-###]` or `[NEEDS DEVELOPMENT: …]` can be blueprinted, but the Blueprint inherits the gap. Surface the markers and let the user decide.
-- **`primer.md` and `treatment.md` exist.** Story Context and the chain register come from the primer; chapter chronology from the treatment's spine-slot passage.
+- **`primer.md` and `treatment.md` exist.** Story Context comes from the primer; chapter chronology from the treatment's spine-slot passage. Forward orientation (what the chapter must plant) comes only from the chapter outline's setups, never from the primer.
 - **Canon exists for the chapter's on-page cast.** If the outline names a character or element with no canon file, surface the gap and recommend `character-bio` / `worldbuilding-entry`. Never fabricate a tier entry.
 - **Canon-sync owed (batch mode).** Blueprinting a new act is the moment stale canon does damage. Before a batch, `store.list(chapters/*/ch*-notes.md)` for chapters before the range and count unchecked items in § Proposals, leaving out chapters whose prose is `status: retired`; if any exist, say so in the plan and recommend `canon-sync` first. Proceed only if the user says so, and note in the report that the Blueprints were built against unreconciled canon.
 - **Schema-form outlines.** If the outline still carries the older nine-section scaffolding (Premise, Scene Beats, Setups Planted, Character Notes, and so on), recommend the `outline-chapters` migration pass first. You can proceed, but read the outline for **content** only and derive the scaffolding from canon yourself; never transplant the outline's summary of canon into the Blueprint.
@@ -52,7 +52,8 @@ For each chapter, the judgment-free context, read directly:
 - **The chapter's `ch<NN>-outline.md`, read for content.** It is the author's prose account of what happens; it is not a cast list or a scaffolding source. Note its `word_count` and `authorship` (an author-written outline's dialogue is the author's, and the Dialogue Anchors section will say so).
 - **`outline/structure.md`**: the spine slot, the POV strategy, and the Chapter Spine so you know where this chapter sits without reading future chapters' plot.
 - **Carried-forward state.** Skip any prior chapter whose prose is `status: retired` (read each candidate's prose `status`): neither its notes nor its prose are the book. Prefer the **prior chapter's `ch<NN>-notes.md` end-state block** when it exists: a short structured statement of wardrobe, injuries, objects, location, residue, and the hour as the chapter actually left them. When no notes file exists, walk back from chapter N to the most recent prior chapter with the **same `pov`** and read its prose if written, else its outline; fall back to the immediately preceding chapter of any POV. Chapter 1, and a POV debut, have no anchor and lean on the treatment slot and the Revelation Log. (`store.list(chapters/*/ch*-{notes,prose,outline}.md)`, read `pov`, `chapter` and, on prose, `status` frontmatter, filter `< N`, drop chapters whose prose is retired.)
-- **The primer**, harvested for § 2 Story Context and **filtered to this chapter**, plus its **§2 Reveal Architecture**, consulted only to learn *what this chapter must plant*. Nothing about where a reveal lands may reach the file.
+- **The primer**, harvested for § 2 Story Context and **filtered to this chapter**. It carries no reveal or plant register and is never a source of forward orientation.
+- **The outline's setups.** What this chapter must plant comes from the setups the chapter's own outline carries as events: turn each into an imperative plant instruction, with no rationale and nothing about where it pays off.
 - **`treatment.md`, the spine-slot passage for this chapter only.** Never seed the full treatment.
 - **`voice/style-guide.md`** if it exists: not to copy from, but to know what general craft the Blueprint may omit.
 - **`questions/_index.md`**: the IDs of open questions touching this chapter, for the frontmatter pointer list: the chapter's own `[OPEN: Q-###]` markers, plus any open row whose index title names the chapter. Read an entry only when its row is ambiguous.
@@ -77,7 +78,7 @@ From the outline's narrative, identify **every character and worldbuilding eleme
 
 > Plan for the ch 17 Blueprint, *The Locket*:
 >
-> - **Seed**: `ch17-outline.md` (1,140w, `author_written`, so its dialogue is yours and gets preserved); ch 16 notes end-state block; spine slot + Chapter Spine; primer filtered to this chapter + §2 for what ch 17 must plant; treatment's *Audit Box* passage only; `voice/style-guide.md` present.
+> - **Seed**: `ch17-outline.md` (1,140w, `author_written`, so its dialogue is yours and gets preserved); ch 16 notes end-state block; spine slot + Chapter Spine; primer filtered to this chapter; the outline's setups for what ch 17 must plant; treatment's *Audit Box* passage only; `voice/style-guide.md` present.
 > - **Surfacing cast**: Marlowe (POV), Voss (Major), Park (Supporting), Doris (Minor) + 3 elements (the locket, Mara's Diner, Voss Industries). Full-read each; carry all frameworks; Revelation Logs ≤ ch 17.
 > - **Write**: `ch17-blueprint.md` v1; index cell → v1; `state.md` updated.
 
@@ -85,7 +86,7 @@ From the outline's narrative, identify **every character and worldbuilding eleme
 
 For a **single chapter**, gather and write in the main session unless the canon reads are large (then dispatch one subagent per `references/subagent-pattern.md`). For a **batch**, dispatch **one subagent per chapter, in parallel**. Every brief carries the store block from `references/subagent-pattern.md` § Mandatory brief fields. Each subagent:
 
-- **Reads** (substantive mode, full reads, no grep): the outline, the carried-state source, the filtered primer harvest and §2, the style guide's existence, and the full canon entry for each surfacing character and element, including each `## Revelation Log`.
+- **Reads** (substantive mode, full reads, no grep): the outline, the carried-state source, the filtered primer harvest, the style guide's existence, and the full canon entry for each surfacing character and element, including each `## Revelation Log`.
 - **Applies the Revelation Log filter** to `chapter ≤ N`, and strips later-chapter references from the text of entries it carries.
 - **Writes** (`store.write`) `ch<NN>-blueprint.md` to the spec: the header block (`blueprint-spec.md` § Header), then the twelve sections, synthesized, backward-only.
 - **Runs the backward-only scan** over its own output before returning (the grep in the spec's Core Principles), and fixes what it finds.

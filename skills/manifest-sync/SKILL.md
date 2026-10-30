@@ -13,7 +13,7 @@ Always follow `references/plan-first.md` — propose what you'll add, change, or
 
 ## What you produce
 
-`manifest.md` in the StoryStormer app's Manifest format, specified in `references/file-schemas.md` § `manifest.md`: YAML frontmatter (version, treatment_version), then the app's document (title line, Characters by Major / Supporting / Minor, Worldbuilding by type, Open Questions, the footer counts). No file paths and no "(no bio yet)" notes: the status line carries that.
+`manifest.md` in the StoryStormer app's Manifest format, specified in `references/file-schemas.md` § `manifest.md`: YAML frontmatter (version, treatment_version), then the app's document: the title line, the inventory first (Characters by Major / Supporting / Minor, Worldbuilding by type), then `## Character Map`, then the footer counts. No file paths and no "(no bio yet)" notes: the status line carries that, and **no open questions in any form** (they live only in `questions/`).
 
 ```markdown
 ### Major Characters
@@ -23,16 +23,28 @@ Forensic accountant who missed Voss's fraud twelve years ago; wants it proven; h
 *Status: Canon Asset Created*
 ```
 
-That's the texture. Lean. Scannable. Each entry is what a casting director would put on a real call sheet, under the caps: major ≤30 words, supporting ≤20, minor ≤10, worldbuilding ≤20.
+That's the texture of the inventory. Lean. Scannable. Each entry is what a casting director would put on a real call sheet, under the caps: major ≤30 words, supporting ≤20, minor ≤10, worldbuilding ≤20. Those caps govern the inventory only; the Character Map below it is written at the depth the author has developed.
+
+```markdown
+## Character Map
+
+### Thematic Positions
+### Thematic Parallels
+### Dialogue Conventions
+### Character Dynamics
+```
+
+`### Character Dynamics` opens with a framework line, then the project's own subsections (e.g. Core Team, Antagonist Axis). Each character's ghost, lie, want and need live only in that character's bio, never here; where the map and a bio disagree, the bio wins.
 
 ## What to do
 
 ### 1. Read context
 
 - `treatment.md` — full read. Every character, location, organization, object the treatment names should appear in the manifest.
-- `primer.md` — full read. May surface world-level elements (a culture, a body of lore) that belong under one of the project's worldbuilding types: the types its entries already use, with the app's fourteen defaults in `references/frameworks.md` § Worldbuilding as the starting list. Never invent a manifest section outside that list.
+- `primer.md` — full read (premise, theme and structure context). May surface world-level elements (a culture, a body of lore) that belong under one of the project's worldbuilding types: the types its entries already use, with the app's fourteen defaults in `references/frameworks.md` § Worldbuilding as the starting list. Never invent a manifest section outside that list.
 - Existing `manifest.md` — full read. So you can diff.
-- All character bios (`characters/*.md`) — at minimum read the YAML frontmatter and Quick Reference. Tells you the canonical `type`, full name, and that a canon asset exists for each.
+- All character bios (`characters/*.md`) — at minimum read the YAML frontmatter and Quick Reference. Tells you the canonical `type`, full name, and that a canon asset exists for each. Read the leading characters' bios in full: they keep the Character Map's positions and dialogue conventions true to the bios and feed the collision check.
+- `questions/_index.md` and the open question entries, so the collision check does not file a duplicate.
 - Worldbuilding files (`worldbuilding/**/*.md`) — frontmatter + first paragraph. Tells you what each element is in a sentence, and its type (`category`).
 - `state.md` for context.
 
@@ -45,9 +57,11 @@ Compare what the treatment / bios / worldbuilding name vs. what the existing man
 - **Additions** — elements in the story that aren't in the manifest yet (often: a new character mentioned in the treatment but no bio yet; a location that appeared in Act 3 that wasn't logged).
 - **Removals** — elements in the manifest that the treatment no longer references (sometimes after a treatment rewrite — flag for the user, don't auto-remove without confirmation).
 - **Renames** — *"Alex" in the old manifest, "Marlowe" in the new treatment*. Detect rename via the bios' frontmatter and any decision recording it (`decisions/_index.md` topics, then that entry).
-- **Role shifts** — a character was supporting, now appears in 30+ scenes and is functionally major. Flag for the user; the user makes the call (and an uncertain one goes to Open Questions).
+- **Role shifts** — a character was supporting, now appears in 30+ scenes and is functionally major. Flag for the user; the user makes the call (an uncertain one is raised with the user in the plan, not written into the manifest).
 - **Status changes** — `Canon Asset Created` exactly when the bio or entry file exists; otherwise `Mentioned`, `Partially Developed`, or `Ready for Asset` by how much detail the story has settled.
-- **Merges** — the same person or thing under variant names (*Kate* and *Katherine*, *Captain Vex* and *Vex*). Merge confident cases into one entry; flag uncertain ones in Open Questions.
+- **Merges** — the same person or thing under variant names (*Kate* and *Katherine*, *Captain Vex* and *Vex*). Merge confident cases into one entry; flag uncertain ones to the user in the plan.
+- **Character Map** — carry it forward **unchanged, byte for byte**, unless a pending or newly integrated *character or theme* decision requires a change (or the author asks). When it changes, rewrite it whole, reproducing every part a decision doesn't touch. The inventory is regenerated as usual either way.
+- **Collisions** — when two leading characters share a lie, want, need, thematic position or voice, file a new open question (a `questions/Q-###.md` entry, write mode "new", `source: manifest_sync`, category character) naming both characters and the shared element, unless an open question already names that collision. Nothing about it goes into the manifest. This check runs on every sync, even when the Character Map is carried forward.
 - **Description updates** — the description needs to reflect the current treatment's portrayal, within its word cap. Tighten any entry that has outgrown its cap.
 
 ### 3. Propose the changes
@@ -76,7 +90,7 @@ Compare what the treatment / bios / worldbuilding name vs. what the existing man
 After the user approves:
 
 - Snapshot current `manifest.md` per `store.md`.
-- `store.write(manifest.md)` with the new manifest, with the version bumped, `treatment_version` set to the current treatment version, `last_updated` set to today, the body's `*Last synced: …*` line updated, and the footer counts recomputed.
+- `store.write(manifest.md)` with the new manifest, with the version bumped, `treatment_version` set to the current treatment version, `last_updated` set to today, the body's `*Last synced: …*` line updated, and the footer counts recomputed. The Character Map is the carried-forward text unless Step 2 changed it. File any collision questions (Step 2).
 - Update `state.md → What Exists → Manifest` to reflect the new version and current element counts, and add a line on what changed to the session's journal entry (created first if this is the session's first write; `references/file-schemas.md` § `journal/`).
 
 ### 5. Report
@@ -85,7 +99,7 @@ After the user approves:
 
 ## Lean inventory, not deep document
 
-This is a structural index. **Do not** put bio summaries, plot points, thematic commentary, or worldbuilding depth in the manifest. The depth lives in the bio or entry; the manifest says, through the status line, whether that file exists yet.
+This is a structural index. **Do not** put bio summaries, plot points, thematic commentary, or worldbuilding depth in the *inventory*; the Character Map is the one place the manifest carries thematic and relational material. The depth lives in the bio or entry; the manifest says, through the status line, whether that file exists yet.
 
 A character with no bio is simply not `Canon Asset Created`, which flags the missing bio without faking a depth that doesn't exist:
 
@@ -145,13 +159,14 @@ There is no per-book manifest. The shared manifest is canonical. If a user asks 
 
 - Generate or update bios. That's `character-bio`. (Manifest sync may surface bio gaps; flag them in the report and recommend `character-bio` as next.)
 - Generate worldbuilding files. The manifest can list *Voss Industries* at *Ready for Asset*, but the worldbuilding file itself is a separate creation. Use `worldbuilding-entry` to write the actual entry; flag missing-file entries in the report and recommend `worldbuilding-entry` as next.
+- File anything but collision questions, or write any question into the manifest. Questions live only in `questions/`.
 - Refresh the treatment. The manifest is downstream of the treatment, not the other way around. Treatment changes drive manifest changes, not the inverse.
 - Create per-book manifest files. The shared manifest is canonical; filtered views are conversational outputs, not files on disk.
 
 ## References
 
 - `references/plan-first.md`
-- `references/file-schemas.md` — `manifest.md` (the app's Manifest format: entry shapes, word caps, status ladder, Open Questions, footer)
+- `references/file-schemas.md` — `manifest.md` (the app's Manifest format: entry shapes, word caps, status ladder, Character Map, footer)
 - `references/reading-discipline.md` — full-read rules, Zoom Selection
 - `references/subagent-pattern.md` — **read when project is series mode** (per-book treatment reads dispatched in parallel)
 - `references/series.md` — **read when `project_type: series`** (shared manifest, Appears in field, all-books read)

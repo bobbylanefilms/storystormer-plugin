@@ -22,7 +22,7 @@ When the user gives you the go-ahead, you create or update:
 - Decision and question entries — `decisions/D-###.md` and `questions/Q-###.md`, one per item the author approved from the intake, each created with `new` and given its index row
 - `journal/<date>-s<NN>.md` — the session's journal entry: what init found, how it triaged, what it created and extracted, and why. Its number follows `references/file-schemas.md` § `journal/` (one more than the higher of `session_count` and the highest `sNN` listed), which gives `s01` only for a brand-new project; a re-run continues the existing count
 - `treatment.md` — only when the user brings in an existing treatment-like document and explicitly agrees to a copy-and-clean-up step. **Never generate a new treatment at init.**
-- `primer.md` — **never at init.** The primer is a five-section structured craft dossier (~4,500w, hard ceiling 5,000) that's always built by `treatment-update`'s Phase 1 (first-run mode handles construction from intake materials). Init leaves `primer.md` absent so the first `treatment-update` run populates it.
+- `primer.md` — **never at init.** The primer is a four-section structured craft dossier (about 5,000w as a guide) that's always built by `treatment-update`'s Phase 1 (first-run mode handles construction from intake materials). Init leaves `primer.md` absent so the first `treatment-update` run populates it.
 - `manifest.md` — only if there's enough character/world content to seed it
 - Per-character bios and `characters/_index.md` — only for characters the intake already has bio material for, migrated rather than generated; a character the intake only names goes in the manifest
 - The `worldbuilding/` subfolders as appropriate
@@ -185,7 +185,7 @@ Short summary:
 - What you deliberately did *not* create — always including `primer.md` (that's `treatment-update`'s job). Name the absent files and the skill that produces them.
 - The recommended next step. Typical recommendations by stage:
   - **`concept` / `brain-dump`**: `brainstorm-session` to work through the highest-priority question and accumulate more decisions before the first `treatment-update` run.
-  - **`brainstorming` and above** (enough decided that primer construction is meaningful): `treatment-update` in first-run mode — it will scaffold the five-section primer from your extracted decisions, plus any treatment-like document the user brought in, and produce/refine `treatment.md`.
+  - **`brainstorming` and above** (enough decided that primer construction is meaningful): `treatment-update` in first-run mode — it will scaffold the four-section primer from your extracted decisions, plus any treatment-like document the user brought in, and produce/refine `treatment.md`.
   - **`canon-development`**: `treatment-update` first (to crystallize the primer), then `character-bio` or `worldbuilding-entry` for the highest-priority gap. Once major bios are in place and the treatment is refined, `pre-outline-session` is the natural next step — it commits the project to a chapter structure.
   - **`outlining` / `outline-drafted`** (rare at intake — would only appear if the user brought in pre-existing outline materials): recommend `pre-outline-session` to map any imported outline materials into the canonical `outline/structure.md` shape, then `outline-chapters` to fill in or refine per-chapter outlines.
 
@@ -350,7 +350,7 @@ For first-time series intake (the user starts fresh), the flow is the same as st
 
 ## What this skill does not do
 
-- **Generate a primer at any maturity stage.** The primer is always built by `treatment-update`'s Phase 1, which has first-run mode for scaffolding the five standard sections from available materials. Init leaves `primer.md` absent. The typical next step after init is to invoke `treatment-update` — its first-run mode will scaffold the primer from the decisions you extracted plus any treatment-like documents the user brought in.
+- **Generate a primer at any maturity stage.** The primer is always built by `treatment-update`'s Phase 1, which has first-run mode for scaffolding the four standard sections from available materials. Init leaves `primer.md` absent. The typical next step after init is to invoke `treatment-update` — its first-run mode will scaffold the primer from the decisions you extracted plus any treatment-like documents the user brought in.
 - **Generate a treatment from scratch.** If the user brings in an existing treatment-like document, you can copy-and-clean-up to `treatment.md` with the user's explicit agreement. Otherwise, leave `treatment.md` absent — `treatment-update`'s Phase 2 first-run mode handles construction.
 - **Generate `series.md` content beyond a stub.** Just like primer, the real content of `series.md` is developed through brainstorming. At init, scaffold the sections with `[To be developed]` markers and the book list; don't invent series arc content.
 - Run any other heavy generation. This is a scaffolding and triage skill.

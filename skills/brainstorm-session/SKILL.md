@@ -47,7 +47,7 @@ Lean hard on `references/philosophy.md` — character and theme matter as much a
 
    The categories matter — they surface gaps the user might not notice when deep in one dimension. Sessions that drift into three hours of character work and leave the midpoint unaddressed are a common failure mode; the structured check catches them. Don't make it perfunctory — if progress has been strong, celebrate it; if gaps are real, name them without pressure; if the user is losing steam, suggest the highest-impact next focus rather than dumping a checklist.
 
-8. **Watch for treatment-update triggers.** Suggest a `treatment-update` more proactively than you might think necessary — information that hasn't been folded into the primer and treatment is at risk of being lost. Don't wait until session end; mid-session refreshes are often the right move. Trigger when any of these fires:
+8. **Watch for treatment-update triggers.** Suggest a `treatment-update` more proactively than you might think necessary — information that hasn't been folded into the treatment (and, for premise, theme and structure, the primer) is at risk of being lost. Don't wait until session end; mid-session refreshes are often the right move. Trigger when any of these fires:
 
    - The unintegrated decisions (the index's Integrated column) reach 5 or more.
    - A major plot element has been developed (a midpoint shift, a major character arc, a structural rework).
@@ -55,9 +55,11 @@ Lean hard on `references/philosophy.md` — character and theme matter as much a
    - The thematic framework has crystallized (premise, controlling idea, or thematic question has landed).
    - The act structure has been revised or expanded.
 
+   Know where each decision lands: premise, theme and structure decisions reopen the primer (log them with the right `decision_type`); plot goes to the treatment; a character's ghost, lie, want and need go to the bio, and thematic positions, dialogue conventions and relationships to the manifest's Character Map; worldbuilding to canon and the manifest inventory. Plot, character and worldbuilding decisions never reopen the primer.
+
    Phrasing: *"That's the kind of structural shift the treatment should reflect — want to run a `treatment-update` now, or finish this thread first?"* Don't auto-execute; offer. The user picks the moment.
 
-8b. **Setup/payoff chains go to one of two places, never a ledger.** When a chain surfaces in conversation, apply primer §2's admission criteria: **load-bearing** (the payoff fails without the setup), **long-range** (more than about two chapters), **not self-evident** (wouldn't be caught by reading adjacent chapters). All three → it is a §2 Reveal Architecture entry; log it as a decision with its plant and payoff chapters so `treatment-update` registers it. Fewer than three → it lives in the treatment as ordinary narrative. A chain that has been planted *and* paid is struck from §2, not archived. When a later chapter needs a payoff and prose already exists, **search the harvest first**: `store.list(chapters/*/ch*-notes.md)` and read the Harvest sections for a particular already on the page before inventing a new one. That is how dense setup/payoff webs actually get built.
+8b. **Setup/payoff chains go to one of two places, never a ledger.** When a chain surfaces in conversation, log it as a plot decision with its plant and payoff, so `treatment-update` states it in the treatment's narrative where it is planted (what the clue really is and where it pays off). The primer holds no reveal register. The treatment is the one home, and `pre-outline-session` slots both ends of the load-bearing, long-range, not-self-evident chains into the spine. When a later chapter needs a payoff and prose already exists, **search the harvest first**: `store.list(chapters/*/ch*-notes.md)` and read the Harvest sections for a particular already on the page before inventing a new one. That is how dense setup/payoff webs actually get built.
 
 9. **End the session cleanly.** When the user signals they're done (or you sense the session is winding down), run the closing protocol — don't just write a one-line state update and stop. The close is where the session's value gets crystallized into artifacts.
 

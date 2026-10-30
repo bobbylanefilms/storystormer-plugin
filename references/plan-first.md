@@ -26,8 +26,8 @@ For `treatment-update`:
 > Here's what I'm thinking:
 >
 > - **Read in full (substantive mode)**: `primer.md`, `treatment.md`, the 7 unintegrated decision entries (picked out of `decisions/_index.md`), `manifest.md`, and the 4 major-tier bios in `characters/`. I'll quote at least one passage from each to prove the read.
-> - **Phase 1**: rewrite `primer.md` to reflect the new decisions about the antagonist's backstory and the second-act revelation.
-> - **Phase 2**: regenerate `treatment.md` against the refreshed primer. I expect this to be a meaningful rewrite of Act 2 and a lighter pass on Acts 1 and 3.
+> - **Phase 1**: rewrite `primer.md` to reflect the new premise decision about the moral argument (every section reproduced except Premise & Moral Argument). Skipped when only plot and character decisions are pending.
+> - **Phase 2**: regenerate `treatment.md` against the primer. I expect this to be a meaningful rewrite of Act 2 and a lighter pass on Acts 1 and 3.
 > - **Snapshot** the current primer + treatment first (per `store.md`).
 > - **Mark** the 7 decisions `integrated: "yes (<today>)"`, each with its index row.
 >
