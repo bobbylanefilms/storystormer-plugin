@@ -146,7 +146,7 @@ When you start a new project, `/storystormer:init` asks once where it should liv
 
 ### Connecting the StoryStormer app
 
-The connector’s address is `https://storystormer.vercel.app/api/mcp`. You sign in once per surface with your app account (a browser sign-in), and the session works on your projects.
+The connector’s address is `https://storystormer.ai/api/mcp`. You sign in once per surface with your app account (a browser sign-in), and the session works on your projects.
 
 - **Claude Code:** the plugin brings the connector with it (its `.mcp.json`), so installing the plugin adds it. Then authenticate once: run `/mcp`, select the StoryStormer server, choose to authenticate, and sign in in the browser that opens.
 - **claude.ai and Cowork:** **Settings → Connectors → Add custom connector**, name it StoryStormer, paste the address, then **Connect** and sign in.
@@ -211,6 +211,10 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 - Git integration / auto-commit
 
 These may follow in later versions once the kernel proves out.
+
+### What v0.26.1 changed over v0.26.0
+
+- **The connector points at production.** The bundled `.mcp.json` and every mention of the connector’s address now use `https://storystormer.ai/api/mcp` (the web app went live there on 2026-11-01); the old `storystormer.vercel.app` address is retired. Reconnect once per surface after updating.
 
 ### What v0.26.0 changed over v0.25.0
 

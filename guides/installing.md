@@ -87,7 +87,7 @@ A story can live in one of four homes. Every skill works the same in each; only 
 
 **Picking up where the app left off.** In the StoryStormer app, **Continue in Claude** gives you a prompt to paste into Claude Code, claude.ai or Cowork. It names your project, so the session goes straight to it, with no list to choose from, and opens with your last session’s summary and what’s next. The wording doesn’t matter: any message that names the project’s id works.
 
-**Connecting the StoryStormer app.** The connector’s address is `https://storystormer.vercel.app/api/mcp` (for now it serves the app’s development deployment). You sign in once per surface with your app account, in a browser sign-in.
+**Connecting the StoryStormer app.** The connector’s address is `https://storystormer.ai/api/mcp` (the production app). You sign in once per surface with your app account, in a browser sign-in.
 
 1. **Claude Code:** the plugin brings the connector with it, so installing (or updating to v0.23.0) adds it. Then authenticate once: run `/mcp`, select the StoryStormer server, choose to authenticate, and sign in in the browser that opens. Until you do, the StoryStormer tools aren’t available to the session.
 2. **claude.ai and Cowork:** open **Settings → Connectors**, choose **Add custom connector**, name it StoryStormer, paste the address, then **Connect** and sign in.

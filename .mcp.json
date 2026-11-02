@@ -2,7 +2,7 @@
   "mcpServers": {
     "storystormer": {
       "type": "http",
-      "url": "https://storystormer.vercel.app/api/mcp"
+      "url": "https://storystormer.ai/api/mcp"
     }
   }
 }
