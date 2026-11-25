@@ -13,7 +13,7 @@ The worldbuilding types and tier framework are in `references/frameworks.md` § 
 
 ## What you produce
 
-A file at `worldbuilding/<type-slug>/<slug>.md` following the appropriate schema: the folder is the kebab-case slug of the worldbuilding type (`locations/`, `magic/`), and the frontmatter `category` is the type name verbatim (`Locations`, `Magic`), with optional `tags` under the tag rule (see `references/file-schemas.md` § Worldbuilding files and § Tags on canon entries). Then a structured body matching either Reference Note or Full Entry format.
+A file at `worldbuilding/<type-slug>/<slug>.md` following the appropriate schema: the folder is the kebab-case slug of the worldbuilding type (`locations/`, `magic/`), and the frontmatter `category` is the type name verbatim (`Locations`, `Magic`), with optional `tags` under the tag rule and, in a series, `books` (see `references/file-schemas.md` § Worldbuilding files, § Tags on canon entries and § Book tags on canon entries). Then a structured body matching either Reference Note or Full Entry format.
 
 Two formats, decided at Step 2:
 
@@ -139,9 +139,10 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. *
 
 Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 
-One behavioral change in series mode:
+Two behavioral changes in series mode:
 
 - **Read all relevant books' treatments** when generating or expanding an entry. The element's behavior may evolve across books (a corporation grows, a faction splits, a city is rebuilt after damage in book 1), and the entry should capture that evolution rather than the single-book snapshot.
+- **Set `books:` on evidence.** Before writing or changing the entry’s `books:` (`references/file-schemas.md` § Book tags on canon entries), search the manuscript for the element’s name and every other name the entry gives it (`store.search`, else the books’ treatments and chapter outlines and notes), report the chapters found by book, and propose the list with the plan. An entry with no `books:` is the whole series and is never narrowed by inference (`references/series.md` § Book tags on canon). An undecided appearance (*“Book 3: TBD”*) stays prose in the entry.
 
 For elements that change meaningfully across books, the entry's body can use light per-book annotations:
 
@@ -155,7 +156,7 @@ For elements that change meaningfully across books, the entry's body can use lig
 
 This is a lighter version of the character-bio Per-Book Sub-Arcs pattern — most worldbuilding elements don't need it, but use it for elements that genuinely transform across books.
 
-For elements that appear in only one book (a location only seen in book 1), the entry is still shared at root and the body notes its appearance scope inline. Don't fork into per-book worldbuilding files.
+For elements that appear in only one book (a location only seen in book 1), the entry is still shared at root, tagged `books: [book-1]`. Don’t fork into per-book worldbuilding files.
 
 ## The Revelation Log
 
@@ -181,7 +182,7 @@ No capture workflow — just know the mechanism:
 - `references/plan-first.md`
 - `references/frameworks.md` § Worldbuilding — tier framework, the fourteen default worldbuilding types, character-vs-worldbuilding disambiguation
 - `references/canon-schemas.md` § Worldbuilding Entry Schemas — Reference Note + Full Entry sections, length tables, category-specific guidance, writing rules, worked example
-- `references/file-schemas.md` — worldbuilding folder rule, frontmatter (`name`, `category`, `tags`), the tag rule
+- `references/file-schemas.md` — worldbuilding folder rule, frontmatter (`name`, `category`, `tags`, `books`), the tag rule, § Book tags on canon entries
 - `references/reading-discipline.md` — full-read rules, Zoom Selection
-- `references/series.md` — **read when `project_type: series`** (shared worldbuilding, Status Over the Series pattern)
+- `references/series.md` — **read when `project_type: series`** (shared worldbuilding, book tags and the never-narrow rule, Status Over the Series pattern)
 - `references/philosophy.md` — what a good Canon asset privileges

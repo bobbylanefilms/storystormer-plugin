@@ -211,10 +211,11 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. O
 
 Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 
-Two additions:
+Three additions:
 
-1. **Cross-book chains.** When a spine entry references a cross-book setup or payoff (*"Ch 38 · protocol deviation planted (pays off book 3 ch 22)"*), the planted or paid event must be present in the outline body as narrative. The chain itself is registered in `series.md`; the outline shows the event, never the chain. If the receiving book is not yet drafted, note it in the report, not in the outline.
-2. **Light read of `series.md`** for the Cross-Book Setups and Payoffs section and the Per-Book Synopses relevant to the focused book. Don't full-read other books' treatments unless a specific slot demands it.
+1. **Cross-book chains.** When a spine entry references a cross-book setup or payoff (*“Ch 38 · protocol deviation planted (pays off book 3 ch 22)”*), the planted or paid event must be present in the outline body as narrative. The chain lives in the Bible and reaches this book through its treatment; the outline shows the event, never the chain. If the receiving book is not yet drafted, note it in the report, not in the outline.
+2. **No Bible read.** This skill reads the spine, the treatment and canon, never `series.md` (the feed rule, `references/series.md` § The Series Bible). A cross-book plant the slot needs that the treatment doesn’t state is a `treatment-update` gap: flag it in the report. Don’t full-read other books’ treatments unless a specific slot demands it.
+3. **Chapters that move between books.** When the spine moves an existing chapter to another book, or to another place in its own book, move its folder with `store.move` (`references/store.md` § Operations) rather than writing a new outline there and deleting the old one: the move keeps its outline, drafts, Blueprint and notes. Re-read every changed path before writing to it, and run the cross-chapter checks again on both books’ neighboring chapters.
 
 ## What this skill does not do
 

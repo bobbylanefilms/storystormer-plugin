@@ -229,14 +229,16 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. P
 
 Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 
-Two additions in series mode:
+Four additions in series mode:
 
-1. **Also load `series.md`** during the pre-flight read. The Cross-Book Setups and Payoffs section is critical — every setup or payoff in this book that participates in a cross-book chain MUST land in a specific spine slot. If the user's series.md says *"book 1 ch 38 plants the protocol deviation that pays off in book 3 ch 22,"* then the spine for book 1 must have a slot at chapter 38 that includes that planting.
-2. **Surface cross-book obligations in the spine.** Spine entries that participate in a cross-book chain should reference the chain explicitly: *"Ch 38 — Inauguration Day · Maya watches the ceremony from the gallery; protocol deviation planted (pays off book 3 ch 22, per D-024). POV: Maya."* Cross-book payoffs in the focused book must also be flagged similarly. This makes the cross-book chain visible at the spine level so `outline-chapters` doesn't accidentally drop the setup/payoff content.
+1. **Start from the previous book’s handoff.** From book 2 on, read the previous book’s `books/<slug>/handoff.md` when it exists: where the story stands, who is where, what this book inherits. The spine opens from that state; a contradiction between it and this book’s treatment is surfaced, not smoothed over.
+2. **Cross-book plants come from the treatment.** Every setup or payoff this book carries for another book is stated in the focused book’s treatment where it happens (the treatment writer took it from the Bible), and each MUST land in a specific spine slot: if the treatment plants the protocol deviation at the inauguration for a book 3 payoff, the spine has the slot where that planting happens. This skill does not read `series.md` (the feed rule, `references/series.md` § The Series Bible). A cross-book plant the author names that the treatment doesn’t state is captured as a series-scope decision, and `treatment-update` is recommended before that slot is outlined.
+3. **Surface cross-book obligations in the spine.** Spine entries that participate in a cross-book chain reference it explicitly: *“Ch 38 — Inauguration Day · Maya watches the ceremony from the gallery; protocol deviation planted (pays off book 3 ch 22, per D-024). POV: Maya.”* Cross-book payoffs in the focused book are flagged the same way. This makes the chain visible at the spine level so `outline-chapters` doesn’t drop the setup or payoff.
+4. **A chapter that moves between books moves whole.** When a spine change sends an existing chapter to another book (book 1’s last chapter now opens book 2), move its folder with `store.move(books/<from>/chapters/chapter-NN, books/<to>/chapters/)` (`references/store.md` § Operations): the chapter keeps its outline, drafts, Blueprint and notes, and the book it left closes the gap. A chapter that changes place inside its book moves to that numbered folder the same way. Never write its files into the other book and delete the originals, which makes a new chapter and strands the old drafts. Update both books’ `outline/structure.md` spines, and report every path the move changed.
 
-The conversation may surface cross-book implications mid-session — *"if Maya does X at ch 35, that changes what book 2 starts with."* Capture the implication as a series-scoped decision and flag it for a `series.md` update in the report. Don't let cross-book implications dissolve into the per-book conversation.
+The conversation may surface cross-book implications mid-session — *“if Maya does X at ch 35, that changes what book 2 starts with.”* Capture the implication as a series-scoped decision and flag it in the report for a Bible patch (a brainstorm session) and, when a book’s own story changes, a `treatment-update`. Don’t let cross-book implications dissolve into the per-book conversation.
 
-If pre-outline reveals that `series.md` is stale or wrong (the current cross-book chains contradict what the spine wants to do), pause and recommend a `series.md` patch via brainstorm-session before continuing. Don't outline against a stale arc.
+If the spine wants to do something the treatment’s cross-book plants or the previous book’s handoff rule out, pause and recommend settling it first (a brainstorm session, then `treatment-update`). Don’t outline against a stale arc.
 
 ## What this skill does not do
 
@@ -249,9 +251,9 @@ If pre-outline reveals that `series.md` is stale or wrong (the current cross-boo
 ## References
 
 - `references/plan-first.md` — universal plan-first behavior
-- `references/file-schemas.md` — `outline/structure.md` schema, `series.md` Cross-Book Setups, `state.md` updates, § Entry collections (decision and question entries, their indexes, the journal)
+- `references/file-schemas.md` — `outline/structure.md` schema, `handoff.md`, `state.md` updates, § Entry collections (decision and question entries, their indexes, the journal)
 - `references/reading-discipline.md` — substantive mode rules, Zoom Selection
-- `references/series.md` — **read when `project_type: series`** (focused-book paths, cross-book chain integration into spine)
+- `references/series.md` — **read when `project_type: series`** (focused-book paths, the feed rule, the book handoff, chapter moves between books)
 - `references/frameworks.md` § Structure — framework vocabulary and selection guidance
 - `references/alt-structure.md` — when conventional frameworks fight the story
 - `references/philosophy.md` — character pressure drives plot; the spine should reflect that

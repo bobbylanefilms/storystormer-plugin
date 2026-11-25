@@ -166,7 +166,9 @@ A question this skill creates in a series carries `scope` and `affects_books` th
 
 When in doubt about scope, default to the user's current focus — most decisions in a brainstorm session are about the book being discussed. Series scope is the exception, not the default, and should be deliberate.
 
-For decisions that affect `series.md` itself (cross-book setup chains, continuity concerns, series arc shifts), flag in your report: *"D-024 affects the Cross-Book Setups and Payoffs section in series.md — recommend a series.md patch in the next brainstorm session."* This skill captures the decision but does not patch series.md.
+For decisions that affect the Series Bible (`series.md`: cross-book setup chains, continuity concerns, series arc shifts), flag in your report: *“D-024 affects the Cross-Book Setups and Payoffs section of the Bible — recommend a patch in the next brainstorm session.”* This skill captures the decision but does not patch `series.md`. A series-scope premise, theme, structure or plot decision is one the StoryStormer app lists as waiting for the Bible; `integrated` covers treatments only and cannot mark the Bible (`references/series.md` § Who updates the Bible).
+
+**Listing in a series:** by default, the focused book’s decisions plus the series-wide ones (the index’s Scope column); *“all books”* lists every scope, and naming a book lists that book’s plus series-wide.
 
 ## References
 

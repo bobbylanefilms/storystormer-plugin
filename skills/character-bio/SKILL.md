@@ -13,7 +13,7 @@ The frameworks are in `references/frameworks.md`; the bio's section structure is
 
 ## What you produce
 
-A file at `characters/<slug>.md`: YAML frontmatter (`name`; `type`, one of the project's People types, by default Protagonist / Antagonist / Major / Supporting / Minor; optional `tags` under the tag rule in `references/file-schemas.md` § Tags on canon entries), then a structured body proportional to the tier.
+A file at `characters/<slug>.md`: YAML frontmatter (`name`; `type`, one of the project’s People types, by default Protagonist / Antagonist / Major / Supporting / Minor; optional `tags` under the tag rule in `references/file-schemas.md` § Tags on canon entries; in a series, `books`, § Series Mode), then a structured body proportional to the tier.
 
 Three tiers (bio depths, not a frontmatter field; the `type` picks the default depth) — see `references/canon-schemas.md` for the section structure of each:
 
@@ -140,7 +140,7 @@ Dispatch read subagents per `references/subagent-pattern.md` for series-mode bio
 1. **One per-book character-appearance subagent per book** (parallel) — each subagent full-reads its book's treatment and returns the character's appearances, actions, and arc development *in that book*, with verbatim excerpts. Scope is the character's slice of that book's treatment, not the full narrative.
 2. **Cross-cast Voice Wells subagent** (when writing or expanding a major bio in a series with 3+ existing major bios) — full-reads each existing major bio's Voice Fingerprint section, returns just the Reference Wells field per character. Used by the main session's Voice Well overlap check.
 
-The main session retains direct reads of: the character's existing bio (if expanding), the manifest, decisions affecting the character, `series.md`'s Per-Book Synopses, and `primer.md`. The bio drafting itself — the Quick Reference, Essential Identity, Voice Fingerprint, Lie/Ghost, Per-Book Sub-Arcs prose, Cross-cast differentiation judgment — happens in the main session against the subagent-aggregated appearance maps.
+The main session retains direct reads of: the character’s existing bio (if expanding), the manifest, decisions affecting the character, the Per-Book Synopses paragraph of any book that has no treatment yet, and `primer.md`. The bio drafting itself — the Quick Reference, Essential Identity, Voice Fingerprint, Lie/Ghost, Per-Book Sub-Arcs prose, Cross-cast differentiation judgment — happens in the main session against the subagent-aggregated appearance maps.
 
 For **standalone-novel bios**, dispatch only when the treatment is large (15,000+ words) or when expanding 3+ bios in one session. A single bio against a normal-length treatment fits comfortably in main context.
 
@@ -152,15 +152,15 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 
 Three behavioral changes in series mode:
 
-1. **Read all relevant books' treatments**, not just the focused book's. To know what Maya does and how she changes, you need book 1's treatment, book 2's treatment, and book 3's treatment — wherever they exist. If a book's treatment doesn't exist yet (e.g., book 3 hasn't been drafted), use whatever is available — `series.md`'s Per-Book Synopses section is the lightest source of book-level arc material when treatments are absent. Also read `series.md` for the character's role in the series arc.
-2. **Add the Quick Reference's `Appears in:` field**. Lists the books the character appears in, e.g., *"Appears in: books 1, 2, 3"* or *"Appears in: book 1"*. For age-progressing characters, also use the form *"Age: 28 (book 1) → 32 (book 3)"*.
-3. **Add the Per-Book Sub-Arcs section** under Story Role & Relationships. Each book the character appears in gets a 80–150w paragraph capturing what they do and how they change in that specific book. The overarching Series Arc paragraph (150–250w) captures the across-books trajectory. See `references/series.md` § Character bios in series mode for the exact subsection structure.
+1. **Read all relevant books’ treatments**, not just the focused book’s. To know what Maya does and how she changes, you need book 1’s treatment, book 2’s treatment, and book 3’s treatment — wherever they exist. For a book with no treatment yet, its paragraph under `series.md`’s Per-Book Synopses is the lightest source; read that paragraph alone, never the rest of the Bible (the feed rule, `references/series.md` § The Series Bible). The character’s series arc comes from the treatments, the decisions and the author.
+2. **Set `books:` on evidence.** Before writing or changing the bio’s `books:` (`references/file-schemas.md` § Book tags on canon entries), search the manuscript for the character’s name and every other name the bio gives them (`store.search`, else the books’ treatments and chapter outlines and notes), report the chapters found by book (*“Book 1: ch 3, 7, 12; Book 2: ch 1”*), and propose the list with the plan. A bio with no `books:` is the whole series and is never narrowed by inference: only the author narrows it (`references/series.md` § Book tags on canon). A return that isn’t settled (*“may come back in book 3”*) stays prose in the bio. There is no Quick Reference `Appears in:` line; for age-progressing characters, keep the form *“Age: 28 (book 1) → 32 (book 3)”*.
+3. **Add the Per-Book Sub-Arcs section** under Story Role & Relationships. Each book in the character’s `books:` (every book, for the whole series, once that book has material) gets a 80–150w paragraph capturing what they do and how they change in that specific book. The overarching Series Arc paragraph (150–250w) captures the across-books trajectory. See `references/series.md` § Character bios in series mode for the exact subsection structure.
 
 The cross-cast differentiation checks (Voice Well, Inner Voice, Thematic Posture) operate across the **full series cast**, not per book. Two characters who share a Voice Well in different books still produce voice collision when the books are read sequentially.
 
 Bio length scales modestly with series scope. A major bio that spans three books may grow to ~2,000–2,400w (vs. the standalone ~1,400–1,900w) because of the Per-Book Sub-Arcs section. Don't pad — the additional words are arc content, not extra detail on existing sections.
 
-For characters appearing in only one book (e.g., an antagonist who dies in book 1), the bio is structured as a series-aware single-book bio: `Appears in: book 1` in Quick Reference, the Series Arc paragraph is shorter and contextualizes the character's role in the broader series even though their direct involvement is limited.
+For characters appearing in only one book (e.g., an antagonist who dies in book 1), the bio is structured as a series-aware single-book bio: `books: [book-1]` in the frontmatter, the Series Arc paragraph is shorter and contextualizes the character’s role in the broader series even though their direct involvement is limited.
 
 ## The Revelation Log
 
@@ -183,10 +183,10 @@ There's no capture workflow — just know the mechanism:
 ## References
 
 - `references/plan-first.md`
-- `references/file-schemas.md` — bio frontmatter (`name`, `type`, `tags`), the tag rule
+- `references/file-schemas.md` — bio frontmatter (`name`, `type`, `tags`, `books`), the tag rule, § Book tags on canon entries
 - `references/canon-schemas.md` — the bio body contract (sections 0–7), per-section word budgets, sub-field guidance, Voice Fingerprint vectors, writing rules, worked example
 - `references/frameworks.md` — McKee, Truby, Egri, Weiland, Enneagram, Voice Fingerprint, Thematic Posture
 - `references/reading-discipline.md` — full-read rules, Zoom Selection
 - `references/subagent-pattern.md` — **read when project is series mode or treatment is large** (per-book character-appearance reads dispatched in parallel)
-- `references/series.md` — **read when `project_type: series`** (shared bios, per-book sub-arcs, Appears in field)
+- `references/series.md` — **read when `project_type: series`** (shared bios, per-book sub-arcs, book tags and the never-narrow rule)
 - `references/philosophy.md` — character and theme matter as much as plot

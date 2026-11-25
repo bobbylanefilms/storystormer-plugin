@@ -139,7 +139,11 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 
 When a decision lands that affects more than the focused book, surface the implication in your response: *"This is series-scoped because it changes what book 1's chapter 38 plants for book 3. Capturing as D-024 with scope: series, affects books: book-1 (ch 38), book-3 (ch 22). The book-1 treatment will likely need a refresh to integrate the new foreshadowing — recommend `treatment-update` for book 1 next."*
 
-The end-of-session closing protocol gains one item in series mode: **offer to update `series.md`** if cross-book material accumulated during the session (≥1 series-scoped decision OR a meaningful shift in any book's arc that ripples to others). Series.md updates are inline (no separate skill); patch the relevant section directly.
+The end-of-session closing protocol gains one item in series mode: **offer to patch the Series Bible (`series.md`)** if cross-book material accumulated during the session (≥1 series-scoped decision OR a meaningful shift in any book’s arc that ripples to others). The patch is inline (no separate skill): show the changed sections, patch only those, and carry every other section forward word for word. Three rules govern it (`references/series.md` § The Series Bible):
+
+- **The entry test:** the Bible states only what takes more than one book to say. A point about one book goes to that book’s treatment (by a decision and `treatment-update`), a point about one character to the bio.
+- **File a question, never write one into `series.md`.** An open cross-book question becomes a question entry with `scope: series`; the Bible’s Open Cross-Book Questions section is computed from the entries (on a store that doesn’t compute it, rebuild that section from `questions/_index.md` in the same write).
+- **Name what the patch reflected.** The report lists the series decisions the patch brought into the Bible. In the StoryStormer app they stay listed as waiting for the Bible until the author marks them on its card, since an entry’s `integrated` covers treatments only; say so.
 
 Cross-book switching is permitted mid-session if the conversation organically pivots — *"OK let me think about how that lands in book 3"*. Suggest `/storystormer:switch book-3` (or switch inline in your next plan-first turn) before reading book 3's files. Don't context-switch silently.
 

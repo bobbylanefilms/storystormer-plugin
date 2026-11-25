@@ -145,7 +145,7 @@ Substantive mode is mandatory: full reads of every canon entry in the surfacing 
 
 ## Series Mode
 
-If `state.md` shows `project_type: series`, read `references/series.md` first. Operate on the **focused book's** chapters with the shared canon at the series root. Filter Revelation Logs by the focused book's numbering; a cross-book entry (`Ch B2-07`) in a later book is future state. A cross-book chain that plants here is rendered, like every plant, as an imperative without rationale; the chain itself lives in `series.md`.
+If `state.md` shows `project_type: series`, read `references/series.md` first. Operate on the **focused book’s** chapters with the shared canon at the series root. Filter Revelation Logs by the focused book’s numbering; a cross-book entry (`Ch B2-07`) in a later book is future state. A cross-book chain that plants here is rendered, like every plant, as an imperative without rationale; the chain itself lives in the Series Bible (`series.md`), which this skill never reads: the plant reaches it through the treatment and the outline (the feed rule, `references/series.md` § The Series Bible).
 
 Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 

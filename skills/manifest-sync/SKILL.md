@@ -139,12 +139,12 @@ The cardinal rule: *the manifest is generated from the treatment as a structural
 
 ## Subagent Dispatch
 
-Manifest sync in **series mode** reads ALL books' treatments to build the `Appears in:` field per entry, plus all bios' frontmatter and Quick Reference blocks. For a trilogy with three ~6,000-word treatments and 18 bios, that's substantial context — exactly the case the subagent pattern was designed for.
+Manifest sync in **series mode** reads ALL books’ treatments to check each entry’s books, plus all bios’ frontmatter and Quick Reference blocks. For a trilogy with three ~6,000-word treatments and 18 bios, that’s substantial context — exactly the case the subagent pattern was designed for.
 
 Dispatch read subagents per `references/subagent-pattern.md`. Every brief carries the store block from `references/subagent-pattern.md` § Mandatory brief fields.
 
 1. **One treatment subagent per book** (parallel) — each subagent full-reads `books/<slug>/treatment.md` and returns a structured per-character / per-worldbuilding-element appearance map with quoted excerpts of each appearance. Scope: just the appearance map, not the full narrative analysis (this skill is about the structural index, not the story).
-2. **Bios scan subagent** — reads each bio’s frontmatter + Quick Reference + first paragraph (lighter than the major-bio scan in `character-bio`’s subagent). Returns canonical name, `type`, current `Appears in:` value (if any), and the bio’s own claim about which books the character appears in. The **leading characters’** bios are read in full, never scanned, with each one’s lie, want, need, thematic position and voice returned as quoted excerpts: the Character Map and the collision check depend on them.
+2. **Bios scan subagent** — reads each bio’s frontmatter + Quick Reference + first paragraph (lighter than the major-bio scan in `character-bio`’s subagent). Returns canonical name, `type`, `books:` (or that it has none: the whole series), and the bio’s own claim about which books the character appears in. The **leading characters’** bios are read in full, never scanned, with each one’s lie, want, need, thematic position and voice returned as quoted excerpts: the Character Map and the collision check depend on them.
 3. **Worldbuilding scan subagent** — same lighter pattern for worldbuilding files.
 
 The main session aggregates the per-book appearance maps and the per-bio frontmatter scans, then performs the diff (Step 2) against the current manifest — that's the judgment work. Surfacing the diff to the user (Step 3) and writing the new manifest (Step 4) stay in the main session.
@@ -159,8 +159,8 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 
 Two behavioral changes in series mode:
 
-1. **Read ALL books' treatments** during the substantive read, not just the focused book's. The manifest's `Appears in:` field per entry depends on cross-book treatment scanning. If a book's treatment doesn't exist yet (e.g., book 3 is undrafted), use `series.md`'s Per-Book Synopses as a lighter source for that book's named entities.
-2. **Add the `*Appears in: …*` line** to every manifest entry, characters and worldbuilding alike, directly under its Status line: *"Appears in: books 1, 2, 3"* or *"Appears in: book 1"*, numbering books by their place in the series' `books` list (the app's Manifest Sync 1.4.0 writes the same line). This is the load-bearing addition for series-mode manifests — it tells downstream skills (`character-bio`, `treatment-update`) which books to consult when working on a character. Keep an entry's existing books; never drop one on the strength of a single book's treatment.
+1. **Read ALL books’ treatments** during the substantive read, not just the focused book’s. For a book with no treatment yet (book 3 undrafted), its paragraph under `series.md`’s Per-Book Synopses is a lighter source for that book’s named entities; read that paragraph alone, never the rest of the Bible (the feed rule, `references/series.md` § The Series Bible).
+2. **Write the `*Appears in: …*` line from the entry’s `books:`** on every manifest entry, characters and worldbuilding alike, directly under its Status line: *“Appears in: books 1, 3”*, *“Appears in: book 2”*, or *“Appears in: all books”* for an entry with no `books:`, numbering books by their place in the series’ `books` list (the app’s Manifest Sync writes the same line from the same lists). An inventory entry with no canon file keeps the books its current line names. The line is the tag’s echo: the sync never decides an entry’s books by rewriting the line.
 
 Example series-mode manifest entry:
 
@@ -168,16 +168,16 @@ Example series-mode manifest entry:
 **Maya Vance** — Protagonist / Congressional Staffer
 Hill staffer who learns her father's office brokered the deal she is investigating; wants the truth out, fears what it costs him.
 *Status: Canon Asset Created*
-*Appears in: books 1, 2, 3*
+*Appears in: all books*
 ```
 
-The diff step (Step 2) gains a check in series mode: verify each entry's `Appears in:` against the actual treatments. A character whose `Appears in:` says "book 1" but who is mentioned in book 2's treatment is a drift to flag — either the field is stale or the book-2 treatment introduced an unplanned cross-book appearance.
+The diff step (Step 2) gains a check in series mode: each entry’s books against the treatments. An entry whose `books:` says book 1 but who acts in book 2’s treatment is a drift to flag: propose adding book 2 to the entry’s `books:` (the one canon edit this skill makes, frontmatter only, with the author’s go; `references/series.md` § Book tags on canon), and its line follows. An entry with no `books:` is the whole series and is never narrowed, and no book is ever dropped on the strength of one book’s treatment.
 
-There is no per-book manifest. The shared manifest is canonical. If a user asks for "the manifest for book 2," interpret that as "filter the shared manifest by `Appears in: book 2`" — surface the filtered view in the conversation but don't write a per-book manifest file.
+There is no per-book manifest. The shared manifest is canonical. If a user asks for “the manifest for book 2,” interpret that as “filter the shared manifest to book 2’s entries and the whole series’ (by `books:`)” — surface the filtered view in the conversation but don’t write a per-book manifest file.
 
 ## What this skill does not do
 
-- Generate or update bios. That's `character-bio`. (Manifest sync may surface bio gaps; flag them in the report and recommend `character-bio` as next.)
+- Generate or update bios. That’s `character-bio`. (Manifest sync may surface bio gaps; flag them in the report and recommend `character-bio` as next. The one canon edit it makes is adding a book to an entry’s `books:` in a series, with the author’s go.)
 - Generate worldbuilding files. The manifest can list *Voss Industries* at *Ready for Asset*, but the worldbuilding file itself is a separate creation. Use `worldbuilding-entry` to write the actual entry; flag missing-file entries in the report and recommend `worldbuilding-entry` as next.
 - File any question but a collision, or a dropped manifest question, merge or role change the user confirmed; or write any question into the manifest. Questions live only in `questions/`.
 - Write a bio. Per-character material from a pending decision or the moved-out primer text is listed in the report for `character-bio`.

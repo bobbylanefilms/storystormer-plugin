@@ -1,6 +1,6 @@
 ---
 name: init
-description: Set up a new StoryStormer story workspace from any starting materials, or pick up a project the StoryStormer app hands off (“Continue my StoryStormer project…”). Use for “start a new novel,” “set up StoryStormer here,” “organize my brain dump.”
+description: Set up a story workspace from any materials, pick up a project the StoryStormer app hands off (“Continue my StoryStormer project…”), or add a manuscript to a series. Use for “start a new novel,” “set up StoryStormer here,” “organize my brain dump,” “add this as Book 3.”
 ---
 
 # StoryStormer · Init
@@ -332,21 +332,32 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 In series mode:
 
 - The root `state.md` carries `project_type: series`, the `books: [...]` list, `current_focus`, and the series-level `target_word_count`. The config is the same two keys as a standalone project's.
-- `series.md` is scaffolded at root with stub sections (Series Arc, Series Theme, Per-Book Synopses, Cross-Book Setups, Continuity Concerns). Real content lands when the user actually develops the arc — at init, it's a stub like primer is for standalone projects.
+- `series.md`, the Series Bible, is scaffolded at root with stub sections (Series Arc, Series Theme, Per-Book Synopses, Structural Conventions, Cross-Book Setups and Payoffs, Continuity Concerns, and the computed Open Cross-Book Questions; `references/file-schemas.md` § `series.md`). Real content lands when the user actually develops the arc — at init, it’s a stub like primer is for standalone projects. Where the store already holds the Bible’s skeleton (the StoryStormer app makes one with every series), init writes nothing to it, so the stub never reads as authored text. An open question the intake turns up for the series is a question entry with `scope: series`, never a line in the Bible.
 - `manifest.md`, `decisions/`, `questions/`, `journal/`, `characters/`, `worldbuilding/`, `research/` all live at root (shared across books).
 - A `books/<slug>/` folder is created **for each book named in intake**. Inside each, a `state.md` is created with the book's `title`, `parent_series: <title>` in its frontmatter, its own `target_word_count` only when the book differs from the series default, and `stage: concept` (or whatever stage the user reports for that specific book). Per-book primer.md, treatment.md, outline/ are NOT created at init — they appear lazily via the relevant skills, same as standalone projects.
 
 For intake of an existing standalone project that the user wants to convert to series:
 - Confirm with the user before restructuring — this is a non-trivial move.
+- Where the binding computes `project_type` (the StoryStormer app), the conversion is the author’s step in the app (its Convert to Series), which also files the book’s documents and chapters under Book 1 itself; init asks for it, waits until the root `state.md` reads `project_type: series`, then does only the steps below that the store hasn’t (scopes on the entries, the book stubs, the Bible).
 - Snapshot the current standalone folder per `store.md` before any file moves.
 - `store.move` existing `primer.md`, `treatment.md`, and each document under `outline/` and `chapters/` (enumerate with `store.list(outline/**)` and `store.list(chapters/**)`; chapter content is per-book, `references/series.md`) into `books/book-1/`, keeping their relative paths. A document the binding computes is skipped by `move` and follows its rows.
 - Keep `manifest.md`, `decisions/`, `questions/`, `journal/`, `characters/`, `worldbuilding/` at root (they were already shared in spirit).
 - Update each existing decision and question entry to add `scope: book-1` (since pre-series, they were all about the one book), turning a decision's `integrated` into its one-item list (`- book-1 treatment <state>`), then give both indexes their Scope column. This touches every entry, so it fans out to subagents doing frontmatter-only edits (the whole-collection rule, `references/file-schemas.md` § Entry collections), never through the main window; each brief carries the store block and layout (`references/subagent-pattern.md` § Mandatory brief fields).
 - The project's `target_word_count` becomes the series default in the root `state.md`, whose `title` becomes the series' title; book 1's own title goes in `books/book-1/state.md`. The `slug` never changes.
 - Create stubs for book 2 and book 3 (or however many the user is planning).
-- Scaffold `series.md` from the existing book-1 content plus any new series-arc decisions the user volunteers.
+- Scaffold `series.md` as the stub above, plus any series-arc decisions the user volunteers; book 1’s own story stays in its treatment (the Bible’s entry test, `references/series.md` § The Series Bible).
 
 For first-time series intake (the user starts fresh), the flow is the same as standalone init except the questions in Step 3 include the series-specific items, and Step 5 builds the series folder structure.
+
+### Adding a manuscript to an existing series
+
+An intake aimed at a series that already exists (*“add this manuscript as Book 3”*, *“this is the next book”*) brings it in as the series’ next book, by the rules in `references/series.md` § Bringing a book into a series; this section adds only what is init’s.
+
+- **The target.** The session’s project must be the series (resolve it first; a standalone project is asked about, never converted on the way). Ask the book’s title once; the slug follows the series’ convention (in the StoryStormer app, `book-<N>` by position). The book must be new: an existing book that already has chapters or documents of its own is refused, with the suggestion to pick a new book.
+- **The plan shows the canon match table** before anything is written: each person and place the intake proposes, as the same entry as a named series entry (exact name or other name), possibly the same (put to the author with both one-liners), or new. Every row is the author’s call; nothing is matched on a guess.
+- **What lands:** the book appended to the root `state.md`’s `books` and its `books/<slug>/state.md`; prose chapters stashed under `books/<slug>/chapters/` (§ Prose Chapter Stashing), numbered 1…N in the manuscript’s order even when the manuscript numbers on from the last book; confirmed matches tagged with the new book (a whole-series entry left as it is) and the manuscript’s differing details proposed as revisions, never written over; new canon at the root tagged with the new book only; decisions and questions as new entries scoped to the new book.
+- **What doesn’t:** the current focus (unless the author asks), the manifest and the Bible (offered next), and any treatment or primer the intake would invent.
+- **Next steps, offered and not run:** `manifest-sync` from the new book, `treatment-update` for the new book (its first run starts from the previous book’s handoff and primer), and closing the book out when the manuscript is finished.
 
 ## What this skill does not do
 
