@@ -159,7 +159,7 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 
 Two behavioral changes in series mode:
 
-1. **Read ALL books’ treatments** during the substantive read, not just the focused book’s. For a book with no treatment yet (book 3 undrafted), its paragraph under `series.md`’s Per-Book Synopses is a lighter source for that book’s named entities; read that paragraph alone, never the rest of the Bible (the feed rule, `references/series.md` § The Series Bible).
+1. **Read ALL books’ treatments** during the substantive read, not just the focused book’s. For a book with no treatment yet (book 3 undrafted), use that book’s own primer when it has one, and otherwise report the book as not yet inventoried. This skill never reads `series.md`, not even for a synopsis: a read returns the whole Bible (the feed rule, `references/series.md` § The Series Bible).
 2. **Write the `*Appears in: …*` line from the entry’s `books:`** on every manifest entry, characters and worldbuilding alike, directly under its Status line: *“Appears in: books 1, 3”*, *“Appears in: book 2”*, or *“Appears in: all books”* for an entry with no `books:`, numbering books by their place in the series’ `books` list (the app’s Manifest Sync writes the same line from the same lists). An inventory entry with no canon file keeps the books its current line names. The line is the tag’s echo: the sync never decides an entry’s books by rewriting the line.
 
 Example series-mode manifest entry:

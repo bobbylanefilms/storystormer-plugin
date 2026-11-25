@@ -730,7 +730,7 @@ Tags are optional; no tags is better than a tag that groups nothing. The app nor
 In a series, a bio or worldbuilding entry carries the books it appears in as `books:`, a list of book slugs from the root `state.md`’s `books`, in the series’ order: `books: [book-1, book-3]`. Standalone projects never carry it, and no other document does.
 
 - **Absent means the whole series.** An entry with no `books:` appears in every book, or in books nobody has settled yet. Reading it as “no books” is wrong.
-- **Writing it.** Leaving the key out keeps whatever list the entry has. A list sets it. `books: []` returns the entry to the whole series (the StoryStormer app then stores no list and reads the key back absent). A slug that isn’t one of the series’ books is an error, never silently dropped.
+- **Writing it.** Every write of the entry carries its current `books:` from the read it was prepared from, even a prose-only revision: on a file store (local, Dropbox, Notion) the write replaces the whole frontmatter, so a dropped key turns the entry into the whole series. (The StoryStormer app keeps the stored list when the key is left out, since the list is a column there; that is the app’s safety net, never the plan.) A list sets it. `books: []` returns the entry to the whole series (the app then stores no list and reads the key back absent). A slug that isn’t one of the series’ books is an error, never silently dropped.
 - **Undecided is prose.** *“Book 3: TBD”* stays in the entry’s text; the key has no undecided value.
 - **Evidence and the never-narrow rule** are `references/series.md` § Book tags on canon: search the manuscript before setting it, add books on evidence, and leave narrowing to the author.
 

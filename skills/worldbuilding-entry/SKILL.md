@@ -142,7 +142,7 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 Two behavioral changes in series mode:
 
 - **Read all relevant books' treatments** when generating or expanding an entry. The element's behavior may evolve across books (a corporation grows, a faction splits, a city is rebuilt after damage in book 1), and the entry should capture that evolution rather than the single-book snapshot.
-- **Set `books:` on evidence.** Before writing or changing the entry’s `books:` (`references/file-schemas.md` § Book tags on canon entries), search the manuscript for the element’s name and every other name the entry gives it (`store.search`, else the books’ treatments and chapter outlines and notes), report the chapters found by book, and propose the list with the plan. An entry with no `books:` is the whole series and is never narrowed by inference (`references/series.md` § Book tags on canon). An undecided appearance (*“Book 3: TBD”*) stays prose in the entry.
+- **Set `books:` on evidence.** Before writing or changing the entry’s `books:` (`references/file-schemas.md` § Book tags on canon entries), search the manuscript for the element’s name and every other name the entry gives it (`store.search`, each hit confirmed by reading it, else the books’ treatments and the chapters’ outlines, notes and prose), report the chapters found by book, and propose the list with the plan. An entry with no `books:` is the whole series and is never narrowed by inference (`references/series.md` § Book tags on canon). An undecided appearance (*“Book 3: TBD”*) stays prose in the entry.
 
 For elements that change meaningfully across books, the entry's body can use light per-book annotations:
 
