@@ -476,7 +476,7 @@ storystormer_kind: decision
 - **`type`:** one of the app's seven: `plot`, `character`, `worldbuilding`, `structure`, `theme`, `premise`, `process`. New entries write only these. `premise` is the story's foundational premise (it routes with `theme`), and `process` is the author's working method, which governs how the book is made and is never story material. An entry carried over from an older log keeps the word it was written with; readers take a retired word as its mapped type (the table after this list), and any other word as the closest of the seven.
 - **`topic`:** a short name for the decision, the label the index lists it under.
 - **`source`:** what produced it. The plugin writes its workflow (`brainstorm`, `intake`, `treatment-update`, `user-declared`, `canon-sync`); the app writes its own values (`agent_tool`, `manual`, `decision_capture`, `sweep`, `canon_sync`), and a decision the plugin added to a connected project reads back as `plugin` because the app records the channel, not the workflow. Read every value in this list as valid, and keep any value an entry already has, qualifier included (`user-declared (init session)`). `canon-sync` (plugin) and `canon_sync` (app) are the same provenance.
-- **`integrated`:** whether the current treatment reflects it. It starts with `yes`, `no`, `partially` or `n/a`, and may go on with a date or a short qualifier as written (`yes (2026-05-24)`, `n/a — governs future work`). Quote it per § Frontmatter values: a bare `yes` or `no` would read as a boolean, so it is written `"yes"` or `"no"`. A carried-over decision whose log never recorded integration omits it; readers treat a missing `integrated` as not integrated, and `treatment-update` sets it when it integrates the decision (or finds the treatment already reflects it). `yes` and `n/a` are settled; `no`, `partially` and a missing value are **pending**, the set `treatment-update` reads. Integration into anything else (`Integrated into structure: yes`) is a body field. In a series it is a list, one item per book the decision touches, in the form `<slug> treatment <state>` (below). It tracks treatments only: whether the Series Bible reflects a series decision is not an entry field (the StoryStormer app tracks it apart, `references/series.md` § Who updates the Bible).
+- **`integrated`:** whether the current treatment reflects it. It starts with `yes`, `no`, `partially` or `n/a`, and may go on with a date or a short qualifier as written (`yes (2026-05-24)`, `n/a — governs future work`). Quote it per § Frontmatter values: a bare `yes` or `no` would read as a boolean, so it is written `"yes"` or `"no"`. A carried-over decision whose log never recorded integration omits it; readers treat a missing `integrated` as not integrated, and `treatment-update` sets it when it integrates the decision (or finds the treatment already reflects it). `yes` and `n/a` are settled; `no`, `partially` and a missing value are **pending**, the set `treatment-update` reads. Integration into anything else (`Integrated into structure: yes`) is a body field. In a series it is a list, one item per book the decision touches, in the form `<slug> treatment <state>` (below). A series-wide premise, theme, structure or plot decision may also carry `series bible <state>` (same words: `yes` and `n/a` settled, anything else pending) for whether the Series Bible reflects it; `series bible no` withdraws the mark. Only those decisions take it (the StoryStormer app refuses it on any other), and a skill keeps every item it didn’t change, the Bible’s included, when it edits the list (`references/series.md` § Who updates the Bible).
 - **`superseded_by`:** the `D-###` of the later decision that replaces this one; omitted until one does. Prose about the supersession (`narrowed by D-052 for Act 3 only`) goes in the body.
 - **`retracted`:** the date the author withdrew the decision with nothing replacing it; omitted otherwise. A retracted entry keeps its file and number (the app’s tombstone).
 
@@ -506,6 +506,7 @@ source: brainstorm
 integrated:
   - book-1 treatment yes (2026-05-24)
   - book-3 treatment no (book 3 not yet drafted)
+  - series bible yes (2026-05-24)
 storystormer_project: inauguration-day
 storystormer_kind: decision
 ---
@@ -528,7 +529,7 @@ One table row per decision, every entry included (superseded and retracted ones 
 | [D-018](./D-018.md) | 2026-05-11 | character | Marlowe's relationship to her father | no |  |
 ```
 
-- **Integrated** shows the leading word of `integrated` (`yes`, `no`, `partially`, `n/a`); in a series, each book’s state as `book-1 yes; book-3 no`.
+- **Integrated** shows the leading word of `integrated` (`yes`, `no`, `partially`, `n/a`); in a series, each book’s state as `book-1 yes; book-3 no`, and the Bible’s, when the decision carries it, as `bible yes`.
 - **Superseded by** links the later decision, `retracted` for a retracted one, or is empty.
 - **Series mode** adds a **Scope** column after **Type**.
 - A topic holding a `|` writes it `\|` (the profile’s table cell rule).
@@ -1304,7 +1305,7 @@ Ongoing concerns the author is tracking across books — items that need vigilan
 
 **Two sections are computed, not authored:**
 
-- **Per-Book Synopses** is the books’ own synopses, one `### Book N: Title` heading each, in the series’ order, with `_No synopsis yet._` for a book without one. In the StoryStormer app each synopsis is stored on its book: writing the section sets them, a heading that names no book of the series (or the wrong title) refuses the whole write, and `_No synopsis yet._` leaves a book’s synopsis as it is. Elsewhere the section is written like any other.
+- **Per-Book Synopses** is the books’ own synopses, one `### Book N: Title` heading each, in the series’ order, with `_No synopsis yet._` for a book without one. In the StoryStormer app each synopsis is stored on its book: writing the section sets them, a heading that names no book of the series (or the wrong title) refuses the whole write, the read’s placeholder `_No synopsis yet._` (in any emphasis form) leaves a book’s synopsis as it is, and an emptied paragraph clears it. Elsewhere the section is written like any other.
 - **Open Cross-Book Questions** lists the open `scope: series` question entries, one line each, `- Q-### (<priority>, <category>) — <question>`, in number order, or `_No open series-wide questions._` when there are none. It is never authored: a new cross-book question is filed as a question entry with `scope: series` (§ `questions/`), and a resolved one leaves the list by its entry. The StoryStormer app renders the section from the entries on every read and refuses a write whose section differs; on every other store, a skill that writes `series.md` rebuilds the section from `questions/_index.md` in the same write.
 
 ### Length and discipline

@@ -294,7 +294,7 @@ It does **not** refresh after every brainstorm session. It is a lower-frequency 
 - **`treatment-update`** — when a book’s treatment refresh affects the series arc, surfaces it and recommends a Bible patch; it never edits the Bible itself.
 - **Direct conversation** — *“refresh series.md to reflect what we’ve decided”* runs as a brainstorm-session patch.
 
-**Integration.** The StoryStormer app tracks which series decisions of a Bible type (premise, theme, structure, plot) the Bible reflects, apart from the treatment ledger. A decision entry’s `integrated` covers treatments only and has no way to mark the Bible, so after a patch the report names the decisions it reflected and says the app will list them as waiting for the Bible until the author marks them reflected there.
+**Integration.** Whether the Bible reflects a series-wide premise, theme, structure or plot decision is the decision’s own `integrated` item `series bible <state>`, beside its `<slug> treatment <state>` items (`references/file-schemas.md` § `decisions/`). A Bible patch marks each decision it brought in with `series bible yes` once the patch has landed, and the report names them. In the StoryStormer app the author can mark them on the Bible’s card as well.
 
 ## The book handoff (`handoff.md`)
 

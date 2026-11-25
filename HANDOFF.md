@@ -17,6 +17,6 @@
 - `store.search` is a new optional contract operation, so skills never name the connector’s `search`.
 
 ## Open for Rob
-- **Server gap:** a decision entry’s `integrated` maps only to the treatment ledger (`lib/mcp/entries.ts`, `SERIES_ITEM` requires `treatment`), so a plugin session that patches `series.md` cannot mark its decisions as reflected in the Bible; the binding and skills say so and point to the Bible card’s “Mark as already reflected”.
+- **Closed server gap:** the Bible target in `integrated` landed in the app (c9d71a8f); the plugin now marks a patched decision with `series bible yes`.
 - Merge after the app’s stage deploys, then Sync the marketplace.
 - Nothing here was run live against the AS server.
