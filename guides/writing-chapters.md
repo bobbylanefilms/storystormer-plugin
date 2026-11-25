@@ -190,6 +190,8 @@ Notes proposes; `canon-sync` integrates. Once an act is noted, or before you blu
 
 Contradictions are first traced to **where the page got the fact**. If the prose took it from your own treatment, structure, outline or decisions, it's your canon against your canon (a bio against the treatment, say): you see both sources quoted and make the call, with no default. Otherwise they're ruled **by who wrote the page**: if you wrote or revised the prose, the manuscript wins by default and canon changes; if it's unrevised AI prose, canon wins by default and the passage goes on a fix list. You can overrule either way, and every ruling is logged as a decision so it is never re-litigated. The run snapshots your entire canon first, and it leaves you a record with two lists: passages to fix in the prose, and Blueprints to rebuild because the canon under them changed. Running it on a first draft is allowed but discouraged (the notes describe a chapter about to change); the file is stamped so a re-run is known to be owed.
 
+In a series, canon-sync also keeps each entry’s book tags honest: a character tagged for other books who turns up in this book’s notes gains this book (listed with the plan), while an entry tagged for the whole series stays that way and no book is ever removed without you.
+
 ---
 
 ## Quick reference
