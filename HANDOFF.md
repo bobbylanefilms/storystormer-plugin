@@ -1,25 +1,22 @@
-# HANDOFF — /execute AP4 (plugin side)
+# HANDOFF — Stage AS plugin half (series workspace)
 
-<!-- ABOUTME: Run ledger for the AP4 plugin re-target, driven from the web-app repo's /execute AP4 AP6 run. -->
+<!-- ABOUTME: Run ledger for the plugin half of the web app's Stage AS (Series Workspace, AS0–AS8), slice 17 of that run. -->
 <!-- ABOUTME: Rewritten whole at every checkpoint; git log plus this file are the record after a compaction. -->
 
-1. **Run:** `/execute AP4 and AP6` from `~/Git/storystormer` (orchestrator Fable 5.1, effort medium), 2026-10-26. The web-app repo's `HANDOFF.md` is the run's main ledger; the plan is `~/Git/storystormer/.plans/AP4-plugin-retarget.md` (as-built notes under § 5).
-2. **Branch:** `feature/ap4-storystormer-binding` off `main` @ 19bb3e5, merged to `main` as `8e86465` on 2026-10-27 via PR #1 after a three-round `/pr-review-loop` (5 P2 + 1 P1 fixed: exhaustive verify before the flip, collision-free and bounded request ids, state.md read back, partly computed documents compared on their writable part). Version 0.23.0-poc. Not yet synced to the claude.ai marketplace.
+1. **Run:** the web app's Stage AS batch (`~/Git/storystormer`, branch `batch/2026-11-23-series-workspace-as0-as3`), slice 17 of 17: the plugin changes each AS plan names under “Plugin repo:”. Plans: `~/Git/storystormer/.plans/AS0-*.md` … `AS8-*.md`.
+2. **Branch:** `series-workspace` off `main` @ 08dd86b, pushed. Version 0.27.0-poc in both manifests. **Not merged to `main` and not synced:** the plugin’s `main` is what Cowork installs and it points at production, so it lands only after the app’s series-workspace branch is merged and deployed (Rob’s step), then the claude.ai marketplace Sync.
 
-## Slices (both accepted)
+## What changed
+- **References:** `series.md` (current book shared with the app; canon never under `books/`; book tags and the never-narrow rule; the Manifest’s Appears-in lines from the tags; the Series Bible with its entry test, computed sections and feed rule; the book handoff; bringing a book into a series), `file-schemas.md` (§ Book tags on canon entries, canon `books:`, the Bible schema with Structural Conventions and the two computed sections, § `handoff.md`, scope and `integrated` notes), `store.md` (optional `store.search`; a chapter folder moves whole), the bindings (StoryStormer: `move` and `search` realizations, the Bible and handoff as partly computed documents, quirks for the current book, `wrong_scope`, `books:` write semantics, the entry scope default, `integrated` covering treatments only, Convert to Series in the app; local, Dropbox, Notion: chapter-folder moves).
+- **Skills and commands:** `character-bio`, `worldbuilding-entry` (search before `books:`, no Quick Reference Appears in), `canon-sync`, `manifest-sync`, `decisions`, `brainstorm-session` (Bible patch rules), `pre-outline-session`, `outline-chapters`, `blueprint` (feed rule, chapter moves, previous handoff), `treatment-update` (Bible first, previous handoff and primer, close-out mode writing `handoff.md`), `init` (convert in the app; add a manuscript to a series), `migrate` (canon `type:`/`books:`; `migrate book`), `/storystormer:status` (series view), `/storystormer:switch`, `/storystormer:checkpoint`.
+- **Guides and README** synced; README release notes for 0.27.0.
 
-| # | Slice | Tier | Commits | Review |
-|---|---|---|---|---|
-| P1 | `references/store/storystormer.md` binding, contract text (`store.md`, `file-schemas.md`), `checkpoint` on versions | Opus 5.5 | 67a3f61, 10e6732 | Sol: 21 findings, 15 confirmed, fixed |
-| P2 | `init` (where a new project lives; picking up a project from the app), locator, `migrate` into/out of the app, `.mcp.json`, README, installing guide, CLAUDE.md, version | Opus 5.5 | d3f9b2c, 6db4303, c128b71 (migration request ids by truncation, not a hash) | Sol: 12 findings, all fixed |
-
-## Current position
-Merged to `main` (8e86465). `claude plugin validate .` passes (pre-existing warnings only); the skills/commands grep for connector tool names is clean; an MCP smoke against the dev server matched every rule the binding states (project `AP4 Smoke 2026-10-26`, id `ks7fwq9xkk8r7tmhbxtdhs9jsn8h3r0r`, for Rob to purge).
+## Decisions taken
+- The book handoff is a mode of `treatment-update` (“close out Book 1”), not a new skill: the shared listing budget is already overflowing (two of this plugin’s skills show no description in a session’s listing).
+- The feed rule is applied as the app states it: the canon and chapter-level skills stop reading `series.md`; a book’s Per-Book Synopses paragraph alone may stand in for a book with no treatment.
+- `store.search` is a new optional contract operation, so skills never name the connector’s `search`.
 
 ## Open for Rob
-- Acceptance runs 1–10 (plan § 4): the live rings, `migrate upgrade` into the server, The Lighthouse Ledger move, both loops, the races, the four surfaces, the handoff, the back-and-forth story. Record timings and transcripts here or in the plan file.
-- Sync the claude.ai marketplace.
-- Server gaps the binding works around: `~/Git/storystormer/.plans/ISSUE072-mcp-server-gaps-from-the-ap4-binding.md` (items 3, 5, 6 are design calls). Remove each binding rule as its gap closes.
-
-## Last checks
-c128b71: `claude plugin validate .` passes; grep clean; the markdown-profile probe (`tests/markdown-profile/`) untouched by this run.
+- **Closed server gap:** the Bible target in `integrated` landed in the app (c9d71a8f); the plugin now marks a patched decision with `series bible yes`.
+- Merge after the app’s stage deploys, then Sync the marketplace.
+- Nothing here was run live against the AS server.

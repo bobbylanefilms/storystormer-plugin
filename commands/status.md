@@ -21,6 +21,13 @@ What to report:
 6. **Unintegrated decisions count** — from the index's Integrated column, and if ≥ 5, mention that a `/storystormer:treatment-update` would be reasonable.
 7. **Recent sessions** — only when the user asks for history (*"what have we done lately?"*, *"status with history"*): `store.list(journal/*.md)`, read the newest two or three entries, and give a line or two on each. The journal is never read by default.
 
+**In a series** (the root `state.md` shows `project_type: series`), the report is the series view, read with `references/series.md`:
+
+- **Books**, one line each in the root `books` order: title and slug, stage (its `books/<slug>/state.md`), chapters outlined and written against its spine (its `outline/_index.md`, with the spine’s count from `outline/structure.md`), and whether it has a `handoff.md`. Mark the current focus (`current_focus`).
+- **Open questions:** the series-wide ones (`scope: series` rows of `questions/_index.md`) first, top three by priority, then the focused book’s top three.
+- **Unintegrated decisions** per book, from the Integrated column’s per-book items, with the `treatment-update` nudge per book.
+- Shared canon (bios, worldbuilding, the manifest, the Series Bible) is counted once, and the drift check covers the root and every book’s folder.
+
 This command does not modify any files. It's a read-only status report.
 
 Format the output as a short, scannable summary — not a wall of text. The user wants to glance at it and know where things stand.

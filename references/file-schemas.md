@@ -1,5 +1,5 @@
 <!-- ABOUTME: Canonical schemas for every file the plugin reads or writes -->
-<!-- ABOUTME: state.md, primer.md, treatment.md, manifest.md, the decisions/questions/journal entry collections, character bios, config -->
+<!-- ABOUTME: state.md, primer.md, treatment.md, manifest.md, the entry collections, canon (book tags included), chapters, series.md, handoff.md, config -->
 
 # File Schemas
 
@@ -47,7 +47,7 @@ people_types: [Protagonist, Antagonist, Major, Supporting, Minor]  # optional; t
 world_types: [Locations, Organizations]     # optional; the project's worldbuilding types (absent = the app's fourteen)
 # Series-mode only — present when project_type: series
 books: [book-1, book-2, book-3]            # ordered list of book slugs
-current_focus: book-1                       # which book the user is currently working on
+current_focus: book-1                       # which book the user is currently working on (in the StoryStormer app, the series' current book)
 ---
 ```
 
@@ -419,7 +419,7 @@ The status replaces the old file pointers and "(no bio yet)" notes: "Canon Asset
 
 **Footer.** The last line counts the inventory: `*Manifest entries: {total} ({X} characters, {Y} worldbuilding)*`.
 
-**Series projects** add one line under every entry's Status line, characters and worldbuilding alike: `*Appears in: books 1, 2*`, naming books by their number in the series' `books` list. Standalone novels never carry it. See `references/series.md`.
+**Series projects** add one line under every entry’s Status line, characters and worldbuilding alike, written from the entry’s book list (§ Book tags on canon entries) and naming books by their number in the series’ `books` list: `*Appears in: books 1, 2*`, `*Appears in: book 3*`, or `*Appears in: all books*` for an entry with no `books:`. A series keeps one manifest. Standalone novels never carry the line. See `references/series.md` § Manifest in series mode.
 
 ## Entry collections — `decisions/`, `questions/`, `journal/`
 
@@ -476,7 +476,7 @@ storystormer_kind: decision
 - **`type`:** one of the app's seven: `plot`, `character`, `worldbuilding`, `structure`, `theme`, `premise`, `process`. New entries write only these. `premise` is the story's foundational premise (it routes with `theme`), and `process` is the author's working method, which governs how the book is made and is never story material. An entry carried over from an older log keeps the word it was written with; readers take a retired word as its mapped type (the table after this list), and any other word as the closest of the seven.
 - **`topic`:** a short name for the decision, the label the index lists it under.
 - **`source`:** what produced it. The plugin writes its workflow (`brainstorm`, `intake`, `treatment-update`, `user-declared`, `canon-sync`); the app writes its own values (`agent_tool`, `manual`, `decision_capture`, `sweep`, `canon_sync`), and a decision the plugin added to a connected project reads back as `plugin` because the app records the channel, not the workflow. Read every value in this list as valid, and keep any value an entry already has, qualifier included (`user-declared (init session)`). `canon-sync` (plugin) and `canon_sync` (app) are the same provenance.
-- **`integrated`:** whether the current treatment reflects it. It starts with `yes`, `no`, `partially` or `n/a`, and may go on with a date or a short qualifier as written (`yes (2026-05-24)`, `n/a — governs future work`). Quote it per § Frontmatter values: a bare `yes` or `no` would read as a boolean, so it is written `"yes"` or `"no"`. A carried-over decision whose log never recorded integration omits it; readers treat a missing `integrated` as not integrated, and `treatment-update` sets it when it integrates the decision (or finds the treatment already reflects it). `yes` and `n/a` are settled; `no`, `partially` and a missing value are **pending**, the set `treatment-update` reads. Integration into anything else (`Integrated into structure: yes`) is a body field. In a series it is a list, one item per book the decision touches, in the form `<slug> treatment <state>` (below).
+- **`integrated`:** whether the current treatment reflects it. It starts with `yes`, `no`, `partially` or `n/a`, and may go on with a date or a short qualifier as written (`yes (2026-05-24)`, `n/a — governs future work`). Quote it per § Frontmatter values: a bare `yes` or `no` would read as a boolean, so it is written `"yes"` or `"no"`. A carried-over decision whose log never recorded integration omits it; readers treat a missing `integrated` as not integrated, and `treatment-update` sets it when it integrates the decision (or finds the treatment already reflects it). `yes` and `n/a` are settled; `no`, `partially` and a missing value are **pending**, the set `treatment-update` reads. Integration into anything else (`Integrated into structure: yes`) is a body field. In a series it is a list, one item per book the decision touches, in the form `<slug> treatment <state>` (below). A series-wide premise, theme, structure or plot decision may also carry `series bible <state>` (same words: `yes` and `n/a` settled, anything else pending) for whether the Series Bible reflects it; `series bible no` withdraws the mark. Only those decisions take it (the StoryStormer app refuses it on any other), and a skill keeps every item it didn’t change, the Bible’s included, when it edits the list (`references/series.md` § Who updates the Bible).
 - **`superseded_by`:** the `D-###` of the later decision that replaces this one; omitted until one does. Prose about the supersession (`narrowed by D-052 for Act 3 only`) goes in the body.
 - **`retracted`:** the date the author withdrew the decision with nothing replacing it; omitted otherwise. A retracted entry keeps its file and number (the app’s tombstone).
 
@@ -506,6 +506,7 @@ source: brainstorm
 integrated:
   - book-1 treatment yes (2026-05-24)
   - book-3 treatment no (book 3 not yet drafted)
+  - series bible yes (2026-05-24)
 storystormer_project: inauguration-day
 storystormer_kind: decision
 ---
@@ -513,7 +514,7 @@ storystormer_kind: decision
 **Summary**: The inauguration scene in book 1 chapter 38 plants visual elements that pay off as the assassination attempt in book 3 chapter 22.
 ```
 
-`scope` is `series` (affects multiple books or the arc as a whole) or `book-<slug>` (one book; `integrated` then has the one item for that book). `affects_books` names the books, each optionally with where. In standalone-novel projects both are omitted and every decision is project-scoped. In the app, `book-<slug>` is the record's novel and `series` is a record with no novel. See `references/series.md` § Scoping decisions and questions.
+`scope` is `series` (affects multiple books or the arc as a whole) or `book-<slug>` (one book; `integrated` then has the one item for that book). Every new entry in a series writes it: the StoryStormer app reads an entry with no `scope` as series-wide. `affects_books` names the books, each optionally with where. In standalone-novel projects both are omitted and every decision is project-scoped. In the app, `book-<slug>` is the record’s novel and `series` is a record with no novel. See `references/series.md` § Scoping decisions and questions.
 
 ### `decisions/_index.md` — the decision index
 
@@ -528,7 +529,7 @@ One table row per decision, every entry included (superseded and retracted ones 
 | [D-018](./D-018.md) | 2026-05-11 | character | Marlowe's relationship to her father | no |  |
 ```
 
-- **Integrated** shows the leading word of `integrated` (`yes`, `no`, `partially`, `n/a`); in a series, each book’s state as `book-1 yes; book-3 no`.
+- **Integrated** shows the leading word of `integrated` (`yes`, `no`, `partially`, `n/a`); in a series, each book’s state as `book-1 yes; book-3 no`, and the Bible’s, when the decision carries it, as `bible yes`.
 - **Superseded by** links the later decision, `retracted` for a retracted one, or is empty.
 - **Series mode** adds a **Scope** column after **Type**.
 - A topic holding a `|` writes it `\|` (the profile’s table cell rule).
@@ -655,6 +656,7 @@ The file's slug is the kebab-case of the character's full `name` (`marlowe-reyes
 name: Marlowe Reyes
 type: Protagonist
 tags: [POV character, the bureau]
+books: [book-1, book-3]                     # series only; absent = the whole series
 version: 2
 last_updated: 2026-05-11
 manifest_version: 2
@@ -665,6 +667,7 @@ treatment_version: 7
 - **`name`** is the character's display name. The app calls this field `title`; the value is the same.
 - **`type`** is one of the project's **People types**. The app's default list is `Protagonist`, `Antagonist`, `Major`, `Supporting`, `Minor`; a project may rename or extend it (the app's settings can swap in other lists), so use the project's list when it has one. It replaces the retired `tier:` key; read an old `tier: major | supporting | minor` as `type: Major | Supporting | Minor`.
 - **`tags`** is optional; see § Tags on canon entries.
+- **`books`** (series only) is the books the character appears in; see § Book tags on canon entries.
 - Values are quoted per § Frontmatter values.
 
 **The body contract lives in one place:** `references/canon-schemas.md` § Character Bio Schemas, sections 0–7 (Quick Reference, Essential Identity, Physical Presence, Voice & Mannerisms, Psychology & Personality, Background & Family, Social Context & Lifestyle, Story Role & Relationships), with the per-section budgets, the Supporting and Minor variants, writing rules, and a worked example. For the framework vocabulary (McKee, Truby, Egri, Weiland, Voice Fingerprint, Thematic Posture) see `references/frameworks.md`.
@@ -699,12 +702,13 @@ Each entry has a **worldbuilding type** from the project's list. The app's fourt
 name: The Heights
 category: Locations
 tags: [Voss holdings]
+books: [book-1]                             # series only; absent = the whole series
 version: 1
 last_updated: 2026-05-10
 ---
 ```
 
-`name` is the app's `title`, as for bios. `tags` is optional; see § Tags on canon entries. Values are quoted per § Frontmatter values.
+`name` is the app’s `title`, as for bios. `tags` is optional; see § Tags on canon entries. `books` (series only) is the books the element appears in; see § Book tags on canon entries. Values are quoted per § Frontmatter values.
 
 Body follows one of two formats — **Reference Note** (~200–300w) for real-world elements with story-specific modifications, or **Full Entry** (~300–1,000w depending on type) for invented elements. For section structures, length targets per type, type-specific guidance, and a worked example, see `references/canon-schemas.md` § Worldbuilding Entry Schemas. For the tier framework (Full Canon entry / Reference note / No entry needed) and character-vs-worldbuilding disambiguation, see `references/frameworks.md` § Worldbuilding.
 
@@ -721,6 +725,17 @@ Bios and worldbuilding entries may carry an optional `tags:` list in their front
 - **Never** the entry's own type (`Protagonist`, `Locations`), a name, a relationship (`Marlowe's sister`), or provenance (`ai generated`, `from intake`).
 
 Tags are optional; no tags is better than a tag that groups nothing. The app normalizes every tag on write in any case.
+
+## Book tags on canon entries
+
+In a series, a bio or worldbuilding entry carries the books it appears in as `books:`, a list of book slugs from the root `state.md`’s `books`, in the series’ order: `books: [book-1, book-3]`. Standalone projects never carry it, and no other document does.
+
+- **Absent means the whole series.** An entry with no `books:` appears in every book, or in books nobody has settled yet. Reading it as “no books” is wrong.
+- **Writing it.** Every write of the entry carries its current `books:` from the read it was prepared from, even a prose-only revision: on a file store (local, Dropbox, Notion) the write replaces the whole frontmatter, so a dropped key turns the entry into the whole series. (The StoryStormer app keeps the stored list when the key is left out, since the list is a column there; that is the app’s safety net, never the plan.) A list sets it. `books: []` returns the entry to the whole series (the app then stores no list and reads the key back absent). A slug that isn’t one of the series’ books is an error, never silently dropped.
+- **Undecided is prose.** *“Book 3: TBD”* stays in the entry’s text; the key has no undecided value.
+- **Evidence and the never-narrow rule** are `references/series.md` § Book tags on canon: search the manuscript before setting it, add books on evidence, and leave narrowing to the author.
+
+A bio’s Quick Reference **Appears in** line is retired in favor of the key; an existing one is the author’s text and is left as written.
 
 ## Voice assets (`voice/`)
 
@@ -1216,9 +1231,9 @@ For intake-stashed prose, init populates only `chapter`, `title` (from the file'
 
 **Init's responsibility ends at stashing.** Init does not generate or rewrite prose, generate summaries, cross-check against the treatment or outline, or verify continuity. All of that is downstream prose-writing work. The intake job is purely "find the chapters the user already has, put them in the canonical chapter folder with canonical naming, and report what was stashed."
 
-## `series.md` — series arc document (series mode only)
+## `series.md` — the Series Bible (series mode only)
 
-`series.md` lives at `<root>/series.md` and exists only in series-mode projects. It is the arc-level companion to per-book treatments — it captures what no single book's treatment can. See `references/series.md` for the full series doctrine.
+`series.md` lives at `<root>/series.md` and exists only in series-mode projects. It is the **Series Bible**: what the series is, stated once, as the arc-level companion to the per-book primers and treatments. It holds only what takes more than one book to say (`references/series.md` § The Series Bible, the entry test and the feed rule). In the StoryStormer app the whole document is stored as written, with no size cap beyond a document’s, except its two computed sections (below).
 
 ```yaml
 ---
@@ -1253,7 +1268,11 @@ last_updated: 2026-05-24
 
 ### Book 3: [Title]
 
-[~150–300w]
+_No synopsis yet._
+
+## Structural Conventions
+
+[The shape every book keeps: POV rules across the series, how each book opens and closes, recurring devices, the relation of each book's climax to the series arc. Only conventions that bind more than one book.]
 
 ## Cross-Book Setups and Payoffs
 
@@ -1266,11 +1285,11 @@ A table of chains that span books. The single most useful section for ongoing se
 | Senator Vance's letter | Book 1, ch 12 | Book 2, ch 7 | Both integrated. |
 | Reyes's loyalty test | Book 2, ch 18 | Book 3, ch 28 (climax) | Both pending — book 3 not yet drafted. |
 
-Each chain references decision IDs where applicable. When a payoff lands, mark it integrated; orphan payoffs (no setup tracked) and orphan setups (no payoff identified) are flagged and resolved at the next series-level update.
+Each chain references decision IDs where applicable. When a payoff lands, mark it integrated; orphan payoffs (no setup tracked) and orphan setups (no payoff identified) are flagged and resolved at the next Bible update. A chain reaches the page only through each book's treatment, which states the plant and the payoff in its narrative where they happen.
 
 ## Continuity Concerns
 
-Ongoing concerns the author is tracking across books — items that need vigilance but aren't yet decisions or open questions. Use this as the agent's running memory for cross-book consistency.
+Ongoing concerns the author is tracking across books — items that need vigilance but aren't yet decisions or open questions.
 
 - Maya's age progression: book 1 = 28, book 2 = 30, book 3 = 32. Verify aging-related details across treatments.
 - Technology timeline: books 1–3 span 2026–2028. Any speculative technology must respect the timeline.
@@ -1279,20 +1298,58 @@ Ongoing concerns the author is tracking across books — items that need vigilan
 
 ## Open Cross-Book Questions
 
-Series-scoped open questions from `questions/`, surfaced here for quick reference. Linked by Q-ID.
-
-- Q-031 (critical, plot) — Does Maya leave Washington at the end of book 1?
-- Q-032 (important, character) — Does Reyes ally with Maya in book 3, or remain adversarial?
-- Q-033 (important, theme) — Does the series end on hope (reform succeeds) or warning (reform fails)?
+- Q-031 (critical, Plot) — Does Maya leave Washington at the end of book 1?
+- Q-032 (important, Character) — Does Reyes ally with Maya in book 3, or remain adversarial?
+- Q-033 (important, Theme) — Does the series end on hope (reform succeeds) or warning (reform fails)?
 ```
+
+**Two sections are computed, not authored:**
+
+- **Per-Book Synopses** is the books’ own synopses, one `### Book N: Title` heading each, in the series’ order, with `_No synopsis yet._` for a book without one. In the StoryStormer app each synopsis is stored on its book: writing the section sets them, a heading that names no book of the series (or the wrong title) refuses the whole write, the read’s placeholder `_No synopsis yet._` (in any emphasis form) leaves a book’s synopsis as it is, and an emptied paragraph clears it. Elsewhere the section is written like any other.
+- **Open Cross-Book Questions** lists the open `scope: series` question entries, one line each, `- Q-### (<priority>, <category>) — <question>`, in number order, or `_No open series-wide questions._` when there are none. It is never authored: a new cross-book question is filed as a question entry with `scope: series` (§ `questions/`), and a resolved one leaves the list by its entry. The StoryStormer app renders the section from the entries on every read and refuses a write whose section differs; on every other store, a skill that writes `series.md` rebuilds the section from `questions/_index.md` in the same write.
 
 ### Length and discipline
 
-Target total length: **2,000–3,000w**. Series.md is a *lower-frequency, higher-leverage* document than per-book treatments. Don't pad it with content that belongs in per-book treatments or in character bios. The Cross-Book Setups and Payoffs section is the load-bearing element; everything else exists to give it context.
+Target total length: **2,000–3,000w** as a guide, never a trimming target; the store’s only limit is a document’s. The Bible is a *lower-frequency, higher-leverage* document than per-book treatments. Don’t pad it with content that belongs in a treatment or a bio (the entry test). The Cross-Book Setups and Payoffs section is the load-bearing element; everything else exists to give it context.
 
-### When series.md is regenerated vs. patched
+### When the Bible is regenerated vs. patched
 
-For light updates (a new cross-book chain identified, a continuity concern logged, an open question added), patch the relevant section in place. For structural shifts (the series arc changed, a book's role flipped from sequel to prequel, a major decision rippled across the arc), regenerate the whole document. Snapshot the old version per `references/store.md` before any structural regeneration.
+For light updates (a new cross-book chain identified, a continuity concern logged), patch the relevant section in place. For structural shifts (the series arc changed, a book’s role flipped from sequel to prequel, a major decision rippled across the arc), regenerate the authored sections, carrying every section the shift doesn’t touch forward word for word. Snapshot the old version per `references/store.md` before any structural regeneration.
+
+## `handoff.md` — a book’s handoff (series mode only)
+
+`books/<slug>/handoff.md`, one per book, written when the author closes the book out (`treatment-update`’s close-out mode; `references/series.md` § The book handoff). It is what the writer of the next book must know that they would otherwise get wrong. A rerun replaces it, the old version snapshotted per `references/store.md` first.
+
+```yaml
+---
+version: 1
+last_updated: 2026-11-24
+---
+```
+
+```markdown
+## Where the Story Stands
+
+[Where the book leaves the story: the plot's end state, the situation the next book opens on.]
+
+## Characters at the End
+
+[Major and supporting characters, a short paragraph each: where they are, what they know, what has changed in them, what they want now.]
+
+## The World at the End
+
+[The state of places, organizations and systems the book changed.]
+
+## Open Threads and Promises
+
+[Story promises the book made and didn't keep yet: setups without payoffs, relationships left open, mysteries the reader holds. Prose about the story, never a list of questions.]
+
+## What the Next Book Inherits
+
+[What the next book must start from or honor.]
+```
+
+Built from the book’s treatment and its chapter notes, with the notes winning where they and the outline disagree, since they record what the prose committed. **Open questions are never written into it.** They stay entries: the StoryStormer app lists the book’s own open questions under a computed `## Open Questions` section, last, on every read, strips it on write and refuses one that differs; on other stores the section is left out. A book with nothing written yet (no treatment, outlines or notes) has nothing to hand off.
 
 ## `.storystormer/config.json`
 
@@ -1314,7 +1371,7 @@ The config holds only what has to be known before the store is bound or before `
 
 These snapshots apply where the binding's `history` capability is `snapshots` (`references/store.md` § Local-mode clauses).
 
-This is the **book-level** snapshot mechanism. Before any rewrite of `primer.md`, `treatment.md`, `manifest.md`, `outline/structure.md`, `series.md`, a character bio, or a worldbuilding entry (`worldbuilding/<type>/<slug>.md`; `worldbuilding-entry` and `canon-sync` already snapshot these), snapshot the current versions into a timestamped folder:
+This is the **book-level** snapshot mechanism. Before any rewrite of `primer.md`, `treatment.md`, `manifest.md`, `outline/structure.md`, `series.md`, a book’s `handoff.md`, a character bio, or a worldbuilding entry (`worldbuilding/<type>/<slug>.md`; `worldbuilding-entry` and `canon-sync` already snapshot these), snapshot the current versions into a timestamped folder:
 
 ```
 .storystormer/history/

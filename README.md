@@ -93,13 +93,13 @@ For trilogies and longer series, the plugin supports a **series workspace** with
 ```
 my-series/
 ├── state.md                     # Series-level dashboard
-├── series.md                    # Arc-level document — cross-book setups/payoffs, series theme
+├── series.md                    # The Series Bible — arc, theme, conventions, cross-book setups/payoffs
 ├── manifest.md                  # Shared cast + worldbuilding inventory (all books)
 ├── decisions/                   # All decisions (D-###.md), each scoped: series | book-<slug>
 ├── questions/                   # Same — Q-###.md, scoped per entry
 ├── journal/                     # Session journal for the whole series
-├── characters/                  # Shared bios; one per character across the whole series
-│   └── maya.md, senator-vance.md, …
+├── characters/                  # Shared bios; one per character, tagged with the books it appears in
+│   └── maya-vance.md, senator-vance.md, …
 ├── worldbuilding/               # Shared worldbuilding
 ├── research/                    # Shared research
 ├── books/
@@ -107,8 +107,9 @@ my-series/
 │   │   ├── state.md             # Per-book dashboard (its own title, and its own target when it has one)
 │   │   ├── primer.md
 │   │   ├── treatment.md
+│   │   ├── handoff.md           # Where book 1 leaves the story, written when it is closed out
 │   │   ├── outline/
-│   │   └── chapters/            # Prose chapters for book 1 (reserved)
+│   │   └── chapters/            # Book 1's chapter folders (outline, Blueprint, prose, notes)
 │   ├── book-2/
 │   └── book-3/
 └── .storystormer/
@@ -118,9 +119,12 @@ my-series/
 The skills work the same way in series mode — they just resolve per-book file paths through `books/<current_focus>/` instead of the workspace root. Series mode adds:
 
 - **Shared character bios** with per-book sub-arcs (Maya grows across all three books; one bio captures the full arc).
-- **A `series.md` arc document** that tracks cross-book setups and payoffs (the locket planted in book 1 ch 2 pays off in book 3 ch 14).
-- **Scoping** on decisions and questions (`scope: series | book-<slug>`).
-- **`/storystormer:switch book-2`** to change current focus between books.
+- **Book tags on canon:** each bio and worldbuilding entry says which books it appears in (`books: [book-1, book-3]`; none means the whole series), set after a search of the manuscript.
+- **A Series Bible (`series.md`)** that states what only the whole series can say: arc, theme, conventions, the cross-book setups and payoffs (the locket planted in book 1 ch 2 pays off in book 3 ch 14), and continuity. It feeds brainstorming and each book’s primer and treatment, never chapter-level work.
+- **Scoping** on decisions and questions (`scope: series | book-<slug>`); a cross-book question is an entry, never a line in the Bible.
+- **Closing out a book:** `treatment-update` writes the book’s `handoff.md` and offers to carry its open questions and continuing characters into the next book.
+- **Bringing a book in:** `init` adds a manuscript as the series’ next book, and `migrate` copies a standalone project in as one, matching canon instead of duplicating it.
+- **`/storystormer:switch book-2`** to change current focus between books (in the StoryStormer app, the same current book the app’s switcher sets).
 
 To start a series, run `/storystormer:init` and answer "series" when asked about project type. The init skill scaffolds the multi-book folder structure and asks how many books and their working titles. To convert an existing standalone novel into a series, ask the agent — init has a convert-to-series mode that moves existing files into `books/book-1/` and scaffolds the series-level structure.
 
@@ -212,6 +216,18 @@ By design, the POC stops at brainstorm + canon + treatment + outline + blueprint
 
 These may follow in later versions once the kernel proves out.
 
+### What v0.27.0 changed over v0.26.1
+
+The plugin half of the web app’s Series Workspace (its Stage AS).
+
+- **One current book.** In the StoryStormer app, `current_focus` is the series’ current book, the same value the app’s book switcher sets; canon never lives under `books/`.
+- **Book tags on canon.** Bios and worldbuilding entries carry `books:` (absent means the whole series). `character-bio` and `worldbuilding-entry` search the manuscript for the entry’s names before setting it and report the chapters by book; the Quick Reference “Appears in” line is retired. `canon-sync` and `manifest-sync` add a book on evidence and never narrow a whole-series entry; the manifest’s `*Appears in*` lines follow the tags. A new optional `store.search` operation backs the search.
+- **Chapters move between books whole.** `store.move` of a chapter folder keeps its drafts and history (in the app through its `move` tool); `pre-outline-session` and `outline-chapters` use it when the spine moves a chapter.
+- **Status in a series:** `/storystormer:status` shows each book’s stage and counts, the current book marked, and the series-wide open questions first.
+- **The Series Bible.** `series.md` is stored whole in the app; Per-Book Synopses write through to the books, and Open Cross-Book Questions is computed from the entries. A new Structural Conventions section, the entry test, and the feed rule: the Bible feeds brainstorming, the primer, the treatment and the handoff, never the outline, Blueprint, prose, notes or canon skills. `treatment-update` reads it first in a series.
+- **Book handoffs.** `treatment-update`’s close-out mode writes `books/<slug>/handoff.md` and carries open questions and characters forward by the author’s ticks; the next book’s `pre-outline-session` and `treatment-update` start from it.
+- **Bringing a book in.** `init` can add a manuscript as a series’ next book and `migrate book` copies a standalone project in as one: canon matched by name and other names and tagged, never duplicated; entries written new with their old numbers rewritten.
+
 ### What v0.26.1 changed over v0.26.0
 
 - **The connector points at production.** The bundled `.mcp.json` and every mention of the connector’s address now use `https://storystormer.ai/api/mcp` (the web app went live there on 2026-11-01); the old `storystormer.vercel.app` address is retired. Reconnect once per surface after updating.
@@ -297,7 +313,7 @@ Fixes from SB5’s live test of every backend on a full project (The Good Dog):
 ### What v0.18.0 added over v0.17.2
 
 - **The store contract.** Skills, commands, references and guides now read and write through `references/store.md` (named operations: list, read, write, edit, history, open, move, delete) instead of naming host tools, and `references/store/local.md` is the first binding, realizing them on the open folder. Groundwork for the Dropbox and Notion bindings in v0.19.0; on a local folder, behavior matches v0.17.2 (checked against two baseline runs). `config.json` gains a `storage` block, mirrored as `storage_kind` in `state.md`.
-- **Deliberate behavior changes along the way.** `/storystormer:checkpoint` captures every document the plugin defines (chapters, `kitbash/`, outline, voice, notes, canon-sync records, config, genre reference), copies text only and never reuses a checkpoint folder; every command resolves the store first; `/storystormer:switch` treats `state.md` as owning a series’ book list, with the config mirroring it; worldbuilding entries join the book-level snapshot list.
+- **Deliberate behavior changes along the way.** `/storystormer:checkpoint` captures every document the plugin defines (chapters, `kitbash/`, outline, voice, notes, canon-sync records, config, genre reference), copies text only and never reuses a checkpoint folder; every command resolves the store first; `/storystormer:switch` treats `state.md` as owning a series’ book list; worldbuilding entries join the book-level snapshot list.
 
 ### What v0.17.2 added over v0.17.1
 

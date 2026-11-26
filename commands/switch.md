@@ -20,8 +20,8 @@ Resolve the store first per `references/store.md` if the session hasn't.
 
 2. **Verify the book folder exists.** Check that `books/<slug>/` exists (`store.list`). If it doesn't (e.g., user added the book to the list but never scaffolded the folder), offer to scaffold it via a recommended `/storystormer:init` re-run rather than silently creating an empty folder.
 
-3. **Update the focus.** It lives in one place, the root `state.md`'s frontmatter: set `current_focus: <slug>` with `store.edit` (or `store.write`). Where the binding computes `state.md`, go through the writable realization the binding names for `current_focus` (`references/store.md` § Local-mode clauses); if it names none, say so in the report rather than skip it silently. The config holds no focus.
-**Record the session**, in order: the journal entry (created with `new` if this is the session's first write, per `references/file-schemas.md` § `journal/`; otherwise extended) gets a line on the switch; then, on a first write, the root `state.md` takes that entry's number as `session_count` and today as `last_session`, in the same edit as the focus (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
+3. **Update the focus.** It lives in one place, the root `state.md`’s frontmatter: set `current_focus: <slug>` with `store.edit` (or `store.write`), **first**, before the session is recorded, with anchors from a fresh read of the root `state.md` (re-read it now if anything was written since step 1). Read it back: the switch has happened only when the read shows the new `current_focus`. A refused or failed edit stops the command there, with nothing journaled. Where the binding computes `state.md`, go through the writable realization the binding names for `current_focus` (`references/store.md` § Local-mode clauses); if it names none, say so in the report rather than skip it silently. The config holds no focus. Where the store is the StoryStormer app, this is the app’s current book too: the app’s book switcher moves the same value, so the author may already have switched there (step 1’s read shows it).
+**Then record the session**, only once the focus has moved: the journal entry (created with `new` if this is the session’s first write, per `references/file-schemas.md` § `journal/`; otherwise extended) gets a line on the switch; then, on a first write, the root `state.md` takes that entry’s number as `session_count` and today as `last_session` in a second edit, prepared from a read taken after the journal write (where the binding computes those keys, this edit is skipped) (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 
 4. **Read the newly-focused book's `state.md`.** `store.read` `books/<slug>/state.md` and pull out its `Summary`, `What Exists`, `What's Next`, and `Last Session` sections.
 
@@ -34,7 +34,7 @@ Resolve the store first per `references/store.md` if the session hasn't.
    > **What's next**: <one-line from per-book state.md>
    > **Last session**: <one-line>
    >
-   > [Optional: 1–2 series-level notes if there are pending cross-book decisions or open questions that affect this book — pull from the series-level state.md and `series.md`'s Open Cross-Book Questions section.]
+   > [Optional: 1–2 series-level notes if there are pending cross-book decisions or open questions that affect this book — pull from the series-level state.md and the `scope: series` open rows of `questions/_index.md`.]
 
 ## Behavior notes
 
@@ -47,6 +47,6 @@ Resolve the store first per `references/store.md` if the session hasn't.
 
 - **The user just ran init with multiple books and hasn't worked on any yet.** All books are at `concept` stage. The switch still works; report the empty state honestly.
 - **The user wants to switch but is mid-conversation in another skill.** Surface the request to the user: *"You're mid-`brainstorm-session` for book 1. Switch focus to book 2 now, or finish this thread first?"* Don't switch silently if a skill is actively running.
-- **The user adds a book name that isn't in the list yet.** Don't auto-create — refuse and explain that adding books to a series is an `/storystormer:init` operation (or future `add-book` skill, post-POC).
+- **The user adds a book name that isn’t in the list yet.** Don’t auto-create — refuse and explain that a new book is added by appending its slug to the root `state.md`’s `books` (`/storystormer:init` scaffolds it, and can bring an existing manuscript in as that book).
 
 This command generates no story content and changes no other document. It flips the focus pointer, records the session, and reports the new state.

@@ -200,11 +200,21 @@ A chapter outline with zero unresolved markers is prose-ready — which is exact
 | `/storystormer:decisions` | Browse the decisions (filter, show one, add) |
 | `/storystormer:questions` | The open-question queue by priority |
 | `/storystormer:checkpoint` | Manual snapshot of every document the plugin manages (canon, outline, chapters, voice, config) — take one before anything risky |
-| `/storystormer:migrate` | Move the story to another home (this folder, Dropbox, or Notion), or `upgrade` an older project in place; see below |
+| `/storystormer:migrate` | Move the story to another home (this folder, Dropbox, Notion or the StoryStormer app), bring it into a series as its next book (`book`), or `upgrade` an older project in place; see below |
 
 The plugin is git-agnostic: `/storystormer:checkpoint` is your save point. Skills also snapshot automatically before overwriting anything, so checkpoints are for milestones ("pre-act-3-rework"), not routine safety. (A project stored in Notion doesn’t need checkpoints: Notion keeps every page’s version history, so checkpoint says so and writes nothing. Dropbox projects checkpoint normally.)
 
-**Writing a trilogy?** Series mode gives you shared characters and worldbuilding at the root with per-book treatments and outlines inside `books/` — say "series" during init (or ask to convert an existing project). Everything in this guide works the same; decisions just gain a scope, and `/storystormer:switch book-2` changes focus. The [README](../README.md#series-mode-multi-book-projects) has the details.
+**Writing a trilogy?** Series mode gives you shared characters and worldbuilding at the root with per-book treatments and outlines inside `books/` — say “series” during init (or ask to convert an existing project). Everything in this guide works the same, with a few additions:
+
+- **Decisions and questions gain a scope:** the whole series, or one book. A question that spans books is still a question entry; it shows up in the Series Bible on its own.
+- **Characters and places carry the books they appear in** (`books:` in their frontmatter; none means the whole series). Before setting it, the skill searches your manuscript and tells you which chapters of which book mention the entry. Nothing narrows an entry to fewer books unless you say so.
+- **`series.md` is the Series Bible:** the arc, theme, conventions, cross-book setups and payoffs, and continuity, holding only what takes more than one book to say. Brainstorming and each book’s treatment read it; outlining, Blueprints and prose don’t (they get series facts from the treatment and canon). A brainstorm session offers to patch it when series material lands.
+- **When a book is done,** say “close out Book 1”: the treatment skill writes `books/book-1/handoff.md` (where the story stands, who is where, what the next book inherits) and asks which open questions and characters to carry into book 2. Book 2’s spine and treatment start from it.
+- **Moving a chapter to another book** moves the whole chapter folder, drafts and history with it.
+- **Bringing in an existing book:** “add this manuscript as Book 3” (init) or “make this project Book 2 of my series” (`/storystormer:migrate book`). Characters and places that already exist in the series are matched and tagged rather than duplicated, and you confirm each match.
+- `/storystormer:switch book-2` changes focus (in the StoryStormer app, the same current book the app’s switcher sets), and `/storystormer:status` shows every book’s progress.
+
+The [README](../README.md#series-mode-multi-book-projects) has the details.
 
 ---
 

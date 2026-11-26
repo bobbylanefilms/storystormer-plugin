@@ -166,7 +166,9 @@ A question this skill creates in a series carries `scope` and `affects_books` th
 
 When in doubt about scope, default to the user's current focus — most decisions in a brainstorm session are about the book being discussed. Series scope is the exception, not the default, and should be deliberate.
 
-For decisions that affect `series.md` itself (cross-book setup chains, continuity concerns, series arc shifts), flag in your report: *"D-024 affects the Cross-Book Setups and Payoffs section in series.md — recommend a series.md patch in the next brainstorm session."* This skill captures the decision but does not patch series.md.
+For decisions that affect the Series Bible (`series.md`: cross-book setup chains, continuity concerns, series arc shifts), flag in your report: *“D-024 affects the Cross-Book Setups and Payoffs section of the Bible — recommend a patch in the next brainstorm session.”* This skill captures the decision but does not patch `series.md`. A series-scope premise, theme, structure or plot decision also waits for the Bible: its `integrated` list may carry `series bible <state>` beside the treatment items, and the session that patches `series.md` for it sets `series bible yes` (`references/series.md` § Who updates the Bible). A new decision starts without the item. *“What’s unintegrated?”* in a series counts a Bible-type series decision as pending for the Bible until that item is settled.
+
+**Listing in a series:** by default, the focused book’s decisions plus the series-wide ones (the index’s Scope column); *“all books”* lists every scope, and naming a book lists that book’s plus series-wide.
 
 ## References
 

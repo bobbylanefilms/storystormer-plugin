@@ -136,7 +136,7 @@ After the author rules:
 
 ## Series Mode
 
-If `state.md` shows `project_type: series`, read `references/series.md` first. Notes are book-local; canon is shared at the series root. Revelation Log lines are book-qualified (`Ch B2-07`). A contradiction between this book’s page and a fact another book’s prose already established is surfaced with both chapters cited and is not ruled by default; the author decides which book bends.
+If `state.md` shows `project_type: series`, read `references/series.md` first. Notes are book-local; canon is shared at the series root. Revelation Log lines are book-qualified (`Ch B2-07`). A contradiction between this book’s page and a fact another book’s prose already established is surfaced with both chapters cited and is not ruled by default; the author decides which book bends. **Book tags follow the manuscript:** an entry the notes show acting in this book whose `books:` lists other books but not this one gains this book (an accretion, listed with the plan and in the run record; no decision needed). An entry with no `books:` is the whole series and stays so, and a book is never removed on this book’s evidence (`references/series.md` § Book tags on canon). A promotion routed to `character-bio` or `worldbuilding-entry` carries this book as its first tag.
 
 Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 

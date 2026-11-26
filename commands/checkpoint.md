@@ -9,7 +9,7 @@ Snapshot the current state of every plugin-managed file to a timestamped checkpo
 
 What to capture: **every document `references/file-schemas.md` defines for the project**, wherever it exists:
 
-- the book-level documents (`state.md`, `primer.md`, `treatment.md`, `manifest.md`, and `series.md` in a series);
+- the book-level documents (`state.md`, `primer.md`, `treatment.md`, `manifest.md`, and `series.md` and each book’s `handoff.md` in a series);
 - the entry collections (`decisions/`, `questions/`, `journal/`: every entry and both indexes);
 - canon (`characters/`, `worldbuilding/`, recursive);
 - the outline (`outline/`) and every file in each chapter folder (`chapters/chapter-NN/`, recursive: outlines, blueprints, prose, scenes, notes, `kitbash/` drafts, generation packets), except its `.history/`;

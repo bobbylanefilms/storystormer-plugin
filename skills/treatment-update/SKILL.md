@@ -1,6 +1,6 @@
 ---
 name: treatment-update
-description: Regenerate the treatment, and the primer when a premise, theme or structure decision calls for it. Use for “update the treatment,” “refresh the primer,” “let’s see where we are,” or when decisions pile up.
+description: Regenerate the treatment, the primer when a premise, theme or structure decision calls for it, or a finished book’s handoff. Use for “update the treatment,” “refresh the primer,” “close out Book 1,” or when decisions pile up.
 ---
 
 # StoryStormer · Treatment Update
@@ -20,6 +20,7 @@ Always follow `references/plan-first.md` — propose the plan with file lists, c
 - Updated decision entries — each decision consumed by this update gets `integrated: "yes (<date>)"`, and its row in `decisions/_index.md` follows. So does each **settled carried-over decision**: one with no `integrated` at all (carried over by the layout upgrade from a log that never marked it), which is checked against the current treatment rather than integrated blindly. Already reflected there → `integrated: "yes (<date>)"` with no prose rewritten; not reflected → it is pending like any other.
 - Updated `state.md` — version bumps, summary refresh, `What's Next` updated, a short Last Session.
 - The session's journal entry (`journal/<date>-s<NN>.md`) — what this update integrated and changed, and why.
+- **In a series, a finished book’s `handoff.md`** instead, when the author asks to close the book out (§ Closing out a book).
 
 ## Operating philosophy
 
@@ -293,11 +294,12 @@ If `state.md` shows `project_type: series`, read `references/series.md` first. T
 
 Session bookkeeping goes to the root: the book's `state.md` takes its Summary, What Exists, What's Next and Last Session, and the root `state.md` takes `session_count` and `last_session` (`references/series.md` § Series-level `state.md` vs per-book `state.md`).
 
-Three additions in series mode:
+Four additions in series mode:
 
-1. **Also load `series.md`** during the pre-flight read. The series arc, cross-book setups, and continuity concerns inform the focused book's treatment refresh — especially the treatment's planted setups, whose load-bearing reveals must respect cross-book chains (tracked in `series.md`) that span beyond this book.
-2. **Filter decisions by scope.** Only integrate decisions whose `scope` is the focused book OR is `series` with the focused book in `affects_books`; the index's Scope column narrows the candidates, and each `series`-scoped candidate still needs its `affects_books` checked: read that entry's frontmatter (or parse its Integrated cell, which names each book it touches) before counting it in. Decisions scoped to other books are not consumed by this update — they stay pending for their book's treatment.
-3. **Surface series-level impact in the report.** When the treatment refresh affects cross-book chains (a setup that pays off in a later book, a character state that book N+1 starts from), call it out explicitly: *"This treatment change moves Maya's confrontation with Senator Vance from ch 35 to ch 38. Book 2's opening currently assumes Maya leaves Washington after ch 35 — recommend a brainstorm session on book 2's opening, or a series.md patch to update the Continuity Concerns section."*
+1. **Read the Series Bible (`series.md`) first**, before the book’s own documents in the pre-flight read. Its arc, theme and structural conventions bind this book’s primer and treatment, as canon does; decisions still drive the changes. A cross-book setup or payoff the Bible places in this book is stated in the treatment’s narrative, where it happens: that is the only way it reaches the spine, the outline and the page, since nothing below the treatment reads the Bible (`references/series.md` § The Series Bible, the feed rule). This skill never writes the Bible.
+2. **Start from the previous book’s handoff.** From book 2 on, read the previous book’s `books/<slug>/handoff.md` when it exists, as a constraint like the Bible: this book opens where that one left the story. A book’s **first** primer (first-run mode) also reads the previous book’s primer, so its Tone, Style & Writing Rules carry over unless a decision changes them; each book keeps its own primer, and there is no series-wide style document.
+3. **Filter decisions by scope.** Only integrate decisions whose `scope` is the focused book OR is `series` with the focused book in `affects_books`; the index’s Scope column narrows the candidates, and each `series`-scoped candidate still needs its `affects_books` checked: read that entry’s frontmatter (or parse its Integrated cell, which names each book it touches) before counting it in. Decisions scoped to other books are not consumed by this update — they stay pending for their book’s treatment. A book with no pending decisions may still get its first primer and treatment when the previous book left a handoff or primer to start from, or the Bible has authored content.
+4. **Surface series-level impact in the report.** When the treatment refresh affects cross-book chains (a setup that pays off in a later book, a character state that book N+1 starts from), call it out explicitly: *“This treatment change moves Maya’s confrontation with Senator Vance from ch 35 to ch 38. Book 2’s opening currently assumes Maya leaves Washington after ch 35 — recommend a brainstorm session on book 2’s opening, or a Bible patch to update the Continuity Concerns section.”*
 
 The `integrated` field on consumed decisions becomes book-aware. For a series-scoped decision integrated into the focused book's treatment, set the book's item to `yes (date)` and leave other books' items untouched:
 
@@ -308,7 +310,17 @@ integrated:
   - book-3 treatment no
 ```
 
-If the treatment refresh structurally affects `series.md` (a cross-book chain changed, the book's arc summary needs updating in the Per-Book Synopses section), recommend a `series.md` patch as a follow-up in the report — don't auto-patch series.md from within `treatment-update`. Series.md updates are conversational; this skill stays focused on the per-book primer+treatment cycle.
+If the treatment refresh structurally affects the Bible (a cross-book chain changed, the book’s synopsis under Per-Book Synopses needs updating), recommend a Bible patch as a follow-up in the report — don’t patch `series.md` from within `treatment-update`. Bible updates are conversational (`brainstorm-session`); this skill stays focused on the per-book primer+treatment cycle and the handoff.
+
+## Closing out a book (series mode)
+
+When the author says a book is finished and asks to close it out (*“close out Book 1,”* *“write the book 2 handoff”*), this skill writes the book’s handoff instead of running the two phases: `books/<slug>/handoff.md`, the five sections in `references/file-schemas.md` § `handoff.md` (`references/series.md` § The book handoff). Only at the author’s request; never as a side effect of a treatment update. Follow `references/plan-first.md`: the plan names what will be read and whether an existing handoff will be replaced.
+
+- **Read** the book’s treatment, its chapter notes (what the prose committed, which beats the outline where both exist; a stale note is still read, labelled as such), the outlines of chapters with no notes, the canon tagged for the book or the whole series, the book’s open decisions and questions, and the Bible as a constraint. Substantive mode; past `references/subagent-pattern.md`’s threshold, subagents read the notes by act and return quoted end states. A book with no treatment, no outlines and no notes has nothing to hand off: say so and stop.
+- **Write** what the writer of the next book must know that they would otherwise get wrong. The ending is the point: spend the read on the last act first. Open questions are never written into it; story promises go under Open Threads and Promises as prose. Replacing a handoff snapshots the old one per `store.md` first.
+- **Carry forward,** by the author’s ticks, nothing moving without one: (a) each of the book’s open questions: move it to the next book (`scope` set to that book), make it series-wide (`scope: series`, with `affects_books`), or leave it; (b) each character tagged for this book but not the next, with the handoff’s view of who continues pre-ticked: ticked ones gain the next book in their `books:` (a whole-series entry already continues and is not listed). With no next book yet, offer to start it (append its slug to the root `state.md`’s `books` and give it its `books/<slug>/state.md`); `current_focus` moves only if the author asks.
+- **Continuity for the Bible:** lines the series must keep from this book’s ending (a death, a changed name, a ruined place) are proposed in the report for a Bible patch in `brainstorm-session`, never written into `series.md` here.
+- **Bookkeeping and report** as Step 6 and Step 7 say, with the handoff’s path and link, what was carried forward, and the next book’s natural next step (`treatment-update` on it, which starts from this handoff).
 
 ## The two-phase rationale
 
@@ -342,7 +354,7 @@ Dispatch read subagents per `references/subagent-pattern.md` when:
 2. **Cross-book bios subagent** (series mode only) — reads each book's treatment to surface the focused-book character's actions across the series, for series-aware plant statements in the treatment and cross-book chain fidelity.
 3. **Decisions filter subagent** — reads `decisions/_index.md` and the pending entries it lists (not `yes`, not `n/a`), returns just those scoped to the focused book or series-with-this-book-affected, plus quoted excerpts and the categorical mapping to primer sections.
 
-The main session retains direct reads of `primer.md`, `treatment.md`, `manifest.md`, and `series.md`. These are *judgment-bearing* artifacts that the two-phase pipeline writes against — the main session must absorb them itself, not via summary, because both phases depend on their full texture.
+The main session retains direct reads of `primer.md`, `treatment.md`, `manifest.md`, `series.md` and the previous book’s `handoff.md`. These are *judgment-bearing* artifacts that the two-phase pipeline writes against — the main session must absorb them itself, not via summary, because both phases depend on their full texture.
 
 The same anti-confabulation discipline applies: subagent returns must include verbatim excerpts. Reject and re-dispatch quote-free returns. Every brief carries the store block from `references/subagent-pattern.md` § Mandatory brief fields.
 
@@ -360,10 +372,10 @@ For incremental treatment updates against a small project (1 protagonist bio, sh
 ## References
 
 - `references/plan-first.md` — universal plan-first behavior
-- `references/file-schemas.md` — `primer.md` (four sections), `treatment.md` (header conventions, markers, length), § Target word count and the derived budgets, `series.md` schema, scope on decisions/questions
+- `references/file-schemas.md` — `primer.md` (four sections), `treatment.md` (header conventions, markers, length), § Target word count and the derived budgets, `series.md` schema, `handoff.md` schema, scope on decisions/questions
 - `references/reading-discipline.md` — full-read rules, substantive mode, Zoom Selection
 - `references/subagent-pattern.md` — **read when bios + treatment combined would consume substantial main context** (typically series mode or 3+ major bios)
-- `references/series.md` — **read when `project_type: series`** (focused-book path resolution, series.md impact, scope filtering)
+- `references/series.md` — **read when `project_type: series`** (focused-book path resolution, the Bible as a constraint, the book handoff, scope filtering)
 - `references/treatment-voice.md` — Treatment voice, before/after example, genre modulations, voice preservation drift patterns
 - `references/philosophy.md` — what a good treatment privileges
 - `references/frameworks.md` — vocabulary for shaping the primer (Section 2 + 3 + 6 framework attribution)

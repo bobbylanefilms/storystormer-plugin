@@ -21,8 +21,18 @@ Paths are relative to the project root, in `file-schemas.md`’s grammar (`treat
 | `store.edit(path, edits, reason)` | applies anchored string edits, all or nothing (below) |
 | `store.history(path)` | returns the document’s prior versions, or says where the author can find them when the backend keeps them out of reach |
 | `store.open(path)` | presents the document to the author (§ Local-mode clauses) |
-| `store.move(from, to)` | *optional.* Where the binding has none: `read(from)`, `write(to, …)`, then `delete(from)`; a binding that cannot delete says what it does instead |
+| `store.move(from, to)` | *optional.* Where the binding has none: `read(from)`, `write(to, …)`, then `delete(from)`; a binding that cannot delete says what it does instead. A **chapter folder** (`…/chapters/chapter-NN`) moves whole, to the end of another book or to another number in a book: where the binding keeps chapters as records, its realization moves the chapter itself, and the chapter is never rebuilt elsewhere and deleted, which would make a new chapter and lose its drafts and versions. Elsewhere it is the chapter-move sequence below, never a write onto an occupied chapter |
+| `store.search(words, book)` | *optional.* Returns the paths whose text holds the words (any case), each with its book in a series; `book` narrows to that book plus the series-wide documents. Hits are candidates: where the binding also matches by meaning, a hit may never contain the words, so the skill reads each passage before counting it. Where the binding has none, the skill finds the mentions by reading the documents it needs (the books’ treatments, and the chapters’ outlines, notes and prose) |
 | `store.delete(path)` | *optional.* Bindings use it inside `write` and `move`; skills call it directly only to clear an intake original they have just archived or re-filed (`init`). A binding that can’t delete names the path for the author to remove |
+
+**The chapter-move sequence** (a binding with no chapter move of its own). A chapter changes number only by single steps, each into a slot that is empty, checked absent just before the step; a step whose destination is occupied stops the sequence, writes nothing more, and the report says where every chapter stands. A step moves the whole folder, and every file in it, `.history/` included, takes the new number in its name (`ch07-…` → `ch02-…`) and in its own `chapter:` key. The order:
+
+1. Move the chapter to the **holding slot** `chapter-00` of the book it is going to (no chapter uses 00; a book that does is stopped and asked about).
+2. **Close the gap** it left: each later chapter of the book it left moves down one, lowest first.
+3. **Open its place** in the book it is going to (the end, unless the author named a position): each chapter from that position to the last moves up one, highest first.
+4. Move it from `chapter-00` to its place.
+
+Moving within one book is the same sequence with one book. The book it left and the book it joined each end numbered 1…n, and their spines (`outline/structure.md`) are updated to match. A binding that can’t check a destination before a step, or can’t rename a file, says so, and the move is the author’s.
 
 **The edit grammar.** `edits` is an ordered list; each item gives an exact `old` string, its `new` replacement, and optionally `replace_all`. Edits apply in order, each against the result of the one before, and anchors match the document exactly as `read` returns it, frontmatter included. Without `replace_all`, `old` must occur exactly once; with it, at least once. An anchor that is missing, or that occurs more than once without `replace_all`, **fails the whole call**: nothing is written, and the error names the anchor. Quote more surrounding text and call again. `reason` is a short note of why; bindings with native history or versions record it, others drop it.
 
