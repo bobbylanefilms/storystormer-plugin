@@ -13,11 +13,11 @@
 |---|---|---|---|---|---|
 | 1 | §3.A schema, markdown profile + fixture; §3.B store bindings | Opus | accepted | `6698aad`, fixes `b2607df` | Sol: 22 findings; 10 fixed by the author, 9 parked (`.plans/PARKING.md`), 1 declined, 2 later slices' work |
 | 2 | §3.C outline-chapters; §3.D blueprint, prose, notes, specs | Neon (eval) | accepted | `42aaf57`, fixes (Neon resumed) see log; orchestrator `5b5b6d5` | Sol: 28 findings; 14 fixed by Neon (one P0 from the orchestrator's brief), 13 parked, 1 pre-existing order parked |
-| 3 | §3.E init, migrate, pre-outline, guides; §3.F README notes + version bump | Opus | running | — | — |
+| 3 | §3.E init, migrate, pre-outline, guides; §3.F README notes + version bump | Opus | verified; review running | `abf1144` | Sol: running |
 
 ## Current position
 
-Slices 1 and 2 accepted. Slice 3 (Opus) dispatched. Neon: first pass 7.7 min / 291k tokens, fix round 20.1 min / 429k tokens, 0 denied both times.
+Slices 1 and 2 accepted. Slice 3 (Opus, `abf1144`) verified by the orchestrator (validate passed, gate grep 61, no `mcp__` in skills/references/guides, 120 of 120 tests, version `0.28.0-poc` in both manifests); Sol's review is running in `scratchpad/review-issue079e-s3`. Phase 6's live check ran early against dev Convex: 33 of 33 binding claims held (scratch project trashed; `scratchpad/issue079e-live-check.ts`). Neon: first pass 7.7 min / 291k tokens, fix round 20.1 min / 429k tokens, 0 denied both times.
 
 ## Decisions
 
@@ -25,6 +25,8 @@ Slices 1 and 2 accepted. Slice 3 (Opus) dispatched. Neon: first pass 7.7 min / 2
 - Slicing: the schema and bindings first (every skill cites them), then the outline-reading skills (Neon's evaluation slice: the longest Opus-lane work), then onboarding, guides and the release.
 
 - **As built ≠ plan (slice 1, documented, not papered over):** (1) the app's section parser reads only `pov`/`kind`/`summary`; a section `authorship:` line is stored as outline text, so on the StoryStormer store per-scene authorship lives on `scenes/chNN-scene-MM-outline.md` and the chapter file carries none (file-backed stores keep the section line; migrate moves it both ways); (2) an unknown `kind` is ignored with a note, not refused; (3) in a sectioned outline the frontmatter `pov`/`summary` are Scene 1's (no separate chapter summary; `## Synopsis` is the chapter's), overriding plan §3.C's "chapter summary stays chapter-level".
+
+- Slice 3's open calls (its report): an unsectioned pre-079 outline moving into the app reads back as a partly outlined chapter, so migrate offers sectioning before the go; Notion's composed section `summary:` lines are named and set aside in comparisons; the spine's expected scene count is an inline `(3 scenes)` tag; a re-run of init never asks.
 
 ## Open questions for Rob
 
