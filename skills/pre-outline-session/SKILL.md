@@ -51,7 +51,7 @@ Load:
 - All major-tier character bios (full — POV holders especially)
 - `decisions/_index.md`, then the structural decision entries it lists (type `structure` or `plot`) in full, skipping superseded and retracted ones
 - `questions/_index.md`, then the open structural question entries (category `Story Structure`, `Plot`, or `Pacing`)
-- `state.md` (full), including `target_word_count` (in a series, the focused book's own target from `books/<slug>/state.md` when it has one, else the series-level value; unset means the project type's default)
+- `state.md` (full), including `target_word_count` (in a series, the focused book's own target from `books/<slug>/state.md` when it has one, else the series-level value; unset means the project type's default) and `scene_structure` (always the root `state.md`'s; absent means `as_needed`)
 - `.storystormer/genre-reference.md` if it exists — genre obligatory scenes affect spine shape
 - Existing `outline/structure.md` if revising
 
@@ -153,6 +153,8 @@ Marlowe finds her father's locket in the audit box and recognizes the engraving 
 ```
 
 `Status` comes from what's on disk, on the first write as on every revision: a chapter with a prose file is `existing (drafted)`, one with only an outline file is `existing (outlined)` (both with a one- or two-sentence entry drawn from what's written), a chapter with neither is `new`, and `re-outline` marks only the chapters the author asks to have redone. Check `chapters/` before writing; the rule and why the app depends on it are in `references/file-schemas.md` § `outline/structure.md`. (Intake can stash prose before any structure exists, so a first write often has `existing (drafted)` chapters.)
+
+**The spine is per chapter, whatever the scene structure.** One block per chapter, never per scene: a chapter's scenes are set when it is outlined (`references/file-schemas.md` § `chapters/` folder → Scenes), and a treatment's scenes are not a chapter's. When `scene_structure` is `multiple`, an entry may end with the scenes the chapter expects, as a tag beside the others (`(3 scenes)`), a guide for the outline stage rather than a commitment; never as a line of its own, since a block's lines are the app's.
 
 Build the spine by walking through the treatment chronologically and mapping its scenes onto chapter slots:
 

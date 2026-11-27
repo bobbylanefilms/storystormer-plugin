@@ -42,6 +42,49 @@ If you ask for prose with no writing sample, the skill will warn you and offer t
 
 ---
 
+## Scenes and Found Documents
+
+A **scene** is one continuous stretch of a chapter: one time, one place, one point of view. Plenty of chapters are a single scene. Others cut away partway through (to the next morning, across town, into another character’s head), and each stretch is a scene of its own.
+
+**Your outline is where a chapter’s scenes are decided.** A one-scene chapter’s outline is plain prose, as it always was. A chapter of several scenes divides its outline under scene headings:
+
+```
+## Scene 1: The Ferry Dock
+pov: Ada Vale
+summary: Ada boards the last ferry and finds her seat taken.
+
+Ada reaches the dock as the gangway is coming up…
+
+## Scene 2: The Manifest
+kind: found_document
+summary: The cargo manifest Ada photographs.
+
+A carbon copy on onionskin: three crates, no consignee…
+```
+
+The lines directly under a heading are that scene’s settings (its POV, its kind, a one-line summary); after a blank line comes the scene’s outline. Everything downstream follows that list. The Blueprint repeats its who’s-on-page, setting and conflict sections once per scene, prose writes one file per scene (`scenes/ch12-scene-01.md`, `scenes/ch12-scene-02.md`, …), and notes stay one file for the whole chapter. You never declare a chapter “scene-split”: dividing its outline is what makes it one. In a chapter divided into scenes, a scene you wrote or revised is protected on its own, so the outline skill can regenerate the rest of the chapter around it and leave yours exactly as it is.
+
+**How many scenes the outline skill writes is a project setting,** `scene_structure` in `state.md`. Init asks about it once, when you set up the project (a project with no setting, such as one started before scenes existed, works as *as the story needs*):
+
+| Setting | In plain terms | What `outline-chapters` writes |
+|---|---|---|
+| `single` | One scene per chapter | Plain outlines, never divided |
+| `multiple` | Scenes within chapters | Every chapter in two or more scenes |
+| `as_needed` (the default) | As the story needs | One scene, divided only where the time, the place or the POV changes |
+
+To change it, edit that line in `state.md` (in a series, the one at the root, which covers every book) or ask the agent to (in the StoryStormer app it’s also under Scene structure in the project’s settings). The setting applies whenever the outline skill writes or redoes a chapter with no prose yet; a chapter that already has prose keeps its scenes whatever the setting says. And it never limits you: divide or merge any chapter by hand whenever you like.
+
+**A Found Document** is a document inside the story, given to the reader as itself rather than narrated: a letter, a diary entry, a ship’s log, a deposition transcript. Its scene carries `kind: found_document`, and the outline skill plans one only where your treatment or you call for it, with a short brief in place of beats (what the document is, what it must reveal). The plugin treats it differently from the rest of your prose:
+
+- **It is never a voice anchor.** A ten-year-old’s diary shouldn’t teach the prose writer how chapter 14 sounds, so the prose skill passes over Found Documents, and over any chapter made of nothing else, when it looks for earlier prose to match.
+- **Asking for a chapter skips it.** “Write chapter 12” or “write the next three chapters” writes the narrative scenes and lists the Found Document as skipped, with the reason.
+- **It is written only when you ask for that scene by name:** “write the manifest in chapter 12, scene 2.” It comes out in the document’s own register, not your narrative voice. Or write it yourself.
+- **It still counts.** Its words count toward the chapter and the book, a written one counts as drafted, and later chapters read it as what the document says, never as something the POV character lived through.
+
+One limit: a chapter that is a single Found Document has a plain outline with no scene heading to carry the `kind`, so say so when you ask for prose (“chapter 9 is the ship’s log, a Found Document”). Once its prose file exists, the file carries the kind.
+
+---
+
 ## Stage 1: Blueprint — the pre-prose brief
 
 ### What it is and why you want it
@@ -87,7 +130,7 @@ The skill resolves everything it can and shows you the plan for approval:
 - **Chapter, POV, and tense** — the POV character from the outline; the POV type (close third, first person, …) and tense from the structure's POV settings or your project defaults. Both are recorded on the prose file.
 - **Path** — *lean* (Blueprint exists) or *fallback* (raw canon; it'll suggest blueprinting first).
 - **Voice inputs** — writing sample? style guide, or which craft rulebook it picked?
-- **Voice anchor** — the most recent earlier chapter with the same POV, whose prose anchors voice and momentum.
+- **Voice anchor** — the most recent earlier prose with the same POV (an earlier scene of the same chapter counts), whose prose anchors voice and momentum. Retired drafts and [Found Documents](#scenes-and-found-documents) are passed over.
 - **Story-so-far** — which prior chapters' synopses it will carry. Later chapters are *never* read (see the firewall, below).
 - **Word target** — your ask, else estimated from the outline's density. Aim is ±15%, with an explicit rule against padding.
 - **Model** — inherits your session's model unless you name one ("write it with Opus").
@@ -96,7 +139,7 @@ Correct anything in the plan by just saying so, then give it the go. Generation 
 
 ### What you get
 
-- **`chapters/chapter-NN/ch<NN>-prose.md`** — the chapter. Pure prose in the body; the metadata (POV, word count, a ~200-word synopsis that later chapters use as their story memory) lives in frontmatter.
+- **`chapters/chapter-NN/ch<NN>-prose.md`** — the chapter (or, when its outline is divided into scenes, one `scenes/ch<NN>-scene-MM.md` per scene). Pure prose in the body; the metadata (POV, word count, a ~200-word synopsis that later chapters use as their story memory) lives in frontmatter.
 - The file is **presented for reading in-app** (Cowork's preview pane) — the draft opens beside the chat.
 - A compact report: word count, the synopsis, and any **continuity flags** ("the Blueprint says the locket is hidden, but ch 14's prose has her holding it — I wrote toward ch 14 and flagged the Blueprint as stale").
 
@@ -120,7 +163,7 @@ Prose for chapter N is built **only from chapters before N**. The treatment neve
 
 ### Batches
 
-"Write the next three chapters" works — same-POV chapters generate **sequentially** (each fresh chapter becomes the next one's voice anchor), and the skill pauses after each for a skim unless you tell it to run straight through.
+"Write the next three chapters" works — same-POV chapters and scenes generate **sequentially** (each fresh one becomes the next one's voice anchor), and the skill pauses after each for a skim unless you tell it to run straight through. Found Document scenes are skipped and listed in the report.
 
 ---
 
@@ -203,6 +246,7 @@ In a series, canon-sync also keeps each entry’s book tags honest: a character 
 | Build pre-prose briefs | "Blueprint Act 1" · "blueprint chapter 17" |
 | Write a chapter | "Write chapter 17" · "write the next chapter" |
 | Write several | "Write the next three chapters" |
+| Write a Found Document | “Write the manifest in chapter 12, scene 2” |
 | Refine a draft | "Tighten the dialogue in ch 12's confrontation" |
 | Multi-model drafts | "Kit bash chapter 17" |
 | Cowork external drafts | "Build the generation packet for ch 17" |
@@ -222,6 +266,7 @@ chapters/chapter-17/
   ch17-outline.md            ← required before anything below
   ch17-blueprint.md          ← the pre-prose brief
   ch17-prose.md              ← the chapter (synopsis + metadata in frontmatter)
+  scenes/ch17-scene-01.md …  ← instead, one prose file per scene when the outline is divided
   ch17-notes.md              ← what the prose committed (run while revising, or once revised)
   .history/                  ← every superseded version, auto-snapshotted
   kitbash/
