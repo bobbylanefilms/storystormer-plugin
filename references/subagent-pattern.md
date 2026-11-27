@@ -188,15 +188,20 @@ sample first for primacy, prior prose last for recency):
       (store.read(path, frontmatter only)); its ch<NN>-outline.md `## Synopsis` section, else
       that outline's `summary` frontmatter; its Blueprint § 3 Chapter Shape premise; the outline
       body, condensed; its spine entry in outline/structure.md. A chapter whose prose is
-      `status: retired` skips its notes and prose and starts at the outline.>
+      `status: retired` skips its notes and prose and starts at the outline; a Found Document
+      still contributes, read as what the document says rather than events the POV character
+      witnessed.>
   4. chapters/chapter-<NN>/ch<NN>-blueprint.md   (lean path)
        — OR, if no Blueprint: POV-first character bios + worldbuilding the
          chapter touches + primer.md  (fallback path)
   5. chapters/chapter-<NN>/ch<NN>-outline.md     (the task)
-  6. <prior POV-matched prose chapter, full>     (the voice anchor — read LAST)
+  6. <prior POV-matched narrative prose chapter or scene, full — skipping `status: retired`,
+      `kind: found_document`, and any chapter whose prose is entirely Found Documents>
+                                                 (the voice anchor — read LAST)
 
 Then, if the target already exists, apply the triggered clauses to it (snapshot, concurrency
-guard), and `store.write` the chapter's prose to chapters/chapter-<NN>/ch<NN>-prose.md with full
+guard), and `store.write` the chapter's prose to chapters/chapter-<NN>/ch<NN>-prose.md (or
+scenes/ch<NN>-scene-MM.md for a scene-split chapter, following the outline's sections) with full
 frontmatter (pov, version stamps, status: drafted, word_count, and a ~150–250w
 synopsis) per the schema the prose spec references. Where the capabilities line says
 `history: snapshots`, then `store.write` the identical content to its as-written copy,
@@ -210,7 +215,7 @@ What to return (NOT the prose itself — it's on disk):
   "word_count": <integer>,
   "synopsis": "<the ~150–250w synopsis you wrote>",
   "path_used": "blueprint | fallback",
-  "prior_prose_anchor": "<chapter NN of the POV-matched prior prose, or 'none (POV debut)'>",
+  "prior_prose_anchor": "<chapter NN (and scene MM if split) of the POV-matched prior narrative prose — never `status: retired`, `kind: found_document`, or a chapter holding only Found Documents — or 'none (POV debut)' / 'none (Found Document)'>",
   "voice_inputs": "<which of sample/style-guide were present>",
   "continuity_flags": "<anything that didn't reconcile — a Blueprint that looked stale, a missing prior synopsis, a beat the outline left underspecified — OR null>"
 }
@@ -218,7 +223,7 @@ What to return (NOT the prose itself — it's on disk):
 
 **What "clean window" means precisely.** The subagent starts with no main-conversation history — the brainstorming chat, upstream skill texts, and everything else the main session has accumulated never reach it. It is *not* free of harness scaffolding: the platform's own system prompt and any `CLAUDE.md` / global-memory context ride along in every subagent, ahead of the brief. That scaffolding is operational instruction, not prose, so it doesn't compete with the writing sample for voice conditioning — the sample is still the first *prose* the window sees and the prior POV chapter the last, which is what the primacy/recency architecture needs. The behavioral frame's identity assertion re-anchors the subagent away from the harness's general-assistant framing. One practical consequence: if a story folder carries its own `CLAUDE.md`, keep writing instructions out of it — anything there reaches every generation subagent uninvited.
 
-The main session reads the returned report (compact — no 5,000-word payload), wires `outline/_index.md` + `state.md`, surfaces continuity flags, and points the user at the file to review. For a **batch**, dispatch generation subagents **sequentially** (not parallel) when the chapters share a POV — each chapter's freshly written prose is the next same-POV chapter's voice anchor, so chapter N must finish before N+1 reads it. Independent POV threads in the same batch can run in parallel.
+The main session reads the returned report (compact — no 5,000-word payload), wires `outline/_index.md` + `state.md`, surfaces continuity flags, and points the user at the file to review. For a **batch**, dispatch generation subagents **sequentially** (not parallel) when the chapters or scenes share a POV — each freshly written narrative piece is the next same-POV piece's voice anchor, so chapter N must finish before N+1 reads it. Skip `kind: found_document` scenes in a batch (reporting them as skipped with the reason) and pass over Found Documents (and any chapter whose prose is entirely Found Documents) when selecting the voice anchor or sampling story voice; a direct request to write a Found Document runs for that scene alone in the document's own register, with no narrative voice anchor. Independent POV threads in the same batch can run in parallel.
 
 ## When to dispatch vs. when to read directly
 

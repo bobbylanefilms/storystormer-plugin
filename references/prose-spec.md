@@ -62,12 +62,14 @@ VARIABLE TAIL  (per-chapter → recency zone)
   6a. Blueprint   ──┐  PRESENT → consolidated canon + continuity + story context
   6b. Canon bios  ──┘  ABSENT  → fallback: bios + worldbuilding + primer
   7. Chapter outline           ← PENULTIMATE: the task (what happens)
-  8. Prior POV-matched prose    ← FINAL: the voice anchor
+  8. Prior POV-matched prose    ← FINAL: the voice anchor (never `status: retired` or `kind: found_document`)
 
   + final trigger ("Write the prose for this chapter now.")
 ```
 
 **The Blueprint and the outline are a pair** in the task zone: the outline is **the task** (the author's prose account; expand it into full narrative prose, preserving its dialogue in substance and its action beats in order); the Blueprint is **the constraint set** (who / where / current-state / what must not be gotten wrong). The outline gets the penultimate slot (structural recency); the prior prose gets the last slot (stylistic recency) — structural fidelity is easier for the model to honor than voice, so the strongest position is spent on voice.
+
+**Voice anchor and Found Documents.** Slot 8 (the POV-matched prior-prose walk) and any story-voice sampling skip `status: retired` and `kind: found_document`, passing over any chapter whose prose is entirely Found Documents, not just its scenes (`references/file-schemas.md` § Prose → `kind: found_document`). A Found Document is a document inside the story, not narrative prose in the book's voice: batch prose skips it, and a direct request to write one renders that scene alone in the document's own register, never anchored on narrative prose (omit the writing sample, style guide/craft rulebook, and prior POV prose).
 
 ---
 
@@ -104,7 +106,7 @@ When the prior chapter's prose diverges *stylistically* from the sample, **the s
 
 ## POV rules
 
-Resolve POV from the chapter outline's `pov` (the character) and the POV type: the prose file's `pov_type` when it is set (for tense, the prose file's `tense`, else a legacy `tense:` key on a 0.16.x chapter outline), else the structure document's **POV Mode** / **Narrative Person** header and the POV strategy in its Structure Notes, else the project default. Assert the matching rule in the behavioral frame, and record the resolved type and tense on the prose file as `pov_type` and `tense` (the app's enum values, given with each rule below).
+Resolve POV from the chapter outline's `pov` (or, in a sectioned outline, the scene section's `pov:`) and the POV type: the prose file's `pov_type` when it is set (for tense, the prose file's `tense`, else a legacy `tense:` key on a 0.16.x chapter outline), else the structure document's **POV Mode** / **Narrative Person** header and the POV strategy in its Structure Notes, else the project default. Assert the matching rule in the behavioral frame, and record the resolved type and tense on the prose file as `pov_type` and `tense` (the app's enum values, given with each rule below). (A Found Document scene takes the document's own register; its `pov`, `pov_type` and `tense` do not govern.)
 
 - **Third-person limited** (`3rd_limited`) — access ONLY the POV character's interior (thoughts, feelings, sensory perception). All others are external observation only — body language, dialogue, action. Never reveal a non-POV character's interior. The narrative lens is filtered through the POV character's vocabulary and worldview. Psychic distance tightens during high emotion, widens slightly in action.
 - **Third-person objective (camera eye)** (`3rd_objective`) — NO interior access for anyone. Only what a camera captures. Emotion is conveyed entirely through external signal. Don't editorialize.
@@ -142,7 +144,7 @@ Surgical edits preserve the existing prose's length — no target in revise mode
 
 The model must never know what it hasn't written.
 
-- **Read only prior chapters.** Story-so-far is prior chapter synopses *only*; prior prose is a *prior* chapter only, and never prose at `status: retired` (prose the author set aside is not the story so far). Never read a chapter numbered after the one being written — not its outline, not its prose, not its synopsis.
+- **Read only prior chapters.** Story-so-far is prior chapter synopses *only* (a Found Document's synopsis is read as what the document says, not events the POV character witnessed); prior prose is a *prior* narrative chapter or scene only, never prose at `status: retired` (prose the author set aside is not the story so far) and never `kind: found_document` (a document inside the story, not the book's voice — pass over any chapter whose prose is entirely Found Documents, not just its scenes). Never read a chapter numbered after the one being written — not its outline, not its prose, not its synopsis.
 - **The treatment stays out** of prose-time context on *both* paths — it contains future plot.
 - **The chain register never enters.** Plant and payoff planning is planning-side (the treatment and outline); plants reach the prose only as the Blueprint's imperative instructions, with no rationale. An agent that knows it is planting will telegraph.
 - **Never write toward a not-yet-landed reveal.** The Blueprint already filtered canon to `chapter ≤ N` (via the Revelation Log); honor that. Don't foreshadow a specific future event the prose at this point couldn't know.

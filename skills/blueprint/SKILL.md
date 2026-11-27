@@ -49,7 +49,7 @@ Always follow `references/plan-first.md`: propose, confirm, execute.
 
 For each chapter, the judgment-free context, read directly:
 
-- **The chapter's `ch<NN>-outline.md`, read for content.** It is the author's prose account of what happens; it is not a cast list or a scaffolding source. Note its `word_count` and `authorship` (an author-written outline's dialogue is the author's, and the Dialogue Anchors section will say so).
+- **The chapter's `ch<NN>-outline.md`, read for content.** It is the author's prose account of what happens; it is not a cast list or a scaffolding source. Note its `word_count` and `authorship` (an author-written outline's dialogue is the author's, and the Dialogue Anchors section will say so). Its scene sections (`## Scene <n>`) are the chapter's scene list (`references/file-schemas.md` § `chapters/` folder → Scenes); note any `kind: found_document` section.
 - **`outline/structure.md`**: the spine slot, the POV strategy, and the Chapter Spine so you know where this chapter sits without reading future chapters' plot.
 - **Carried-forward state.** Skip any prior chapter whose prose is `status: retired` (read each candidate's prose `status`): neither its notes nor its prose are the book. Prefer the **prior chapter's `ch<NN>-notes.md` end-state block** when it exists: a short structured statement of wardrobe, injuries, objects, location, residue, and the hour as the chapter actually left them. When no notes file exists, walk back from chapter N to the most recent prior chapter with the **same `pov`** and read its prose if written, else its outline; fall back to the immediately preceding chapter of any POV. Chapter 1, and a POV debut, have no anchor and lean on the treatment slot and the Revelation Log. (`store.list(chapters/*/ch*-{notes,prose,outline}.md)`, read `pov`, `chapter` and, on prose, `status` frontmatter, filter `< N`, drop chapters whose prose is retired.)
 - **The primer**, harvested for § 2 Story Context and **filtered to this chapter**. It carries no reveal or plant register and is never a source of forward orientation.
@@ -108,7 +108,7 @@ The load-bearing rules:
 - **Craft lives in the style guide.** Only this chapter's placements go in § 11.
 - **Twelve sections**: Scene Function · Story Context · Chapter Shape · Characters · Setting · Main Source of Conflict · Symbolism and Thematic Layer · Continuity · Worldbuilding · Dialogue Anchors · Chapter-Specific Craft · Other Notes.
 
-For a **scene-split** chapter set `scene_split: true` and repeat Characters / Setting / Conflict / Worldbuilding per scene; the rest stays chapter-level.
+A chapter is **scene-split** when its outline has more than one scene section (`references/file-schemas.md` § `chapters/` folder → Scenes, § Blueprint): repeat Characters / Setting / Conflict / Worldbuilding per scene in the outline's order and numbering, keeping the rest chapter-level. A Found Document scene (`kind: found_document`) gets no per-scene block — only a one-line note in its place saying what the document is and where it sits. Set `scene_split` to match (`true` when split, `false` otherwise); it is derived and never read as the source, except for a chapter outlined before scene sections, whose Blueprint's own per-scene headers stand.
 
 ### 7. Content discipline
 
@@ -160,7 +160,7 @@ Session bookkeeping goes to the root: the book's `state.md` takes its Summary, W
 ## References
 
 - `references/blueprint-spec.md`: **the craft spec**
-- `references/file-schemas.md`: `ch<NN>-blueprint.md` file shape, `ch<NN>-outline.md` (prose body), `ch<NN>-notes.md` end-state block, `outline/_index.md`, per-chapter `.history/`
+- `references/file-schemas.md`: `ch<NN>-blueprint.md` file shape, `ch<NN>-outline.md` (prose body and Scene sections), § `chapters/` folder → Scenes, `ch<NN>-notes.md` end-state block, `outline/_index.md`, per-chapter `.history/`
 - `references/canon-schemas.md`: § Revelation Log
 - `references/plan-first.md`, `references/reading-discipline.md`, `references/subagent-pattern.md`
 - `references/frameworks.md`: Voice Fingerprint, Lie / Ghost vocabulary

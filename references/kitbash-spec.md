@@ -86,12 +86,12 @@ contains only chapter ≤ NN material, which IS the firewall.>
 
 ## Prior chapter prose — voice and continuity anchor
 
-<the POV-matched prior chapter, full text, LAST>
+<the POV-matched prior narrative chapter or scene, full text, LAST — skipping `status: retired`, `kind: found_document`, and any chapter whose prose is entirely Found Documents>
 
 Write the complete prose for chapter <NN> now. Output prose only.
 ```
 
-The voice-conditioning order survives flattening: sample near the top (primacy), outline penultimate, prior prose last (recency), rules text in between.
+The voice-conditioning order survives flattening: sample near the top (primacy), outline penultimate, prior prose last (recency), rules text in between. The voice-anchor lookup and any story-voice sampling skip `status: retired` and `kind: found_document`, passing over any chapter whose prose is entirely Found Documents, not just its scenes (`references/file-schemas.md` § Prose → `kind: found_document`).
 
 ---
 
