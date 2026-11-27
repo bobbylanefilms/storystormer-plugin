@@ -11,18 +11,20 @@
 
 | # | Tasks | Tier | Status | Commits | Review |
 |---|---|---|---|---|---|
-| 1 | §3.A schema, markdown profile + fixture; §3.B store bindings | Opus | running | — | — |
+| 1 | §3.A schema, markdown profile + fixture; §3.B store bindings | Opus | verified, in review | `6698aad` | Sol: running |
 | 2 | §3.C outline-chapters; §3.D blueprint, prose, notes, specs | Neon (eval) | pending | — | — |
 | 3 | §3.E init, migrate, pre-outline, guides; §3.F README notes + version bump | Opus | pending | — | — |
 
 ## Current position
 
-Slice 1 dispatched.
+Slice 1 verified (validate passes, 120/120 tool tests, SB2 gate grep 61 = base); Sol review running in `scratchpad/review-issue079e-s1`. Slice 2 (Neon) waits for it, since it cites slice 1's schema.
 
 ## Decisions
 
 - Slicing: the schema and bindings first (every skill cites them), then the outline-reading skills (Neon's evaluation slice: the longest Opus-lane work), then onboarding, guides and the release.
 
+- **As built ≠ plan (slice 1, documented, not papered over):** (1) the app's section parser reads only `pov`/`kind`/`summary`; a section `authorship:` line is stored as outline text, so on the StoryStormer store per-scene authorship lives on `scenes/chNN-scene-MM-outline.md` and the chapter file carries none (file-backed stores keep the section line; migrate moves it both ways); (2) an unknown `kind` is ignored with a note, not refused; (3) in a sectioned outline the frontmatter `pov`/`summary` are Scene 1's (no separate chapter summary; `## Synopsis` is the chapter's), overriding plan §3.C's "chapter summary stays chapter-level".
+
 ## Open questions for Rob
 
-- None yet.
+- None blocking. Report-time recommendation: teach the app's section parser an `authorship:` key line so one chapter-file format serves every store.
