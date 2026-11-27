@@ -12,15 +12,16 @@
 | # | Tasks | Tier | Status | Commits | Review |
 |---|---|---|---|---|---|
 | 1 | §3.A schema, markdown profile + fixture; §3.B store bindings | Opus | accepted | `6698aad`, fixes `b2607df` | Sol: 22 findings; 10 fixed by the author, 9 parked (`.plans/PARKING.md`), 1 declined, 2 later slices' work |
-| 2 | §3.C outline-chapters; §3.D blueprint, prose, notes, specs | Neon (eval) | verified, in review | `42aaf57` (+ orchestrator fix `5b5b6d5`) | Sol: running |
-| 3 | §3.E init, migrate, pre-outline, guides; §3.F README notes + version bump | Opus | pending | — | — |
+| 2 | §3.C outline-chapters; §3.D blueprint, prose, notes, specs | Neon (eval) | accepted | `42aaf57`, fixes (Neon resumed) see log; orchestrator `5b5b6d5` | Sol: 28 findings; 14 fixed by Neon (one P0 from the orchestrator's brief), 13 parked, 1 pre-existing order parked |
+| 3 | §3.E init, migrate, pre-outline, guides; §3.F README notes + version bump | Opus | running | — | — |
 
 ## Current position
 
-Slice 2 (Neon, conversation `535878eb-40f2-471d-bbde-02029e0a0b97`, 7.7 min, 0 denied, 291k tokens) verified: validate passes, gate grep 61, no `mcp__`, 120/120 tool tests, descriptions 187–209 chars. Its report caught a real defect from slice 1's fix round (two binding sub-bullets joined on one line; fixed `5b5b6d5`); one claim slightly off (a description length). Sol review running; slice 3 (Opus) waits for it.
+Slices 1 and 2 accepted. Slice 3 (Opus) dispatched. Neon: first pass 7.7 min / 291k tokens, fix round 20.1 min / 429k tokens, 0 denied both times.
 
 ## Decisions
 
+- Orchestrator error caught by review: slice 2's brief stated the StoryStormer-only "send `version` as read" rule generally; on file stores it would have collided snapshots (fixed in Neon's fix round).
 - Slicing: the schema and bindings first (every skill cites them), then the outline-reading skills (Neon's evaluation slice: the longest Opus-lane work), then onboarding, guides and the release.
 
 - **As built ≠ plan (slice 1, documented, not papered over):** (1) the app's section parser reads only `pov`/`kind`/`summary`; a section `authorship:` line is stored as outline text, so on the StoryStormer store per-scene authorship lives on `scenes/chNN-scene-MM-outline.md` and the chapter file carries none (file-backed stores keep the section line; migrate moves it both ways); (2) an unknown `kind` is ignored with a note, not refused; (3) in a sectioned outline the frontmatter `pov`/`summary` are Scene 1's (no separate chapter summary; `## Synopsis` is the chapter's), overriding plan §3.C's "chapter summary stays chapter-level".
