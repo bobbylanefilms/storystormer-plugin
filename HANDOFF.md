@@ -11,13 +11,13 @@
 
 | # | Tasks | Tier | Status | Commits | Review |
 |---|---|---|---|---|---|
-| 1 | §3.A schema, markdown profile + fixture; §3.B store bindings | Opus | verified, in review | `6698aad` | Sol: running |
-| 2 | §3.C outline-chapters; §3.D blueprint, prose, notes, specs | Neon (eval) | pending | — | — |
+| 1 | §3.A schema, markdown profile + fixture; §3.B store bindings | Opus | accepted | `6698aad`, fixes `b2607df` | Sol: 22 findings; 10 fixed by the author, 9 parked (`.plans/PARKING.md`), 1 declined, 2 later slices' work |
+| 2 | §3.C outline-chapters; §3.D blueprint, prose, notes, specs | Neon (eval) | running | — | — |
 | 3 | §3.E init, migrate, pre-outline, guides; §3.F README notes + version bump | Opus | pending | — | — |
 
 ## Current position
 
-Slice 1 verified (validate passes, 120/120 tool tests, SB2 gate grep 61 = base); Sol review running in `scratchpad/review-issue079e-s1`. Slice 2 (Neon) waits for it, since it cites slice 1's schema.
+Slice 1 accepted. Slice 2 dispatched to Gemini 4 Neon (`agy -p`, `gemini-4-neon-xhigh`, accept-edits, scratchpad `agy-permissions.json`).
 
 ## Decisions
 
