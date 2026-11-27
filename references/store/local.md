@@ -23,7 +23,7 @@ The open folder that holds `.storystormer/config.json`, or the config’s `local
 
 ## Stored and computed
 
-Everything is **stored** as a real file; nothing is computed. That includes the snapshot folders (`history: snapshots`), `characters/_index.md`, `decisions/_index.md`, `questions/_index.md`, `outline/_index.md`, `voice/README.md` and `.storystormer/config.json`, so every clause in `store.md` § Local-mode clauses that says “stored” applies. The entry indexes are kept one row at a time, with Edit (`file-schemas.md` § Who rebuilds an index).
+Everything is **stored** as a real file; nothing is computed. That includes the snapshot folders (`history: snapshots`), `characters/_index.md`, `decisions/_index.md`, `questions/_index.md`, `outline/_index.md`, `voice/README.md` and `.storystormer/config.json`, so every clause in `store.md` § Local-mode clauses that says “stored” applies. The entry indexes are kept one row at a time, with Edit (`file-schemas.md` § Who rebuilds an index). There is no scene outline file: a chapter’s `chNN-outline.md` is its outline, scene sections and all (`file-schemas.md` § Scenes); `scenes/chNN-scene-MM-outline.md` exists only on the StoryStormer store and is never written here.
 
 ## Operations
 

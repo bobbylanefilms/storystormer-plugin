@@ -2,7 +2,7 @@
 // ABOUTME: or (--words) compares the word sequences of two trees with markup stripped. Node 24, no dependencies.
 
 import { lstatSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative, sep } from 'node:path';
+import { basename, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export interface Finding {
@@ -378,8 +378,27 @@ interface Line { i: number; text: string }
 
 const RENAMED: Readonly<Record<string, string>> = { js: 'javascript', sh: 'bash', python: 'py', md: 'markdown' };
 
+/** How a file is linted beyond the profile's general rules. */
+export interface LintOptions {
+  /** A chapter outline (`ch<NN>-outline.md`): its scene section heads are reserved (§ Reserved in outlines). */
+  outline?: boolean;
+}
+
+/** A chapter outline's file name, `ch<NN>-outline.md` (`file-schemas.md` § `ch<NN>-outline.md`). */
+export function isOutlinePath(path: string): boolean {
+  return /^ch\d+-outline\.md$/.test(basename(path));
+}
+
+/**
+ * A scene section heading (`## Scene 2: The Manifest`, `## Scene 4`): the heading text the app's section parser
+ * splits on, a number and an optional title after `:`, `.` or a dash (lib/outline/outlineAssetFormat.ts in the app).
+ */
+const SCENE_HEADING = /^ {0,3}##[ \t]+Scene\s+\d{1,4}(?:\s*[:.–—-]\s*.*)?$/i;
+/** A section key line under a scene heading (`pov:`, `kind:`, `summary:`, and the plugin's `authorship:`). */
+const SECTION_KEY = /^(?:pov|kind|summary|authorship)\s*:/i;
+
 /** Lint a file's bytes: checks UTF-8, then everything lintText checks. */
-export function lintBuffer(buf: Uint8Array, only?: ReadonlySet<string>): Finding[] {
+export function lintBuffer(buf: Uint8Array, only?: ReadonlySet<string>, opts: LintOptions = {}): Finding[] {
   const pre: Finding[] = [];
   let text: string;
   try {
@@ -389,11 +408,11 @@ export function lintBuffer(buf: Uint8Array, only?: ReadonlySet<string>): Finding
     const at = text.indexOf('�');
     if (!only || only.has('encoding')) pre.push({ line: text.slice(0, Math.max(at, 0)).split('\n').length, rule: 'encoding', message: 'not valid UTF-8' });
   }
-  return [...pre, ...lintText(text, only)].sort((a, b) => a.line - b.line);
+  return [...pre, ...lintText(text, only, opts)].sort((a, b) => a.line - b.line);
 }
 
 /** Lint markdown text against the profile. `only` limits the run to those rule ids. */
-export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
+export function lintText(src: string, only?: ReadonlySet<string>, opts: LintOptions = {}): Finding[] {
   const findings: Finding[] = [];
   const emit: Emit = (line, rule, message) => {
     if (!only || only.has(rule)) findings.push({ line, rule, message });
@@ -1096,6 +1115,8 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
   blank = 0;
   let hadBlock = false;
   let suppress = false;
+  // In an outline, a scene heading and the key lines directly under it are one block (§ Reserved in outlines).
+  let sceneHeadingAbove = false;
   while (i < N) {
     if (L[i].trim() === '') {
       blank++;
@@ -1103,7 +1124,9 @@ export function lintText(src: string, only?: ReadonlySet<string>): Finding[] {
       i++;
       continue;
     }
-    if (hadBlock && blank === 0 && !suppress) emit(ln(i), 'block-separation', 'no empty line between this block and the one above');
+    const sectionHead = sceneHeadingAbove && blank === 0 && SECTION_KEY.test(L[i]);
+    if (hadBlock && blank === 0 && !suppress && !sectionHead) emit(ln(i), 'block-separation', 'no empty line between this block and the one above');
+    sceneHeadingAbove = opts.outline === true && SCENE_HEADING.test(L[i]);
     const r = parseBlock(i, blank > 0 || !hadBlock);
     i = Math.max(r.end, i + 1);
     suppress = r.suppress;
@@ -1422,8 +1445,9 @@ Usage:
 
 Lint checks every .md file (directories recurse, skipping .git, node_modules and symlinks; other
 files are skipped) and prints "path:line: <rule-id> <message>" per finding, then a count. Frontmatter,
-fenced code and code spans are not linted. Exit 1 when there are findings, 0 when clean, 2 on a usage
-error or when nothing was checked.
+fenced code and code spans are not linted. A file named ch<NN>-outline.md is linted as a chapter outline:
+a "## Scene <n>" heading may have its key lines (pov:, kind:, summary:, authorship:) directly under it.
+Exit 1 when there are findings, 0 when clean, 2 on a usage error or when nothing was checked.
 
 --words strips markup (emphasis, list and quote markers, heading hashes, table pipes and separator
 rows, fence lines, link syntax keeping link text, the HTML the profile rewrites, every tag inside an
@@ -1494,7 +1518,7 @@ export function main(argv: readonly string[], out: (s: string) => void = (s) => 
   let total = 0;
   let withFindings = 0;
   for (const f of files) {
-    const found = lintBuffer(readFileSync(f), only);
+    const found = lintBuffer(readFileSync(f), only, { outline: isOutlinePath(f) });
     if (found.length) withFindings++;
     total += found.length;
     for (const x of found) out(`${f}:${x.line}: ${x.rule} ${x.message}`);

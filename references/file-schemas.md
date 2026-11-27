@@ -36,6 +36,7 @@ genre: [primary]
 genre_secondary: [optional, omit if not applicable]
 project_type: novel | novella | short_story | screenplay | series
 target_word_count: 120000                   # see § Target word count
+scene_structure: as_needed                  # single | multiple | as_needed; absent = as_needed (below)
 logline: [one sentence, or null if not yet written]
 stage: concept | brain-dump | brainstorming | treatment-drafted | treatment-refined | canon-development | outlining | outline-drafted
 initial_maturity: concept | brain-dump | brainstorming | treatment-drafted | treatment-refined  # set once on intake, never changed
@@ -55,9 +56,17 @@ current_focus: book-1                       # which book the user is currently w
 
 `project_type` is one of the app's values: `novel`, `novella`, `short_story`, `screenplay`, or `series` (an older `short-story` reads as `short_story`).
 
+`scene_structure` is how chapters are divided into scenes (§ `chapters/` folder → Scenes), one of the app's three values; absent means `as_needed`. It governs only what `outline-chapters` generates, never what the author does: the author may divide or merge any chapter by hand under any setting.
+
+- **`single`** (one scene per chapter): the skill writes every outline plain, with no scene sections.
+- **`multiple`** (scenes within chapters): the skill divides every chapter it outlines into two or more scene sections.
+- **`as_needed`** (as the story needs): the skill writes one scene unless the time, the place or the point of view changes within the chapter, and divides it there.
+
+It is a project setting: a series keeps it in the root `state.md` only.
+
 The `books` and `current_focus` fields are **only present in series-mode projects**, on the series-level `state.md`. Standalone-novel projects omit them. See `references/series.md` for the full series workflow.
 
-For a per-book `state.md` (at `books/<slug>/state.md` in series mode), the frontmatter is the standalone schema above, without `slug`, `books`, `current_focus`, `session_count` and `last_session` (sessions are the series’: the root `state.md` counts them and numbers the journal), plus one field:
+For a per-book `state.md` (at `books/<slug>/state.md` in series mode), the frontmatter is the standalone schema above, without `slug`, `books`, `current_focus`, `scene_structure`, `session_count` and `last_session` (sessions are the series’: the root `state.md` counts them and numbers the journal), plus one field:
 
 ```yaml
 parent_series: Inauguration Day            # title of the parent series
@@ -763,7 +772,7 @@ Two layers:
   - **`outline/structure.md`** — the structural commitment, in the app's pre-outline format: structure notes (framework, act table, POV, pacing), then the chapter spine, one short block per chapter.
   - **`outline/_index.md`** — the **outline view**: a chapter × stage status matrix, one row per chapter, regenerated as chapters advance. This is the horizontal scan surface.
 - **Per-chapter content** (`chapters/chapter-NN/`) — the micro layer, one folder per chapter:
-  - **`ch<NN>-outline.md`** — the author's prose account of what happens in the chapter (typically 500–1,500w per 3,000-word chapter). Frontmatter plus a flowing body; no scaffolding.
+  - **`ch<NN>-outline.md`** — the author's prose account of what happens in the chapter (typically 500–1,500w per 3,000-word chapter). Frontmatter plus a flowing body, divided into scene sections when the chapter has more than one scene; no other scaffolding.
   - **`ch<NN>-blueprint.md`**, **`ch<NN>-prose.md`**, **`ch<NN>-notes.md`** — the continuity brief, the prose, and the post-prose record (see § `chapters/` folder).
   - **`.history/`** — co-located snapshots of this chapter's artifacts, where the binding's `history` is `snapshots` (`references/store.md`).
 
@@ -902,13 +911,13 @@ primer_version: 4
 [150–250 words, generated outlines only: see below]
 ```
 
-**The first five keys are the app's outline contract**, in its order: `chapter` (a whole number), `title`, `pov` (the POV character's name, blank for a book without one), `act` (text, in the same form as the structure document's `**Act:**` line: `act: 2 — Fun and Games`, or the number alone written quoted, `act: "2"`, per § Frontmatter values; never `2A`), and `summary` (one or two sentences: the chapter's core event and turning point). All five are present on every write; `chapter`, `title`, and `summary` must have values, and `chapter` is a whole number from 1 to 1000 (the app's outline parser rejects anything outside that range). Values are quoted per § Frontmatter values.
+**The first five keys are the app's outline contract**, in its order: `chapter` (a whole number), `title`, `pov` (the POV character's name, blank for a book without one), `act` (text, in the same form as the structure document's `**Act:**` line: `act: 2 — Fun and Games`, or the number alone written quoted, `act: "2"`, per § Frontmatter values; never `2A`), and `summary` (one or two sentences: the chapter's core event and turning point). In a sectioned outline `pov` and `summary` are Scene 1's (§ Scene sections). All five are present on every write; `chapter`, `title`, and `summary` must have values, and `chapter` is a whole number from 1 to 1000 (the app's outline parser rejects anything outside that range). Values are quoted per § Frontmatter values.
 
 The rest are plugin keys the app ignores:
 
-- **`authorship`** (the app's three values, which the app also stores): `author_written`, `ai_generated`, `ai_generated_author_revised`. It drives how `outline-chapters` treats the file. `author_written` and `ai_generated_author_revised` put the skill in **correction-only mode** (facts, POV breaches, stale scaffolding, surfaced sequencing errors; never rhythm, diction, or regeneration). `ai_generated` is freely regenerable. The skill sets `ai_generated_author_revised` when it detects the body changed outside a skill run (the body's actual word count against the `word_count` the last skill write recorded, and where it helps the body against the newest version `store.history` returns; a mismatch is author revision, since correction-only is the safe side) and never downgrades `author_written`. Older files spell these with hyphens (`author-written`); read them as the same values and write the underscore form.
+- **`authorship`** (the app's three values, which the app also stores): `author_written`, `ai_generated`, `ai_generated_author_revised`. It drives how `outline-chapters` treats the file. `author_written` and `ai_generated_author_revised` put the skill in **correction-only mode** (facts, POV breaches, stale scaffolding, surfaced sequencing errors; never rhythm, diction, or regeneration). `ai_generated` is freely regenerable. The skill sets `ai_generated_author_revised` when it detects the body changed outside a skill run (the body's actual word count against the `word_count` the last skill write recorded, and where it helps the body against the newest version `store.history` returns; a mismatch is author revision, since correction-only is the safe side) and never downgrades `author_written`. Older files spell these with hyphens (`author-written`); read them as the same values and write the underscore form. In a sectioned outline it is Scene 1's and the default for every section; a section can carry its own (§ Scene sections, Authorship per scene), and a detected revision marks the section that changed when the comparison can tell which one, the file when it can't.
 - **`version`**, **`last_updated`**: the file's version and date, as on every plugin artifact.
-- **`word_count`** is the body's count (frontmatter and `## Synopsis` excluded), recorded on every write; it is the cheap half of author-revision detection.
+- **`word_count`** is the body's count (frontmatter and `## Synopsis` excluded, and in a sectioned outline the section headings and key lines too), recorded on every write; it is the cheap half of author-revision detection.
 - **`source`** names what the outline was built from (a treatment scene, a decision, the author).
 - **`revision`**: a free-text note on what changed and why.
 - **`structure_version`**, **`treatment_version`**, **`primer_version`**: the provenance stamps `/storystormer:status outline` uses to flag stale outlines. An outline the app wrote has none; a missing stamp means the freshness is unknown, which is reported as unverified, never as stale or current.
@@ -917,11 +926,41 @@ POV type and tense are not outline keys; they live on the prose (`pov_type`, `te
 
 **Body.** The author's prose account, with no H1 (the title lives in the frontmatter, and the app's outline has none; an H1 already in an author's file is left alone). Present tense is the recommended register for generated outlines, not a rule: an author-written outline in past tense stays in past tense and is never rewritten for tense. The app's own outline jobs refuse an outline body under 150 words, and a connected write warns about one, so a stub outline is not ready to move to the app.
 
-**`## Synopsis`** is the one heading an outline may carry, and only at the very end. Generated outlines end with it (the app's chapter writer produces the same shape): 150–250 words on the chapter's causal events, reveals, who learns what, and how the story's state has changed by the chapter's end, written as a record for later chapters, not a teaser. It replaces repeating that material in `summary`, which stays one or two sentences. An author-written outline gets a synopsis section only if the author asks for one.
+**`## Synopsis`** is, beside the scene headings (below), the one heading an outline may carry, and only at the very end, after the last scene section. It stays chapter-level in a sectioned outline. Generated outlines end with it (the app's chapter writer produces the same shape): 150–250 words on the chapter's causal events, reveals, who learns what, and how the story's state has changed by the chapter's end, written as a record for later chapters, not a teaser. It replaces repeating that material in `summary`, which stays one or two sentences. An author-written outline gets a synopsis section only if the author asks for one.
 
 The section is the **writer shape**, not how the app stores it. The app keeps the synopsis separately, on the chapter (`chapters.synopsis`): on write it strips the trailing `## Synopsis` from the outline body and saves the text there, and when it hands the outline back as a file it renders the section at the end again. The plugin's file keeps the section either way; nothing about the format changes.
 
-**What the outline does not carry**, because the Blueprint derives it from canon at better resolution: premise blocks, a beat index, setups and payoffs, character notes, dialogue-anchor lists, chapter connections, open-thread sections, craft rules. Any heading in the body other than the closing `## Synopsis` is the tell that something is in the wrong file.
+**What the outline does not carry**, because the Blueprint derives it from canon at better resolution: premise blocks, a beat index, setups and payoffs, character notes, dialogue-anchor lists, chapter connections, open-thread sections, craft rules. Any heading in the body other than the scene headings and the closing `## Synopsis` is the tell that something is in the wrong file.
+
+### Scene sections
+
+A chapter of one scene has a plain outline, as above. A chapter of several scenes divides its body into **scene sections**, in the app's format exactly:
+
+```markdown
+## Scene 1: The Ferry Dock
+pov: Ada Vale
+summary: Ada boards the last ferry and finds her seat taken by the man from the harbor office.
+
+[Scene 1's prose account]
+
+## Scene 2: The Manifest
+kind: found_document
+summary: The cargo manifest Ada photographs, listing three crates with no consignee.
+
+[Scene 2's brief: what the document is and what it must reveal]
+
+## Synopsis
+
+[the chapter's synopsis, as above]
+```
+
+- **The heading** is level 2: `## Scene <n>: <title>`, or `## Scene <n>` for a scene with no title. Numbers start at 1 and go up by one in file order; a file numbered otherwise (`1, 3`) is refused by the app, never renumbered. Only a level-2 `Scene <n>` heading outside a fenced block starts a section; any other heading stays in its section's text. Text above the first heading would join Scene 1, so the plugin writes none there.
+- **The key lines** come directly under the heading, with no empty line before or between them: after an empty line they are outline text. `pov:` (the scene's POV character's name), `kind:` (`found_document` for a Found Document, § `chapters/` folder → Scenes; a narrative scene leaves it out), `summary:` (one or two sentences: the scene's core event) and `authorship:` (below), each optional, in that order, each on one line. Values are never quoted: § Frontmatter values is for frontmatter, and a quote here is part of the value. A line that isn't a key line ends them. Then one empty line and the section's body, the scene's own prose account under the plain outline's rules.
+- **The frontmatter stays the chapter's.** `chapter`, `title` and `act` are the chapter's; its `pov` and `summary` are Scene 1's, the same values as Scene 1's key lines, since the app keeps no chapter summary apart from Scene 1's (the chapter-level account is `## Synopsis`).
+- **No sections means one scene.** A plain outline is the chapter's only scene, so every outline written before scene sections existed is valid as it stands. A file is sectioned only when the chapter has more than one scene.
+- **Unchanged sections stay byte-identical.** Revising one scene rewrites only its section: every other section's heading, key lines and body go back exactly as read, so the store sees them unchanged (the app compares section by section). A write carries every section of the chapter: leaving one out never removes a scene (where a store keeps scenes as records, its binding says how one is removed).
+- **Authorship per scene.** The file's `authorship` is the chapter file's as a whole, which makes it Scene 1's and the default for every section. A later section whose authorship differs carries its own `authorship:` line, the last of its key lines; Scene 1 never does. A scene whose authorship is `author_written` or `ai_generated_author_revised` is **protected**: a rewrite of it is refused unless the author asked for it (`force`), and the skill leaves its section byte-identical. A store that keeps each scene's outline as a document of its own may keep the scene's authorship there instead, and the chapter file then carries no section `authorship:` line; its binding says so.
+- **Section headings are structure, not prose.** They are the chapter's scene list, not part of any scene's account: a reader takes a section's body as that scene's outline, and `references/markdown-profile.md` § Reserved in outlines keeps the heading and its key lines exactly as written.
 
 ### Markers for unresolved elements
 
@@ -1003,13 +1042,26 @@ chapters/chapter-17/
   ch17-blueprint.md    # the continuity brief ("Blueprint") — blueprint
   ch17-prose.md        # the chapter's prose — prose (or scenes/ when split)
   ch17-notes.md        # what the prose actually committed — notes
-  scenes/              # OPTIONAL — only when the chapter is genuinely scene-split
+  scenes/              # OPTIONAL — only when the chapter is scene-split (§ Scenes)
     ch17-scene-01.md
     ch17-scene-02.md
   .history/            # co-located snapshots (only where the binding's history is `snapshots`)
 ```
 
 **Stages are filenames, not folders.** Adding a future pipeline stage means a new `ch<NN>-<stage>.md` file in each chapter folder — never a new parallel top-level tree. The stages, in pipeline order: `outline` → `blueprint` → `prose` → `notes`.
+
+### Scenes
+
+A **scene** is one continuous stretch of a chapter: one time, one place, one point of view. A chapter has one scene or several, and its **scene list is its outline's sections** (§ `ch<NN>-outline.md` → Scene sections): a plain outline is one scene, a sectioned one a scene per section, numbered as the sections are. A chapter is **scene-split** when it has more than one. Every artifact of the chapter follows that one list:
+
+- **Outline:** one section per scene; plain for a chapter of one scene.
+- **Blueprint:** chapter-level; a scene-split chapter's repeats its per-scene sections once per scene, in the outline's order and numbering (§ Blueprint).
+- **Prose:** one file per scene once the chapter is scene-split, `scenes/ch<NN>-scene-MM.md`, MM the scene's number (§ Prose); renumbering a chapter's scenes renumbers its scene files with them.
+- **Notes:** chapter-level always.
+
+A scene is **narrative** (the default) or a **Found Document**: a document inside the story (a letter, a memoir excerpt, a transcript) given as itself rather than narrated. Its outline section and its prose file carry `kind: found_document` (§ Prose has what that changes); a narrative scene carries no `kind`. How many scenes the outline skill generates follows `state.md`'s `scene_structure`; the author divides or merges by hand under any setting.
+
+A chapter outlined before scene sections existed may have an unsectioned outline and a Blueprint with `scene_split: true` and its own per-scene headers: that Blueprint's scene list stands until the outline is sectioned.
 
 ### Blueprint (`ch<NN>-blueprint.md`) — the pre-prose continuity brief
 
@@ -1031,7 +1083,7 @@ pov: Marlowe
 tense: past
 narrative_style: close third, past tense
 act: 2 — Fun and Games
-scene_split: false        # true when the Blueprint carries per-scene sections
+scene_split: false        # derived: true when the chapter is scene-split (§ Scenes); set to match, never the source
 outline_words: 1140
 expansion_target: ~2.5–3× the outline
 knowledge_horizon: chapter 17
@@ -1074,13 +1126,13 @@ Body — the twelve sections (full formats in `references/blueprint-spec.md`):
 ## 12. Other Notes
 ```
 
-**Granularity is chapter-level.** When a chapter is genuinely **scene-split**, set `scene_split: true` and repeat Characters / Setting / Conflict / Worldbuilding per scene under `## Scene 1 — …` headers; the other sections stay chapter-level. Default to the single form.
+**Granularity is chapter-level.** A chapter is scene-split when its outline has more than one section (§ Scenes). Its Blueprint then repeats Characters / Setting / Conflict / Worldbuilding per scene, in the outline's order and numbering, under `## Scene 1 — …` headers, and the other sections stay chapter-level. A Found Document scene gets no per-scene block, only a one-line note in its place saying what the document is and where it sits. `scene_split` is a derived convenience key: the skill sets it to match the outline (`true` for a scene-split chapter, `false` otherwise) and never reads it as the source, except for a chapter outlined before scene sections (§ Scenes).
 
 **Scene-current state** comes from, in order: (1) each canon entry's **Revelation Log** filtered to `chapter ≤ 17`; (2) the prior chapter's **`ch<NN>-notes.md` end-state block** when it exists; (3) reconstruction from prior chapters' prose or outlines. A Blueprint for chapter 17 **never** writes toward anything from chapter 18 on.
 
 ### Prose (`ch<NN>-prose.md`) and scenes
 
-Prose is **one file per chapter by default** (`ch<NN>-prose.md`). Treatment scenes don't map 1:1 to chapters, so when a chapter is genuinely scene-split, the prose moves into a `scenes/` subfolder (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`) and `ch<NN>-prose.md` is omitted or becomes a stitched-together read. Default to the single file; reach for `scenes/` only when the chapter actually needs it.
+Prose is **one file per chapter** (`ch<NN>-prose.md`) for a chapter of one scene. A scene-split chapter (§ Scenes: its outline has more than one section) keeps its prose in a `scenes/` subfolder, one file per scene (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`, MM the section's number), and `ch<NN>-prose.md` is omitted or becomes a stitched-together read.
 
 The `blueprint` schema is defined above; the `ch<NN>-prose.md` schema is defined here; the `ch<NN>-notes.md` schema follows it. Prose is written by the `prose` skill, which works from `references/prose-spec.md` (the assembly order, voice model, POV/tense rules, output rules, spoiler firewall).
 
@@ -1088,6 +1140,7 @@ The `blueprint` schema is defined above; the `ch<NN>-prose.md` schema is defined
 ---
 chapter: 17
 title: The Locket
+kind: found_document        # only on a Found Document; absent = narrative (below)
 version: 1
 last_updated: 2026-05-12
 pov: Marlowe Reyes
@@ -1113,7 +1166,8 @@ Values (the `title`, a `pov` name) are quoted per § Frontmatter values; the mul
 
 **Body: prose only.** No markdown headers, no frontmatter-style labels, no meta-commentary — just the chapter's fiction, paragraphs separated by single blank lines, scene breaks as a single blank line. (The `synopsis` lives in frontmatter precisely so the body stays pure prose.) See `references/prose-spec.md` § Output rules.
 
-- **`pov`** mirrors the chapter outline's `pov`: a character's name. The `prose` skill uses it to find the POV-matched prior prose chapter (the voice anchor).
+- **`pov`** mirrors the chapter outline's `pov` (a scene file's, its section's `pov`): a character's name. The `prose` skill uses it to find the POV-matched prior prose chapter (the voice anchor), passing over Found Documents (below).
+- **`kind: found_document`** marks the prose of a Found Document scene (§ Scenes), the same key its outline section carries; it is the app's scene kind, and the default, `narrative`, is never written. A Found Document is a document inside the story, not prose in the book's voice, so it is skipped wherever prose stands for the voice: the `prose` voice-anchor lookup (the POV-matched prior-prose walk) passes over it, and over a chapter whose prose is entirely Found Documents, not only over its scenes; story-voice sampling never draws on it; and batch prose never writes one, listing it as skipped with the reason. It is written only when the author asks for that scene, in the document's own register, never anchored on narrative prose. It still counts everywhere the book is counted: word counts, drafted status (What Exists → Prose chapters, `chapters_drafted`), the story so far (read as what the document says, not as events the POV character witnessed), Reading and export. Its `pov`, `pov_type` and `tense` are not read.
 - **`pov_type`** and **`tense`** are the app's scene enums, verbatim: `pov_type` is `3rd_limited`, `3rd_objective`, `3rd_omniscient`, `1st_person`, or `2nd_person`; `tense` is `past`, `present`, or `future`. The `prose` skill resolves them before generating (see `references/prose-spec.md` § POV rules and § Tense) and records them here, so the POV-mode rule it asserted is on the file.
 - **`blueprint_version`** records which Blueprint this prose was built against, or `null` if generated on the fallback (no-Blueprint) path. A Blueprint regenerated past this value means the prose may be stale w.r.t. current canon.
 - **`synopsis`** is written at generation time and is the chapter's contribution to every later chapter's story-so-far. Regenerate it whenever the prose is rewritten (it must track the prose's actual events).
@@ -1130,7 +1184,7 @@ Values (the `title`, a `pov` name) are quoted per § Frontmatter values; the mul
   Changed → set `authorship: ai_generated_author_revised` (a frontmatter-only edit) before anything else. Unchanged → keep `ai_generated`.
 - **Kit Bash provenance** (only on consolidated chapters): `kitbash_base: <draft label>` and `kitbash_drafts: [<labels>]` record which competing drafts produced this chapter. Draft files live in `chapters/chapter-NN/kitbash/` (`ch<NN>-draft-<label>.md`, plus the `ch<NN>-packet.md` generation packet) — see `references/kitbash-spec.md`.
 
-**Scene-split prose.** When the Blueprint is `scene_split: true`, prose moves into `scenes/` (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`); each scene file carries the same frontmatter scoped to that scene (the chapter-level `synopsis` lives on a stitched `ch<NN>-prose.md` or the first scene — keep one synopsis per chapter for story-so-far). Default to the single `ch<NN>-prose.md`.
+**Scene-split prose.** When the chapter is scene-split (§ Scenes: its outline's sections, or for a chapter outlined before sections its Blueprint's `scene_split: true`), prose lives in `scenes/` (`chapters/chapter-NN/scenes/ch<NN>-scene-MM.md`), one file per section; each scene file carries the same frontmatter scoped to that scene, `kind` included (the chapter-level `synopsis` lives on a stitched `ch<NN>-prose.md` or the first scene — keep one synopsis per chapter for story-so-far). A chapter of one scene keeps the single `ch<NN>-prose.md`.
 
 ### Notes (`ch<NN>-notes.md`) — what the prose actually committed
 

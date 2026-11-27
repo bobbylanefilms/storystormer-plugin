@@ -1,5 +1,5 @@
 <!-- ABOUTME: The markdown profile: the subset of markdown every document the plugin writes is in, on every backend -->
-<!-- ABOUTME: Allowed constructs, what author text keeps as written, the markup-only rewrite table, and the probe evidence behind them -->
+<!-- ABOUTME: Allowed constructs, the outline section heads it reserves, what author text keeps as written, the markup-only rewrite table, and the evidence -->
 
 # Markdown Profile
 
@@ -20,7 +20,7 @@ This document describes what the output looks like. It is a schema for markup, t
 - UTF-8, `\n` line endings, exactly one newline at the end.
 - After frontmatter, exactly one empty line, then the body (the Notion binding’s read always renders it so). A document with frontmatter and no body ends at the closing `---` and its newline.
 - No line ends in a space or tab, and no line holds only whitespace.
-- The body is a sequence of blocks (paragraph, heading, list, quote, table, fenced code block, rule, scene break) separated by **exactly one empty line**. No empty line appears inside a block, except as content inside a fenced code block.
+- The body is a sequence of blocks (paragraph, heading, list, quote, table, fenced code block, rule, scene break) separated by **exactly one empty line**. No empty line appears inside a block, except as content inside a fenced code block. The one exception to the separation is an outline’s scene section head (§ Reserved in outlines).
 - No line starts with a space or tab, except a nested list item or a block inside an item (indented with spaces, § Lists) and a line inside a fenced code block. Indentation is always spaces; the Notion binding’s write form sends a tab per level, and Notion returns spaces.
 
 ## Blocks
@@ -133,6 +133,22 @@ A URL shown as text is a link to itself, `[https://example.com/path](https://exa
 - a backslash escape, apart from `\|` in a table cell;
 - an HTML tag or comment, apart from `<br>` in a table cell; a `<` is never directly followed by a letter, `/` or `!`.
 
+## Reserved in outlines
+
+A chapter outline (`ch<NN>-outline.md`) divided into scenes carries one **section head** per scene (`file-schemas.md` § `ch<NN>-outline.md` → Scene sections): a level-2 `## Scene <n>: <title>` heading (or `## Scene <n>`) with the scene’s key lines (`pov:`, `kind:`, `summary:`, `authorship:`) directly under it, then one empty line and the section’s body:
+
+```
+## Scene 2: The Manifest
+kind: found_document
+summary: The cargo manifest Ada photographs, listing three crates with no consignee.
+
+The manifest is a carbon copy on onionskin.
+```
+
+The head is one block: the heading and its key lines are not separated, since an empty line between them would make the key lines outline text. A heading with no key lines is an ordinary heading, followed by one empty line. Normalization never separates, rewrites, reflows or renumbers a head: the heading and its key lines stay byte for byte, the § Rewrite table doesn’t apply to them, and everything around them follows the profile as usual. The plugin writes the heading in profile form (no closing sequence) and each key value as plain text on its one line. Outside a chapter outline a heading is an ordinary heading, and this doesn’t apply.
+
+The fixture is `tests/markdown-profile/ch07-outline.md`: a sectioned outline (heads with and without key lines, a Found Document, a section `authorship:` line, a body with a `* * *` break and a list) that `tools/md-profile-check.ts` passes when it lints the file as an outline. Without its section `authorship:` line (a file-backed store’s key, which the app doesn’t read: the StoryStormer binding’s § Quirks), the app’s own section parser reads it as its four scenes and the app’s renderer writes them back byte-identical (checked against the app’s code on 2026-11-27). It has not been probed through Notion; the Notion binding’s read joins a head back together (its § Rendering, scene section heads).
+
 ## Kept as written
 
 These come back from Notion byte-identical but aren’t in the profile, because Notion stores the markup as visible text or shows it differently. The plugin never writes them, and normalization leaves them alone in author text, on every backend.
@@ -158,7 +174,7 @@ These come back from Notion byte-identical but aren’t in the profile, because 
 
 ## Rewrite table
 
-How out-of-profile markup becomes profile form. **Normalization applies this table and nothing else, never inside a fenced code block or a code span, and inside a bare path or filename token only its entity row (§ Kept as written), though the autolinked-filename row puts a whole token in a code span; applying it a second time changes nothing.** Every rewrite changes markup only: the words and their order stay, and the only characters that change are the ones a row names (an entity becomes its character, a footnote label loses its `^`, a fence’s language takes Notion’s name). The IDs point to the probe evidence: a construct that changed, then the rewrite (a PR, or another construct already kept in that form).
+How out-of-profile markup becomes profile form. **Normalization applies this table and nothing else, never inside a fenced code block or a code span or to an outline’s section heads (§ Reserved in outlines), and inside a bare path or filename token only its entity row (§ Kept as written), though the autolinked-filename row puts a whole token in a code span; applying it a second time changes nothing.** Every rewrite changes markup only: the words and their order stay, and the only characters that change are the ones a row names (an entity becomes its character, a footnote label loses its `^`, a fence’s language takes Notion’s name). The IDs point to the probe evidence: a construct that changed, then the rewrite (a PR, or another construct already kept in that form).
 
 | Out of profile | In profile | Evidence |
 |---|---|---|

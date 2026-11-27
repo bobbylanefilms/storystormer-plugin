@@ -1,5 +1,5 @@
 // ABOUTME: Tests for tools/md-profile-check.ts: a passing and failing case per lint rule, skipped regions,
-// ABOUTME: the --words tree comparison, the CLI, and the real probe files under tests/markdown-profile/.
+// ABOUTME: the --words tree comparison, the CLI, and the real probe files and outline fixture under tests/markdown-profile/.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { RULES, compareTrees, globToRegExp, lintBuffer, lintText, main, markdownWords } from './md-profile-check.ts';
+import { RULES, compareTrees, globToRegExp, isOutlinePath, lintBuffer, lintText, main, markdownWords } from './md-profile-check.ts';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = join(here, '..');
@@ -342,6 +342,30 @@ test('probe-rewrites.md: every adopted rewrite lints clean', () => {
     for (const f of lintText(s.whole)) failures.push(`${id}: line ${f.line} ${f.rule} ${f.message}`);
   }
   assert.deepEqual(failures, []);
+});
+
+// § Reserved in outlines: a scene heading and its key lines are one block, in a chapter outline only.
+test('ch07-outline.md: the sectioned-outline fixture lints clean as an outline, and only as one', () => {
+  const path = join(probeDir, 'ch07-outline.md');
+  assert.equal(isOutlinePath(path), true);
+  const src = readFileSync(path, 'utf8');
+  assert.deepEqual(lintText(src, undefined, { outline: true }), []);
+  // Read as any other document, each head with key lines is a heading run into a paragraph (scenes 1, 2 and 3).
+  const heads = src.split('\n').flatMap((l, i) => (/^## Scene \d+: /.test(l) ? [i + 2] : []));
+  assert.deepEqual(lintText(src).map((f) => [f.line, f.rule]), heads.map((line) => [line, 'block-separation']));
+});
+
+test('outline heads: only a level-2 Scene heading takes key lines directly under it', () => {
+  const lint = (s: string) => lintText(s, undefined, { outline: true }).map((f) => [f.line, f.rule]);
+  assert.deepEqual(lint('## Scene 1: Dock\npov: Ada\nsummary: She boards.\n\nText.\n'), []);
+  assert.deepEqual(lint('## Scene 2\nkind: found_document\n\nText.\n'), []);
+  assert.deepEqual(lint('## Scene 3: Fog\nauthorship: author_written\n\nText.\n'), []);
+  assert.deepEqual(lint('### Scene 1: Dock\npov: Ada\n\nText.\n'), [[2, 'block-separation']]);
+  assert.deepEqual(lint('## Synopsis\nsummary: no.\n'), [[2, 'block-separation']]);
+  assert.deepEqual(lint('## Scene 1: Dock\nAda boards.\n'), [[2, 'block-separation']]);
+  assert.equal(isOutlinePath('chapters/chapter-100/ch100-outline.md'), true);
+  assert.equal(isOutlinePath('chapters/chapter-07/scenes/ch07-scene-02-outline.md'), false);
+  assert.equal(isOutlinePath('chapters/chapter-07/ch07-blueprint.md'), false);
 });
 
 test('--words: each rewrite has the same words as a construct it rewrites', () => {

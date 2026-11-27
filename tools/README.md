@@ -9,7 +9,7 @@ Dev-only tools for working on the plugin. No skill or command cites them, and th
 
 Checks markdown against `references/markdown-profile.md`.
 
-**Lint:** checks every `.md` file under the paths given, printing `path:line: <rule-id> <message>` per finding and a count; exits 1 when there are findings. Each rule id names the profile line that explains it (`--help` lists them). `--rule <id>[,<id>]` limits the run.
+**Lint:** checks every `.md` file under the paths given, printing `path:line: <rule-id> <message>` per finding and a count; exits 1 when there are findings. Each rule id names the profile line that explains it (`--help` lists them). `--rule <id>[,<id>]` limits the run. A file named `ch<NN>-outline.md` is linted as a chapter outline, whose scene section heads are reserved (the profile’s § Reserved in outlines; the fixture is `tests/markdown-profile/ch07-outline.md`).
 
 ```bash
 node tools/md-profile-check.ts path/to/story-folder
