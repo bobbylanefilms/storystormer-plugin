@@ -146,7 +146,7 @@ This kind differs from read and execution subagents in that it both reads heavil
 **Brief template** (the prose skill writes this when dispatching):
 
 ```
-Task: generate prose for chapter <NN> in a clean window
+Task: generate prose for chapter <NN> [scene <MM>] in a clean window
 
 [BEHAVIORAL FRAME — assert before reading anything]
 - You are a prose-generation specialist. <POV mode rule> <tense directive>.
@@ -154,7 +154,9 @@ Task: generate prose for chapter <NN> in a clean window
   pacing — don't pad, don't rush the ending; if the beats finish short, deepen
   interiority and sensory texture rather than inventing plot.
 - Output rules: prose only, no markdown/headers/meta-commentary; bracketed
-  outline direction is guidance, never echoed; complete self-contained chapter.
+  outline direction is guidance, never echoed; complete self-contained chapter
+  (or, when generating one scene of a sectioned chapter, that scene alone — never
+  another scene's events and never a skipped Found Document).
 - Spoiler firewall: read ONLY the files named below. Never read any chapter
   numbered after <NN> — not its outline, prose, or synopsis. Do not foreshadow
   a specific future event.
@@ -194,10 +196,13 @@ sample first for primacy, prior prose last for recency):
   4. chapters/chapter-<NN>/ch<NN>-blueprint.md   (lean path)
        — OR, if no Blueprint: POV-first character bios + worldbuilding the
          chapter touches + primer.md  (fallback path)
-  5. chapters/chapter-<NN>/ch<NN>-outline.md     (the task)
-  6. <prior POV-matched narrative prose chapter or scene, full — skipping `status: retired`,
-      `kind: found_document`, and any chapter whose prose is entirely Found Documents>
-                                                 (the voice anchor — read LAST)
+  5. chapters/chapter-<NN>/ch<NN>-outline.md     (the task; for one scene of a sectioned chapter,
+                                                 that scene's section is the task and the rest is
+                                                 context only — write that scene alone)
+  6. <prior POV-matched narrative prose chapter or earlier narrative scene of this chapter, full —
+      prose files only (ch<NN>-prose.md or scenes/ch<NN>-scene-MM.md, never -outline/-blueprint),
+      skipping `status: retired`, `kind: found_document`, and any chapter whose prose is entirely
+      Found Documents>                           (the voice anchor — read LAST)
 
 Then, if the target already exists, apply the triggered clauses to it (snapshot, concurrency
 guard), and `store.write` the chapter's prose to chapters/chapter-<NN>/ch<NN>-prose.md (or
@@ -215,7 +220,7 @@ What to return (NOT the prose itself — it's on disk):
   "word_count": <integer>,
   "synopsis": "<the ~150–250w synopsis you wrote>",
   "path_used": "blueprint | fallback",
-  "prior_prose_anchor": "<chapter NN (and scene MM if split) of the POV-matched prior narrative prose — never `status: retired`, `kind: found_document`, or a chapter holding only Found Documents — or 'none (POV debut)' / 'none (Found Document)'>",
+  "prior_prose_anchor": "<chapter NN (and scene MM if split, including an earlier scene of this chapter) of the POV-matched prior narrative prose — never `status: retired`, `kind: found_document`, or a chapter holding only Found Documents — or 'none (POV debut)' / 'none (Found Document)'>",
   "voice_inputs": "<which of sample/style-guide were present>",
   "continuity_flags": "<anything that didn't reconcile — a Blueprint that looked stale, a missing prior synopsis, a beat the outline left underspecified — OR null>"
 }
@@ -223,7 +228,7 @@ What to return (NOT the prose itself — it's on disk):
 
 **What "clean window" means precisely.** The subagent starts with no main-conversation history — the brainstorming chat, upstream skill texts, and everything else the main session has accumulated never reach it. It is *not* free of harness scaffolding: the platform's own system prompt and any `CLAUDE.md` / global-memory context ride along in every subagent, ahead of the brief. That scaffolding is operational instruction, not prose, so it doesn't compete with the writing sample for voice conditioning — the sample is still the first *prose* the window sees and the prior POV chapter the last, which is what the primacy/recency architecture needs. The behavioral frame's identity assertion re-anchors the subagent away from the harness's general-assistant framing. One practical consequence: if a story folder carries its own `CLAUDE.md`, keep writing instructions out of it — anything there reaches every generation subagent uninvited.
 
-The main session reads the returned report (compact — no 5,000-word payload), wires `outline/_index.md` + `state.md`, surfaces continuity flags, and points the user at the file to review. For a **batch**, dispatch generation subagents **sequentially** (not parallel) when the chapters or scenes share a POV — each freshly written narrative piece is the next same-POV piece's voice anchor, so chapter N must finish before N+1 reads it. Skip `kind: found_document` scenes in a batch (reporting them as skipped with the reason) and pass over Found Documents (and any chapter whose prose is entirely Found Documents) when selecting the voice anchor or sampling story voice; a direct request to write a Found Document runs for that scene alone in the document's own register, with no narrative voice anchor. Independent POV threads in the same batch can run in parallel.
+The main session reads the returned report (compact — no 5,000-word payload), wires `outline/_index.md` + `state.md`, surfaces continuity flags, and points the user at the file to review. For a **batch** or multi-scene chapter, dispatch generation subagents **sequentially** (not parallel) when the chapters or scenes share a POV — each freshly written narrative piece is the next same-POV piece's voice anchor, so earlier chapters and earlier scenes of the same chapter must finish before a later same-POV scene reads them. Skip `kind: found_document` scenes on every chapter-level request, single chapter or batch (reporting them as skipped with the reason), and pass over Found Documents (and any chapter whose prose is entirely Found Documents) when selecting the voice anchor or sampling story voice; a direct request naming a Found Document scene runs for that scene alone in the document's own register, with no narrative voice anchor. Independent POV threads in the same batch can run in parallel.
 
 ## When to dispatch vs. when to read directly
 

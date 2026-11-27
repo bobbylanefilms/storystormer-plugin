@@ -82,16 +82,16 @@ contains only chapter ≤ NN material, which IS the firewall.>
 
 ## Chapter outline — the task
 
-<ch<NN>-outline.md>
+<ch<NN>-outline.md — on a chapter with a Found Document scene, competing drafts cover the narrative scenes only; the Found Document section is context, never drafted unless the author asked for that scene>
 
 ## Prior chapter prose — voice and continuity anchor
 
-<the POV-matched prior narrative chapter or scene, full text, LAST — skipping `status: retired`, `kind: found_document`, and any chapter whose prose is entirely Found Documents>
+<the POV-matched prior narrative chapter or earlier narrative scene of this chapter, full text, LAST — prose files only (ch<NN>-prose.md or scenes/ch<NN>-scene-MM.md, never -outline/-blueprint), skipping `status: retired`, `kind: found_document`, and any chapter whose prose is entirely Found Documents>
 
 Write the complete prose for chapter <NN> now. Output prose only.
 ```
 
-The voice-conditioning order survives flattening: sample near the top (primacy), outline penultimate, prior prose last (recency), rules text in between. The voice-anchor lookup and any story-voice sampling skip `status: retired` and `kind: found_document`, passing over any chapter whose prose is entirely Found Documents, not just its scenes (`references/file-schemas.md` § Prose → `kind: found_document`).
+The voice-conditioning order survives flattening: sample near the top (primacy), outline penultimate, prior prose last (recency), rules text in between. The voice-anchor lookup walks prose files only (counting earlier narrative scenes of the same chapter as prior prose for a later scene in it) and, along with any story-voice sampling, skips `status: retired` and `kind: found_document`, passing over any chapter whose prose is entirely Found Documents, not just its scenes (`references/file-schemas.md` § Prose → `kind: found_document`).
 
 ---
 
@@ -113,7 +113,7 @@ Do **not** use italics as annotation — italics legitimately occur in prose (in
 
 Triggered when the user asks to consolidate (or the skill notices annotated drafts in `kitbash/` and offers). Plan-first: the skill scans the drafts, reports per-draft annotation counts ("draft-codex: 4 loved, 1 struck, 2 notes; draft-gemini: 1 loved…"), proposes a **base draft** (the user's named pick wins; else propose the most-loved), and confirms before dispatching.
 
-A **clean-window consolidation subagent** receives, in order: the behavioral frame (with the consolidation directives below) · the writing sample + craft layer (voice authority unchanged) · the Blueprint + outline (fidelity authority unchanged) · the non-base drafts with their annotations · the **base draft last** (it is both the spine and the voice anchor). Directives:
+A **clean-window consolidation subagent** receives, in order: the behavioral frame (with the consolidation directives below) · the writing sample + craft layer (voice authority unchanged) · the Blueprint + outline (fidelity authority unchanged) · the non-base drafts with their annotations · the **base draft last** (it is both the spine and the voice anchor). On a chapter with a Found Document scene, drafts and consolidation cover the narrative scenes only — the Found Document section is context, never drafted unless the author asked for that scene, and never part of the consolidation's voice anchor. Directives:
 
 - The base draft is the spine: structure, pacing, and default wording come from it.
 - Weave every loved passage in substantively intact, smoothing seams minimally.
