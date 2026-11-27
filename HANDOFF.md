@@ -12,12 +12,12 @@
 | # | Tasks | Tier | Status | Commits | Review |
 |---|---|---|---|---|---|
 | 1 | §3.A schema, markdown profile + fixture; §3.B store bindings | Opus | accepted | `6698aad`, fixes `b2607df` | Sol: 22 findings; 10 fixed by the author, 9 parked (`.plans/PARKING.md`), 1 declined, 2 later slices' work |
-| 2 | §3.C outline-chapters; §3.D blueprint, prose, notes, specs | Neon (eval) | running | — | — |
+| 2 | §3.C outline-chapters; §3.D blueprint, prose, notes, specs | Neon (eval) | verified, in review | `42aaf57` (+ orchestrator fix `5b5b6d5`) | Sol: running |
 | 3 | §3.E init, migrate, pre-outline, guides; §3.F README notes + version bump | Opus | pending | — | — |
 
 ## Current position
 
-Slice 1 accepted. Slice 2 dispatched to Gemini 4 Neon (`agy -p`, `gemini-4-neon-xhigh`, accept-edits, scratchpad `agy-permissions.json`).
+Slice 2 (Neon, conversation `535878eb-40f2-471d-bbde-02029e0a0b97`, 7.7 min, 0 denied, 291k tokens) verified: validate passes, gate grep 61, no `mcp__`, 120/120 tool tests, descriptions 187–209 chars. Its report caught a real defect from slice 1's fix round (two binding sub-bullets joined on one line; fixed `5b5b6d5`); one claim slightly off (a description length). Sol review running; slice 3 (Opus) waits for it.
 
 ## Decisions
 
